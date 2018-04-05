@@ -8,7 +8,9 @@
 			:hide-actions="true"
 			:items="items">
 			<template slot="items" slot-scope="props">
-				<td>{{ props.item.number }}</td>
+				<td>
+					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+				</td>
 				<td>
 					<v-tooltip bottom>
 						<div slot="activator">

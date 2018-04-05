@@ -60,12 +60,12 @@
           case 'prev':
             this.page = this.page - 1 > 1 ? this.page - 1 : 1
             break
-	        case 'next':
-	          this.page = this.page + 1 < this.last_page ? this.page + 1 : this.last_page
-	          break
-	        case 'last':
-	          this.page = this.last_page
-	          break
+          case 'next':
+            this.page = this.page + 1 < this.last_page ? this.page + 1 : this.last_page
+            break
+          case 'last':
+            this.page = this.last_page
+            break
         }
 
         this.$emit('update-pagination', {page: this.page})

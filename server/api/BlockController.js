@@ -22,7 +22,7 @@ BlockController.get('/blocks', async (req, res, next) => {
     let offset = max_block_number - calc_page
     let block_numbers = [], remain_numbers = []
 
-    if ( calc_page - max_block_number < per_page) {
+    if (calc_page - max_block_number < per_page) {
       let max = offset + per_page
       max = max < max_block_number ? max : max_block_number
       block_numbers = _.range(offset, max)
@@ -53,6 +53,31 @@ BlockController.get('/blocks', async (req, res, next) => {
   }
   catch (e) {
     console.log(e)
+    throw e
+  }
+})
+
+BlockController.get('/blocks/:slug', async (req, res) => {
+  try {
+    let slug = req.params.slug
+    let query = {}
+    if(_.isNumber(slug)) {
+      query = {number: slug}
+    } else {
+      query = {hash: slug}
+    }
+
+    // Find exist in db.
+    let block = await Block.findOne(query)
+    if (!block) {
+      block = await BlockHelper.addBlockByNumber(slug)
+    }
+
+    return res.json(block)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
   }
 })
 
