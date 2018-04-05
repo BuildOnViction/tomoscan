@@ -1,0 +1,47 @@
+{
+  "name": "rapid-paper",
+  "version": "1.0.0",
+  "description": "My app description",
+  "scripts": {
+    "dev": "nodemon --exec \"babel-node ./server/index.js --inspect --presets es2015,stage-0\"",
+    "build": "nuxt build",
+    "start": "cross-env NODE_ENV=production node build/main.js",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.1",
+    "async": "^2.6.0",
+    "compression": "^1.6.2",
+    "dotenv": "^2.0.0",
+    "express": "^4.16.3",
+    "lodash": "^4.17.5",
+    "method-override": "^2.3.5",
+    "moment": "^2.22.0",
+    "mongoose": "^5.0.12",
+    "morgan": "^1.7.0",
+    "nodemailer": "^2.3.0",
+    "npm": "^5.8.0",
+    "numeral": "^2.0.6",
+    "nuxt": "^1.4.0",
+    "vuetify": "^1.0.11",
+    "web3": "^1.0.0-beta.33"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.9.0",
+    "babel-core": "^6.9.0",
+    "babel-preset-env": "^1.6.1",
+    "babel-preset-es2015": "^6.9.0",
+    "babel-preset-stage-0": "^6.5.0",
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "nodemon": "^1.17.3",
+    "sinon": "^1.17.3",
+    "sinon-chai": "^2.8.0",
+    "stylus": "^0.54.5",
+    "stylus-loader": "^3.0.2",
+    "supertest": "^1.2.0"
+  },
+  "engines": {
+    "node": "6.1.0"
+  }
+}
