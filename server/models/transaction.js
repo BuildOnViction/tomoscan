@@ -13,6 +13,7 @@ const schema = new mongoose.Schema( {
 	gas: Number,
 	gasPrice: String,
 	input: String,
+  timestamp: Date,
 	block_id: {type: Schema.Types.ObjectId, ref: 'Block'},
 	from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
 	to_id: {type: Schema.Types.ObjectId, ref: 'Account'},

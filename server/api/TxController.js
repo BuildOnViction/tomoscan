@@ -17,6 +17,9 @@ TxController.get('/txs', async (req, res) => {
     let block_num = !isNaN(req.query.block) ? req.query.block : null
     let data = {}
     if (block_num) {
+      // Find in db.
+      let count = await Transaction.find({blockNumber: block_num}).count()
+
       // Get tnx count.
       let web3 = await Web3Util.getWeb3()
       let tnx_count = await web3.eth.getBlockTransactionCount(block_num)
@@ -24,13 +27,22 @@ TxController.get('/txs', async (req, res) => {
       let items = []
       let limit = offset + per_page
       limit = Math.min(tnx_count, limit)
-      if (offset >= 0) {
-        for (let i = offset; i < limit; i++) {
-          let tnx = await TransactionHelper.getTransactionFromBlock(block_num,
-            i)
-          if (tnx) {
-            items.push(tnx)
+      if (offset >= 0 && tnx_count > 0) {
+        if (count != tnx_count) {
+          let _block = await web3.eth.getBlock(block_num)
+          for (let i = offset; i < limit; i++) {
+            let tx_hash = _block.transactions[i]
+            let tx = await Transaction.findOne(
+              {hash: tx_hash, blockNumber: block_num}).exec()
+            if (!tx) {
+              tx = await TransactionHelper.getTransactionFromBlock(block_num,
+                i)
+            }
+            items.push(tx)
           }
+        }
+        else {
+          items = await Transaction.find().skip(offset).limit(limit).exec()
         }
       }
 
@@ -43,7 +55,7 @@ TxController.get('/txs', async (req, res) => {
       }
     }
     else {
-      data = await paginate(req, 'Transaction')
+      data = await paginate(req, 'Transaction', {sort: {timestamp: -1}})
     }
 
     return res.json(data)

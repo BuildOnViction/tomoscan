@@ -1,5 +1,6 @@
 import numeral from 'numeral'
 import moment from 'moment'
+import web3 from 'web3'
 
 const mixin = {
   methods: {
@@ -21,9 +22,15 @@ const mixin = {
       return [].concat.apply([], query).join('&')
     },
 
-    formatNumber: (number) => numeral(number).format(),
+    formatNumber: (number) => numeral(number).format('0,0[.]00'),
 
-    moment: (date) => moment(date)
+    formatBigNumber: (number) => numeral(number).format('0,0[.]00000'),
+
+    moment: (date) => moment(date),
+
+    toEther: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'ether') : '',
+
+    toGwei: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'gwei') : ''
   },
 }
 

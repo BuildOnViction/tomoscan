@@ -153,4 +153,14 @@
 </script>
 
 <style>
+	.address__tag {
+		width: 132px;
+	}
+
+	.address__tag {
+		display: inline-block;
+		vertical-align: bottom;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
 </style>

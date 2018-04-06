@@ -6,6 +6,7 @@
 			:pagination.sync="pagination"
 			:loading="loading"
 			:total-items="total"
+			:disable-initial-sort="true"
 			:items="items">
 			<template slot="items" slot-scope="props">
 				<td></td>

@@ -10,7 +10,9 @@
 			:items="items">
 			<template slot="items" slot-scope="props">
 				<td>
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+					<span class="address__tag">
+						<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+					</span>
 				</td>
 				<td>
 					<v-tooltip bottom>
@@ -23,19 +25,14 @@
 					</v-tooltip>
 				</td>
 				<td>
-					<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
+					<span class="address__tag">{{ props.item.from }}</span>
 				</td>
-				<td>{{ props.item.uncles.length }}</td>
+				<td>-></td>
 				<td>
-					<span class="address__tag">{{ props.item.miner }}</span>
+					<span class="address__tag">{{ props.item.to }}</span>
 				</td>
-				<td class="text-xs-right">
-					<div>{{ formatBigNumber(props.item.gasUsed) }}</div>
-					<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
-				</td>
-				<td class="text-xs-right">{{ formatNumber(props.item.gasLimit) }}</td>
-				<td class="text-xs-right">{{ formatNumber(toGwei(props.item.avgGasPrice)) }}</td>
-				<td>{{ formatNumber(toEther(props.item.reward)) }}</td>
+				<td>{{ toEther(props.item.value) }} Ether</td>
+				<td>{{ toEther(props.item.gasPrice * props.item.gas) }}</td>
 			</template>
 		</v-data-table>
 		<div class="text-xs-center pt-2">
@@ -47,6 +44,7 @@
 <script>
   import mixin from '~/plugins/mixin'
   import Paginate from '~/components/Paginate'
+  import web3 from 'web3'
 
   export default {
     mixins: [mixin],
@@ -54,19 +52,17 @@
       Paginate,
     },
     head: () => ({
-      title: 'Blocks',
+      title: 'Transactions',
     }),
     data: () => ({
       headers: [
-        {text: 'Number', value: 'number'},
-        {text: 'Age', value: 'timestamp'},
-        {text: 'txn', value: 'e_tx'},
-        {text: 'Uncles', value: 'uncles'},
-        {text: 'Miner', value: 'miner'},
-        {text: 'GasUsed', value: 'gasUsed'},
-        {text: 'GasLimit', value: 'gasLimit'},
-        {text: 'Avg.GasPrice', value: 'avgGasPrice'},
-        {text: 'Reward', value: 'reward'},
+        {text: 'TxHash', value: 'hash'},
+        {text: 'Age', value: 'timestamp', sortable: false, width: '120px'},
+        {text: 'from', value: 'from'},
+        {text: 'arrow'},
+        {text: 'to', value: 'to'},
+        {text: 'Value', value: 'value'},
+        {text: 'TxFee', value: 'gasPrice'},
       ],
       loading: true,
       pagination: {},
@@ -75,6 +71,7 @@
       current_page: 1,
       per_page: 15,
       pages: 1,
+	    block: null,
     }),
     mounted () {
       let self = this
@@ -84,6 +81,9 @@
       }
       if (query.limit) {
         self.per_page = parseInt(query.limit)
+      }
+      if (query.block) {
+        self.block = query.block
       }
 
       this.getDataFromApi()
@@ -99,10 +99,14 @@
           page: self.current_page,
           limit: self.per_page,
         }
+        if (self.block) {
+          params.block = self.block
+        }
         this.$router.push({query: params})
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/blocks' + '?' + query)
+	      console.log(query)
+        let {data} = await this.$axios.get('/api/txs' + '?' + query)
         self.items = data.items
         self.total = data.total
         self.current_page = data.current_page
@@ -124,4 +128,5 @@
 </script>
 
 <style scoped>
+
 </style>

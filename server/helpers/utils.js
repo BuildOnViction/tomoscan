@@ -8,7 +8,7 @@ export const paginate = async (req, model_name, params, manual_paginate = false)
   page = page > 10000 ? 10000 : page
 
   let query = {}, sort = {}, total = null
-  if (!isNaN(params)) {
+  if (typeof(params) !== undefined) {
     query = _.extend({}, params.query)
     sort = _.extend({}, params.sort)
     total = _.isInteger(params.total) ? params.total : null

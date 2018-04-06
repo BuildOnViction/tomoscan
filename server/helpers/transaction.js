@@ -4,16 +4,22 @@ import Web3Util from './web3'
 
 let TransactionHelper = {
   addTransaction: async (_transaction, add_account = true) => {
-// Insert from account.
+    // Insert from account.
     if (add_account && _transaction.from != null) {
       let from = await AccountHelper.updateAccount(_transaction.from)
       _transaction.from_id = from
     }
+
     // Insert to account.
     if (add_account && _transaction.to != null) {
       let to = await AccountHelper.updateAccount(_transaction.to)
       _transaction.to_id = to
     }
+
+    // Get timestamp age.
+    let web3 = await Web3Util.getWeb3()
+    let _block = await web3.eth.getBlock(_transaction.blockNumber)
+    _transaction.timestamp = _block.timestamp * 1000
 
     return await Transaction.findOneAndUpdate({hash: _transaction.hash},
       _transaction, {upsert: true})
