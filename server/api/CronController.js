@@ -34,13 +34,14 @@ CronController.get('/cron/blocks', async (req, res) => {
   }
 })
 
-CronController.get('/cron/blocks/:slug', async(req, res) => {
+CronController.get('/cron/blocks/:slug', async (req, res) => {
   try {
     let web3 = await Web3Util.getWeb3()
     let result = await web3.eth.getBlock(req.params.slug)
 
     return res.json(result)
-  } catch(e) {
+  }
+  catch (e) {
     console.log(e)
     throw e
   }
@@ -51,12 +52,11 @@ CronController.get('/cron/txs', async (req, res) => {
     let transactions = []
 
     // Get blocks pending transaction.
-    let txs = await Transaction.find({crawl: {$exists: false}}).limit(100)
+    let txs = await Transaction.find({nonce: {$exists: false}}).limit(100)
 
     if (txs.length) {
       async.each(txs, async (tx, next) => {
-        let transaction = await TransactionHelper.getTransactionByHash(tx.hash,
-          true)
+        let transaction = await TransactionHelper.getTransactionByHash(tx.hash)
 
         if (transaction) {
           transactions.push(transaction)

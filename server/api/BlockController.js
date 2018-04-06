@@ -14,11 +14,11 @@ BlockController.get('/blocks', async (req, res, next) => {
     let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
     let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
     per_page = Math.min(25, per_page)
+    let calc_page = page * per_page
 
     let web3 = await Web3Util.getWeb3()
     // Get latest block number count.
     let max_block_number = await web3.eth.getBlockNumber()
-    let calc_page = page * per_page
     let offset = max_block_number - calc_page
     let block_numbers = [], remain_numbers = []
 
@@ -46,7 +46,7 @@ BlockController.get('/blocks', async (req, res, next) => {
       if (max_block_number) {
         params.total = max_block_number
       }
-      let data = await paginate(req, 'Block', params)
+      let data = await paginate(req, 'Block', params, true)
 
       return res.json(data)
     })
