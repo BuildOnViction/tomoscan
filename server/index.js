@@ -1,6 +1,7 @@
 import api from './api'
 import { Nuxt, Builder } from 'nuxt'
 import Web3Connector from './services/Web3Connector'
+import CronTab from './services/CronTab'
 
 const express = require('express')
 const logger = require('morgan')
@@ -70,8 +71,10 @@ app.use(nuxt.render)
 app.listen(app.get('port'), async () => {
   try {
     console.log('Start ws for web3.')
-
     Web3Connector.connect()
+
+    console.log('Start cronjob.')
+    CronTab.start()
 
     console.log('Express server listening on port ' + app.get('port'))
   }

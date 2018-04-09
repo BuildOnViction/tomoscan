@@ -113,7 +113,6 @@
         this.$router.push({query: params})
 
         let query = this.serializeQuery(params)
-        console.log(query)
         let {data} = await this.$axios.get('/api/txs' + '?' + query)
         self.items = data.items
         self.total = data.total

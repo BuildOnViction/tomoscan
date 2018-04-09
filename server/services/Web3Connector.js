@@ -9,7 +9,7 @@ let Web3Connector = {
       if (block) {
         // Insert new block into db.
         let _block = await BlockRepository.addBlockByNumber(block.number)
-//        console.log(_block.number)
+        console.log(_block.number)
       }
     })
   },

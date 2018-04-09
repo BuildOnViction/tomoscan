@@ -34,4 +34,6 @@ const schema = new mongoose.Schema({
 //  return count
 //})
 
-module.exports = mongoose.model('Block', schema)
+let Block = mongoose.model('Block', schema)
+
+export default Block

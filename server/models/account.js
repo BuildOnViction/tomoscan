@@ -1,9 +1,14 @@
-const mongoose = require( 'mongoose' )
-const Schema = mongoose.Schema;
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 
-const schema = new mongoose.Schema( {
-	hash: {type: String, unique: true}, balance: Number, code: String, transactionCount: Number, storageAt: String,
-}, {timestamps: true} )
+const schema = new mongoose.Schema({
+  hash: {type: String, unique: true},
+  balance: Number,
+  code: String,
+  transactionCount: Number,
+  storageAt: String,
+}, {timestamps: true})
 
+let Account = mongoose.model('Account', schema)
 
-module.exports = mongoose.model( 'Account', schema )
+export default Account
