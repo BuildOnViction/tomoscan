@@ -7,7 +7,6 @@ const logger = require('morgan')
 const compression = require('compression')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
-//const io = require('socket.io')
 
 // Load environment variables from .env file
 dotenv.load()
@@ -49,13 +48,6 @@ if (app.get('env') === 'production') {
     res.sendStatus(err.status || 500)
   })
 }
-//
-//// Connect using web socket.
-//io.on('connect', (socket) => {
-//  console.log('connected id=', socket.id)
-//
-//
-//})
 
 // Import and Set Nuxt.js options
 let config = require('../nuxt.config.js')
@@ -67,25 +59,16 @@ config.dev = !(
 const nuxt = new Nuxt(config)
 
 // Build only in dev mode
-//if (config.dev) {
-//  const builder = new Builder(nuxt)
-//  builder.build()
-//}
+if (config.dev) {
+  const builder = new Builder(nuxt)
+  builder.build()
+}
 
 // Give nuxt middleware to express
 app.use(nuxt.render)
 
 app.listen(app.get('port'), async () => {
   try {
-//    let web3 = await Web3Util.getWeb3()
-//
-//    let subscription = web3.eth.subscribe('newBlockHeaders',
-//      function (error, result) {
-//        if (!error)
-//          console.log(error)
-//      }).on('data', function (blockdata) {
-//      console.log('new block', blockdata.number)
-//    })
     console.log('Start ws for web3.')
 
     Web3Connector.connect()
