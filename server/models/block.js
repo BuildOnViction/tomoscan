@@ -2,8 +2,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
-  number: Number,
-  hash: {type: String, unique: true},
+  number: {type: Number, unique: true},
+  hash: {type: String},
   parentHash: String,
   nonce: String,
   sha3Uncles: String,
@@ -20,7 +20,6 @@ const schema = new mongoose.Schema({
   gasUsed: Number,
   timestamp: Date,
   uncles: Array,
-  crawl: {type: Boolean, default: false},
   e_tx: {type: Number, default: 0},
 }, {
   timestamps: true,

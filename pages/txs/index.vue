@@ -73,7 +73,7 @@
       pages: 1,
 	    block: null,
     }),
-    mounted () {
+    async mounted () {
       let self = this
       let query = self.$route.query
       if (query.page) {

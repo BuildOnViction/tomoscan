@@ -6,27 +6,72 @@ import Transaction from '../models/transaction'
 import BlockHelper from '../helpers/block'
 import TransactionHelper from '../helpers/transaction'
 import async from 'async'
+import _ from 'lodash'
 
 const CronController = Router()
+
+CronController.get('/cron/pending', async (req, res) => {
+  try {
+    let web3 = await Web3Util.getWeb3()
+    let max_block_num = await web3.eth.getBlockNumber()
+    let pending_block = await Setting.findOne({meta_key: 'pending_block'})
+    let pending_block_num = pending_block ? pending_block.meta_value : 0
+
+    if (pending_block_num <= max_block_num) {
+      // Insert blocks for crawl.
+      let inserted_blocks = parseInt(pending_block_num) + 1000
+      let arr_indexs = _.range(pending_block_num, inserted_blocks)
+      async.each(arr_indexs, async (i, next) => {
+        let exist = await Block.findOne({number: i})
+        if (!exist) {
+          let block = await Block.create({number: i})
+        }
+
+        next()
+      }, async (e) => {
+        let setting = await Setting.findOneAndUpdate(
+          {meta_key: 'pending_block'},
+          {meta_value: inserted_blocks}, {upsert: true, new: true})
+
+        res.json({setting: setting})
+      })
+    }
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
 
 CronController.get('/cron/blocks', async (req, res) => {
   try {
     let web3 = await Web3Util.getWeb3()
-    let blocks = []
-    let max_block_num = await web3.eth.getBlockNumber()
 
     // Get block number minimum.
-    let block = await Block.findOne().sort({number: 1})
-    let block_num_min = block ? block.number : max_block_num
-    for (let i = 1; i <= 20; i++) {
-      if (block_num_min >= 0) {
-        block = await BlockHelper.addBlockByNumber(block_num_min)
-        blocks.push(block)
-        block_num_min--
-      }
-    }
+//    let block = await Block.findOne().sort({number: 1})
+//    let block_num_min = block ? block.number : max_block_num
+//    for (let i = 1; i <= 20; i++) {
+//      if (block_num_min >= 0) {
+//        block = await BlockHelper.addBlockByNumber(block_num_min)
+//        blocks.push(block)
+//        block_num_min--
+//      }
+//    }
+    // Get block pending.
+    let blocks = await Block.find({hash: {$exists: false}}).limit(500)
+    let _blocks = []
+    if (blocks.length) {
+      async.each(blocks, async (block, next) => {
+        let _block = await BlockHelper.addBlockByNumber(block.number)
+        _blocks.push(_block)
 
-    return res.json({blocks: blocks})
+        next()
+      }, (e) => {
+        return res.json({blocks: _blocks})
+      })
+    } else {
+      return res.json({blocks: _blocks})
+    }
   }
   catch (e) {
     console.log(e)

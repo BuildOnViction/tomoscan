@@ -61,9 +61,10 @@ BlockController.get('/blocks/:slug', async (req, res) => {
   try {
     let slug = req.params.slug
     let query = {}
-    if(_.isNumber(slug)) {
+    if (_.isNumber(slug)) {
       query = {number: slug}
-    } else {
+    }
+    else {
       query = {hash: slug}
     }
 
@@ -72,6 +73,12 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     if (!block) {
       block = await BlockHelper.addBlockByNumber(slug)
     }
+
+    let web3 = await Web3Util.getWeb3()
+//      let test = await web3.eth.getPastLogs({
+//        address: "0x52529Fa1499cBaAd662DbfC05028ba5F5c291361"
+//      })
+    console.log(await web3.eth.getBlockNumber())
 
     return res.json(block)
   }

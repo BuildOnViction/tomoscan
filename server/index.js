@@ -18,20 +18,20 @@ mongoose.connection.on('error', function () {
     'MongoDB Connection Error. Please make sure that MongoDB is running.')
   process.exit(1)
 })
-if(process.env.DEBUG_QUERY == true) {
-  mongoose.set('debug', function(coll, method, query, doc, options) {
+if (process.env.DEBUG_QUERY == true) {
+  mongoose.set('debug', function (coll, method, query, doc, options) {
     let set = {
       coll: coll,
       method: method,
       query: query,
       doc: doc,
-      options: options
-    };
+      options: options,
+    }
 
     console.log({
-      dbQuery: set
-    });
-  });
+      dbQuery: set,
+    })
+  })
 }
 
 app.set('port', process.env.PORT || 3000)
@@ -58,10 +58,10 @@ config.dev = !(
 const nuxt = new Nuxt(config)
 
 // Build only in dev mode
-if (config.dev) {
-  const builder = new Builder(nuxt)
-  builder.build()
-}
+//if (config.dev) {
+//  const builder = new Builder(nuxt)
+//  builder.build()
+//}
 
 // Give nuxt middleware to express
 app.use(nuxt.render)
