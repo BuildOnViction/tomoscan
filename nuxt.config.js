@@ -19,6 +19,10 @@ module.exports = {
         rel: 'stylesheet',
         href: 'https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons',
       },
+      {
+        rel: 'stylesheet',
+        href: 'https://cdn.materialdesignicons.com/2.1.19/css/materialdesignicons.min.css',
+      },
     ],
   },
   plugins: [
@@ -32,7 +36,7 @@ module.exports = {
     '~/plugins/vuetify',
   ],
   axios: {
-    baseURL: process.env.API_URL
+    baseURL: process.env.API_URL,
   },
   css: ['~/assets/app.styl'],
   loading: {

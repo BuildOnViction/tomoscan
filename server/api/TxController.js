@@ -2,7 +2,7 @@ import { Router } from 'express'
 import Transaction from '../models/transaction'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
-import TransactionHelper from '../helpers/transaction'
+import TransactionRepository from '../repositories/TransactionRepository'
 
 const TxController = Router()
 
@@ -17,7 +17,7 @@ TxController.get('/txs', async (req, res) => {
     let block_num = !isNaN(req.query.block) ? req.query.block : null
     let data = {}
     if (block_num) {
-      // Find in db.
+      // Get txs by block number.
       let count = await Transaction.find({blockNumber: block_num}).count()
 
       // Get tnx count.
@@ -35,7 +35,7 @@ TxController.get('/txs', async (req, res) => {
             let tx = await Transaction.findOne(
               {hash: tx_hash, blockNumber: block_num}).exec()
             if (!tx) {
-              tx = await TransactionHelper.getTransactionFromBlock(block_num,
+              tx = await TransactionRepository.getTransactionFromBlock(block_num,
                 i)
             }
             items.push(tx)

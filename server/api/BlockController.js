@@ -5,7 +5,7 @@ import Setting from '../models/setting'
 import Block from '../models/block'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
-import BlockHelper from '../helpers/block'
+import BlockRepository from '../repositories/BlockRepository'
 
 const BlockController = Router()
 
@@ -34,7 +34,7 @@ BlockController.get('/blocks', async (req, res, next) => {
     // Insert blocks remain.
     async.each(remain_numbers, async (number, next) => {
       if (number) {
-        let e = await BlockHelper.addBlockByNumber(number)
+        let e = await BlockRepository.addBlockByNumber(number)
         if (!e) next(e)
 
         next()
@@ -71,7 +71,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     // Find exist in db.
     let block = await Block.findOne(query)
     if (!block) {
-      block = await BlockHelper.addBlockByNumber(slug)
+      block = await BlockRepository.addBlockByNumber(slug)
     }
 
     return res.json(block)

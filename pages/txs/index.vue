@@ -27,9 +27,17 @@
 				<td>
 					<span class="address__tag">{{ props.item.from }}</span>
 				</td>
-				<td>-></td>
 				<td>
-					<span class="address__tag">{{ props.item.to }}</span>
+					<v-icon color="green">mdi-arrow-right-bold</v-icon>
+				</td>
+				<td>
+					<span class="address__tag">
+						<span v-if="props.item.to != null"></span>
+						<span v-else>
+							<v-icon>mdi-file-document</v-icon>
+							{{ props.item.contractAddress }}
+						</span>
+					</span>
 				</td>
 				<td>{{ toEther(props.item.value) }} Ether</td>
 				<td>{{ toEther(props.item.gasPrice * props.item.gas) }}</td>
@@ -71,7 +79,7 @@
       current_page: 1,
       per_page: 15,
       pages: 1,
-	    block: null,
+      block: null,
     }),
     async mounted () {
       let self = this
@@ -105,7 +113,7 @@
         this.$router.push({query: params})
 
         let query = this.serializeQuery(params)
-	      console.log(query)
+        console.log(query)
         let {data} = await this.$axios.get('/api/txs' + '?' + query)
         self.items = data.items
         self.total = data.total

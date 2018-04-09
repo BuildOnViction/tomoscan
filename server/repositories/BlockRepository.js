@@ -1,9 +1,9 @@
 import Block from '../models/block'
-import Web3Util from './web3'
+import Web3Util from '../helpers/web3'
 import async from 'async'
 import Transaction from '../models/transaction'
 
-export default {
+let BlockRepository = {
   addBlockByNumber: async (number) => {
     let web3 = await Web3Util.getWeb3()
     let _block = await web3.eth.getBlock(number)
@@ -40,3 +40,5 @@ export default {
     return block
   },
 }
+
+export default BlockRepository

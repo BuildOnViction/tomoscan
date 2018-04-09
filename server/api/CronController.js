@@ -3,10 +3,10 @@ import Web3Util from '../helpers/web3'
 import Setting from '../models/setting'
 import Block from '../models/block'
 import Transaction from '../models/transaction'
-import BlockHelper from '../helpers/block'
-import TransactionHelper from '../helpers/transaction'
 import async from 'async'
 import _ from 'lodash'
+import BlockRepository from '../repositories/BlockRepository'
+import TransactionRepository from '../repositories/TransactionRepository'
 
 const CronController = Router()
 
@@ -52,7 +52,7 @@ CronController.get('/cron/blocks', async (req, res) => {
 //    let block_num_min = block ? block.number : max_block_num
 //    for (let i = 1; i <= 20; i++) {
 //      if (block_num_min >= 0) {
-//        block = await BlockHelper.addBlockByNumber(block_num_min)
+//        block = await BlockRepository.addBlockByNumber(block_num_min)
 //        blocks.push(block)
 //        block_num_min--
 //      }
@@ -62,7 +62,7 @@ CronController.get('/cron/blocks', async (req, res) => {
     let _blocks = []
     if (blocks.length) {
       async.each(blocks, async (block, next) => {
-        let _block = await BlockHelper.addBlockByNumber(block.number)
+        let _block = await BlockRepository.addBlockByNumber(block.number)
         _blocks.push(_block)
 
         next()
@@ -101,7 +101,7 @@ CronController.get('/cron/txs', async (req, res) => {
 
     if (txs.length) {
       async.each(txs, async (tx, next) => {
-        let transaction = await TransactionHelper.getTransactionByHash(tx.hash)
+        let transaction = await TransactionRepository.getTransactionByHash(tx.hash)
 
         if (transaction) {
           transactions.push(transaction)
