@@ -74,12 +74,6 @@ BlockController.get('/blocks/:slug', async (req, res) => {
       block = await BlockHelper.addBlockByNumber(slug)
     }
 
-    let web3 = await Web3Util.getWeb3()
-//      let test = await web3.eth.getPastLogs({
-//        address: "0x52529Fa1499cBaAd662DbfC05028ba5F5c291361"
-//      })
-    console.log(await web3.eth.getBlockNumber())
-
     return res.json(block)
   }
   catch (e) {
