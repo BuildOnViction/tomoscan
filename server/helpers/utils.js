@@ -1,7 +1,11 @@
 import mongoose from 'mongoose'
 import _ from 'lodash'
 
-export const paginate = async (req, model_name, params, manual_paginate = false) => {
+const ethUtils = require('ethereumjs-util')
+const ethBlock = require('ethereumjs-block/from-rpc')
+
+export const paginate = async (
+  req, model_name, params, manual_paginate = false) => {
   let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
   per_page = Math.min(25, per_page)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -31,4 +35,38 @@ export const paginate = async (req, model_name, params, manual_paginate = false)
     pages: Math.ceil(total / per_page),
     items: items,
   }
+}
+
+export const getSigner = (block) => {
+  var sealers = block.extraData
+  if (sealers.length <= 130)
+    return undefined
+  var sig = ethUtils.fromRpcSig('0x' +
+    sealers.substring(sealers.length - 130, sealers.length)) // remove signature
+  block.extraData = block.extraData.substring(0, block.extraData.length - 130)
+  var blk = ethBlock(block)
+  blk.header.difficulty[0] = block.difficulty
+  var sigHash = ethUtils.sha3(blk.header.serialize())
+  var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
+  return ethUtils.pubToAddress(pubkey).toString('hex')
+}
+
+export const toAddress = (text, length) => {
+  if (isNaN(length))
+    length = 16
+
+  var end = '…'
+
+  if (text == undefined)
+    return 'new contract'
+  if (text === null)
+    return 'new contract'
+
+  if (length >= String(text).length)
+    end = ''
+
+  var prefix = ''
+  if (String(text).substring(0, 2) != '0x')
+    prefix = '0x'
+  return prefix + String(text).substring(0, length) + end
 }

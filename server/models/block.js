@@ -20,6 +20,7 @@ const schema = new mongoose.Schema({
   gasUsed: Number,
   timestamp: Date,
   uncles: Array,
+  signer: String,
   e_tx: {type: Number, default: 0},
 }, {
   timestamps: true,

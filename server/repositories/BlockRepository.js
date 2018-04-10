@@ -2,6 +2,7 @@ import Block from '../models/block'
 import Web3Util from '../helpers/web3'
 import async from 'async'
 import Transaction from '../models/transaction'
+import { getSigner, toAddress } from '../helpers/utils'
 
 let BlockRepository = {
   addBlockByNumber: async (number) => {
@@ -10,12 +11,17 @@ let BlockRepository = {
     if (!_block) {
       return false
     }
+
+    // Get signer.
+    let signer = getSigner(_block)
+
     // Update end tx count.
     let end_tx_count = await web3.eth.getBlockTransactionCount(_block.hash)
     _block.timestamp = _block.timestamp * 1000
     _block.e_tx = end_tx_count
     _block.c_tx = false
     _block.s_tx = 0
+    _block.signer = signer
     let transactions = _block.transactions
     delete _block['transactions']
 
