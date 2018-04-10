@@ -4,23 +4,13 @@ import CronTab from '../services/CronTab'
 
 const CronController = Router()
 
-CronController.get('/cron/pending', async (req, res) => {
-  try {
-    let setting = await CronTab.getBlocksPending()
-
-    return res.json({setting: setting})
-  }
-  catch (e) {
-    console.log(e)
-    throw e
-  }
-})
-
 CronController.get('/cron/blocks', async (req, res) => {
   try {
-    let blocks = await CronTab.getBlocks()
-
-    return res.json({blocks: blocks})
+    CronTab.getBlocks().then((blocks) => {
+      return res.json({blocks: blocks})
+    }).catch((e) => {
+      res.status(500).send(e.message)
+    })
   }
   catch (e) {
     console.log(e)
@@ -43,9 +33,11 @@ CronController.get('/cron/blocks/:slug', async (req, res) => {
 
 CronController.get('/cron/txs', async (req, res) => {
   try {
-    let transactions = await CronTab.getTransactions()
-
-    return res.json({transactions: transactions})
+    CronTab.getTransactions().then((txs) => {
+      return res.json({txs: txs})
+    }).catch((e) => {
+      res.status(500).send(e.message)
+    })
   }
   catch (e) {
     console.log(e)
