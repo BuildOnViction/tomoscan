@@ -13,7 +13,7 @@ let BlockRepository = {
     }
 
     // Get signer.
-    let signer = getSigner(_block)
+    let signer = toAddress(getSigner(_block), 100)
 
     // Update end tx count.
     let end_tx_count = await web3.eth.getBlockTransactionCount(_block.hash)
