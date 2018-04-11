@@ -6,9 +6,6 @@ const ethBlock = require('ethereumjs-block/from-rpc')
 
 export const paginate = async (
   req, model_name, params = {}, manual_paginate = false) => {
-  // Dynamic require model.
-  var model = require('../models/' + model_name)
-
   let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
   per_page = Math.min(25, per_page)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -24,9 +21,9 @@ export const paginate = async (
     total = _.isInteger(params.total) ? params.total : null
   }
 
-  let count = await model.count()
+  let count = await mongoose.model(model_name).count()
   total = total ? total : count
-  let builder = model.find(query).sort(sort)
+  let builder = mongoose.model(model_name).find(query).sort(sort)
   if (!manual_paginate) {
     let offset = page > 1 ? (page - 1) * per_page : 0
     builder = builder.skip(offset)
@@ -75,4 +72,25 @@ export const toAddress = (text, length) => {
   if (String(text).substring(0, 2) != '0x')
     prefix = '0x'
   return prefix + String(text).substring(0, length) + end
+}
+
+export const toLongNumberString = (n) => {
+  let str, str2 = '', data = n.toExponential().replace('.', '').split(/e/i)
+  str = data[0]
+  let mag = Number(data[1])
+
+  if (mag >= 0 && str.length > mag) {
+    mag += 1
+    return str.substring(0, mag) + '.' + str.substring(mag)
+  }
+  if (mag < 0) {
+    while (++mag) str2 += '0'
+    return '0.' + str2 + str
+  }
+  mag = (mag - str.length) + 1
+  while (mag > str2.length) {
+    str2 += '0'
+  }
+
+  return str + str2
 }

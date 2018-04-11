@@ -28,4 +28,6 @@ const schema = new mongoose.Schema({
   toJSON: {virtuals: true},
 })
 
-module.exports = mongoose.model('Block', schema)
+let Block = mongoose.model('Block', schema)
+
+export default Block

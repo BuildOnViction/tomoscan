@@ -23,4 +23,6 @@ const schema = new mongoose.Schema({
   to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
 }, {timestamps: true})
 
-module.exports = mongoose.model('Transaction', schema)
+let Transaction = mongoose.model('Transaction', schema)
+
+export default Transaction

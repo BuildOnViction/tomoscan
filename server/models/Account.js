@@ -1,18 +1,22 @@
+import { toLongNumberString } from '../helpers/utils'
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
   hash: {type: String, unique: true},
-  balance: Number,
+  balance: {type: Number},
   code: String,
   transactionCount: Number,
   storageAt: String,
 }, {
   timestamps: true,
   toObject: {virtuals: true},
-  toJSON: {virtuals: true},
+  toJSON: {virtuals: true, getters: true},
 })
 
-schema.path('balance').get(value => '123' + value.toString())
+schema.path('balance').get(value => toLongNumberString(value))
 
-module.exports = mongoose.model('Account', schema)
+let Account = mongoose.model('Account', schema)
+
+export default Account

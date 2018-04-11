@@ -5,4 +5,6 @@ const schema = new mongoose.Schema({
   meta_key: String, meta_value: String,
 })
 
-module.exports = mongoose.model('Setting', schema)
+let Setting = mongoose.model('Setting', schema)
+
+export default Setting
