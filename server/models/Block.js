@@ -28,13 +28,4 @@ const schema = new mongoose.Schema({
   toJSON: {virtuals: true},
 })
 
-//schema.virtual('txn').get(async function () {
-//  let count = await mongoose.model('Transaction').find({block_id: this._id}).count()
-//  console.log(count)
-//
-//  return count
-//})
-
-let Block = mongoose.model('Block', schema)
-
-export default Block
+module.exports = mongoose.model('Block', schema)

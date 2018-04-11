@@ -1,4 +1,4 @@
-import Account from '../models/account'
+import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
 
 let AccountRepository = {

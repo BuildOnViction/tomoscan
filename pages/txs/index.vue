@@ -39,7 +39,7 @@
 						</span>
 					</span>
 				</td>
-				<td>{{ toEther(props.item.value) }} Ether</td>
+				<td>{{ toEther(props.item.value) }}</td>
 				<td>{{ toEther(props.item.gasPrice * props.item.gas) }}</td>
 			</template>
 		</v-data-table>

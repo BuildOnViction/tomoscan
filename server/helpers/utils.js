@@ -5,22 +5,28 @@ const ethUtils = require('ethereumjs-util')
 const ethBlock = require('ethereumjs-block/from-rpc')
 
 export const paginate = async (
-  req, model_name, params, manual_paginate = false) => {
+  req, model_name, params = {}, manual_paginate = false) => {
+  // Dynamic require model.
+  var model = require('../models/' + model_name)
+
   let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
   per_page = Math.min(25, per_page)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
   page = page > 10000 ? 10000 : page
 
   let query = {}, sort = {}, total = null
-  if (typeof(params) !== undefined) {
+  if (typeof(params) != 'undefined') {
+    params.query = typeof(params.query) != 'undefined' ? params.query : {}
+    params.sort = typeof(params.sort) != 'undefined' ? params.sort : {}
+    params.total = typeof(params.total) != 'undefined' ? params.total : null
     query = _.extend({}, params.query)
     sort = _.extend({}, params.sort)
     total = _.isInteger(params.total) ? params.total : null
   }
 
-  let count = await mongoose.model(model_name).count()
+  let count = await model.count()
   total = total ? total : count
-  let builder = mongoose.model(model_name).find(query).sort(sort)
+  let builder = model.find(query).sort(sort)
   if (!manual_paginate) {
     let offset = page > 1 ? (page - 1) * per_page : 0
     builder = builder.skip(offset)

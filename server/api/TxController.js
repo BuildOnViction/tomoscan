@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import Transaction from '../models/transaction'
+import Transaction from '../models/Transaction'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import TransactionRepository from '../repositories/TransactionRepository'

@@ -1,4 +1,4 @@
-import Transaction from '../models/transaction'
+import Transaction from '../models/Transaction'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
 

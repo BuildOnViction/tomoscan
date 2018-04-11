@@ -1,9 +1,9 @@
 import Web3Util from '../helpers/web3'
-import Setting from '../models/setting'
+import Setting from '../models/Setting'
 import _ from 'lodash'
 import async from 'async'
 import BlockRepository from '../repositories/BlockRepository'
-import Transaction from '../models/transaction'
+import Transaction from '../models/Transaction'
 import TransactionRepository from '../repositories/TransactionRepository'
 
 let cron = require('cron')

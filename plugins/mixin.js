@@ -28,7 +28,10 @@ const mixin = {
 
     moment: (date) => moment(date),
 
-    toEther: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'ether') : '',
+    toEther: (wei) => {
+      console.log( wei, web3.utils.fromWei(wei.toString(), 'ether'))
+      return wei ? web3.utils.fromWei(wei.toString(), 'ether') : ''
+    },
 
     toGwei: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'gwei') : ''
   },

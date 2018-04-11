@@ -27,7 +27,10 @@
 				</td>
 				<td>{{ props.item.uncles.length }}</td>
 				<td>
-					<span class="address__tag">{{ props.item.miner }}</span>
+					<span class="address__tag">
+						<span v-if="props.item.signer">{{ props.item.signer }}</span>
+						<span v-else>{{ props.item.miner }}</span>
+					</span>
 				</td>
 				<td class="text-xs-right">
 					<div>{{ formatBigNumber(props.item.gasUsed) }}</div>

@@ -7,8 +7,12 @@ const schema = new mongoose.Schema({
   code: String,
   transactionCount: Number,
   storageAt: String,
-}, {timestamps: true})
+}, {
+  timestamps: true,
+  toObject: {virtuals: true},
+  toJSON: {virtuals: true},
+})
 
-let Account = mongoose.model('Account', schema)
+schema.path('balance').get(value => '123' + value.toString())
 
-export default Account
+module.exports = mongoose.model('Account', schema)

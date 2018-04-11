@@ -1,7 +1,7 @@
-import Block from '../models/block'
+import Block from '../models/Block'
 import Web3Util from '../helpers/web3'
 import async from 'async'
-import Transaction from '../models/transaction'
+import Transaction from '../models/Transaction'
 import { getSigner, toAddress } from '../helpers/utils'
 
 let BlockRepository = {
