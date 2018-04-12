@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import Account from '../models/Account'
 import BigNumber from 'bignumber.js'
+import AccountRepository from '../repositories/AccountRepository'
 
 const AccountController = Router()
 
@@ -26,6 +27,22 @@ AccountController.get('/accounts', async (req, res) => {
     })
 
     return res.json(data)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
+AccountController.get('/accounts/:slug', async (req, res) => {
+  try {
+    let slug = req.params.slug
+    let account = await Account.findOne({hash: slug})
+    if (!account) {
+      account = AccountRepository.updateAccount(slug)
+    }
+
+    return res.json(account)
   }
   catch (e) {
     console.log(e)

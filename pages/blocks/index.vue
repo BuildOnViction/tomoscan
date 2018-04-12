@@ -28,8 +28,10 @@
 				<td>{{ props.item.uncles.length }}</td>
 				<td>
 					<span class="address__tag">
-						<span v-if="props.item.signer">{{ props.item.signer }}</span>
-						<span v-else>{{ props.item.miner }}</span>
+						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+							<span v-if="props.item.signer">{{ props.item.signer }}</span>
+							<span v-else>{{ props.item.miner }}</span>
+						</nuxt-link>
 					</span>
 				</td>
 				<td class="text-xs-right">

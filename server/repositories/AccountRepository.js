@@ -3,9 +3,14 @@ import Web3Util from '../helpers/web3'
 
 let AccountRepository = {
   updateAccount: async (hash) => {
+    let account = await Account.findOne({hash: hash, nonce: {$exists: true}})
+    if (account) {
+      return account
+    }
+
     let web3 = await Web3Util.getWeb3()
 
-    let account = {}
+    account = {}
     let balance = await web3.eth.getBalance(hash)
     account.balance = balance
     account.balanceNumber = balance

@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-require('mongoose-long')(mongoose)
 
 const schema = new mongoose.Schema({
   hash: {type: String, unique: true},
@@ -7,10 +6,10 @@ const schema = new mongoose.Schema({
   balanceNumber: {type: Number},
   code: String,
   transactionCount: Number,
+  contractCreation: String,
   storageAt: String,
 }, {
   timestamps: true,
-  toObject: {virtuals: true},
 //  toJSON: {virtuals: true, getters: true},
 })
 

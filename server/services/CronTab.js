@@ -53,7 +53,7 @@ let CronTab = {
 
     if (txs.length) {
       async.each(txs, async (tx, next) => {
-        let transaction = await TransactionRepository.getTransactionByHash(
+        let transaction = await TransactionRepository.addTransaction(
           tx.hash)
 
         if (transaction) {

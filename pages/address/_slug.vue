@@ -23,12 +23,49 @@
 		</v-card>
 		<v-tabs>
 			<v-tab>Transactions</v-tab>
-			<v-tab>Token Transfers</v-tab>
 			<v-tab-item>
+				<tx-table :address="hash"></tx-table>
 			</v-tab-item>
 		</v-tabs>
 	</div>
 </template>
 <script>
-  export default {}
+	import async from 'async'
+  import mixin from '~/plugins/mixin'
+  import TxTable from '~/components/TxTable'
+
+  export default {
+    mixins: [mixin],
+    components: {
+      'tx-table': TxTable
+    },
+    head () {
+      let address = this.$route.params.slug
+
+      return {
+        title: 'Address ' + address,
+      }
+    },
+    data: () => ({
+	    hash: null,
+	    address: null
+    }),
+    async mounted () {
+      let self = this
+      let hash = self.$route.params.slug
+      if (hash) {
+        self.hash = hash
+      }
+
+      self.getAccountFromApi()
+    },
+    methods: {
+      async getAccountFromApi() {
+        let self = this
+
+	      let {data} = await this.$axios.get('/api/accounts/' + self.hash)
+	      self.address = data
+      },
+    },
+  }
 </script>

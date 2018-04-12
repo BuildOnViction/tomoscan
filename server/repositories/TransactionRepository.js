@@ -1,9 +1,27 @@
 import Transaction from '../models/Transaction'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
+import BlockRepository from './BlockRepository'
 
 let TransactionRepository = {
-  addTransaction: async (_transaction, add_account = true) => {
+  addTransaction: async (hash, add_account = true, transaction = null) => {
+    let web3 = await Web3Util.getWeb3()
+    let _transaction = null
+    if (hash && !transaction) {
+      _transaction = await Transaction.findOne(
+        {hash: hash, nonce: {$exists: true}})
+      if (_transaction) {
+        return _transaction
+      }
+
+      _transaction = await web3.eth.getTransaction(hash)
+    }
+    else {
+      _transaction = transaction
+    }
+
+    let receipt = await web3.eth.getTransactionReceipt(_transaction.hash)
+
     // Insert from account.
     if (add_account && _transaction.from != null) {
       let from = await AccountRepository.updateAccount(_transaction.from)
@@ -16,20 +34,22 @@ let TransactionRepository = {
       _transaction.to_id = to
     }
 
+    // Update contract type.
+    if (receipt.contractAddress) {
+      _transaction.contractAddress = receipt.contractAddress
+      let contract = await AccountRepository.updateAccount(
+        receipt.contractAddress)
+      contract.contractCreation = _transaction.from
+      contract.save()
+    }
+
     // Get timestamp age.
-    let web3 = await Web3Util.getWeb3()
-    let _block = await web3.eth.getBlock(_transaction.blockNumber)
-    _transaction.timestamp = _block.timestamp * 1000
+    _transaction.cumulativeGasUsed = receipt.cumulativeGasUsed
+    _transaction.gasUsed = receipt.gasUsed
+    _transaction.logs = receipt.logs
 
     return await Transaction.findOneAndUpdate({hash: _transaction.hash},
       _transaction, {upsert: true, new: true})
-  },
-
-  getTransactionByHash: async (hash) => {
-    let web3 = await Web3Util.getWeb3()
-    let _transaction = await web3.eth.getTransaction(hash)
-
-    return await TransactionRepository.addTransaction(_transaction)
   },
 
   getTransactionFromBlock: async (block_num, position) => {
@@ -37,7 +57,8 @@ let TransactionRepository = {
     let _transaction = await web3.eth.getTransactionFromBlock(block_num,
       position)
 
-    return await TransactionRepository.addTransaction(_transaction, false)
+    return await TransactionRepository.addTransaction(null, true,
+      _transaction)
   },
 }
 

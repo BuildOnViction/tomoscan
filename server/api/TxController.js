@@ -22,21 +22,21 @@ TxController.get('/txs', async (req, res) => {
 
       // Get tnx count.
       let web3 = await Web3Util.getWeb3()
-      let tnx_count = await web3.eth.getBlockTransactionCount(block_num)
+      let tx_count = await web3.eth.getBlockTransactionCount(block_num)
 
       let items = []
       let limit = offset + per_page
-      limit = Math.min(tnx_count, limit)
-      if (offset >= 0 && tnx_count > 0) {
-        if (count != tnx_count) {
+      limit = Math.min(tx_count, limit)
+      if (offset >= 0 && tx_count > 0) {
+        if (count != tx_count) {
           let _block = await web3.eth.getBlock(block_num)
           for (let i = offset; i < limit; i++) {
             let tx_hash = _block.transactions[i]
             let tx = await Transaction.findOne(
               {hash: tx_hash, blockNumber: block_num}).exec()
             if (!tx) {
-              tx = await TransactionRepository.getTransactionFromBlock(block_num,
-                i)
+              tx = await TransactionRepository.getTransactionFromBlock(
+                block_num, i)
             }
             items.push(tx)
           }
@@ -47,10 +47,10 @@ TxController.get('/txs', async (req, res) => {
       }
 
       data = {
-        total: tnx_count,
+        total: tx_count,
         per_page: per_page,
         current_page: page,
-        pages: Math.ceil(tnx_count / per_page),
+        pages: Math.ceil(tx_count / per_page),
         items: items,
       }
     }
@@ -59,6 +59,22 @@ TxController.get('/txs', async (req, res) => {
     }
 
     return res.json(data)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
+TxController.get('/txs/:slug', async (req, res) => {
+  try {
+    let slug = req.params.slug
+    let tx = await Transaction.findOne({hash: slug})
+    if (!tx) {
+      tx = TransactionRepository.addTransaction(slug, false)
+    }
+
+    return res.json(tx)
   }
   catch (e) {
     console.log(e)

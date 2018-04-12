@@ -6,6 +6,11 @@ import { getSigner, toAddress } from '../helpers/utils'
 
 let BlockRepository = {
   addBlockByNumber: async (number) => {
+    let block = await Block.findOne({number: number, nonce: {$exists: true}})
+    if (block) {
+      return block
+    }
+
     let web3 = await Web3Util.getWeb3()
     let _block = await web3.eth.getBlock(number)
     if (!_block) {
@@ -25,7 +30,7 @@ let BlockRepository = {
     let transactions = _block.transactions
     delete _block['transactions']
 
-    let block = await Block.findOneAndUpdate({number: _block.number}, _block,
+    block = await Block.findOneAndUpdate({number: _block.number}, _block,
       {upsert: true, new: true})
     if (block && transactions.length) {
       // Insert transaction before.

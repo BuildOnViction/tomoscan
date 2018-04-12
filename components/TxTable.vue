@@ -9,17 +9,40 @@
 			:disable-initial-sort="true"
 			:items="items">
 			<template slot="items" slot-scope="props">
-				<td>{{ props.item.rank }}</td>
 				<td>
 					<span class="address__tag">
-						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+						<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 					</span>
 				</td>
-				<td class="text-xs-right" v-html="toEther(props.item.balance)"></td>
-				<td class="text-xs-right">{{ props.item.transactionCount }}</td>
-			</template>
-			<template slot="pageText" slot-scope="props">
-				Rows per page: {{ props.pageStart }} - {{ props.pageStop }} of {{ props.itemsLength }}
+				<td>
+					<v-tooltip bottom>
+						<div slot="activator">
+							{{ moment(props.item.timestamp).fromNow() }}
+						</div>
+						<div>
+							{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+						</div>
+					</v-tooltip>
+				</td>
+				<td>
+					<span class="address__tag">{{ props.item.from }}</span>
+				</td>
+				<td>
+					<v-icon color="green">mdi-arrow-right-bold</v-icon>
+				</td>
+				<td>
+					<span class="address__tag">
+						<span v-if="props.item.contractAddress">
+							<v-icon>mdi-file-document</v-icon>
+							<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.contractAddress}}">{{ props.item.contractAddress }}</nuxt-link>
+						</span>
+						<span v-else>
+							<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
+						</span>
+					</span>
+				</td>
+				<td>{{ toEther(props.item.value) }}</td>
+				<td>{{ props.item.gasPrice * props.item.gas }}</td>
 			</template>
 		</v-data-table>
 		<div class="text-xs-center pt-2">
@@ -29,7 +52,6 @@
 </template>
 
 <script>
-  import axios from '~/plugins/axios'
   import mixin from '~/plugins/mixin'
   import Paginate from '~/components/Paginate'
 
@@ -39,14 +61,20 @@
       Paginate,
     },
     head: () => ({
-      title: 'Accounts',
+      title: 'Transactions',
     }),
+    props: {
+      address: {type: String},
+    },
     data: () => ({
       headers: [
-        {text: 'Rank', value: 'rank'},
-        {text: 'Address', value: 'hash', align: 'left', sortable: false},
-        {text: 'Balance', value: 'balance'},
-        {text: 'TxCount', value: 'transactionCount'},
+        {text: 'TxHash', value: 'hash'},
+        {text: 'Age', value: 'timestamp', sortable: false, width: '120px'},
+        {text: 'from', value: 'from'},
+        {text: 'arrow'},
+        {text: 'To', value: 'to'},
+        {text: 'Value', value: 'value'},
+        {text: 'TxFee', value: 'gasPrice'},
       ],
       loading: true,
       pagination: {},
@@ -55,23 +83,27 @@
       current_page: 1,
       per_page: 15,
       pages: 1,
+      block: null,
     }),
     async mounted () {
       let self = this
       let query = self.$route.query
-
       if (query.page) {
         self.current_page = parseInt(query.page)
       }
       if (query.limit) {
         self.per_page = parseInt(query.limit)
       }
+      if (query.block) {
+        self.block = query.block
+      }
 
-      await self.getDataFromApi()
+      this.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
         let self = this
+
         // Show loading.
         self.loading = true
 
@@ -79,10 +111,16 @@
           page: self.current_page,
           limit: self.per_page,
         }
+        if (self.block) {
+          params.block = self.block
+        }
+        if (self.address) {
+          params.address = self.address
+        }
         this.$router.push({query: params})
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/accounts' + '?' + query)
+        let {data} = await this.$axios.get('/api/txs' + '?' + query)
         self.items = data.items
         self.total = data.total
         self.current_page = data.current_page
@@ -93,7 +131,6 @@
 
         return data
       },
-
       onChangePaginate ({page}) {
         let self = this
         self.current_page = page
@@ -103,6 +140,3 @@
     },
   }
 </script>
-
-<style scoped>
-</style>
