@@ -45,4 +45,13 @@ CronController.get('/cron/txs', async (req, res) => {
   }
 })
 
+//CronController.get('/test', async (req, res) => {
+//  let web3 = await Web3Util.getWeb3()
+//
+//  let account = await web3.eth.getBalance(
+//    '0x31b98d14007bdee637298086988a0bbd31184523')
+//
+//  console.log(account)
+//})
+
 export default CronController

@@ -9,12 +9,11 @@
 			:disable-initial-sort="true"
 			:items="items">
 			<template slot="items" slot-scope="props">
-				<td></td>
+				<td>{{ props.item.rank }}</td>
 				<td>
 					<span class="address__tag">{{ props.item.hash }}</span>
 				</td>
-				<td class="text-xs-right">{{ toEther(props.item.balance) }}</td>
-				<td></td>
+				<td class="text-xs-right" v-html="toEther(props.item.balance)"></td>
 				<td class="text-xs-right">{{ props.item.transactionCount }}</td>
 			</template>
 			<template slot="pageText" slot-scope="props">
@@ -45,7 +44,6 @@
         {text: 'Rank', value: 'rank'},
         {text: 'Address', value: 'hash', align: 'left', sortable: false},
         {text: 'Balance', value: 'balance'},
-        {text: 'Percentage', value: 'percentage'},
         {text: 'TxCount', value: 'transactionCount'},
       ],
       loading: true,

@@ -72,31 +72,37 @@ let CronTab = {
   }),
 
   start: () => {
-    // For blocks detail.
-    let job_blocks = new cron.CronJob({
-      cronTime: '0 */2 * * * *', // 2 minutes.
-      onTick: () => {
-        CronTab.getBlocks()
+    try {
+      // For blocks detail.
+      let job_blocks = new cron.CronJob({
+        cronTime: '0 */2 * * * *', // 2 minutes.
+        onTick: () => {
+          CronTab.getBlocks()
 
-        let date = new Date()
-        console.log('Job get blocks running at ' + date.toISOString())
-      },
-      start: false,
-    })
-    job_blocks.start()
+          let date = new Date()
+          console.log('Job get blocks running at ' + date.toISOString())
+        },
+        start: false,
+      })
+      job_blocks.start()
 
-    // For tx detail.
-    let job_tx = new cron.CronJob({
-      cronTime: '0 */2 * * * *', // 2 minutes.
-      onTick: () => {
-        CronTab.getTransactions()
+      // For tx detail.
+      let job_tx = new cron.CronJob({
+        cronTime: '0 */2 * * * *', // 2 minutes.
+        onTick: () => {
+          CronTab.getTransactions()
 
-        let date = new Date()
-        console.log('Job get transactions running at ' + date.toISOString())
-      },
-      start: false,
-    })
-    job_tx.start()
+          let date = new Date()
+          console.log('Job get transactions running at ' + date.toISOString())
+        },
+        start: false,
+      })
+      job_tx.start()
+    }
+    catch (e) {
+      console.log(e)
+      throw e
+    }
   },
 }
 

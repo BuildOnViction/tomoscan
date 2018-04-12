@@ -1,6 +1,6 @@
-import numeral from 'numeral'
 import moment from 'moment'
 import web3 from 'web3'
+import BigNumber from 'bignumber.js'
 
 const mixin = {
   methods: {
@@ -22,15 +22,55 @@ const mixin = {
       return [].concat.apply([], query).join('&')
     },
 
-    formatNumber: (number) => numeral(number).format('0,0[.]00'),
+    formatNumber: (number) => {
+      let seps = number.toString().split('.')
+      seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-    formatBigNumber: (number) => numeral(number).format('0,0[.]00000'),
+      return seps.join('.')
+    },
+
+    toLongNumberString: (n) => {
+      let str, str2 = '', data = n.toExponential().replace('.', '').split(/e/i)
+      str = data[0]
+      let mag = Number(data[1])
+
+      if (mag >= 0 && str.length > mag) {
+        mag += 1
+        return str.substring(0, mag) + '.' + str.substring(mag)
+      }
+      if (mag < 0) {
+        while (++mag) str2 += '0'
+        return '0.' + str2 + str
+      }
+      mag = (mag - str.length) + 1
+      while (mag > str2.length) {
+        str2 += '0'
+      }
+
+      return str + str2
+    },
 
     moment: (date) => moment(date),
 
-    toEther: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'ether') + ' Ether' : '',
+    toEther: (wei) => {
+      if (!wei) {
+        return ''
+      }
 
-    toGwei: (wei) => wei ? web3.utils.fromWei(wei.toString(), 'gwei') : ''
+      let wei_number = new BigNumber(wei)
+      let sfx = 'Ether'
+      let convert = 'ether'
+      if (wei_number.gte(1000000000000000000000000000000)) {
+        sfx = '<strong>T</strong> Ether'
+        convert = 'tether'
+      }
+
+      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert)) +
+        ' ' + sfx
+    },
+
+    toGwei: (wei) => wei ? mixin.methods.formatNumber(web3.utils.fromWei(wei,
+      'gwei')) : '',
   },
 }
 

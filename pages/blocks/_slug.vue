@@ -39,7 +39,10 @@
 							</tr>
 							<tr>
 								<td>Mined By:</td>
-								<td>{{ block.miner }}</td>
+								<td>
+									<span v-if="block.signer">{{ block.signer }}</span>
+									<span v-else>{{ block.miner }}</span>
+								</td>
 							</tr>
 							<tr>
 								<td>Difficulty:</td>

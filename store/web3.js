@@ -45,7 +45,7 @@
 //
 //    await web3.eth.getBalance(result.coinbase, (err, balance) => {
 //      if (err) {
-//        return new Error('Unable to retrieve balance for address: ' + result.coinbase)
+//        return new Error('Unable to retrieve balance for _slug.vue: ' + result.coinbase)
 //      } else {
 //        result = Object.assign({}, result, {balance})
 //      }

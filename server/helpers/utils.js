@@ -29,7 +29,7 @@ export const paginate = async (
     builder = builder.skip(offset)
     builder = builder.limit(per_page)
   }
-  let items = await builder.exec()
+  let items = await builder.lean().exec()
 
   return {
     total: total,
@@ -72,25 +72,4 @@ export const toAddress = (text, length) => {
   if (String(text).substring(0, 2) != '0x')
     prefix = '0x'
   return prefix + String(text).substring(0, length) + end
-}
-
-export const toLongNumberString = (n) => {
-  let str, str2 = '', data = n.toExponential().replace('.', '').split(/e/i)
-  str = data[0]
-  let mag = Number(data[1])
-
-  if (mag >= 0 && str.length > mag) {
-    mag += 1
-    return str.substring(0, mag) + '.' + str.substring(mag)
-  }
-  if (mag < 0) {
-    while (++mag) str2 += '0'
-    return '0.' + str2 + str
-  }
-  mag = (mag - str.length) + 1
-  while (mag > str2.length) {
-    str2 += '0'
-  }
-
-  return str + str2
 }

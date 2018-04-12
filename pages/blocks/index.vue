@@ -33,12 +33,12 @@
 					</span>
 				</td>
 				<td class="text-xs-right">
-					<div>{{ formatBigNumber(props.item.gasUsed) }}</div>
+					<div>{{ formatNumber(props.item.gasUsed) }}</div>
 					<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
 				</td>
 				<td class="text-xs-right">{{ formatNumber(props.item.gasLimit) }}</td>
 				<td class="text-xs-right">{{ formatNumber(toGwei(props.item.avgGasPrice)) }}</td>
-				<td>{{ formatNumber(toEther(props.item.reward)) }}</td>
+				<td>{{ toEther(props.item.reward) }}</td>
 			</template>
 		</v-data-table>
 		<div class="text-xs-center pt-2">
