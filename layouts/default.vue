@@ -7,6 +7,9 @@
 			v-model="drawer"
 		>
 			<v-list dense>
+				<v-layout row>
+					<search></search>
+				</v-layout>
 				<template v-for="item in items">
 					<v-layout
 						row
@@ -79,15 +82,9 @@
 		>
 			<v-toolbar-title style="width: 300px" class="ml-0 pl-3">
 				<v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>
-				<span class="hidden-sm-and-down">Google Contacts</span>
+				<span class="hidden-sm-and-down">Explorer</span>
 			</v-toolbar-title>
-			<v-text-field
-				flat
-				solo-inverted
-				prepend-icon="search"
-				label="Search"
-				class="hidden-sm-and-down"
-			></v-text-field>
+			<search></search>
 			<v-spacer></v-spacer>
 			<v-btn icon>
 				<v-icon>apps</v-icon>
@@ -118,36 +115,42 @@
 
 <script>
   import MyFooter from '~/components/Footer.vue'
+  import Search from '~/components/Search.vue'
 
   export default {
     components: {
       MyFooter,
+	    Search
     },
     data: () => ({
       drawer: null,
       items: [
-	      {
-	        icon: 'home',
-		      text: 'Home',
-		      to: '/'
-	      },
         {
-          text: 'All Account',
-          to: '/accounts'
+          text: 'Home',
+          to: '/',
         },
         {
-          icon: 'keyboard_arrow_up',
-          'icon-alt': 'keyboard_arrow_down',
+          text: 'Accounts',
+          to: '/accounts',
+        },
+        {
           text: 'Blocks',
           to: '/blocks',
-//          children: [
-//            {icon: 'add', text: 'Create label'},
-//          ],
+        },
+        {
+          text: 'Transactions',
+          to: '/txs',
         },
       ],
     }),
     props: {
       source: String,
+    },
+    methods: {
+      onSearch () {
+        let self = this
+
+      },
     },
   }
 </script>
