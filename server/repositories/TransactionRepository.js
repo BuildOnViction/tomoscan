@@ -7,9 +7,11 @@ let TransactionRepository = {
   addTransaction: async (hash, add_account = true, transaction = null) => {
     let web3 = await Web3Util.getWeb3()
     let _transaction = null
+
     if (hash && !transaction) {
       _transaction = await Transaction.findOne(
         {hash: hash, nonce: {$exists: true}})
+
       if (_transaction) {
         return _transaction
       }
@@ -57,7 +59,7 @@ let TransactionRepository = {
     let _transaction = await web3.eth.getTransactionFromBlock(block_num,
       position)
 
-    return await TransactionRepository.addTransaction(null, true,
+    return await TransactionRepository.addTransaction(null, false,
       _transaction)
   },
 }

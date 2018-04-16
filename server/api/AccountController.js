@@ -37,10 +37,7 @@ AccountController.get('/accounts', async (req, res) => {
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
     let slug = req.params.slug
-    let account = await Account.findOne({hash: slug})
-    if (!account) {
-      account = AccountRepository.updateAccount(slug)
-    }
+    let account = account = AccountRepository.updateAccount(slug)
 
     return res.json(account)
   }

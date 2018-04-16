@@ -69,10 +69,7 @@ TxController.get('/txs', async (req, res) => {
 TxController.get('/txs/:slug', async (req, res) => {
   try {
     let slug = req.params.slug
-    let tx = await Transaction.findOne({hash: slug})
-    if (!tx) {
-      tx = TransactionRepository.addTransaction(slug, false)
-    }
+    let tx = await TransactionRepository.addTransaction(slug, false)
 
     return res.json(tx)
   }

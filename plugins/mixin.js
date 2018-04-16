@@ -56,6 +56,9 @@ const mixin = {
       if (!wei) {
         return ''
       }
+      if(typeof(wei) !== 'string') {
+        wei = wei.toString()
+      }
 
       let wei_number = new BigNumber(wei)
       let sfx = 'Ether'

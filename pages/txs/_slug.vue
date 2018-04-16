@@ -45,6 +45,26 @@
 								<td>Gas Used By Txn:</td>
 								<td>{{ tx.gasUsed }}</td>
 							</tr>
+							<tr>
+								<td>Gas Price:</td>
+								<td>{{ toEther(tx.gasPrice) }}({{ toGwei(tx.gasPrice) }} Gwei)</td>
+							</tr>
+							<tr>
+								<td>Actual Tx Cost/Fee:</td>
+								<td>{{ toEther(tx.gasPrice * tx.gas) }}</td>
+							</tr>
+							<tr>
+								<td>Input Data:</td>
+								<td>
+									<v-text-field
+									textarea
+									label="Input Data:"
+									readonly="true"
+									:value="tx.input"
+									>
+									</v-text-field>
+								</td>
+							</tr>
 							</tbody>
 						</table>
 					</div>
