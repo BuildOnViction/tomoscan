@@ -1,7 +1,7 @@
 {
-  "name": "rapid-paper",
+  "name": "tomo-explorer",
   "version": "1.0.0",
-  "description": "My app description",
+  "description": "TomoChain Block Explorer",
   "scripts": {
     "dev": "nodemon --exec \"babel-node ./server/index.js --inspect --presets es2015,stage-0\"",
     "build": "nuxt build",
