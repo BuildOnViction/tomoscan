@@ -1,6 +1,6 @@
 import Web3Util from '../helpers/web3'
 import BlockRepository from '../repositories/BlockRepository'
-import TransactionRepository from '../repositories/TransactionRepository'
+import TxRepository from '../repositories/TxRepository'
 
 let Web3Connector = {
   connect: async () => {
@@ -14,14 +14,14 @@ let Web3Connector = {
             let _block = await BlockRepository.addBlockByNumber(block.number,
               false)
             let txs = block.transactions
-            await TransactionRepository.updateBlockForTxs(_block, txs)
+            await TxRepository.updateBlockForTxs(_block, txs)
           }
         })
 
       web3WS.eth.subscribe('pendingTransactions').
         on('data', async (tx_hash) => {
           // Insert pending transaction into db.
-          await TransactionRepository.getTxDetail(tx_hash)
+          await TxRepository.getTxDetail(tx_hash)
         })
     }
     catch (e) {

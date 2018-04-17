@@ -1,12 +1,12 @@
-import Transaction from '../models/Transaction'
+import Tx from '../models/Tx'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
 import BlockRepository from './BlockRepository'
 
-let TransactionRepository = {
+let TxRepository = {
   getTxDetail: async (hash, __tx = null) => {
     // Check exist tx.
-    let tx = await Transaction.findOne({hash: hash, nonce: {$exists: true}})
+    let tx = await Tx.findOne({hash: hash, nonce: {$exists: true}})
     if (tx) {
       return tx
     }
@@ -28,13 +28,13 @@ let TransactionRepository = {
       _tx.to_id = to
     }
 
-    return await Transaction.findOneAndUpdate({hash: _tx.hash},
+    return await Tx.findOneAndUpdate({hash: _tx.hash},
       _tx, {upsert: true, new: true})
   },
 
   getTxReceipt: async (hash) => {
     // Check exist tx receipt.
-    let tx = await Transaction.findOne(
+    let tx = await Tx.findOne(
       {hash: hash, cumulativeGasUsed: {$ne: null}})
     if (tx) {
       return tx
@@ -49,10 +49,10 @@ let TransactionRepository = {
 
     // Update contract type.
     if (receipt.contractAddress) {
-      _transaction.contractAddress = receipt.contractAddress
+      _Tx.contractAddress = receipt.contractAddress
       let contract = await AccountRepository.updateAccount(
         receipt.contractAddress)
-      contract.contractCreation = _transaction.from
+      contract.contractCreation = _Tx.from
       contract.save()
     }
 
@@ -60,7 +60,7 @@ let TransactionRepository = {
     _tx.cumulativeGasUsed = receipt.cumulativeGasUsed
     _tx.gasUsed = receipt.gasUsed
 
-    return await Transaction.findOneAndUpdate({hash: _tx.hash},
+    return await Tx.findOneAndUpdate({hash: _tx.hash},
       _tx, {upsert: true, new: true})
   },
 
@@ -69,7 +69,7 @@ let TransactionRepository = {
     let _transaction = null
 
     if (hash && !transaction) {
-      _transaction = await Transaction.findOne(
+      _transaction = await Tx.findOne(
         {hash: hash, nonce: {$exists: true}})
 
       if (_transaction) {
@@ -85,38 +85,38 @@ let TransactionRepository = {
     let receipt = await web3.eth.getTransactionReceipt(hash)
 
     // Insert from account.
-    if (_transaction.from != null) {
-      let from = await AccountRepository.updateAccount(_transaction.from)
-      _transaction.from_id = from
+    if (_Tx.from != null) {
+      let from = await AccountRepository.updateAccount(_Tx.from)
+      _Tx.from_id = from
     }
 
     // Insert to account.
-    if (_transaction.to != null) {
-      let to = await AccountRepository.updateAccount(_transaction.to)
-      _transaction.to_id = to
+    if (_Tx.to != null) {
+      let to = await AccountRepository.updateAccount(_Tx.to)
+      _Tx.to_id = to
     }
 
     if (receipt) {
       // Update contract type.
       if (receipt.contractAddress) {
-        _transaction.contractAddress = receipt.contractAddress
+        _Tx.contractAddress = receipt.contractAddress
         let contract = await AccountRepository.updateAccount(
           receipt.contractAddress)
-        contract.contractCreation = _transaction.from
+        contract.contractCreation = _Tx.from
         contract.save()
       }
 
       // Get timestamp age.
-      _transaction.cumulativeGasUsed = receipt.cumulativeGasUsed
-      _transaction.gasUsed = receipt.gasUsed
+      _Tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+      _Tx.gasUsed = receipt.gasUsed
     }
 
-    return await Transaction.findOneAndUpdate({hash: _transaction.hash},
+    return await Tx.findOneAndUpdate({hash: _Tx.hash},
       _transaction, {upsert: true, new: true})
   },
 
   updateBlockForTxs: async (block, hashes) => {
-    return await Transaction.update({hash: {$in: hashes}},
+    return await Tx.update({hash: {$in: hashes}},
       {block_id: block, blockNumber: block.number, blockHash: block.hash},
       {multi: true})
   },
@@ -126,19 +126,19 @@ let TransactionRepository = {
     let _tx = await web3.eth.getTxFromBlock(block_num,
       position)
 
-    return await TransactionRepository.getTxDetail(null, _tx)
+    return await TxRepository.getTxDetail(null, _tx)
   },
 
   addTxsFromBlock: async (block, txs) => {
     let _txs = []
     // Sync txs.
-    let tx_count = Transaction.find({blockNumber: block.number}).count()
+    let tx_count = Tx.find({blockNumber: block.number}).count()
     if (tx_count != block.e_tx) {
       // Insert transaction before.
       async.each(txs, async (tx, next) => {
         tx.block_id = block
         tx.crawl = false
-        let _tx = await Transaction.findOneAndUpdate({hash: tx.hash}, tx,
+        let _tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
           {upsert: true, new: true,},
         )
 
@@ -158,4 +158,4 @@ let TransactionRepository = {
   },
 }
 
-export default TransactionRepository
+export default TxRepository

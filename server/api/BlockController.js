@@ -82,4 +82,4 @@ BlockController.get('/blocks/:slug', async (req, res) => {
   }
 })
 
-export default BlockController¯¯¯
+export default BlockController

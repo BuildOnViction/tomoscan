@@ -1,9 +1,9 @@
 import Block from '../models/Block'
 import Web3Util from '../helpers/web3'
 import async from 'async'
-import Transaction from '../models/Transaction'
+import Transaction from '../models/Tx'
 import { getSigner, toAddress } from '../helpers/utils'
-import TransactionRepository from './TransactionRepository'
+import TxRepository from './TxRepository'
 
 let BlockRepository = {
   addBlockByNumber: async (number, add_tx = true) => {
@@ -33,7 +33,7 @@ let BlockRepository = {
     block = await Block.findOneAndUpdate({number: _block.number}, _block,
       {upsert: true, new: true})
     if (add_tx && block && txs.length) {
-      await TransactionRepository.addTxsFromBlock(block, txs)
+      await TxRepository.addTxsFromBlock(block, txs)
     }
 
     return block

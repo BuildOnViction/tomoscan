@@ -3,8 +3,8 @@ import Setting from '../models/Setting'
 import _ from 'lodash'
 import async from 'async'
 import BlockRepository from '../repositories/BlockRepository'
-import Transaction from '../models/Transaction'
-import TransactionRepository from '../repositories/TransactionRepository'
+import Tx from '../models/Tx'
+import TxRepository from '../repositories/TxRepository'
 import Block from '../models/Block'
 
 let cron = require('cron')
@@ -51,12 +51,12 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Transaction.find(
+    let _txs = await Tx.find(
       {crawl: false, blockNumber: {$ne: null}}).limit(200)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
-        let _tx = await TransactionRepository.getTxReceipt(tx.hash)
+        let _tx = await TxRepository.getTxReceipt(tx.hash)
 
         if (_tx) {
           txs.push(_tx)
@@ -76,12 +76,12 @@ let CronTab = {
   getPendingTransactions: () => new Promise(async (resolve, reject) => {
     let txs = []
     // Get blocks transaction pending for crawl.
-    let _txs = await Transaction.find({blockNumber: null}).limit(50)
+    let _txs = await Tx.find({blockNumber: null}).limit(50)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
-        let _tx = await TransactionRepository.getTxDetail(tx.hash)
-        _tx = await TransactionRepository.getTxReceipt(tx.hash)
+        let _tx = await TxRepository.getTxDetail(tx.hash)
+        _tx = await TxRepository.getTxReceipt(tx.hash)
 
         if (_tx) {
           txs.push(_tx)

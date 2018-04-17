@@ -1,8 +1,8 @@
 import { Router } from 'express'
-import Transaction from '../models/Transaction'
+import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
-import TransactionRepository from '../repositories/TransactionRepository'
+import TxRepository from '../repositories/TxRepository'
 
 const TxController = Router()
 
@@ -18,7 +18,7 @@ TxController.get('/txs', async (req, res) => {
     let data = {}
     if (block_num) {
       // Get txs by block number.
-      let count = await Transaction.find({blockNumber: block_num}).count()
+      let count = await Tx.find({blockNumber: block_num}).count()
 
       // Get tnx count.
       let web3 = await Web3Util.getWeb3()
@@ -31,17 +31,17 @@ TxController.get('/txs', async (req, res) => {
           let _block = await web3.eth.getBlock(block_num)
           for (let i = offset; i < limit; i++) {
             let tx_hash = _block.transactions[i]
-            let tx = await Transaction.findOne(
+            let tx = await Tx.findOne(
               {hash: tx_hash, blockNumber: block_num}).exec()
             if (!tx) {
-              tx = await TransactionRepository.getTxFromBlock(
+              tx = await TxRepository.getTxFromBlock(
                 block_num, i)
             }
             items.push(tx)
           }
         }
         else {
-          items = await Transaction.find({blockNumber: block_num}).
+          items = await Tx.find({blockNumber: block_num}).
             skip(offset).
             limit(limit).
             exec()
@@ -78,8 +78,8 @@ TxController.get('/txs', async (req, res) => {
 TxController.get('/txs/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
-    let tx = await TransactionRepository.getTxDetail(hash)
-    tx = await TransactionRepository.getTxReceipt(hash)
+    let tx = await TxRepository.getTxDetail(hash)
+    tx = await TxRepository.getTxReceipt(hash)
 
     return res.json(tx)
   }
