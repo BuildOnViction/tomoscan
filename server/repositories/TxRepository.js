@@ -30,6 +30,11 @@ let TxRepository = {
         _tx, {upsert: true, new: true})
     }
 
+    if (tx.to === null) {
+      // Get smartcontract address if to is null.
+      await TxRepository.getTxReceipt(hash)
+    }
+
     return tx
   },
 

@@ -3,6 +3,7 @@ import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import { getSigner, toAddress } from '../helpers/utils'
 import TxRepository from './TxRepository'
+import async from 'async'
 
 let BlockRepository = {
   addBlockByNumber: async (

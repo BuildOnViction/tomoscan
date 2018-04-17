@@ -56,15 +56,15 @@ const mixin = {
       if (!wei) {
         return ''
       }
-      if(typeof(wei) !== 'string') {
+      if (typeof(wei) !== 'string') {
         wei = wei.toString()
       }
 
       let wei_number = new BigNumber(wei)
-      let sfx = 'Ether'
+      let sfx = ''
       let convert = 'ether'
       if (wei_number.gte(1000000000000000000000000000000)) {
-        sfx = '<strong>T</strong> Ether'
+        sfx = '<strong>T</strong>'
         convert = 'tether'
       }
 
@@ -72,8 +72,17 @@ const mixin = {
         ' ' + sfx
     },
 
+    formatUnit: number => number + ' ' + mixin.methods.baseUnit(),
+
     toGwei: (wei) => wei ? mixin.methods.formatNumber(web3.utils.fromWei(wei,
       'gwei')) : '',
+
+    baseUnit: () => {
+      let baseUnit = process.env.BASE_UNIT
+      baseUnit = baseUnit ? baseUnit : 'Ether'
+
+      return baseUnit
+    },
   },
 }
 

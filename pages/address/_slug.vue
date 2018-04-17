@@ -11,7 +11,7 @@
 					<tbody>
 					<tr>
 						<td>ETH Balance:</td>
-						<td>{{ toEther(address.balance) }}</td>
+						<td>{{ formatUnit(toEther(address.balance)) }}</td>
 					</tr>
 					<tr>
 						<td>No Of Transactions:</td>

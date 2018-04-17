@@ -14,6 +14,10 @@ dotenv.load()
 
 const app = express()
 
+// Init socket.io.
+const server = require('http').createServer(app)
+const io = require('socket.io')(server)
+
 mongoose.connect(process.env.MONGODB_URI)
 mongoose.connection.on('error', function () {
   console.log(
@@ -68,10 +72,10 @@ if (config.dev) {
 // Give nuxt middleware to express
 app.use(nuxt.render)
 
-app.listen(app.get('port'), async () => {
+server.listen(app.get('port'), async () => {
   try {
     console.log('Start ws for web3.')
-    Web3Connector.connect()
+    Web3Connector.connect(io)
 
     console.log('Start cronjob.')
     CronTab.start()

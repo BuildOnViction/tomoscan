@@ -32,6 +32,9 @@ module.exports = {
   modules: [
     '@nuxtjs/axios',
   ],
+  env: {
+    WS_URL: process.env.WS_URL || 'http://localhost:3000'
+  },
   vendor: [
     '~/plugins/vuetify',
   ],

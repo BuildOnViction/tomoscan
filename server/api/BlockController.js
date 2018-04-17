@@ -46,6 +46,18 @@ BlockController.get('/blocks', async (req, res, next) => {
       if (max_block_number) {
         params.total = max_block_number
       }
+      // Check filter type.
+      if (req.query.filter) {
+        switch (req.query.filter) {
+          case 'latest':
+            params.sort = {number: -1}
+            break
+        }
+      }
+      // Check specific latest block number in request.
+      if (req.query.to) {
+        params.query = {}
+      }
       let data = await paginate(req, 'Block', params, true)
 
       return res.json(data)
