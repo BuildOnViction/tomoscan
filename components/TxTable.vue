@@ -14,7 +14,10 @@
 						<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 					</span>
 				</td>
-				<td>
+				<td v-if="props.item.blockNumber">
+					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				</td>
+				<td v-if="props.item.blockNumber">
 					<v-tooltip bottom>
 						<div slot="activator">
 							{{ moment(props.item.timestamp).fromNow() }}
@@ -25,7 +28,12 @@
 					</v-tooltip>
 				</td>
 				<td>
-					<span class="address__tag">{{ props.item.from }}</span>
+					{{ moment(props.item.createdAt).fromNow() }}
+				</td>
+				<td>
+					<span class="address__tag">
+						<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+					</span>
 				</td>
 				<td>
 					<v-icon color="green">mdi-arrow-right-bold</v-icon>
@@ -65,6 +73,7 @@
     }),
     props: {
       address: {type: String},
+	    type: {type: String}
     },
     data: () => ({
       headers: [
@@ -87,6 +96,7 @@
     }),
     async mounted () {
       let self = this
+	    // Init from router.
       let query = self.$route.query
       if (query.page) {
         self.current_page = parseInt(query.page)
@@ -96,6 +106,10 @@
       }
       if (query.block) {
         self.block = query.block
+      }
+
+      if(! self.isPending()) {
+        self.headers.push({text: 'Block', value: 'block'})
       }
 
       this.getDataFromApi()
@@ -117,6 +131,9 @@
         if (self.address) {
           params.address = self.address
         }
+        if (self.type) {
+          params.type = self.type
+        }
         this.$router.push({query: params})
 
         let query = this.serializeQuery(params)
@@ -136,6 +153,9 @@
         self.current_page = page
 
         self.getDataFromApi()
+      },
+      isPending () {
+        return this.type === 'pending' ? true : false
       },
     },
   }

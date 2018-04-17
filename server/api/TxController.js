@@ -23,7 +23,6 @@ TxController.get('/txs', async (req, res) => {
       // Get tnx count.
       let web3 = await Web3Util.getWeb3()
       let tx_count = await web3.eth.getBlockTransactionCount(block_num)
-
       let items = []
       let limit = offset + per_page
       limit = Math.min(tx_count, limit)
@@ -35,14 +34,17 @@ TxController.get('/txs', async (req, res) => {
             let tx = await Transaction.findOne(
               {hash: tx_hash, blockNumber: block_num}).exec()
             if (!tx) {
-              tx = await TransactionRepository.getTransactionFromBlock(
+              tx = await TransactionRepository.getTxFromBlock(
                 block_num, i)
             }
             items.push(tx)
           }
         }
         else {
-          items = await Transaction.find().skip(offset).limit(limit).exec()
+          items = await Transaction.find({blockNumber: block_num}).
+            skip(offset).
+            limit(limit).
+            exec()
         }
       }
 
@@ -55,7 +57,14 @@ TxController.get('/txs', async (req, res) => {
       }
     }
     else {
-      data = await paginate(req, 'Transaction', {sort: {timestamp: -1}})
+      // Check type listing is pending.
+      let type = req.query.type
+      let params = {sort: {timestamp: -1}}
+      if (type == 'pending') {
+        params.query = {blockNumber: null, block_id: null}
+        params.limit = 0
+      }
+      data = await paginate(req, 'Transaction', params)
     }
 
     return res.json(data)
@@ -68,8 +77,9 @@ TxController.get('/txs', async (req, res) => {
 
 TxController.get('/txs/:slug', async (req, res) => {
   try {
-    let slug = req.params.slug
-    let tx = await TransactionRepository.addTransaction(slug, false)
+    let hash = req.params.slug
+    let tx = await TransactionRepository.getTxDetail(hash)
+    tx = await TransactionRepository.getTxReceipt(hash)
 
     return res.json(tx)
   }

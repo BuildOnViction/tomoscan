@@ -21,7 +21,7 @@ export const paginate = async (
     total = _.isInteger(params.total) ? params.total : null
   }
 
-  let count = await mongoose.model(model_name).count()
+  let count = await mongoose.model(model_name).find(query).count()
   total = total ? total : count
   let builder = mongoose.model(model_name).find(query).sort(sort)
   if (!manual_paginate) {

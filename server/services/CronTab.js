@@ -5,6 +5,7 @@ import async from 'async'
 import BlockRepository from '../repositories/BlockRepository'
 import Transaction from '../models/Transaction'
 import TransactionRepository from '../repositories/TransactionRepository'
+import Block from '../models/Block'
 
 let cron = require('cron')
 
@@ -16,19 +17,20 @@ let CronTab = {
       web3.eth.getBlockNumber()
     let max_block_crawl = await
       Setting.findOne({meta_key: 'max_block_crawl'})
-    let max_block_crawl_num = max_block_crawl ? max_block_crawl.meta_value
+    let max_block_crawl_num = max_block_crawl
+      ? max_block_crawl.meta_value
       : max_block_num
 
     max_block_crawl_num = (max_block_crawl_num == 0)
       ? max_block_num
       : max_block_crawl_num
 
-    let inserted_blocks = parseInt(max_block_crawl_num) - 200
+    let inserted_blocks = parseInt(max_block_crawl_num) - 100
     let arr_indexs = _.range(inserted_blocks, max_block_crawl_num)
     let _blocks = []
 
     async.each(arr_indexs, async (number, next) => {
-      let _block = await BlockRepository.addBlockByNumber(number)
+      let _block = await BlockRepository.addBlockByNumber(number, false)
       _blocks.push(_block)
 
       next()
@@ -46,18 +48,18 @@ let CronTab = {
   }),
 
   getTransactions: () => new Promise(async (resolve, reject) => {
-    let transactions = []
+    let txs = []
 
-    // Get blocks pending transaction.
-    let txs = await Transaction.find({nonce: {$exists: false}}).limit(200)
+    // Get blocks transaction for crawl.
+    let _txs = await Transaction.find(
+      {crawl: false, blockNumber: {$ne: null}}).limit(200)
 
-    if (txs.length) {
-      async.each(txs, async (tx, next) => {
-        let transaction = await TransactionRepository.addTransaction(
-          tx.hash)
+    if (_txs.length) {
+      async.each(_txs, async (tx, next) => {
+        let _tx = await TransactionRepository.getTxReceipt(tx.hash)
 
-        if (transaction) {
-          transactions.push(transaction)
+        if (_tx) {
+          txs.push(_tx)
         }
 
         next()
@@ -66,7 +68,32 @@ let CronTab = {
           reject(e)
         }
 
-        resolve(transactions)
+        resolve(txs)
+      })
+    }
+  }),
+
+  getPendingTransactions: () => new Promise(async (resolve, reject) => {
+    let txs = []
+    // Get blocks transaction pending for crawl.
+    let _txs = await Transaction.find({blockNumber: null}).limit(50)
+
+    if (_txs.length) {
+      async.each(_txs, async (tx, next) => {
+        let _tx = await TransactionRepository.getTxDetail(tx.hash)
+        _tx = await TransactionRepository.getTxReceipt(tx.hash)
+
+        if (_tx) {
+          txs.push(_tx)
+        }
+
+        next()
+      }, (e) => {
+        if (e) {
+          reject(e)
+        }
+
+        resolve(txs)
       })
     }
   }),
@@ -90,7 +117,7 @@ let CronTab = {
       let job_tx = new cron.CronJob({
         cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: () => {
-          CronTab.getTransactions()
+          CronTab.getPendingTransactions()
 
           let date = new Date()
           console.log('Job get transactions running at ' + date.toISOString())
@@ -98,6 +125,20 @@ let CronTab = {
         start: false,
       })
       job_tx.start()
+
+      // For check tx pending remain.
+      let job_tx_pending = new cron.CronJob({
+        cronTime: '0 */5 * * * *',
+        onTick: () => {
+          CronTab.getTransactions()
+
+          let date = new Date()
+          console.log('Job get transactions pending remain running at ' +
+            date.toISOString())
+        },
+        start: false,
+      })
+      job_tx_pending.start()
     }
     catch (e) {
       console.log(e)

@@ -21,6 +21,7 @@ const schema = new mongoose.Schema({
   timestamp: Date,
   uncles: Array,
   signer: String,
+  status: {type: Boolean, default: false},
   e_tx: {type: Number, default: 0},
 }, {
   timestamps: true,
