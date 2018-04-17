@@ -59,19 +59,19 @@ BlockController.get('/blocks', async (req, res, next) => {
 
 BlockController.get('/blocks/:slug', async (req, res) => {
   try {
-    let slug = req.params.slug
+    let hashOrNumb = req.params.slug
     let query = {}
-    if (_.isNumber(slug)) {
-      query = {number: slug}
+    if (_.isNumber(hashOrNumb)) {
+      query = {number: hashOrNumb}
     }
     else {
-      query = {hash: slug}
+      query = {hash: hashOrNumb}
     }
 
     // Find exist in db.
     let block = await Block.findOne(query)
     if (!block) {
-      block = await BlockRepository.addBlockByNumber(slug)
+      block = await BlockRepository.addBlockByNumber(hashOrNumb)
     }
 
     return res.json(block)

@@ -3,6 +3,7 @@ import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import TxRepository from '../repositories/TxRepository'
+import BlockRepository from '../repositories/BlockRepository'
 
 const TxController = Router()
 
@@ -16,56 +17,20 @@ TxController.get('/txs', async (req, res) => {
 
     let block_num = !isNaN(req.query.block) ? req.query.block : null
     let data = {}
+    let params = {sort: {timestamp: -1}}
     if (block_num) {
+      params.query = {blockNumber: block_num}
       // Get txs by block number.
-      let count = await Tx.find({blockNumber: block_num}).count()
-
-      // Get tnx count.
-      let web3 = await Web3Util.getWeb3()
-      let tx_count = await web3.eth.getBlockTransactionCount(block_num)
-      let items = []
-      let limit = offset + per_page
-      limit = Math.min(tx_count, limit)
-      if (offset >= 0 && tx_count > 0) {
-        if (count != tx_count) {
-          let _block = await web3.eth.getBlock(block_num)
-          for (let i = offset; i < limit; i++) {
-            let tx_hash = _block.transactions[i]
-            let tx = await Tx.findOne(
-              {hash: tx_hash, blockNumber: block_num}).exec()
-            if (!tx) {
-              tx = await TxRepository.getTxFromBlock(
-                block_num, i)
-            }
-            items.push(tx)
-          }
-        }
-        else {
-          items = await Tx.find({blockNumber: block_num}).
-            skip(offset).
-            limit(limit).
-            exec()
-        }
-      }
-
-      data = {
-        total: tx_count,
-        per_page: per_page,
-        current_page: page,
-        pages: Math.ceil(tx_count / per_page),
-        items: items,
-      }
+      await BlockRepository.addBlockByNumber(block_num)
     }
-    else {
-      // Check type listing is pending.
-      let type = req.query.type
-      let params = {sort: {timestamp: -1}}
-      if (type == 'pending') {
-        params.query = {blockNumber: null, block_id: null}
-        params.limit = 0
-      }
-      data = await paginate(req, 'Transaction', params)
+    // Check type listing is pending.
+    let type = req.query.type
+
+    if (type == 'pending') {
+      params.query = {blockNumber: null, block_id: null}
+      params.limit = 0
     }
+    data = await paginate(req, 'Tx', params)
 
     return res.json(data)
   }

@@ -30,7 +30,7 @@ let CronTab = {
     let _blocks = []
 
     async.each(arr_indexs, async (number, next) => {
-      let _block = await BlockRepository.addBlockByNumber(number, false)
+      let _block = await BlockRepository.addBlockByNumber(number)
       _blocks.push(_block)
 
       next()

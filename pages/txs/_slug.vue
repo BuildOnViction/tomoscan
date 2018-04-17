@@ -59,7 +59,6 @@
 									<v-text-field
 									textarea
 									label="Input Data:"
-									readonly="true"
 									:value="tx.input"
 									>
 									</v-text-field>

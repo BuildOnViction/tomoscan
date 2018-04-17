@@ -1,67 +1,62 @@
 import Tx from '../models/Tx'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
-import BlockRepository from './BlockRepository'
+import async from 'async'
 
 let TxRepository = {
   getTxDetail: async (hash, __tx = null) => {
     // Check exist tx.
-    let tx = await Tx.findOne({hash: hash, nonce: {$exists: true}})
-    if (tx) {
-      return tx
+    let tx = await Tx.findOne({hash: hash})
+
+    if (!tx) {
+      let web3 = await Web3Util.getWeb3()
+
+      // Get tx detail using web3.
+      let _tx = __tx ? __tx : web3.eth.getTransaction(hash)
+
+      // Insert from account.
+      if (_tx.from != null) {
+        let from = await AccountRepository.updateAccount(_tx.from)
+        _tx.from_id = from
+      }
+
+      // Insert to account.
+      if (_tx.to != null) {
+        let to = await AccountRepository.updateAccount(_tx.to)
+        _tx.to_id = to
+      }
+
+      tx = await Tx.findOneAndUpdate({hash: _tx.hash},
+        _tx, {upsert: true, new: true})
     }
 
-    let web3 = await Web3Util.getWeb3()
-
-    // Get tx detail using web3.
-    let _tx = __tx ? __tx : web3.eth.getTransaction(hash)
-
-    // Insert from account.
-    if (_tx.from != null) {
-      let from = await AccountRepository.updateAccount(_tx.from)
-      _tx.from_id = from
-    }
-
-    // Insert to account.
-    if (_tx.to != null) {
-      let to = await AccountRepository.updateAccount(_tx.to)
-      _tx.to_id = to
-    }
-
-    return await Tx.findOneAndUpdate({hash: _tx.hash},
-      _tx, {upsert: true, new: true})
+    return tx
   },
 
   getTxReceipt: async (hash) => {
     // Check exist tx receipt.
-    let tx = await Tx.findOne(
-      {hash: hash, cumulativeGasUsed: {$ne: null}})
-    if (tx) {
-      return tx
+    let tx = await Tx.findOne({hash: hash})
+
+    if (!tx.cumulativeGasUsed) {
+      let web3 = await Web3Util.getWeb3()
+      let receipt = await web3.eth.getTransactionReceipt(hash)
+
+      // Update contract type.
+      if (receipt.contractAddress) {
+        tx.contractAddress = receipt.contractAddress
+        let contract = await AccountRepository.updateAccount(
+          receipt.contractAddress)
+        contract.contractCreation = tx.from
+        contract.save()
+      }
+
+      tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+      tx.gasUsed = receipt.gasUsed
+      tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+        {upsert: true, new: true})
     }
 
-    let web3 = await Web3Util.getWeb3()
-    let receipt = await web3.eth.getTransactionReceipt(hash)
-
-    if (!receipt) {
-      return false
-    }
-
-    // Update contract type.
-    if (receipt.contractAddress) {
-      _Tx.contractAddress = receipt.contractAddress
-      let contract = await AccountRepository.updateAccount(
-        receipt.contractAddress)
-      contract.contractCreation = _Tx.from
-      contract.save()
-    }
-
-    let _tx = {}
-    _tx.cumulativeGasUsed = receipt.cumulativeGasUsed
-    _tx.gasUsed = receipt.gasUsed
-
-    return await Tx.findOneAndUpdate({hash: _tx.hash},
-      _tx, {upsert: true, new: true})
+    return tx
   },
 
   addTransaction: async (hash, transaction = null) => {
@@ -123,7 +118,7 @@ let TxRepository = {
 
   getTxFromBlock: async (block_num, position) => {
     let web3 = await Web3Util.getWeb3()
-    let _tx = await web3.eth.getTxFromBlock(block_num,
+    let _tx = await web3.eth.getTransactionFromBlock(block_num,
       position)
 
     return await TxRepository.getTxDetail(null, _tx)
@@ -136,7 +131,9 @@ let TxRepository = {
     if (tx_count != block.e_tx) {
       // Insert transaction before.
       async.each(txs, async (tx, next) => {
-        tx.block_id = block
+        if (block) {
+          tx.block_id = block
+        }
         tx.crawl = false
         let _tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
           {upsert: true, new: true,},

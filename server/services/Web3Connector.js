@@ -11,10 +11,8 @@ let Web3Connector = {
         on('data', async (block) => {
           if (block) {
             // Insert new block into db.
-            let _block = await BlockRepository.addBlockByNumber(block.number,
-              false)
-            let txs = block.transactions
-            await TxRepository.updateBlockForTxs(_block, txs)
+            await BlockRepository.addBlockByNumber(block.number,
+              false, true)
           }
         })
 
