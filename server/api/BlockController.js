@@ -46,6 +46,18 @@ BlockController.get('/blocks', async (req, res, next) => {
       if (max_block_number) {
         params.total = max_block_number
       }
+      // Check filter type.
+      if (req.query.filter) {
+        switch (req.query.filter) {
+          case 'latest':
+            params.sort = {number: -1}
+            break
+        }
+      }
+      // Check specific latest block number in request.
+      if (req.query.to) {
+        params.query = {}
+      }
       let data = await paginate(req, 'Block', params, true)
 
       return res.json(data)
@@ -59,19 +71,19 @@ BlockController.get('/blocks', async (req, res, next) => {
 
 BlockController.get('/blocks/:slug', async (req, res) => {
   try {
-    let slug = req.params.slug
+    let hashOrNumb = req.params.slug
     let query = {}
-    if (_.isNumber(slug)) {
-      query = {number: slug}
+    if (_.isNumber(hashOrNumb)) {
+      query = {number: hashOrNumb}
     }
     else {
-      query = {hash: slug}
+      query = {hash: hashOrNumb}
     }
 
     // Find exist in db.
     let block = await Block.findOne(query)
     if (!block) {
-      block = await BlockRepository.addBlockByNumber(slug)
+      block = await BlockRepository.addBlockByNumber(hashOrNumb)
     }
 
     return res.json(block)

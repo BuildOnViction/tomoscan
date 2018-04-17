@@ -24,18 +24,19 @@
 							<tr>
 								<td>From:</td>
 								<td>
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
 								</td>
 							</tr>
 							<tr>
 								<td>To:</td>
 								<td>
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
+									<nuxt-link v-if="tx.to" :to="{name: 'address-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
+									<nuxt-link v-else :to="{name: 'address-slug', params: {slug: tx.contractAddress}}">{{ tx.contractAddress }}</nuxt-link>
 								</td>
 							</tr>
 							<tr>
 								<td>Value:</td>
-								<td>{{ toEther(tx.value) }}</td>
+								<td>{{ formatUnit(toEther(tx.value)) }}</td>
 							</tr>
 							<tr>
 								<td>Gas Limit:</td>
@@ -47,11 +48,11 @@
 							</tr>
 							<tr>
 								<td>Gas Price:</td>
-								<td>{{ toEther(tx.gasPrice) }}({{ toGwei(tx.gasPrice) }} Gwei)</td>
+								<td>{{ formatUnit(toEther(tx.gasPrice)) }}({{ toGwei(tx.gasPrice) }} Gwei)</td>
 							</tr>
 							<tr>
 								<td>Actual Tx Cost/Fee:</td>
-								<td>{{ toEther(tx.gasPrice * tx.gas) }}</td>
+								<td>{{ formatUnit(toEther(tx.gasPrice * tx.gas)) }}</td>
 							</tr>
 							<tr>
 								<td>Input Data:</td>
@@ -59,8 +60,8 @@
 									<v-text-field
 									textarea
 									label="Input Data:"
-									readonly="true"
 									:value="tx.input"
+									readonly
 									>
 									</v-text-field>
 								</td>

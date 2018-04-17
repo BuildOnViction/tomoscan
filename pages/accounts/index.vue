@@ -15,7 +15,7 @@
 						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 					</span>
 				</td>
-				<td class="text-xs-right" v-html="toEther(props.item.balance)"></td>
+				<td class="text-xs-right" v-html="formatUnit(toEther(props.item.balance))"></td>
 				<td class="text-xs-right">{{ props.item.transactionCount }}</td>
 			</template>
 			<template slot="pageText" slot-scope="props">

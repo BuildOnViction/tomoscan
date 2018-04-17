@@ -40,7 +40,7 @@
 				</td>
 				<td class="text-xs-right">{{ formatNumber(props.item.gasLimit) }}</td>
 				<td class="text-xs-right">{{ formatNumber(toGwei(props.item.avgGasPrice)) }}</td>
-				<td>{{ toEther(props.item.reward) }}</td>
+				<td>{{ formatUnit(toEther(props.item.reward)) }}</td>
 			</template>
 		</v-data-table>
 		<div class="text-xs-center pt-2">

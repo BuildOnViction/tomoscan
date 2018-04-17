@@ -7,9 +7,6 @@
 			v-model="drawer"
 		>
 			<v-list dense>
-				<v-layout row>
-					<search></search>
-				</v-layout>
 				<template v-for="item in items">
 					<v-layout
 						row
@@ -42,7 +39,7 @@
 						</v-list-tile>
 						<v-list-tile
 							router
-							:to="item.to"
+							:to="child.to"
 							v-for="(child, i) in item.children"
 							:key="i"
 						>
@@ -106,7 +103,7 @@
   export default {
     components: {
       MyFooter,
-	    Search
+      Search,
     },
     data: () => ({
       drawer: null,
@@ -124,19 +121,18 @@
           to: '/blocks',
         },
         {
+          icon: 'keyboard_arrow_up',
+          'icon-alt': 'keyboard_arrow_down',
           text: 'Transactions',
-          to: '/txs',
+          children: [
+            {text: 'All Txs', to: '/txs'},
+            {text: 'Pending Txs', to: '/txs/pending'},
+          ],
         },
       ],
     }),
     props: {
       source: String,
-    },
-    methods: {
-      onSearch () {
-        let self = this
-
-      },
     },
   }
 </script>

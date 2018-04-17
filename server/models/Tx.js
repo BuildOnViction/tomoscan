@@ -17,10 +17,10 @@ const schema = new mongoose.Schema({
   contractAddress: String,
   cumulativeGasUsed: Number,
   gasUsed: Number,
-  logs: Array,
   block_id: {type: Schema.Types.ObjectId, ref: 'Block'},
   from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
+  crawl: {type: Boolean, default: false},
 }, {
   timestamps: true,
   toJSON: {virtuals: true, getters: true},
@@ -30,6 +30,6 @@ schema.virtual('timestamp').get(function () {
   return this.block_id.timestamp
 })
 
-let Transaction = mongoose.model('Transaction', schema)
+let Tx = mongoose.model('Tx', schema)
 
-export default Transaction
+export default Tx
