@@ -24,13 +24,13 @@
 							<tr>
 								<td>From:</td>
 								<td>
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
 								</td>
 							</tr>
 							<tr>
 								<td>To:</td>
 								<td>
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
 								</td>
 							</tr>
 							<tr>
@@ -60,6 +60,7 @@
 									textarea
 									label="Input Data:"
 									:value="tx.input"
+									readonly
 									>
 									</v-text-field>
 								</td>

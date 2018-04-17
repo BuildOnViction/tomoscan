@@ -32,8 +32,26 @@ let BlockRepository = {
       {upsert: true, new: true})
     if (add_tx && block && txs.length) {
       if (!update_block_numb) {
-        // Add all txs for block.
-        await TxRepository.addTxsFromBlock(block, txs)
+        // Sync txs.
+        let tx_count = Tx.find({blockNumber: block.number}).count()
+        if (tx_count != block.e_tx) {
+          // Insert transaction before.
+          async.each(txs, async (tx, next) => {
+            if (block) {
+              tx.block_id = block
+            }
+            tx.crawl = false
+            await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+              {upsert: true, new: true,},
+            )
+
+            next()
+          }, (e) => {
+            if (e) {
+              throw e
+            }
+          })
+        }
       }
       else {
         // Update block number for txs pending.
