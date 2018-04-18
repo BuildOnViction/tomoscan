@@ -21,27 +21,24 @@ module.exports = {
       },
       {
         rel: 'stylesheet',
-        href: 'https://cdn.materialdesignicons.com/2.1.19/css/materialdesignicons.min.css',
+        href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
       },
     ],
   },
   plugins: [
     '~/plugins/axios',
-    '~/plugins/vuetify',
+    '~/plugins/bootstrap-vue',
   ],
   modules: [
     '@nuxtjs/axios',
   ],
-  env: {
-    WS_URL: process.env.WS_URL || 'http://localhost:3000'
-  },
-  vendor: [
-    '~/plugins/vuetify',
+  css: [
+    '~/assets/scss/app.scss',
   ],
+  env: process.env,
   axios: {
     baseURL: process.env.API_URL,
   },
-  css: ['~/assets/app.styl'],
   loading: {
     color: '#fff',
     height: '2px',
@@ -51,6 +48,7 @@ module.exports = {
   */
   build: {
     extractCSS: true,
+    cssSourceMap: true,
     /*
     ** Run ESLINT on save
     */

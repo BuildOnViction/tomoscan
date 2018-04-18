@@ -17,6 +17,9 @@ let BlockRepository = {
     let web3 = await Web3Util.getWeb3()
     let tx_objects = update_block_numb ? false : true
     let _block = await web3.eth.getBlock(number, tx_objects)
+    if (!_block) {
+      return false
+    }
 
     // Get signer.
     let signer = toAddress(getSigner(_block), 100)
@@ -42,9 +45,10 @@ let BlockRepository = {
               tx.block_id = block
             }
             tx.crawl = false
-            await Tx.findOneAndUpdate({hash: tx.hash}, tx,
-              {upsert: true, new: true,},
-            )
+            if (tx) {
+              await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+                {upsert: true, new: true})
+            }
 
             next()
           }, (e) => {

@@ -1,78 +1,71 @@
 <template>
 	<div>
-		<v-data-table
-			:headers="headers"
-			:rows-per-page-items="[10,25,50]"
+		<b-table
+			striped
+			responsive
+			foot-clone
+			small
+			:fields="fields"
 			:loading="loading"
-			:total-items="total"
-			:hide-actions="true"
-			:disable-initial-sort="true"
 			:items="items">
-			<template slot="items" slot-scope="props">
-				<td>
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
-				</td>
-				<td>
-					<v-tooltip bottom>
-						<div slot="activator">
-							{{ moment(props.item.timestamp).fromNow() }}
-						</div>
-						<div>
-							{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-						</div>
-					</v-tooltip>
-				</td>
-				<td>
-					<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
-				</td>
-				<td>{{ props.item.uncles.length }}</td>
-				<td>
-					<span class="address__tag">
-						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-							<span v-if="props.item.signer">{{ props.item.signer }}</span>
-							<span v-else>{{ props.item.miner }}</span>
-						</nuxt-link>
-					</span>
-				</td>
-				<td class="text-xs-right">
-					<div>{{ formatNumber(props.item.gasUsed) }}</div>
-					<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
-				</td>
-				<td class="text-xs-right">{{ formatNumber(props.item.gasLimit) }}</td>
-				<td class="text-xs-right">{{ formatNumber(toGwei(props.item.avgGasPrice)) }}</td>
-				<td>{{ formatUnit(toEther(props.item.reward)) }}</td>
+			<template slot="number" slot-scope="props">
+				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
-		</v-data-table>
-		<div class="text-xs-center pt-2">
-			<paginate :current_page="current_page" :last_page="pages" @update-pagination="onChangePaginate"></paginate>
-		</div>
+			<template slot="timestamp" slot-scope="props">
+				<span :id="'timestamp__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'timestamp__' + props.index">
+					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+				</b-tooltip>
+			</template>
+			<template slot="e_tx" slot-scope="props">
+				<nuxt-link :to="{name: 'txs', query: {block: props.item.e_tx}}">{{ props.item.e_tx }}</nuxt-link>
+			</template>
+			<template slot="uncles" slot-scope="props">
+				{{ props.item.uncles.length }}
+			</template>
+			<template slot="miner" slot-scope="props">
+				<div class="address__tag">
+					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+						<span v-if="props.item.signer">{{ props.item.signer }}</span>
+						<span v-else>{{ props.item.miner }}</span>
+					</nuxt-link>
+				</div>
+			</template>
+			<template slot="gasUsed" slot-scope="props">
+				<div>{{ formatNumber(props.item.gasUsed) }}</div>
+				<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+			</template>
+			<template slot="gasLimit" slot-scope="props">
+				{{ formatNumber(props.item.gasLimit) }}
+			</template>
+		</b-table>
+		<b-pagination
+			align="center"
+			:total-rows="total"
+			:per-page="per_page"
+			@change="onChangePaginate"
+		></b-pagination>
 	</div>
 </template>
 
 <script>
   import mixin from '~/plugins/mixin'
-  import Paginate from '~/components/Paginate'
 
   export default {
     mixins: [mixin],
-    components: {
-      Paginate,
-    },
     head: () => ({
       title: 'Blocks',
     }),
     data: () => ({
-      headers: [
-        {text: 'Number', value: 'number'},
-        {text: 'Age', value: 'timestamp'},
-        {text: 'txn', value: 'e_tx'},
-        {text: 'Uncles', value: 'uncles'},
-        {text: 'Miner', value: 'miner'},
-        {text: 'GasUsed', value: 'gasUsed'},
-        {text: 'GasLimit', value: 'gasLimit'},
-        {text: 'Avg.GasPrice', value: 'avgGasPrice'},
-        {text: 'Reward', value: 'reward'},
-      ],
+      fields: {
+        number: {label: 'Number'},
+        timestamp: {label: 'Age'},
+        e_tx: {label: 'txn'},
+        uncles: {label: 'Uncles'},
+        miner: {label: 'Miner'},
+        gasUsed: {label: 'GasUsed'},
+        gasLimit: {label: 'GasLimit'},
+      },
       loading: true,
       pagination: {},
       total: 0,
@@ -118,7 +111,7 @@
 
         return data
       },
-      onChangePaginate ({page}) {
+      onChangePaginate (page) {
         let self = this
         self.current_page = page
 

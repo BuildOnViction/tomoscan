@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<v-card flat>
+		<b-card>
 			<div v-if="address" class="table__overflow">
 				<table class="datatable table">
 					<thead>
@@ -20,7 +20,7 @@
 					</tbody>
 				</table>
 			</div>
-		</v-card>
+		</b-card>
 		<v-tabs>
 			<v-tab>Transactions</v-tab>
 			<v-tab-item>
