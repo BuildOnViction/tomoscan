@@ -1,53 +1,52 @@
 <template>
-	<div>
-		<v-data-table
-			:headers="headers"
-			:rows-per-page-items="[10,25,50]"
+	<section>
+		<b-table
+			striped
+			responsive
+			foot-clone
+			:fields="fields"
 			:loading="loading"
-			:total-items="total"
-			:hide-actions="true"
-			:disable-initial-sort="true"
 			:items="items">
-			<template slot="items" slot-scope="props">
-				<td>{{ props.item.rank }}</td>
-				<td>
-					<span class="address__tag">
-						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
-					</span>
-				</td>
-				<td class="text-xs-right" v-html="formatUnit(toEther(props.item.balance))"></td>
-				<td class="text-xs-right">{{ props.item.transactionCount }}</td>
+			<template slot="rank" slot-scope="props">
+				{{ props.item.rank }}
 			</template>
-			<template slot="pageText" slot-scope="props">
-				Rows per page: {{ props.pageStart }} - {{ props.pageStop }} of {{ props.itemsLength }}
+			<template slot="hash" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
-		</v-data-table>
+			<template slot="balance" slot-scope="props">
+				{{ formatUnit(toEther(props.item.balance)) }}
+			</template>
+			<template slot="transactionCount" slot-scope="props">
+				{{ props.item.transactionCount }}
+			</template>
+		</b-table>
 		<div class="text-xs-center pt-2">
-			<paginate :current_page="current_page" :last_page="pages" @update-pagination="onChangePaginate"></paginate>
+			<b-pagination
+				align="center"
+				:total-rows="total"
+				:per-page="per_page"
+				@change="onChangePaginate"
+			></b-pagination>
 		</div>
-	</div>
+	</section>
 </template>
 
 <script>
   import axios from '~/plugins/axios'
   import mixin from '~/plugins/mixin'
-  import Paginate from '~/components/Paginate'
 
   export default {
     mixins: [mixin],
-    components: {
-      Paginate,
-    },
     head: () => ({
       title: 'Accounts',
     }),
     data: () => ({
-      headers: [
-        {text: 'Rank', value: 'rank'},
-        {text: 'Address', value: 'hash', align: 'left', sortable: false},
-        {text: 'Balance', value: 'balance'},
-        {text: 'TxCount', value: 'transactionCount'},
-      ],
+      fields: {
+        rank: {label: 'Rank'},
+        hash: {label: 'Address'},
+        balance: {label: 'Balance'},
+        transactionCount: {label: 'TxCount'},
+      },
       loading: true,
       pagination: {},
       total: 0,
@@ -94,11 +93,24 @@
         return data
       },
 
-      onChangePaginate ({page}) {
+      onChangePaginate (page) {
         let self = this
         self.current_page = page
 
         self.getDataFromApi()
+      },
+
+      linkGen (page_numb) {
+        let self = this
+        let query = {
+          page: page_numb,
+          limit: self.per_page,
+        }
+
+        return {
+          name: 'accounts',
+          query: query,
+        }
       },
     },
   }

@@ -26,11 +26,13 @@ let TxRepository = {
         _tx.to_id = to
       }
 
-      tx = await Tx.findOneAndUpdate({hash: _tx.hash},
-        _tx, {upsert: true, new: true})
+      if (_tx) {
+        tx = await Tx.findOneAndUpdate({hash: _tx.hash}, _tx,
+          {upsert: true, new: true})
+      }
     }
 
-    if (tx.to === null) {
+    if (tx.to_id === null) {
       // Get smartcontract address if to is null.
       await TxRepository.getTxReceipt(hash)
     }
@@ -60,8 +62,10 @@ let TxRepository = {
 
       tx.cumulativeGasUsed = receipt.cumulativeGasUsed
       tx.gasUsed = receipt.gasUsed
-      tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
-        {upsert: true, new: true})
+      if (tx) {
+        tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+          {upsert: true, new: true})
+      }
     }
 
     return tx

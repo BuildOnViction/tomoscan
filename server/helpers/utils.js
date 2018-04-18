@@ -41,17 +41,21 @@ export const paginate = async (
 }
 
 export const getSigner = (block) => {
-  var sealers = block.extraData
-  if (sealers.length <= 130)
-    return undefined
-  var sig = ethUtils.fromRpcSig('0x' +
-    sealers.substring(sealers.length - 130, sealers.length)) // remove signature
-  block.extraData = block.extraData.substring(0, block.extraData.length - 130)
-  var blk = ethBlock(block)
-  blk.header.difficulty[0] = block.difficulty
-  var sigHash = ethUtils.sha3(blk.header.serialize())
-  var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
-  return ethUtils.pubToAddress(pubkey).toString('hex')
+  let signer = null
+  if (block) {
+    var sealers = block.extraData
+    if (sealers.length <= 130)
+      return undefined
+    var sig = ethUtils.fromRpcSig('0x' +
+      sealers.substring(sealers.length - 130, sealers.length)) // remove signature
+    block.extraData = block.extraData.substring(0, block.extraData.length - 130)
+    var blk = ethBlock(block)
+    blk.header.difficulty[0] = block.difficulty
+    var sigHash = ethUtils.sha3(blk.header.serialize())
+    var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
+    signer = ethUtils.pubToAddress(pubkey).toString('hex')
+  }
+  return signer
 }
 
 export const toAddress = (text, length) => {

@@ -1,90 +1,79 @@
 <template>
 	<div>
-		<v-data-table
-			:headers="headers"
-			:rows-per-page-items="[10,25,50]"
+		<b-table
+			striped
+			responsive
+			foot-clone
+			small
+			:fields="fields"
 			:loading="loading"
-			:total-items="total"
-			:hide-actions="true"
-			:disable-initial-sort="true"
 			:items="items">
-			<template slot="items" slot-scope="props">
-				<td>
-					<span class="address__tag">
-						<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
-					</span>
-				</td>
-				<td v-if="props.item.blockNumber">
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
-				</td>
-				<td v-if="props.item.blockNumber">
-					<v-tooltip bottom>
-						<div slot="activator">
-							{{ moment(props.item.timestamp).fromNow() }}
-						</div>
-						<div>
-							{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-						</div>
-					</v-tooltip>
-				</td>
-				<td>
-					{{ moment(props.item.createdAt).fromNow() }}
-				</td>
-				<td>
-					<span class="address__tag">
-						<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
-					</span>
-				</td>
-				<td>
-					<v-icon color="green">mdi-arrow-right-bold</v-icon>
-				</td>
-				<td>
-					<span class="address__tag">
-						<span v-if="props.item.contractAddress">
-							<v-icon>mdi-file-document</v-icon>
-							<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.contractAddress}}">{{ props.item.contractAddress }}</nuxt-link>
-						</span>
-						<span v-else>
-							<nuxt-link :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
-						</span>
-					</span>
-				</td>
-				<td>{{ toEther(props.item.value) }}</td>
-				<td>{{ toEther(props.item.gasPrice * props.item.gas) }}</td>
+			<template slot="hash" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
-		</v-data-table>
-		<div class="text-xs-center pt-2">
-			<paginate :current_page="current_page" :last_page="pages" @update-pagination="onChangePaginate"></paginate>
-		</div>
+			<template slot="block" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+			</template>
+			<template slot="age" slot-scope="props">
+				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'age__' + props.index">
+					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+				</b-tooltip>
+			</template>
+			<template slot="from" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+			</template>
+			<template slot="arrow" slot-scope="props">
+				<i class="fa fa-arrow-right text-success"></i>
+			</template>
+			<template slot="to" slot-scope="props">
+				<div v-if="props.item.contractAddress">
+					<i class="fa fa-file-alt"></i>
+					<nuxt-link class="address__tag" :to="{name: 'address-slug', params:{slug: props.item.contractAddress}}">{{ props.item.contractAddress }}</nuxt-link>
+				</div>
+				<div v-else>
+					<nuxt-link class="address__tag" :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
+				</div>
+			</template>
+			<template slot="value" slot-scope="props">
+				{{ formatUnit(toEther(props.item.value)) }}
+			</template>
+			<template slot="txFee" slot-scope="props">
+				{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}
+			</template>
+		</b-table>
+		<b-pagination
+			align="center"
+			:total-rows="total"
+			:per-page="per_page"
+			@change="onChangePaginate"
+		></b-pagination>
 	</div>
 </template>
 
 <script>
   import mixin from '~/plugins/mixin'
-  import Paginate from '~/components/Paginate'
 
   export default {
     mixins: [mixin],
-    components: {
-      Paginate,
-    },
     head: () => ({
       title: 'Transactions',
     }),
     props: {
       address: {type: String},
-	    type: {type: String}
+      type: {type: String},
     },
     data: () => ({
-      headers: [
-        {text: 'TxHash', value: 'hash'},
-        {text: 'Age', value: 'timestamp', sortable: false, width: '120px'},
-        {text: 'from', value: 'from'},
-        {text: 'arrow'},
-        {text: 'To', value: 'to'},
-        {text: 'Value', value: 'value'},
-        {text: 'TxFee', value: 'gasPrice'},
-      ],
+      fields: {
+        hash: {label: 'TxHash'},
+        block: {label: 'Block'},
+        age: {label: 'Age', sortable: false},
+        from: {label: 'from'},
+        arrow: {class: 'text-center'},
+        to: {label: 'To'},
+        value: {label: 'Value', class: 'text-right'},
+        txFee: {label: 'TxFee', class: 'text-right'},
+      },
       loading: true,
       pagination: {},
       total: 0,
@@ -96,7 +85,7 @@
     }),
     async mounted () {
       let self = this
-	    // Init from router.
+      // Init from router.
       let query = self.$route.query
       if (query.page) {
         self.current_page = parseInt(query.page)
@@ -108,9 +97,9 @@
         self.block = query.block
       }
 
-      if(! self.isPending()) {
-        self.headers.push({text: 'Block', value: 'block'})
-      }
+//      if(! self.isPending()) {
+//        self.headers.push({label: 'Block', key: 'block'})
+//      }
 
       this.getDataFromApi()
     },
@@ -148,7 +137,7 @@
 
         return data
       },
-      onChangePaginate ({page}) {
+      onChangePaginate (page) {
         let self = this
         self.current_page = page
 
