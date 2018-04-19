@@ -6,14 +6,15 @@
 
 <script>
   import TxTable from '~/components/TxTable'
+
   export default {
     components: {
-      'tx-table': TxTable
+      'tx-table': TxTable,
     },
-	  mounted() {
+    mounted () {
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'txs-pending', {name: 'txs-pending'})
-	  }
+      this.$store.commit('breadcrumb/setItems', {name: 'txs-pending', to: {name: 'txs-pending'}})
+    },
   }
 </script>
 

@@ -13,7 +13,10 @@ class Breadcrumb {
     return this.breadcrumbs
   }
 
-  call (name, params = []) {
+  call (name, params = {}) {
+    if (!name) {
+      return
+    }
     if (typeof this.callbacks[name] === 'undefined') {
       throw new Error('Breadcrumb not found with name ' + name)
     }
@@ -21,7 +24,11 @@ class Breadcrumb {
     this.callbacks[name](this, params)
   }
 
-  parent (name, params = []) {
+  parent (name, params = {}) {
+    if (!name) {
+      return
+    }
+
     this.call(name, params)
   }
 
@@ -38,6 +45,10 @@ class BreadCrumbManager {
   }
 
   register (name, callback) {
+    if (!name) {
+      return
+    }
+
     if (typeof this.callbacks[name] !== 'undefined') {
       throw new Error('Breadcrumb name "' + name +
         '" has already been registered')
@@ -46,7 +57,11 @@ class BreadCrumbManager {
     this.callbacks[name] = callback
   }
 
-  generate (name, params = []) {
+  generate (name, params) {
+    if (!name) {
+      return
+    }
+
     return this.generator.generate(this.callbacks, name, params)
   }
 }
@@ -60,18 +75,21 @@ br.register('blocks', (brs) => {
   brs.parent('index')
   brs.push('Blocks', {name: 'blocks'})
 })
-br.register('blocks-slug', (brs, number) => {
+br.register('blocks-slug', (brs, location) => {
   brs.parent('blocks')
-  brs.push('Block #' + number, {name: 'blocks-slug', params: {slug: number}})
+  brs.push('Block #' + location.params.slug, location)
 })
 br.register('accounts', (brs) => {
   brs.parent('index')
   brs.push('Accounts', {name: 'accounts'})
 })
-br.register('address', (brs, location) => {
-  brs.parent('index')
-  location.name = 'address'
-  brs.push('Address', location)
+br.register('address-slug', (brs, location) => {
+  brs.parent('accounts')
+  let title = 'Address Detail'
+  if (location instanceof Object) {
+    title = location.params.slug
+  }
+  brs.push(title, location)
 })
 br.register('txs', (brs) => {
   brs.parent('index')
@@ -87,21 +105,16 @@ br.register('txs-slug', (brs, location) => {
 })
 
 export const state = () => ({
-  name: null,
   items: null,
 })
 
 export const mutations = {
-  setItems (state, items) {
+  setItems (state, payload) {
+    let items = br.generate(payload.name, payload.to)
     state.items = items
   },
 }
 
-export const actions = {
-  setData ({commit}, name, params = []) {
-    let items = br.generate(name, params)
-    commit('setItems', items)
-  },
-}
+export const actions = {}
 
 export const strict = false

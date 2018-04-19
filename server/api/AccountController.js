@@ -8,7 +8,8 @@ const AccountController = Router()
 
 AccountController.get('/accounts', async (req, res) => {
   try {
-    let data = await paginate(req, 'Account', {sort: {balanceNumber: -1}})
+    let data = await paginate(req, 'Account',
+      {query: {status: true}, sort: {balanceNumber: -1}})
 
     // Append percent to response.
 //    let all_balances = await Account.aggregate(
@@ -36,8 +37,23 @@ AccountController.get('/accounts', async (req, res) => {
 
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
-    let slug = req.params.slug
-    let account = account = AccountRepository.updateAccount(slug)
+    let hash = req.params.slug
+    let account = await AccountRepository.updateAccount(hash)
+
+    let field = req.query.field
+    if (field instanceof String) {
+      switch (field) {
+        case 'balance':
+          account = await AccountRepository.getBalance(hash)
+          break
+        case 'txCount':
+          account = await AccountRepository.getTransactionCount(hash)
+          break
+        case 'code':
+          account = await AccountRepository.getCode(hash)
+          break
+      }
+    }
 
     return res.json(account)
   }

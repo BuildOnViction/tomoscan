@@ -13,7 +13,7 @@
     },
     mounted () {
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'txs', {name: 'txs'})
+      this.$store.commit('breadcrumb/setItems', {name: 'txs-slug', to: {name: 'txs'}})
     },
   }
 </script>

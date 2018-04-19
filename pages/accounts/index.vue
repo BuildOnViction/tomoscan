@@ -58,9 +58,9 @@
     async mounted () {
       let self = this
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'accounts')
+      this.$store.commit('breadcrumb/setItems', {name: 'accounts', to: {name: 'accounts'}})
 
-	    // Get query data.
+      // Get query data.
       let query = self.$route.query
 
       if (query.page) {
@@ -82,7 +82,7 @@
           page: self.current_page,
           limit: self.per_page,
         }
-        this.$router.push({query: params})
+        this.$router.replace({query: params})
 
         let query = this.serializeQuery(params)
         let {data} = await this.$axios.get('/api/accounts' + '?' + query)

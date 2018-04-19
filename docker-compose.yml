@@ -9,12 +9,12 @@ services:
     ports:
      - "3000:3000"
     environment:
-     - MONGODB_URI=mongodb://mongo:27017/test 
+     - MONGODB_URI=mongodb://mongo:27017/explorer
     links:
      - mongo 
     depends_on: 
      - mongo 
     volumes:
-     - .:/starter
-     - /starter/node_modules
+     - .:/tomo-explorer
+     - /tomo-explorer/node_modules
      
