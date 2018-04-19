@@ -75,6 +75,9 @@
       pages: 1,
     }),
     mounted () {
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'blocks', {name: 'blocks'})
+
       let self = this
       let query = self.$route.query
       if (query.page) {

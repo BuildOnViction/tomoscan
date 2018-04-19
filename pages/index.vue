@@ -100,6 +100,10 @@
     },
     mounted () {
       let self = this
+
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'index', {name: 'index'})
+
       self.getLastestBlocks()
       self.getLatestTxs()
     },

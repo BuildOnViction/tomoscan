@@ -57,6 +57,10 @@
     }),
     async mounted () {
       let self = this
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'accounts')
+
+	    // Get query data.
       let query = self.$route.query
 
       if (query.page) {

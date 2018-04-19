@@ -86,7 +86,10 @@
       let self = this
       self.hash = this.$route.params.slug
 
-      let {data} = await this.$axios.get('/api/txs/' + this.$route.params.slug)
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'txs-slug', {name: 'txs-slug', params: {slug: self.hash}})
+
+      let {data} = await this.$axios.get('/api/txs/' + self.hash)
 
       this.tx = data
       let moment = this.moment(data.timestamp)
