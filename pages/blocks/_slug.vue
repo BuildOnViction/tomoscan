@@ -108,6 +108,9 @@
       if (number) {
         self.number = number
       }
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'blocks-slug', {name: 'blocks-slug', params: {slug: number}})
+
       let {data} = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
 
       this.block = data

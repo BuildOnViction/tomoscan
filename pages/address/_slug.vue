@@ -52,10 +52,14 @@
     }),
     async mounted () {
       let self = this
+
       let hash = self.$route.params.slug
       if (hash) {
         self.hash = hash
       }
+
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'address-slug', {name: 'address-slug', params: {slug: hash}})
 
       self.getAccountFromApi()
     },

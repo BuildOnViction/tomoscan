@@ -5,11 +5,16 @@
 </template>
 
 <script>
-	import TxTable from '~/components/TxTable'
+  import TxTable from '~/components/TxTable'
+
   export default {
     components: {
-      'tx-table': TxTable
-    }
+      'tx-table': TxTable,
+    },
+    mounted () {
+      // Init breadcrumbs data.
+      this.$store.dispatch('breadcrumb/setData', 'txs', {name: 'txs'})
+    },
   }
 </script>
 

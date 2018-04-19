@@ -24,6 +24,7 @@
 
 		<main>
 			<b-container>
+				<breadcrumb/>
 				<nuxt/>
 			</b-container>
 		</main>
@@ -33,11 +34,16 @@
 <script>
   import MyFooter from '~/components/Footer.vue'
   import Search from '~/components/Search.vue'
+  import Breadcrumb from '~/components/Breadcrumb.vue'
 
   export default {
     components: {
       MyFooter,
       Search,
+      Breadcrumb,
+    },
+
+    mounted () {
     },
   }
 </script>
