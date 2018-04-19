@@ -76,7 +76,7 @@
     }),
     mounted () {
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'blocks', {name: 'blocks'})
+      this.$store.commit('breadcrumb/setItems', {name: 'blocks', to: {name: 'blocks'}})
 
       let self = this
       let query = self.$route.query
@@ -100,7 +100,7 @@
           page: self.current_page,
           limit: self.per_page,
         }
-        this.$router.push({query: params})
+        this.$router.replace({query: params})
 
         let query = this.serializeQuery(params)
         let {data} = await this.$axios.get('/api/blocks' + '?' + query)

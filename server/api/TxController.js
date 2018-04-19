@@ -17,7 +17,7 @@ TxController.get('/txs', async (req, res) => {
 
     let block_num = !isNaN(req.query.block) ? req.query.block : null
     let data = {}
-    let params = {sort: {timestamp: -1}}
+    let params = {query:{}, sort: {timestamp: -1}}
     if (block_num) {
       params.query = {blockNumber: block_num}
       // Get txs by block number.
@@ -29,6 +29,11 @@ TxController.get('/txs', async (req, res) => {
     if (type == 'pending') {
       params.query = {blockNumber: null, block_id: null}
       params.limit = 0
+    }
+    let address = req.query.address
+    if (typeof address !== 'undefined') {
+      params.query = Object.assign(params.query,
+        {$or: [{from: address}, {to: address}]})
     }
     data = await paginate(req, 'Tx', params)
 

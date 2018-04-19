@@ -3,7 +3,13 @@
 		<b-row class="mb-2">
 			<b-col sm="6" class="mb-3">
 				<b-card title="Recent Blocks">
-					<b-table striped hover :items="blocks" :fields="block_headers" responsive>
+					<b-table
+						striped
+						hover
+						small
+						responsive
+						:items="blocks"
+						:fields="block_headers" responsive>
 						<template slot="block" slot-scope="data">
 							<transition name="fade">
 								<nuxt-link :to="{name: 'blocks-slug', params: {slug: data.item.number}}">{{ data.item.number }}</nuxt-link>
@@ -25,6 +31,7 @@
 						striped
 						hover
 						responsive
+						small
 						:items="txs"
 						:fields="tx_headers">
 						<template slot="hash" slot-scope="data">
@@ -102,7 +109,7 @@
       let self = this
 
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'index', {name: 'index'})
+      this.$store.commit('breadcrumb/setItems', {name: 'index', to: {name: 'index'}})
 
       self.getLastestBlocks()
       self.getLatestTxs()

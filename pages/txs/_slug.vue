@@ -82,12 +82,14 @@
         tx: null,
       }
     },
+    created () {
+      this.hash = this.$route.params.slug
+    },
     async mounted () {
       let self = this
-      self.hash = this.$route.params.slug
 
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'txs-slug', {name: 'txs-slug', params: {slug: self.hash}})
+      this.$store.commit('breadcrumb/setItems', {name: 'txs-slug', to: {name: 'txs-slug', params: {slug: self.hash}}})
 
       let {data} = await this.$axios.get('/api/txs/' + self.hash)
 

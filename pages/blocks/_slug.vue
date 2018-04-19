@@ -102,14 +102,16 @@
         timestamp_moment: null,
       }
     },
-    async mounted () {
-      let self = this
+    created () {
       let number = parseInt(this.$route.params.slug)
       if (number) {
-        self.number = number
+        this.number = number
       }
+    },
+    async mounted () {
+      let self = this
       // Init breadcrumbs data.
-      this.$store.dispatch('breadcrumb/setData', 'blocks-slug', {name: 'blocks-slug', params: {slug: number}})
+      this.$store.commit('breadcrumb/setItems', {name: 'blocks-slug', to: {name: 'blocks-slug', params: {slug: self.number}}})
 
       let {data} = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
 

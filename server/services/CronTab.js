@@ -6,6 +6,8 @@ import BlockRepository from '../repositories/BlockRepository'
 import Tx from '../models/Tx'
 import TxRepository from '../repositories/TxRepository'
 import Block from '../models/Block'
+import Account from '../models/Account'
+import AccountRepository from '../repositories/AccountRepository'
 
 let cron = require('cron')
 
@@ -56,7 +58,8 @@ let CronTab = {
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
-        let _tx = await TxRepository.getTxReceipt(tx.hash)
+        let _tx = await TxRepository.getTxDetail(tx.hash)
+        _tx = await TxRepository.getTxReceipt(tx.hash)
 
         if (_tx) {
           txs.push(_tx)
@@ -98,10 +101,34 @@ let CronTab = {
     }
   }),
 
+  getAccounts: () => new Promise(async (resolve, reject) => {
+    let accounts = []
+
+    let _accounts = await Account.find({crawl: false}).limit(100)
+    if (_accounts.length) {
+      async.each(_accounts, async (_account, next) => {
+        let account = await AccountRepository.updateAccount(_account.hash)
+        await AccountRepository.getBalance(_account.hash)
+        await AccountRepository.getTransactionCount(_account.hash)
+        await AccountRepository.getCode(_account.hash)
+        accounts.push(account)
+      }, (e) => {
+        if (e) {
+          reject(e)
+        }
+
+        resolve(accounts)
+      })
+    }
+    else {
+      await Account.update({crawl: true}, {crawl: false})
+    }
+  }),
+
   start: () => {
     try {
       // For blocks detail.
-      let job_blocks = new cron.CronJob({
+      let blockJob = new cron.CronJob({
         cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: () => {
           CronTab.getBlocks()
@@ -111,10 +138,8 @@ let CronTab = {
         },
         start: false,
       })
-      job_blocks.start()
-
       // For tx detail.
-      let job_tx = new cron.CronJob({
+      let txJob = new cron.CronJob({
         cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: () => {
           CronTab.getPendingTransactions()
@@ -124,10 +149,8 @@ let CronTab = {
         },
         start: false,
       })
-      job_tx.start()
-
       // For check tx pending remain.
-      let job_tx_pending = new cron.CronJob({
+      let txJobPending = new cron.CronJob({
         cronTime: '0 */5 * * * *',
         onTick: () => {
           CronTab.getTransactions()
@@ -138,7 +161,30 @@ let CronTab = {
         },
         start: false,
       })
-      job_tx_pending.start()
+      // For get accounts.
+      let jobAccount = new cron.CronJob({
+        cronTime: '0 */2 * * * *',
+        onTick: () => {
+          CronTab.getAccounts()
+
+          let date = new Date()
+          console.log('Job get accounts running at ' +
+            date.toISOString())
+        },
+        start: false,
+      })
+
+      // Start cron job running.
+      blockJob.start()
+      setTimeout(() => {
+        txJob.start()
+      }, 1000)
+      setTimeout(() => {
+        jobAccount.start()
+      }, 2000)
+      setTimeout(() => {
+        txJobPending.start()
+      }, 3000)
     }
     catch (e) {
       console.log(e)

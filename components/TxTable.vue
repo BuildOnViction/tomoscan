@@ -21,7 +21,7 @@
 				</b-tooltip>
 			</template>
 			<template slot="from" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 			</template>
 			<template slot="arrow" slot-scope="props">
 				<i class="fa fa-arrow-right text-success"></i>
@@ -117,13 +117,15 @@
         if (self.block) {
           params.block = self.block
         }
-        if (self.address) {
-          params.address = self.address
-        }
         if (self.type) {
           params.type = self.type
         }
-        this.$router.push({query: params})
+
+        this.$router.replace({query: params})
+
+        if (self.address) {
+          params.address = self.address
+        }
 
         let query = this.serializeQuery(params)
         let {data} = await this.$axios.get('/api/txs' + '?' + query)

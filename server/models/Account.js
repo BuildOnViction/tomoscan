@@ -8,6 +8,8 @@ const schema = new mongoose.Schema({
   transactionCount: Number,
   contractCreation: String,
   storageAt: String,
+  status: Boolean,
+  status: Boolean,
 }, {
   timestamps: true,
 //  toJSON: {virtuals: true, getters: true},

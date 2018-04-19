@@ -3,39 +3,34 @@ import Web3Util from '../helpers/web3'
 
 let AccountRepository = {
   updateAccount: async (hash) => {
-    let account = await Account.findOne({hash: hash, nonce: {$exists: true}})
-    if (account) {
-      return account
+    let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
+    _account = _account ? _account : {}
+
+    let web3 = await Web3Util.getWeb3()
+
+    let balance = await web3.eth.getBalance(hash)
+    if (_account.balance !== balance) {
+      _account.balance = balance
+      _account.balanceNumber = balance
     }
 
-    account = {}
-//    let balance = await web3.eth.getBalance(hash)
-//    account.balance = balance
-//    account.balanceNumber = balance
-//    account.code = await web3.eth.getCode(hash)
-//    account.transactionCount = await web3.eth.getTransactionCount(hash)
+    let txCount = await web3.eth.getTransactionCount(hash)
+    if (_account.transactionCount !== txCount) {
+      _account.transactionCount = txCount
+    }
 
-    return await Account.findOneAndUpdate({hash: hash}, account,
+    let code = await web3.eth.getCode(hash)
+    if (_account.code !== code) {
+      _account.code = code
+    }
+
+    _account.crawl = false
+    _account.status = true
+
+    let account = await Account.findOneAndUpdate({hash: hash}, _account,
       {upsert: true, new: true})
-  },
 
-  getBalance: async(hash) => {
-    let web3 = await Web3Util.getWeb3()
-    let account = {}
-    let balance = await web3.eth.getBalance(hash)
-    account.balance = balance
-    account.balanceNumber = balance
-
-    return await Account.findOneAndUpdate({hash: hash}, account,
-      {upsert: true, new: true})
-  },
-
-  getTransactionCount: async(hash) => {
-    let account = {}
-    account.transactionCount = await web3.eth.getTransactionCount(hash)
-
-    return await Account.findOneAndUpdate({hash: hash}, account,
-      {upsert: true, new: true})
+    return account
   }
 }
 
