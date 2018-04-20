@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "TomoChain Block Explorer",
   "scripts": {
-    "dev": "nodemon --exec \"babel-node ./server/index.js --inspect --presets es2015,stage-0\"",
+    "dev": "nuxt",
     "build": "nuxt build",
     "start": "cross-env NODE_ENV=production node build/main.js",
     "test": "mocha"
@@ -14,33 +14,17 @@
     "bignumber.js": "^6.0.0",
     "bootstrap-vue": "^2.0.0-rc.8",
     "compression": "^1.6.2",
-    "cron": "^1.3.0",
     "cross-env": "^5.1.4",
     "dotenv": "^2.0.0",
-    "ethereumjs-block": "^1.7.0",
-    "ethereumjs-units": "^0.2.0",
-    "ethereumjs-util": "^5.1.2",
-    "express": "^4.16.3",
     "lodash": "^4.17.5",
-    "method-override": "^2.3.5",
-    "moment": "^2.22.0",
-    "mongoose": "^5.0.12",
+    "moment": "^2.22.1",
     "morgan": "^1.9.0",
     "npm": "^5.8.0",
     "nuxt": "^1.4.0",
-    "socket.io": "^2.1.0",
-    "socket.io-client": "^2.1.0",
-    "vue": "^2.5.16",
-    "web3": "^1.0.0-beta.33"
+    "vue": "^2.5.16"
   },
   "devDependencies": {
-    "babel-cli": "^6.9.0",
-    "babel-core": "^6.9.0",
-    "babel-preset-env": "^1.6.1",
-    "babel-preset-es2015": "^6.24.1",
-    "babel-preset-stage-0": "^6.5.0",
     "node-sass": "^4.8.3",
-    "nodemon": "^1.17.3",
     "sass-loader": "^7.0.1"
   },
   "engines": {
