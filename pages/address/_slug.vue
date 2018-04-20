@@ -19,7 +19,7 @@
 					</b-list-group-item>
 					<b-list-group-item>
 						Code:
-						<code class="pull-right"><span-loading class="address__tag" v-bind:text="address ? address.code : null"></span-loading></code>
+						<code class="address__tag pull-right text-right"><span-loading v-bind:text="address ? address.code : null"></span-loading></code>
 					</b-list-group-item>
 				</b-list-group>
 			</b-col>

@@ -9,33 +9,33 @@ export const paginate = async (
   let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
   per_page = Math.min(25, per_page)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-  page = page > 10000 ? 10000 : page
+  page = page > 2000 ? 2000 : page
 
-  let query = {}, sort = {}, total = null
-  if (typeof(params) != 'undefined') {
-    params.query = typeof(params.query) != 'undefined' ? params.query : {}
-    params.sort = typeof(params.sort) != 'undefined' ? params.sort : {}
-    params.total = typeof(params.total) != 'undefined' ? params.total : null
-    query = _.extend({}, params.query)
-    sort = _.extend({}, params.sort)
-    total = _.isInteger(params.total) ? params.total : null
-  }
+  params.query = params.hasOwnProperty('query') ? params.query : {}
+  params.sort = params.hasOwnProperty('sort') ? params.sort : {}
+  params.total = params.hasOwnProperty('total') ? params.total : null
+  params.populate = params.hasOwnProperty('populate') ? params.populate : []
 
-  let count = await mongoose.model(model_name).find(query).count()
-  total = total ? total : count
-  let builder = mongoose.model(model_name).find(query).sort(sort)
+  let count = await mongoose.model(model_name).find(params.query).count()
+  let total = params.total ? params.total : count
+  let pages = Math.ceil(total / per_page)
+  pages = Math.min(2000, pages)
+  let builder = mongoose.model(model_name).
+    find(params.query).
+    sort(params.sort)
   if (!manual_paginate) {
     let offset = page > 1 ? (page - 1) * per_page : 0
     builder = builder.skip(offset)
     builder = builder.limit(per_page)
   }
-  let items = await builder.lean().exec()
+  builder = builder.populate(params.populate)
+  let items = await builder.exec()
 
   return {
     total: total,
     per_page: per_page,
     current_page: page,
-    pages: Math.ceil(total / per_page),
+    pages: pages,
     items: items,
   }
 }

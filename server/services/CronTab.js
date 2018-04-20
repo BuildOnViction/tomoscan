@@ -53,8 +53,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find(
-      {crawl: false, blockNumber: {$ne: null}}).limit(200)
+    let _txs = await Tx.find({crawl: false}).limit(50)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
@@ -101,90 +100,55 @@ let CronTab = {
     }
   }),
 
-  getAccounts: () => new Promise(async (resolve, reject) => {
-    let accounts = []
-
-    let _accounts = await Account.find({crawl: false}).limit(100)
-    if (_accounts.length) {
-      async.each(_accounts, async (_account, next) => {
-        let account = await AccountRepository.updateAccount(_account.hash)
-        await AccountRepository.getBalance(_account.hash)
-        await AccountRepository.getTransactionCount(_account.hash)
-        await AccountRepository.getCode(_account.hash)
-        accounts.push(account)
-      }, (e) => {
-        if (e) {
-          reject(e)
-        }
-
-        resolve(accounts)
-      })
-    }
-    else {
-      await Account.update({crawl: true}, {crawl: false})
-    }
-  }),
-
   start: () => {
     try {
       // For blocks detail.
       let blockJob = new cron.CronJob({
         cronTime: '0 */2 * * * *', // 2 minutes.
-        onTick: () => {
-          CronTab.getBlocks()
+        onTick: async () => {
+          let sDate = new Date()
+          console.log('blockJob START --- ' + sDate.toISOString())
 
-          let date = new Date()
-          console.log('Job get blocks running at ' + date.toISOString())
+          await CronTab.getBlocks()
+
+          let eDate = new Date()
+          console.log('blockJob END --- ' + eDate.toISOString())
         },
         start: false,
       })
       // For tx detail.
       let txJob = new cron.CronJob({
         cronTime: '0 */2 * * * *', // 2 minutes.
-        onTick: () => {
-          CronTab.getPendingTransactions()
+        onTick: async () => {
+          let sDate = new Date()
+          console.log('txJob START --- ' + sDate.toISOString())
 
-          let date = new Date()
-          console.log('Job get transactions running at ' + date.toISOString())
+          await CronTab.getPendingTransactions()
+
+          let eDate = new Date()
+          console.log('txJob END --- ' + eDate.toISOString())
         },
         start: false,
       })
       // For check tx pending remain.
       let txJobPending = new cron.CronJob({
-        cronTime: '0 */5 * * * *',
-        onTick: () => {
-          CronTab.getTransactions()
-
-          let date = new Date()
-          console.log('Job get transactions pending remain running at ' +
-            date.toISOString())
-        },
-        start: false,
-      })
-      // For get accounts.
-      let jobAccount = new cron.CronJob({
         cronTime: '0 */2 * * * *',
-        onTick: () => {
-          CronTab.getAccounts()
+        onTick: async () => {
+          let sDate = new Date()
+          console.log('txJobPending START --- ' + sDate.toISOString())
 
-          let date = new Date()
-          console.log('Job get accounts running at ' +
-            date.toISOString())
+          await CronTab.getTransactions()
+
+          let eDate = new Date()
+          console.log('txJobPending END --- ' + eDate.toISOString())
         },
         start: false,
       })
 
       // Start cron job running.
       blockJob.start()
-      setTimeout(() => {
-        txJob.start()
-      }, 1000)
-      setTimeout(() => {
-        jobAccount.start()
-      }, 2000)
-      setTimeout(() => {
-        txJobPending.start()
-      }, 3000)
+      txJob.start()
+      txJobPending.start()
     }
     catch (e) {
       console.log(e)

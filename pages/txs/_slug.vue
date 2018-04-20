@@ -42,7 +42,7 @@
 					</tr>
 					<tr>
 						<td>Gas Used By Txn:</td>
-						<td>{{ tx.gasUsed }}</td>
+						<td>{{ formatNumber(tx.gasUsed) }}</td>
 					</tr>
 					<tr>
 						<td>Gas Price:</td>

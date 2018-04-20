@@ -103,7 +103,7 @@
       }
     },
     created () {
-      let number = parseInt(this.$route.params.slug)
+      let number = this.$route.params.slug
       if (number) {
         this.number = number
       }
