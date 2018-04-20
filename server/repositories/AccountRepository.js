@@ -4,6 +4,10 @@ import Tx from '../models/Tx'
 
 let AccountRepository = {
   updateAccount: async (hash) => {
+    if (!hash) {
+      return false
+    }
+
     let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
     _account = _account ? _account : {}
 
@@ -16,7 +20,7 @@ let AccountRepository = {
     }
 
     let txCountTo = await Tx.find({to: hash}).count()
-    let txCountFrom = 0;//await web3.eth.getTransactionCount(hash)
+    let txCountFrom = 0//await web3.eth.getTransactionCount(hash)
     let txCount = txCountTo + txCountFrom
     if (_account.transactionCount !== txCount) {
       _account.transactionCount = txCount
