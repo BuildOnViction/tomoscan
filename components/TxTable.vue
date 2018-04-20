@@ -15,16 +15,16 @@
 				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 			</template>
 			<template slot="age" slot-scope="props">
-				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
+				<span :id="'age__' + props.index">{{ moment(props.item.block_id.timestamp).fromNow() }}</span>
 				<b-tooltip :target="'age__' + props.index">
-					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					{{ moment(props.item.block_id.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 				</b-tooltip>
 			</template>
 			<template slot="from" slot-scope="props">
 				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 			</template>
 			<template slot="arrow" slot-scope="props">
-				<i class="fa fa-arrow-right text-success"></i>
+				<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
 			</template>
 			<template slot="to" slot-scope="props">
 				<div v-if="props.item.contractAddress">

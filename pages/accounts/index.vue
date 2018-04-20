@@ -17,7 +17,7 @@
 				{{ formatUnit(toEther(props.item.balance)) }}
 			</template>
 			<template slot="transactionCount" slot-scope="props">
-				{{ props.item.transactionCount }}
+				{{ formatNumber(props.item.transactionCount) }}
 			</template>
 		</b-table>
 		<div class="text-xs-center pt-2">
@@ -44,8 +44,8 @@
       fields: {
         rank: {label: 'Rank'},
         hash: {label: 'Address'},
-        balance: {label: 'Balance'},
-        transactionCount: {label: 'TxCount'},
+        balance: {label: 'Balance', tdClass: 'text-right', thClass: 'text-center'},
+        transactionCount: {label: 'TxCount', tdClass: 'text-right', thClass: 'text-center'},
       },
       loading: true,
       pagination: {},

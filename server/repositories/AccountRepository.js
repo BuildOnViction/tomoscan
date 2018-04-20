@@ -1,5 +1,6 @@
 import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
+import Tx from '../models/Tx'
 
 let AccountRepository = {
   updateAccount: async (hash) => {
@@ -14,7 +15,9 @@ let AccountRepository = {
       _account.balanceNumber = balance
     }
 
-    let txCount = await web3.eth.getTransactionCount(hash)
+    let txCountTo = await Tx.find({to: hash}).count()
+    let txCountFrom = 0;//await web3.eth.getTransactionCount(hash)
+    let txCount = txCountTo + txCountFrom
     if (_account.transactionCount !== txCount) {
       _account.transactionCount = txCount
     }
@@ -31,7 +34,7 @@ let AccountRepository = {
       {upsert: true, new: true})
 
     return account
-  }
+  },
 }
 
 export default AccountRepository

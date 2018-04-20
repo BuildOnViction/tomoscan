@@ -1,77 +1,40 @@
 <template>
-	<v-menu
-		bottom
-		offset-y
-		:close-on-content-click="true"
-	>
-		<v-text-field
-			flat
-			prepend-icon="search"
-			placeholder="Tx Hash, Address, or Block #"
-			@input="onSearchChange"
-			slot="activator"
-		></v-text-field>
-		<v-card>
-			<v-list v-for="item in items" :key="item.title">
-				<v-list-tile avatar :key="item.title" @click="onGotoRoute(item.route)">
-					<v-list-tile-content>
-						<v-list-tile-title v-html="item.title"></v-list-tile-title>
-						<v-list-tile-sub-title v-html="item.subtitle"></v-list-tile-sub-title>
-					</v-list-tile-content>
-				</v-list-tile>
-			</v-list>
-		</v-card>
-	</v-menu>
+	<b-navbar-nav class="ml-auto">
+		<b-form-input v-model="search" size="sm" class="mr-sm-2" type="text" placeholder="Search Address / TX / Block" v-on:keyup.enter="onGotoRoute"/>
+		<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>
+	</b-navbar-nav>
 </template>
 <script>
   export default {
     data: () => ({
-      items: [],
       loading: false,
       search: null,
     }),
     methods: {
-      onGotoRoute (to) {
-        return this.$router.push(to)
-      },
-      onSearchChange (search) {
-        let self = this
-        self.loading = true
-        if (search !== undefined) {
-          let regexpTx = /[0-9a-zA-Z]{64}?/
-          let regexpAddr = /^(0x)?[0-9a-f]{40}$/
-          let regexpBlock = /[0-9]{1,7}?/
+      onGotoRoute () {
+        let search = this.search
+        let regexpTx = /[0-9a-zA-Z]{66}?/
+        let regexpAddr = /^(0x)?[0-9a-f]{40}$/
+        let regexpBlock = /[0-9]+?/
+        let to = null
 
-          if (regexpTx.test(search)) {
-            self.items = [
-              {
-                title: search,
-                subtitle: 'Transaction',
-                route: {name: 'txs-slug', params: {slug: search}},
-              }]
-          }
-          else if (regexpAddr.test(search)) {
-            self.items = [
-              {
-                title: search,
-                subtitle: 'Address',
-                route: {name: 'address-slug', params: {slug: search}},
-              }]
-          }
-          else if (regexpBlock.test(search)) {
-            self.items = [
-              {
-                title: search,
-                subtitle: 'Block',
-                route: {name: 'blocks-slug', params: {slug: search}},
-              }]
-          }
-          else {
-            self.items = []
-          }
+        if (regexpTx.test(search)) {
+          to = {name: 'txs-slug', params: {slug: search}}
+        }
+        else if (regexpAddr.test(search)) {
+          to = {name: 'address-slug', params: {slug: search}}
+        }
+        else if (regexpBlock.test(search)) {
+          to = {name: 'blocks-slug', params: {slug: search}}
         }
 
-        self.loading = false
+        console.log(to)
+
+        if (!to) {
+          return false
+        }
+
+        return this.$router.push(to)
       },
     },
   }

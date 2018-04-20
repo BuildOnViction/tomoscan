@@ -18,7 +18,7 @@
 				</b-tooltip>
 			</template>
 			<template slot="e_tx" slot-scope="props">
-				<nuxt-link :to="{name: 'txs', query: {block: props.item.e_tx}}">{{ props.item.e_tx }}</nuxt-link>
+				<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
 			</template>
 			<template slot="uncles" slot-scope="props">
 				{{ props.item.uncles.length }}

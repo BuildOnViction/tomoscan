@@ -9,15 +9,8 @@ const TxController = Router()
 
 TxController.get('/txs', async (req, res) => {
   try {
-    let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
-    let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-    per_page = Math.min(25, per_page)
-    let offset = (page - 1) * per_page
-    offset = offset ? offset : 0
-
     let block_num = !isNaN(req.query.block) ? req.query.block : null
-    let data = {}
-    let params = {query:{}, sort: {timestamp: -1}}
+    let params = {query: {}, sort: {timestamp: -1}}
     if (block_num) {
       params.query = {blockNumber: block_num}
       // Get txs by block number.
@@ -35,7 +28,8 @@ TxController.get('/txs', async (req, res) => {
       params.query = Object.assign(params.query,
         {$or: [{from: address}, {to: address}]})
     }
-    data = await paginate(req, 'Tx', params)
+    params.populate = [{path: 'block_id', select: 'timestamp'}]
+    let data = await paginate(req, 'Tx', params)
 
     return res.json(data)
   }

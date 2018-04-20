@@ -23,11 +23,8 @@ const schema = new mongoose.Schema({
   crawl: {type: Boolean, default: false},
 }, {
   timestamps: true,
+  toObject: {virtuals: true, getters: true},
   toJSON: {virtuals: true, getters: true},
-})
-
-schema.virtual('timestamp').get(function () {
-  return this.block_id.timestamp
 })
 
 let Tx = mongoose.model('Tx', schema)

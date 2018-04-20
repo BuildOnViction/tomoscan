@@ -4,15 +4,16 @@ import Web3Util from '../helpers/web3'
 import async from 'async'
 
 let TxRepository = {
-  getTxDetail: async (hash, __tx = null) => {
-    // Check exist tx.
-    let tx = await Tx.findOne({hash: hash})
+  getTxDetail: async (hash) => {
+    let _tx = await Tx.findOne({hash: hash})
 
-    if (!tx) {
+    let tx = null
+    if(_tx && _tx.crawl) {
+      tx = _tx
+    } else {
       let web3 = await Web3Util.getWeb3()
-
       // Get tx detail using web3.
-      let _tx = __tx ? __tx : web3.eth.getTransaction(hash)
+      _tx = _tx ? _tx : web3.eth.getTransaction(hash)
 
       // Insert from account.
       if (_tx.from != null) {
@@ -26,15 +27,13 @@ let TxRepository = {
         _tx.to_id = to
       }
 
-      if (_tx) {
-        tx = await Tx.findOneAndUpdate({hash: _tx.hash}, _tx,
-          {upsert: true, new: true})
-      }
-    }
+      tx = await Tx.findOneAndUpdate({hash: _tx.hash}, _tx,
+        {upsert: true, new: true})
 
-    if (tx.to_id === null) {
-      // Get smartcontract address if to is null.
-      await TxRepository.getTxReceipt(hash)
+      if (tx.to_id === null) {
+        // Get smartcontract address if to is null.
+        await TxRepository.getTxReceipt(hash)
+      }
     }
 
     return tx
@@ -52,7 +51,7 @@ let TxRepository = {
       let receipt = await web3.eth.getTransactionReceipt(hash)
 
       // Update contract type.
-      if (receipt.contractAddress) {
+      if (receipt, receipt.hasOwnProperty('contractAddress')) {
         tx.contractAddress = receipt.contractAddress
         let contract = await AccountRepository.updateAccount(
           receipt.contractAddress)
@@ -62,10 +61,13 @@ let TxRepository = {
 
       tx.cumulativeGasUsed = receipt.cumulativeGasUsed
       tx.gasUsed = receipt.gasUsed
-      if (tx) {
-        tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
-          {upsert: true, new: true})
-      }
+    }
+
+    tx.crawl = true
+
+    if (tx) {
+      tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+        {upsert: true, new: true})
     }
 
     return tx
