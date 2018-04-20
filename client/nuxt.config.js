@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 module.exports = {
   /*
   ** Headers of the page
@@ -30,14 +32,14 @@ module.exports = {
     '~/plugins/bootstrap-vue',
   ],
   modules: [
-    '@nuxtjs/axios',
+    '@nuxtjs/axios'
   ],
   css: [
     '~/assets/scss/app.scss',
   ],
   env: process.env,
   axios: {
-    baseURL: process.env.API_URL,
+    baseURL: process.env.API_URL
   },
   loading: {
     color: '#fff',

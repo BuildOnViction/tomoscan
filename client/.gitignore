@@ -32,3 +32,5 @@ bower_components
 Thumbs.db
 *.log
 .*.sw*
+.nuxt/
+node_modules/
