@@ -41,13 +41,15 @@ let BlockRepository = {
         if (tx_count != block.e_tx) {
           // Insert transaction before.
           async.each(txs, async (tx, next) => {
-            if (block) {
-              tx.block_id = block
-            }
-            tx.crawl = false
-            if (tx) {
-              await Tx.findOneAndUpdate({hash: tx.hash}, tx,
-                {upsert: true, new: true})
+            if (tx.hash) {
+              if (block) {
+                tx.block_id = block
+              }
+              tx.crawl = false
+              if (tx && tx.hash) {
+                await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+                  {upsert: true, new: true})
+              }
             }
 
             next()
