@@ -10,7 +10,7 @@ const TxController = Router()
 TxController.get('/txs', async (req, res) => {
   try {
     let block_num = !isNaN(req.query.block) ? req.query.block : null
-    let params = {query: {}, sort: {timestamp: -1}}
+    let params = {query: {hash: {$ne: null}}, sort: {timestamp: -1}}
     if (block_num) {
       params.query = {blockNumber: block_num}
       // Get txs by block number.

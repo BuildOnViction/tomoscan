@@ -5,6 +5,9 @@ import async from 'async'
 
 let TxRepository = {
   getTxDetail: async (hash) => {
+    if (!hash) {
+      return false
+    }
     let _tx = await Tx.findOne({hash: hash})
 
     let tx = null
@@ -14,7 +17,7 @@ let TxRepository = {
     else {
       let web3 = await Web3Util.getWeb3()
       // Get tx detail using web3.
-      _tx = _tx ? _tx : web3.eth.getTransaction(hash)
+      _tx = _tx ? _tx : await web3.eth.getTransaction(hash)
 
       // Insert from account.
       if (_tx.from != null) {
@@ -41,6 +44,9 @@ let TxRepository = {
   },
 
   getTxReceipt: async (hash) => {
+    if (!hash) {
+      return false
+    }
     // Check exist tx receipt.
     let tx = await Tx.findOne({hash: hash})
     if (!tx) {

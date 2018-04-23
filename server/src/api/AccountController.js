@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import Account from '../models/Account'
-import BigNumber from 'bignumber.js'
 import AccountRepository from '../repositories/AccountRepository'
+import async from 'async'
 
 const AccountController = Router()
 
@@ -24,9 +24,9 @@ AccountController.get('/accounts', async (req, res) => {
     // Format rank.
     let base_rank = (data.current_page - 1) * data.per_page
     data.items.forEach((item, index) => {
+      data.items[index] = item.toObject()
       data.items[index].rank = base_rank + index + 1
     })
-
     return res.json(data)
   }
   catch (e) {

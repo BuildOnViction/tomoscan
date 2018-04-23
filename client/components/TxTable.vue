@@ -15,24 +15,27 @@
 				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 			</template>
 			<template slot="age" slot-scope="props">
-				<span :id="'age__' + props.index">{{ moment(props.item.block_id.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'age__' + props.index">
-					{{ moment(props.item.block_id.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-				</b-tooltip>
+				<div v-if="props.item.block_id">
+					<span :id="'age__' + props.index">{{ moment(props.item.block_id.timestamp).fromNow() }}</span>
+					<b-tooltip :target="'age__' + props.index">
+						{{ moment(props.item.block_id.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
+				</div>
+				<span v-else="pending"></span>
 			</template>
 			<template slot="from" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+				<div class="address__tag">
+					<span v-if="address == props.item.from">{{ props.item.from }}</span>
+					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+				</div>
 			</template>
 			<template slot="arrow" slot-scope="props">
 				<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
 			</template>
 			<template slot="to" slot-scope="props">
-				<div v-if="props.item.contractAddress">
-					<i class="fa fa-file-alt"></i>
-					<nuxt-link class="address__tag" :to="{name: 'address-slug', params:{slug: props.item.contractAddress}}">{{ props.item.contractAddress }}</nuxt-link>
-				</div>
-				<div v-else>
-					<nuxt-link class="address__tag" :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
+				<div class="address__tag">
+					<span v-if="address == props.item.to">{{ props.item.to }}</span>
+					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
 				</div>
 			</template>
 			<template slot="value" slot-scope="props">
@@ -60,7 +63,7 @@
       title: 'Transactions',
     }),
     props: {
-      address: {type: String},
+      address: {type: String, default: null},
       type: {type: String},
     },
     data: () => ({
@@ -134,10 +137,27 @@
         self.current_page = data.current_page
         self.pages = data.pages
 
+        // Format data.
+        self.items = self.formatData(self.items)
+
         // Hide loading.
         self.loading = false
 
         return data
+      },
+      formatData (items = []) {
+        let _items = []
+        items.forEach((item) => {
+          let _item = item
+          _item.isContract = false
+          if (item.hasOwnProperty('contractAddress')) {
+            _item.isContract = true
+            _item.to = item.contractAddress
+          }
+          _items.push(_item)
+        })
+
+        return _items
       },
       onChangePaginate (page) {
         let self = this

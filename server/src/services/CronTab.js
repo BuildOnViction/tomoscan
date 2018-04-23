@@ -100,6 +100,24 @@ let CronTab = {
     }
   }),
 
+  getTokens: () => new Promise(async (resolve, reject) => {
+    let tokens = []
+
+    let _addresses = await Account.find({isToken: {$exists: false}}).limit(50)
+
+    if (_addresses) {
+      async.each(_addresses, async (_address, next) => {
+
+      }, (e) => {
+        if (e) {
+          reject(e)
+        }
+
+        resolve(tokens)
+      })
+    }
+  }),
+
   start: () => {
     try {
       // For blocks detail.
@@ -107,12 +125,14 @@ let CronTab = {
         cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
-          console.log('blockJob START --- ' + sDate.toISOString())
+          console.log('START blockJob --- ' + sDate.toISOString())
 
-          await CronTab.getBlocks()
-
-          let eDate = new Date()
-          console.log('blockJob END --- ' + eDate.toISOString())
+          CronTab.getBlocks().then((blocks) => {
+            let eDate = new Date()
+            console.log('END blockJob --- ' + eDate.toISOString())
+          }).catch((e) => {
+            throw e
+          })
         },
         start: false,
       })
@@ -121,12 +141,14 @@ let CronTab = {
         cronTime: '0 */5 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
-          console.log('txJob START --- ' + sDate.toISOString())
+          console.log('START txJob --- ' + sDate.toISOString())
 
-          await CronTab.getTransactions()
-
-          let eDate = new Date()
-          console.log('txJob END --- ' + eDate.toISOString())
+          CronTab.getTransactions().then((txs) => {
+            let eDate = new Date()
+            console.log('END txJob --- ' + eDate.toISOString())
+          }).catch((e) => {
+            throw e
+          })
         },
         start: false,
       })
@@ -135,20 +157,42 @@ let CronTab = {
         cronTime: '0 */5 * * * *',
         onTick: async () => {
           let sDate = new Date()
-          console.log('txJobPending START --- ' + sDate.toISOString())
+          console.log('START txJobPending --- ' + sDate.toISOString())
 
-          await CronTab.getPendingTransactions()
+          CronTab.getPendingTransactions().then((txs) => {
+            let eDate = new Date()
+            console.log('END txJobPending --- ' + eDate.toISOString())
+          }).catch((e) => {
+            throw e
+          })
+        },
+        start: false,
+      })
+      // For check address is token.
+      let tokenJob = new cron.CronJob({
+        cronTime: '0 */5 * * * *',
+        onTick: async () => {
+          let sDate = new Date()
+          console.log('START tokenJob --- ' + sDate.toISOString())
 
-          let eDate = new Date()
-          console.log('txJobPending END --- ' + eDate.toISOString())
+          CronTab.getTokens().then((txs) => {
+            let eDate = new Date()
+            console.log('END tokenJob --- ' + eDate.toISOString())
+          }).catch((e) => {
+            throw e
+          })
         },
         start: false,
       })
 
       // Start cron job running.
+      setTimeout(function () {
+        txJob.start()
+      }, 10 * 1000)
+      setTimeout(function () {
+        txJobPending.start()
+      }, 20 * 1000)
       blockJob.start()
-      txJob.start()
-      txJobPending.start()
     }
     catch (e) {
       console.log(e)
