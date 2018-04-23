@@ -109,7 +109,7 @@ let CronTab = {
           let sDate = new Date()
           console.log('blockJob START --- ' + sDate.toISOString())
 
-          await CronTab.getBlocks()
+          let response = await CronTab.getBlocks()
 
           let eDate = new Date()
           console.log('blockJob END --- ' + eDate.toISOString())
@@ -123,7 +123,7 @@ let CronTab = {
           let sDate = new Date()
           console.log('txJob START --- ' + sDate.toISOString())
 
-          await CronTab.getTransactions()
+          let response = await CronTab.getTransactions()
 
           let eDate = new Date()
           console.log('txJob END --- ' + eDate.toISOString())
@@ -137,7 +137,7 @@ let CronTab = {
           let sDate = new Date()
           console.log('txJobPending START --- ' + sDate.toISOString())
 
-          await CronTab.getPendingTransactions()
+          let response = await CronTab.getPendingTransactions()
 
           let eDate = new Date()
           console.log('txJobPending END --- ' + eDate.toISOString())
