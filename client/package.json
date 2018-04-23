@@ -1,0 +1,33 @@
+{
+  "name": "tomo-explorer",
+  "version": "1.0.0",
+  "description": "TomoChain Block Explorer",
+  "scripts": {
+    "dev": "nuxt",
+    "build": "nuxt build",
+    "start": "nuxt start",
+    "test": "mocha"
+  },
+  "dependencies": {
+    "@nuxtjs/axios": "^5.3.1",
+    "async": "^2.6.0",
+    "bignumber.js": "^6.0.0",
+    "bootstrap-vue": "^2.0.0-rc.8",
+    "dotenv": "^5.0.1",
+    "lodash": "^4.17.5",
+    "moment": "^2.22.1",
+    "morgan": "^1.9.0",
+    "npm": "^5.8.0",
+    "nuxt": "^1.4.0",
+    "socket.io-client": "^2.1.0",
+    "vue": "^2.5.16",
+    "web3": "^1.0.0-beta.34"
+  },
+  "devDependencies": {
+    "node-sass": "^4.8.3",
+    "sass-loader": "^7.0.1"
+  },
+  "engines": {
+    "node": "6.1.0"
+  }
+}

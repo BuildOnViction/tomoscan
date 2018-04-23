@@ -1,9 +1,11 @@
+require('dotenv').config()
+
 module.exports = {
   /*
   ** Headers of the page
   */
   head: {
-    title: 'DLN Explorer', meta: [
+    title: 'TOMO Explorer', meta: [
       {charset: 'utf-8'}, {
         name: 'viewport', content: 'width=device-width, initial-scale=1',
       }, {
@@ -30,14 +32,14 @@ module.exports = {
     '~/plugins/bootstrap-vue',
   ],
   modules: [
-    '@nuxtjs/axios',
+    '@nuxtjs/axios'
   ],
   css: [
     '~/assets/scss/app.scss',
   ],
   env: process.env,
   axios: {
-    baseURL: process.env.API_URL,
+    baseURL: process.env.API_URL
   },
   loading: {
     color: '#fff',

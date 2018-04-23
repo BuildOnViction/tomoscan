@@ -8,9 +8,10 @@ let TxRepository = {
     let _tx = await Tx.findOne({hash: hash})
 
     let tx = null
-    if(_tx && _tx.crawl) {
+    if (_tx && _tx.crawl) {
       tx = _tx
-    } else {
+    }
+    else {
       let web3 = await Web3Util.getWeb3()
       // Get tx detail using web3.
       _tx = _tx ? _tx : web3.eth.getTransaction(hash)
@@ -55,8 +56,10 @@ let TxRepository = {
         tx.contractAddress = receipt.contractAddress
         let contract = await AccountRepository.updateAccount(
           receipt.contractAddress)
-        contract.contractCreation = tx.from
-        contract.save()
+        if (contract) {
+          contract.contractCreation = tx.from
+          contract.save()
+        }
       }
 
       tx.cumulativeGasUsed = receipt.cumulativeGasUsed

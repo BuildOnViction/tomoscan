@@ -1,5 +1,4 @@
 import api from './api'
-import { Nuxt, Builder } from 'nuxt'
 import Web3Connector from './services/Web3Connector'
 import CronTab from './services/CronTab'
 
@@ -8,6 +7,7 @@ const logger = require('morgan')
 const compression = require('compression')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
+const cors = require('cors')
 
 // Load environment variables from .env file
 dotenv.load()
@@ -40,9 +40,10 @@ if (process.env.DEBUG_QUERY == true) {
   })
 }
 
-app.set('port', process.env.PORT || 3000)
+app.set('port', process.env.PORT || 3333)
 app.use(compression())
 app.use(logger('dev'))
+app.use(cors())
 
 app.use('/api', api)
 
@@ -53,24 +54,6 @@ if (app.get('env') === 'production') {
     res.sendStatus(err.status || 500)
   })
 }
-
-// Import and Set Nuxt.js options
-let config = require('../nuxt.config.js')
-config.dev = !(
-  process.env.NODE_ENV === 'production'
-)
-
-// Init Nuxt.js
-const nuxt = new Nuxt(config)
-
-// Build only in dev mode
-if (config.dev) {
-  const builder = new Builder(nuxt)
-  builder.build()
-}
-
-// Give nuxt middleware to express
-app.use(nuxt.render)
 
 server.listen(app.get('port'), async () => {
   try {

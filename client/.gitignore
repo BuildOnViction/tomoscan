@@ -1,0 +1,36 @@
+lib-cov
+*.seed
+*.log
+*.csv
+*.dat
+*.out
+*.pid
+*.gz
+*.swp
+
+pids
+logs
+results
+tmp
+coverage
+
+# API keys
+.env
+
+# Dependency directory
+node_modules
+bower_components
+
+# Editors
+.idea
+*.iml
+
+.nuxt/*
+
+# OS metadata
+.DS_Store
+Thumbs.db
+*.log
+.*.sw*
+.nuxt/
+node_modules/

@@ -27,7 +27,7 @@ let CronTab = {
       ? max_block_num
       : max_block_crawl_num
 
-    let inserted_blocks = parseInt(max_block_crawl_num) - 100
+    let inserted_blocks = parseInt(max_block_crawl_num) - 50
     let arr_indexs = _.range(inserted_blocks, max_block_crawl_num)
     let _blocks = []
 
@@ -53,7 +53,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({crawl: false}).limit(50)
+    let _txs = await Tx.find({crawl: false}).limit(10)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
@@ -78,7 +78,7 @@ let CronTab = {
   getPendingTransactions: () => new Promise(async (resolve, reject) => {
     let txs = []
     // Get blocks transaction pending for crawl.
-    let _txs = await Tx.find({blockNumber: null}).limit(50)
+    let _txs = await Tx.find({blockNumber: null}).limit(10)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
@@ -118,12 +118,12 @@ let CronTab = {
       })
       // For tx detail.
       let txJob = new cron.CronJob({
-        cronTime: '0 */2 * * * *', // 2 minutes.
+        cronTime: '0 */5 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('txJob START --- ' + sDate.toISOString())
 
-          await CronTab.getPendingTransactions()
+          await CronTab.getTransactions()
 
           let eDate = new Date()
           console.log('txJob END --- ' + eDate.toISOString())
@@ -132,12 +132,12 @@ let CronTab = {
       })
       // For check tx pending remain.
       let txJobPending = new cron.CronJob({
-        cronTime: '0 */2 * * * *',
+        cronTime: '0 */5 * * * *',
         onTick: async () => {
           let sDate = new Date()
           console.log('txJobPending START --- ' + sDate.toISOString())
 
-          await CronTab.getTransactions()
+          await CronTab.getPendingTransactions()
 
           let eDate = new Date()
           console.log('txJobPending END --- ' + eDate.toISOString())
