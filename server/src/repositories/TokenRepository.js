@@ -1,5 +1,6 @@
 import Web3Util from '../helpers/web3'
 import Token from '../models/Token'
+import Account from '../models/Account'
 
 let TokenRepository = {
   getTokenFuncs: () => ({
@@ -9,8 +10,8 @@ let TokenRepository = {
     'name': '0x06fdde03',
   }),
 
-  checkIsToken: async (account) => {
-    let tokenFuncs = await TokenRepository.getTokenFuncs()
+  checkIsToken: (account) => {
+    let tokenFuncs = TokenRepository.getTokenFuncs()
     let isToken = false
     for (let name in tokenFuncs) {
       let code = tokenFuncs[name]
@@ -28,39 +29,46 @@ let TokenRepository = {
       return false
     }
 
-    let isToken = false
+    let isToken = await TokenRepository.checkIsToken(_address)
     let tokenFuncs = TokenRepository.getTokenFuncs()
+    let token = null
 
-    let token = await Token.findOne({hash: account.hash})
-    if (!token) {
-      token = new Token()
-      token.hash = account.hash
+    if (isToken) {
+      token = await Token.findOne({hash: account.hash})
+      if (!token) {
+        token = new Token()
+        token.hash = account.hash
+      }
+
+      let web3 = await Web3Util.getWeb3()
+      if (!token.hasOwnProperty('name')) {
+        let name = await web3.eth.call(
+          {to: account.hash, data: tokenFuncs['name']})
+        token.name = web3.utils.hexToAscii(name)
+      }
+      if (!token.hasOwnProperty('symbol')) {
+        let symbol = await web3.eth.call(
+          {to: account.hash, data: tokenFuncs['symbol']})
+        token.symbol = web3.utils.hexToAscii(symbol)
+      }
+      if (!token.hasOwnProperty('decimals')) {
+        let decimals = await web3.eth.call(
+          {to: account.hash, data: tokenFuncs['decimals']})
+
+        token.decimals = web3.utils.hexToNumber(decimals)
+      }
+      let totalSupply = await web3.eth.call(
+        {to: account.hash, data: tokenFuncs['totalSupply']})
+      totalSupply = web3.utils.hexToNumberString(totalSupply)
+      token.totalSupply = totalSupply
+      token.totalSupplyNumber = totalSupply
+
+      token = await Token.findOneAndUpdate({hash: token.hash}, token,
+        {upsert: true, new: true})
     }
 
-    let web3 = await Web3Util.getWeb3()
-    if (!token.hasOwnProperty('name')) {
-      let name = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['name']})
-      token.name = web3.utils.hexToAscii(name)
-    }
-    if (!token.hasOwnProperty('symbol')) {
-      let symbol = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['symbol']})
-      token.symbol = web3.utils.hexToAscii(symbol)
-    }
-    if (!token.hasOwnProperty('decimals')) {
-      let decimals = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['decimals']})
-
-      token.decimals = web3.utils.hexToNumber(decimals)
-    }
-    let totalSupply = await web3.eth.call(
-      {to: account.hash, data: tokenFuncs['totalSupply']})
-    totalSupply = web3.utils.hexToNumberString(totalSupply)
-    token.totalSupply = totalSupply
-    token.totalSupplyNumber = totalSupply
-
-    token = await token.save()
+    // Set flag is token for account.
+    await Account.update({hash: _address.hash}, {isToken: isToken})
 
     return token
   },

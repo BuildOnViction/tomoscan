@@ -19,16 +19,25 @@ TxController.get('/txs', async (req, res) => {
     // Check type listing is pending.
     let type = req.query.type
 
-    if (type == 'pending') {
-      params.query = {blockNumber: null, block_id: null}
-      params.limit = 0
+    let populates = [{path: 'block_id', select: 'timestamp'}]
+    switch (type) {
+      case 'pending':
+        params.query = {blockNumber: null, block_id: null}
+        params.limit = 0
+        break
+      case 'tokens':
+        populates.push(
+          {path: 'from_id', select: 'isToken', match: {isToken: true}})
+        populates.push(
+          {path: 'to_id', select: 'isToken', match: {isToken: true}})
+        break
     }
     let address = req.query.address
     if (typeof address !== 'undefined') {
       params.query = Object.assign(params.query,
         {$or: [{from: address}, {to: address}]})
     }
-    params.populate = [{path: 'block_id', select: 'timestamp'}]
+    params.populate = populates
     let data = await paginate(req, 'Tx', params)
 
     return res.json(data)
