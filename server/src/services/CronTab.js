@@ -5,9 +5,8 @@ import async from 'async'
 import BlockRepository from '../repositories/BlockRepository'
 import Tx from '../models/Tx'
 import TxRepository from '../repositories/TxRepository'
-import Block from '../models/Block'
 import Account from '../models/Account'
-import AccountRepository from '../repositories/AccountRepository'
+import TokenRepository from '../repositories/TokenRepository'
 
 let cron = require('cron')
 
@@ -53,7 +52,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({crawl: false}).limit(10)
+    let _txs = await Tx.find({crawl: false}).limit(50)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
@@ -78,7 +77,7 @@ let CronTab = {
   getPendingTransactions: () => new Promise(async (resolve, reject) => {
     let txs = []
     // Get blocks transaction pending for crawl.
-    let _txs = await Tx.find({blockNumber: null}).limit(10)
+    let _txs = await Tx.find({blockNumber: null}).limit(50)
 
     if (_txs.length) {
       async.each(_txs, async (tx, next) => {
@@ -105,9 +104,18 @@ let CronTab = {
 
     let _addresses = await Account.find({isToken: {$exists: false}}).limit(50)
 
-    if (_addresses) {
+    if (_addresses.length) {
       async.each(_addresses, async (_address, next) => {
+        let isToken = await TokenRepository.checkIsToken(_address)
+        _address.isToken = isToken
+        await _address.save()
 
+        if (isToken) {
+          let token = await TokenRepository.updateToken(_address)
+          tokens.push(token)
+        }
+
+        next()
       }, (e) => {
         if (e) {
           reject(e)
@@ -138,7 +146,7 @@ let CronTab = {
       })
       // For tx detail.
       let txJob = new cron.CronJob({
-        cronTime: '0 */5 * * * *', // 2 minutes.
+        cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('START txJob --- ' + sDate.toISOString())
@@ -154,7 +162,7 @@ let CronTab = {
       })
       // For check tx pending remain.
       let txJobPending = new cron.CronJob({
-        cronTime: '0 */5 * * * *',
+        cronTime: '0 */2 * * * *',
         onTick: async () => {
           let sDate = new Date()
           console.log('START txJobPending --- ' + sDate.toISOString())
@@ -192,6 +200,9 @@ let CronTab = {
       setTimeout(function () {
         txJobPending.start()
       }, 20 * 1000)
+      setTimeout(function () {
+        tokenJob.start()
+      }, 10 * 1000)
       blockJob.start()
     }
     catch (e) {

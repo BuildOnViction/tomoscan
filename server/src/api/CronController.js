@@ -45,12 +45,12 @@ CronController.get('/cron/txs', async (req, res) => {
   }
 })
 
-CronController.get('/cron/accounts', async (req, res) => {
+CronController.get('/cron/tokens', async (req, res) => {
   try {
-    CronTab.getAccounts().then((accounts) => {
-      return res.json({accounts: accounts})
+    CronTab.getTokens().then((tokens) => {
+      return res.json({tokens: tokens})
     }).catch((e) => {
-      res.status(500).send(e.message)
+      return res.status(500).send(e.message)
     })
   }
   catch (e) {
