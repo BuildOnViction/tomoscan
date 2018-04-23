@@ -7,6 +7,7 @@ import Tx from '../models/Tx'
 import TxRepository from '../repositories/TxRepository'
 import Account from '../models/Account'
 import TokenRepository from '../repositories/TokenRepository'
+import Token from '../models/Token'
 
 let cron = require('cron')
 
@@ -106,14 +107,8 @@ let CronTab = {
 
     if (_addresses.length) {
       async.each(_addresses, async (_address, next) => {
-        let isToken = await TokenRepository.checkIsToken(_address)
-        _address.isToken = isToken
-        await _address.save()
-
-        if (isToken) {
-          let token = await TokenRepository.updateToken(_address)
-          tokens.push(token)
-        }
+        let token = await TokenRepository.updateToken(_address)
+        tokens.push(token)
 
         next()
       }, (e) => {
