@@ -103,6 +103,10 @@ br.register('txs-slug', (brs, location) => {
   brs.parent('txs')
   brs.push('Transaction Detail', location)
 })
+br.register('tokens', (brs) => {
+  brs.parent('index')
+  brs.push('Tokens', {name: 'tokens'})
+})
 
 export const state = () => ({
   items: null,

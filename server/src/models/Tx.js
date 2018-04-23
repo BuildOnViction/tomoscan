@@ -20,8 +20,7 @@ const schema = new mongoose.Schema({
   block_id: {type: Schema.Types.ObjectId, ref: 'Block'},
   from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
-  crawl: {type: Boolean, default: false},
-  isToken: Boolean
+  crawl: {type: Boolean, default: false}
 }, {
   timestamps: true,
   toObject: {virtuals: true, getters: true},
