@@ -44,12 +44,12 @@ let TokenRepository = {
       if (!token.hasOwnProperty('name')) {
         let name = await web3.eth.call(
           {to: account.hash, data: tokenFuncs['name']})
-        token.name = web3.utils.hexToAscii(name)
+        token.name = web3.utils.hexToAscii(name).trim()
       }
       if (!token.hasOwnProperty('symbol')) {
         let symbol = await web3.eth.call(
           {to: account.hash, data: tokenFuncs['symbol']})
-        token.symbol = web3.utils.hexToAscii(symbol)
+        token.symbol = web3.utils.hexToAscii(symbol).trim()
       }
       if (!token.hasOwnProperty('decimals')) {
         let decimals = await web3.eth.call(
@@ -59,7 +59,7 @@ let TokenRepository = {
       }
       let totalSupply = await web3.eth.call(
         {to: account.hash, data: tokenFuncs['totalSupply']})
-      totalSupply = web3.utils.hexToNumberString(totalSupply)
+      totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
       token.totalSupply = totalSupply
       token.totalSupplyNumber = totalSupply
 

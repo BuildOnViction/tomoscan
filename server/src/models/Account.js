@@ -9,7 +9,7 @@ const schema = new mongoose.Schema({
   contractCreation: String,
   storageAt: String,
   status: Boolean,
-  status: Boolean,
+  isToken: Boolean,
 }, {
   timestamps: true,
 //  toJSON: {virtuals: true, getters: true},

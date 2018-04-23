@@ -12,6 +12,7 @@
 						<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>
 					</b-nav-item-dropdown>
 					<b-nav-item :to="{name: 'accounts'}">Accounts</b-nav-item>
+					<b-nav-item :to="{name: 'tokens'}">Tokens</b-nav-item>
 				</b-navbar-nav>
 				<search></search>
 			</b-collapse>
