@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "nuxt",
     "build": "nuxt build",
-    "start": "cross-env NODE_ENV=production node build/main.js",
+    "start": "nuxt start",
     "test": "mocha"
   },
   "dependencies": {
