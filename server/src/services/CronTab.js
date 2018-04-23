@@ -107,7 +107,6 @@ let CronTab = {
     if (_addresses.length) {
       async.each(_addresses, async (_address, next) => {
         let isToken = await TokenRepository.checkIsToken(_address)
-        console.log(isToken)
         _address.isToken = isToken
         await _address.save()
 
