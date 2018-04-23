@@ -20,13 +20,13 @@ let TxRepository = {
       _tx = _tx ? _tx : await web3.eth.getTransaction(hash)
 
       // Insert from account.
-      if (_tx.from != null) {
+      if (_tx && _tx.from != null) {
         let from = await AccountRepository.updateAccount(_tx.from)
         _tx.from_id = from
       }
 
       // Insert to account.
-      if (_tx.to != null) {
+      if (_tx && _tx.to != null) {
         let to = await AccountRepository.updateAccount(_tx.to)
         _tx.to_id = to
       }
@@ -53,12 +53,12 @@ let TxRepository = {
       tx = TxRepository.getTxDetail(hash)
     }
 
-    if (!tx.cumulativeGasUsed) {
+    if (tx && !tx.cumulativeGasUsed) {
       let web3 = await Web3Util.getWeb3()
       let receipt = await web3.eth.getTransactionReceipt(hash)
 
       // Update contract type.
-      if (receipt, receipt.hasOwnProperty('contractAddress')) {
+      if (receipt && receipt.hasOwnProperty('contractAddress')) {
         tx.contractAddress = receipt.contractAddress
         let contract = await AccountRepository.updateAccount(
           receipt.contractAddress)
@@ -68,8 +68,10 @@ let TxRepository = {
         }
       }
 
-      tx.cumulativeGasUsed = receipt.cumulativeGasUsed
-      tx.gasUsed = receipt.gasUsed
+      if (receipt) {
+        tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+        tx.gasUsed = receipt.gasUsed
+      }
     }
 
     tx.crawl = true

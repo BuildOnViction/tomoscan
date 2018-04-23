@@ -21,6 +21,7 @@ const schema = new mongoose.Schema({
   from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   crawl: {type: Boolean, default: false},
+  isToken: Boolean
 }, {
   timestamps: true,
   toObject: {virtuals: true, getters: true},
