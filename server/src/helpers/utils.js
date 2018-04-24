@@ -77,3 +77,10 @@ export const toAddress = (text, length) => {
     prefix = '0x'
   return prefix + String(text).substring(0, length) + end
 }
+
+export const unformatAddress = (address) => address.replace(
+  '0x000000000000000000000000', '0x')
+
+export const formatAddress = (address) => address.replace('0x',
+  '0x000000000000000000000000')
+

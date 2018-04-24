@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
-import Web3Util from '../helpers/web3'
 import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
 
@@ -28,17 +27,23 @@ TxController.get('/txs', async (req, res) => {
 
     // Check type listing is pending.
     let type = req.query.type
-    let populates = [{path: 'block_id', select: 'timestamp'}, {path: 'from_id'}, {path: 'to_id'}]
+    let populates = [
+      {
+        path: 'block_id',
+        select: 'timestamp',
+      },
+      {path: 'from_id'},
+      {path: 'to_id'}]
     switch (type) {
       case 'pending':
         params.query = {blockNumber: null, block_id: null}
         params.limit = 0
         break
-      case 'tokens':
+      case 'token':
         populates.push(
-          {path: 'from_id', select: 'isToken', match: {isToken: true}})
+          {path: 'from_id', match: {isToken: true}})
         populates.push(
-          {path: 'to_id', select: 'isToken', match: {isToken: true}})
+          {path: 'to_id', match: {isToken: true}})
         break
     }
     let address = req.query.address
@@ -69,8 +74,7 @@ TxController.get('/txs/:slug', async (req, res) => {
     return res.json(tx)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    return res.status(404).send()
   }
 })
 

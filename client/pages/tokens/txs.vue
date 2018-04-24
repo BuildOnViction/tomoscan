@@ -5,7 +5,7 @@
 			responsive
 			foot-clone
 			small
-			:fields="isPending() ? fields_pending : fields"
+			:fields="fields"
 			:loading="loading"
 			:items="items">
 			<template slot="hash" slot-scope="props">
@@ -74,25 +74,11 @@
     mixins: [mixin],
     head () {
       return {
-        title: this.isPending() ? 'Transactions Pending' : 'Transactions',
+        title: 'Token (ERC20) Transfers \n',
       }
-    },
-    props: {
-      address: {type: String, default: null},
-      type: {type: String},
     },
     data: () => ({
       fields: {
-        hash: {label: 'TxHash'},
-        block: {label: 'Block'},
-        age: {label: 'Age', sortable: false},
-        from: {label: 'from'},
-        arrow: {class: 'text-center'},
-        to: {label: 'To'},
-        value: {label: 'Value', class: 'text-right'},
-        txFee: {label: 'TxFee', class: 'text-right'},
-      },
-      fields_pending: {
         hash: {label: 'TxHash'},
         timestamp: {label: 'LastSeen'},
         gas: {label: 'gasLimit', thClass: 'text-center', tdClass: 'text-right'},
@@ -137,12 +123,6 @@
           page: self.current_page,
           limit: self.per_page,
         }
-        if (self.block) {
-          params.block = self.block
-        }
-        if (self.type) {
-          params.type = self.type
-        }
 
         this.$router.replace({query: params})
 
@@ -151,7 +131,7 @@
         }
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/txs' + '?' + query)
+        let {data} = await this.$axios.get('/api/tokentxs' + '?' + query)
         self.items = data.items
         self.total = data.total
         self.current_page = data.current_page
@@ -186,9 +166,10 @@
 
         self.getDataFromApi()
       },
-      isPending () {
-        return this.type === 'pending' ? true : false
-      },
     },
   }
 </script>
+
+<style scoped>
+
+</style>

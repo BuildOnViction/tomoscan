@@ -107,6 +107,10 @@ br.register('tokens', (brs) => {
   brs.parent('index')
   brs.push('Tokens', {name: 'tokens'})
 })
+br.register('tokens-txs', (brs) => {
+  brs.parent('index')
+  brs.push('Token (ERC20) Transfers', {name: 'tokens-txs'})
+})
 
 export const state = () => ({
   items: null,
