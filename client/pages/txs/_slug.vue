@@ -12,7 +12,8 @@
 					<tr>
 						<td>Block:</td>
 						<td>
-							<nuxt-link :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>
+							<nuxt-link v-if="tx.block_id" :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>
+							<span v-else class="text-muted">Pending...</span>
 						</td>
 					</tr>
 					<tr>
@@ -22,14 +23,15 @@
 					<tr>
 						<td>From:</td>
 						<td>
+							<i v-if="tx.from_id && tx.from_id.isContract" class="fa fa-file-text-o mr-1"></i>
 							<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
 						</td>
 					</tr>
 					<tr>
 						<td>To:</td>
 						<td>
+							<i v-if="tx.to_id && tx.to_id.isContract" class="fa fa-file-text-o mr-1"></i>
 							<nuxt-link v-if="tx.to" :to="{name: 'address-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
-							<nuxt-link v-else :to="{name: 'address-slug', params: {slug: tx.contractAddress}}">{{ tx.contractAddress }}</nuxt-link>
 						</td>
 					</tr>
 					<tr>

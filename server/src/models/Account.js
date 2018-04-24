@@ -7,6 +7,7 @@ const schema = new mongoose.Schema({
   code: String,
   transactionCount: Number,
   contractCreation: String,
+  isContract: Boolean,
   storageAt: String,
   status: Boolean,
   isToken: Boolean,

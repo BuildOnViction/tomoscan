@@ -16,10 +16,19 @@ TxController.get('/txs', async (req, res) => {
       // Get txs by block number.
       await BlockRepository.addBlockByNumber(block_num)
     }
+
+    // Check filter type.
+    if (req.query.filter) {
+      switch (req.query.filter) {
+        case 'latest':
+          params.sort = {createdAt: -1}
+          break
+      }
+    }
+
     // Check type listing is pending.
     let type = req.query.type
-
-    let populates = [{path: 'block_id', select: 'timestamp'}]
+    let populates = [{path: 'block_id', select: 'timestamp'}, {path: 'from_id'}, {path: 'to_id'}]
     switch (type) {
       case 'pending':
         params.query = {blockNumber: null, block_id: null}
@@ -53,6 +62,9 @@ TxController.get('/txs/:slug', async (req, res) => {
     let hash = req.params.slug
     let tx = await TxRepository.getTxDetail(hash)
     tx = await TxRepository.getTxReceipt(hash)
+    // Re-find tx from db with populates.
+    tx = await Tx.findOne({hash: tx.hash}).
+      populate([{path: 'block_id'}, {path: 'from_id'}, {path: 'to_id'}])
 
     return res.json(tx)
   }

@@ -10,15 +10,17 @@
 						responsive
 						:items="blocks"
 						:fields="block_headers" responsive>
-						<template slot="block" slot-scope="data">
+						<template slot="block" slot-scope="props">
 							<transition name="fade">
-								<nuxt-link :to="{name: 'blocks-slug', params: {slug: data.item.number}}">{{ data.item.number }}</nuxt-link>
+								<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 							</transition>
 						</template>
-						<template slot="txns" slot-scope="data">{{ data.item.e_tx }}</template>
-						<template slot="signer" slot-scope="data">
+
+						<template slot="txns" slot-scope="props">{{ props.item.e_tx }}</template>
+
+						<template slot="signer" slot-scope="props">
 							<transition name="fade">
-								<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: data.item.signer}}">{{ data.item.signer }}</nuxt-link>
+								<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>
 							</transition>
 						</template>
 					</b-table>
@@ -34,21 +36,30 @@
 						small
 						:items="txs"
 						:fields="tx_headers">
-						<template slot="hash" slot-scope="data">
-							<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: data.item.hash}}">{{ data.item.hash }}</nuxt-link>
+						<template slot="hash" slot-scope="props">
+							<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 						</template>
-						<template slot="from" slot-scope="data">
-							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: data.item.from}}">{{ data.item.from }}</nuxt-link>
+
+						<template slot="arrow" slot-scope="props">
+							<i class="fa fa-arrow-right text-success"></i>
 						</template>
-						<template slot="arrow" slot-scope="data">
-							<i class="fa fa-arrow-alt-right text-success"></i>
+
+						<template slot="from" slot-scope="props">
+							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">
+								<i v-if="props.item.from_id && props.item.from_id.isContract" class="fa fa-file-text-o mr-1 pull-left"></i>
+								{{ props.item.from }}
+							</nuxt-link>
 						</template>
-						<template slot="to" slot-scope="data">
-							<nuxt-link v-if="data.item.to" class="address__tag" :to="{name: 'address-slug', params: {slug: data.item.to}}">{{ data.item.to }}</nuxt-link>
-							<nuxt-link v-else class="address__tag" :to="{name: 'address-slug', params: {slug: data.item.contractAddress}}">{{ data.item.contractAddress }}</nuxt-link>
+
+						<template slot="to" slot-scope="props">
+							<nuxt-link v-if="props.item.to" class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.to}}">
+								<i v-if="props.item.to_id && props.item.to_id.isContract" class="fa fa-file-text-o mr-1"></i>
+								{{ props.item.to }}
+							</nuxt-link>
 						</template>
-						<template slot="value" slot-scope="data">
-							{{ formatUnit(toEther(data.item.value)) }}
+
+						<template slot="value" slot-scope="props">
+							{{ formatUnit(toEther(props.item.value)) }}
 						</template>
 					</b-table>
 				</b-card>
@@ -82,7 +93,7 @@
       tx_headers: {
         hash: {label: 'TXID'},
         from: {label: 'From'},
-        arrow: {},
+        arrow: {class: 'text-center'},
         to: {label: 'To'},
         value: {label: 'Value'},
       },
@@ -108,7 +119,7 @@
     mounted () {
       let self = this
 
-      // Init breadcrumbs data.
+      // Init breadcrumbs props.
       this.$store.commit('breadcrumb/setItems', {name: 'index', to: {name: 'index'}})
 
       self.getLastestBlocks()

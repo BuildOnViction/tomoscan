@@ -1,6 +1,7 @@
 import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
+import TokenRepository from './TokenRepository'
 
 let AccountRepository = {
   updateAccount: async (hash) => {
@@ -31,11 +32,15 @@ let AccountRepository = {
       _account.code = code
     }
 
+    _account.isContract = (_account.code !== '0x') ? true : false
     _account.crawl = false
     _account.status = true
 
     let account = await Account.findOneAndUpdate({hash: hash}, _account,
       {upsert: true, new: true})
+
+    // Check and update token.
+    await TokenRepository.updateToken(account)
 
     return account
   },

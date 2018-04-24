@@ -2,6 +2,9 @@ import Tx from '../models/Tx'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
 import async from 'async'
+import Account from '../models/Account'
+import Block from '../models/Block'
+import BlockRepository from './BlockRepository'
 
 let TxRepository = {
   getTxDetail: async (hash) => {
@@ -53,24 +56,27 @@ let TxRepository = {
       tx = TxRepository.getTxDetail(hash)
     }
 
-    if (tx && !tx.cumulativeGasUsed) {
+    if (tx && !tx.blockNumber) {
       let web3 = await Web3Util.getWeb3()
       let receipt = await web3.eth.getTransactionReceipt(hash)
 
       // Update contract type.
-      if (receipt && receipt.hasOwnProperty('contractAddress')) {
+      if (receipt && typeof receipt.contractAddress !== 'undefined') {
         tx.contractAddress = receipt.contractAddress
-        let contract = await AccountRepository.updateAccount(
-          receipt.contractAddress)
-        if (contract) {
-          contract.contractCreation = tx.from
-          contract.save()
-        }
+        await Account.findOneAndUpdate(
+          {hash: receipt.contractAddress},
+          {hash: receipt.contractAddress, contractCreation: tx.from})
       }
 
       if (receipt) {
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
         tx.gasUsed = receipt.gasUsed
+        if (receipt.blockNumber) {
+          tx.blockNumber = receipt.blockNumber
+          // find block.
+          let block = BlockRepository.addBlockByNumber(tx.blockNumber)
+          tx.block = block
+        }
       }
     }
 

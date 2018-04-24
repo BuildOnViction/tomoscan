@@ -31,27 +31,22 @@ let TokenRepository = {
 
     let isToken = await TokenRepository.checkIsToken(account)
     let tokenFuncs = TokenRepository.getTokenFuncs()
-    let token = null
+    let token = {}
 
-    if (isToken) {
+    if (!account.crawl && isToken) {
       token = await Token.findOne({hash: account.hash})
-      if (!token) {
-        token = new Token()
-        token.hash = account.hash
-      }
+      token = token ? token : {}
 
       let web3 = await Web3Util.getWeb3()
-      if (!token.hasOwnProperty('name')) {
+      if (!token) {
         let name = await web3.eth.call(
           {to: account.hash, data: tokenFuncs['name']})
         token.name = web3.utils.hexToAscii(name).trim()
-      }
-      if (!token.hasOwnProperty('symbol')) {
+
         let symbol = await web3.eth.call(
           {to: account.hash, data: tokenFuncs['symbol']})
         token.symbol = web3.utils.hexToAscii(symbol).trim()
-      }
-      if (!token.hasOwnProperty('decimals')) {
+
         let decimals = await web3.eth.call(
           {to: account.hash, data: tokenFuncs['decimals']})
 
@@ -63,12 +58,12 @@ let TokenRepository = {
       token.totalSupply = totalSupply
       token.totalSupplyNumber = totalSupply
 
-      token = await Token.findOneAndUpdate({hash: token.hash}, token,
+      token = await Token.findOneAndUpdate({hash: account.hash}, token,
         {upsert: true, new: true})
     }
 
     // Set flag is token for account.
-    await Account.update({hash: account.hash}, {isToken: isToken})
+    await Account.update({hash: account.hash}, {isToken: isToken, crawl: true})
 
     return token
   },
