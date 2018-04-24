@@ -116,7 +116,7 @@ let TxRepository = {
     _log.from = unformatAddress(log.topics[1])
     _log.to = unformatAddress(log.topics[2])
     _log.value = web3.utils.hexToNumberString(log.data)
-    _log.valueNumber = web3.utils.hexToNumber(log.data)
+    _log.valueNumber = _log.value
     return await TokenTx.findOneAndUpdate(
       {hash: _log.transactionHash, from: _log.from, to: _log.to}, _log,
       {upsert: true, new: true})

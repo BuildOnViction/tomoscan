@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
-import Web3Util from '../helpers/web3'
 import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
 

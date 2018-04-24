@@ -2,8 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
-  hash: {type: String, unique: true, required: true},
-  nonce: Number,
+  hash: String,
   blockHash: String,
   blockNumber: Number,
   transactionHash: String,

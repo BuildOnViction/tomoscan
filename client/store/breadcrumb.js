@@ -99,10 +99,6 @@ br.register('txs-pending', (brs) => {
   brs.parent('index')
   brs.push('Transactions Pending', {name: 'txs-pending'})
 })
-br.register('txs-token', (brs) => {
-  brs.parent('index')
-  brs.push('Token (ERC20) Transfers', {name: 'txs-token'})
-})
 br.register('txs-slug', (brs, location) => {
   brs.parent('txs')
   brs.push('Transaction Detail', location)
@@ -110,6 +106,10 @@ br.register('txs-slug', (brs, location) => {
 br.register('tokens', (brs) => {
   brs.parent('index')
   brs.push('Tokens', {name: 'tokens'})
+})
+br.register('tokens-txs', (brs) => {
+  brs.parent('index')
+  brs.push('Token (ERC20) Transfers', {name: 'tokens-txs'})
 })
 
 export const state = () => ({
