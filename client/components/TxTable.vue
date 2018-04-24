@@ -5,42 +5,54 @@
 			responsive
 			foot-clone
 			small
-			:fields="fields"
+			:fields="isPending() ? fields_pending : fields"
 			:loading="loading"
 			:items="items">
 			<template slot="hash" slot-scope="props">
 				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
+
 			<template slot="block" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				<nuxt-link v-if="props.item.block_id" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				<span v-else class="text-muted">Pending...</span>
 			</template>
+
 			<template slot="age" slot-scope="props">
-				<div v-if="props.item.block_id">
-					<span :id="'age__' + props.index">{{ moment(props.item.block_id.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'age__' + props.index">
-						{{ moment(props.item.block_id.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-					</b-tooltip>
-				</div>
-				<span v-else="pending"></span>
+				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'age__' + props.index">
+					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+				</b-tooltip>
 			</template>
+
+			<template slot="gas" slot-scope="props">
+				<span>{{ formatNumber(props.item.gas) }}</span>
+			</template>
+
 			<template slot="from" slot-scope="props">
 				<div class="address__tag">
 					<span v-if="address == props.item.from">{{ props.item.from }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 				</div>
 			</template>
+
 			<template slot="arrow" slot-scope="props">
 				<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
 			</template>
+
 			<template slot="to" slot-scope="props">
 				<div class="address__tag">
+					<i v-if="props.item.isContract" class="fa fa-file-text-o mr-1"></i>
 					<span v-if="address == props.item.to">{{ props.item.to }}</span>
-					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">{{ props.item.to }}</nuxt-link>
+					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
+						<span>{{ props.item.to }}</span>
+					</nuxt-link>
 				</div>
 			</template>
+
 			<template slot="value" slot-scope="props">
 				{{ formatUnit(toEther(props.item.value)) }}
 			</template>
+
 			<template slot="txFee" slot-scope="props">
 				{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}
 			</template>
@@ -59,9 +71,11 @@
 
   export default {
     mixins: [mixin],
-    head: () => ({
-      title: 'Transactions',
-    }),
+    head () {
+      return {
+        title: this.isPending() ? 'Transactions Pending' : 'Transactions',
+      }
+    },
     props: {
       address: {type: String, default: null},
       type: {type: String},
@@ -76,6 +90,15 @@
         to: {label: 'To'},
         value: {label: 'Value', class: 'text-right'},
         txFee: {label: 'TxFee', class: 'text-right'},
+      },
+      fields_pending: {
+        hash: {label: 'TxHash'},
+        timestamp: {label: 'LastSeen'},
+        gas: {label: 'gasLimit', thClass: 'text-center', tdClass: 'text-right'},
+        from: {label: 'from'},
+        arrow: {class: 'text-center'},
+        to: {label: 'To'},
+        value: {label: 'Value', class: 'text-right'},
       },
       loading: true,
       pagination: {},
@@ -99,10 +122,6 @@
       if (query.block) {
         self.block = query.block
       }
-
-//      if(! self.isPending()) {
-//        self.headers.push({label: 'Block', key: 'block'})
-//      }
 
       this.getDataFromApi()
     },
@@ -149,11 +168,18 @@
         let _items = []
         items.forEach((item) => {
           let _item = item
+          // Format for smart contract.
           _item.isContract = false
-          if (item.hasOwnProperty('contractAddress')) {
+          if (item.contractAddress) {
             _item.isContract = true
             _item.to = item.contractAddress
           }
+
+          // Format for timestamp.
+          if (!item.block_id) {
+            _item.timestamp = item.createdAt
+          }
+
           _items.push(_item)
         })
 

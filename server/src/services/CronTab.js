@@ -12,7 +12,7 @@ import Token from '../models/Token'
 let cron = require('cron')
 
 let CronTab = {
-  getBlocks: () => new Promise(async (resolve, reject) => {
+  getBlocks:async () => {
     let web3 = await
       Web3Util.getWeb3()
     let max_block_num = await
@@ -38,18 +38,18 @@ let CronTab = {
       next()
     }, async (e) => {
       if (e) {
-        reject(e)
+        throw e
       }
 
       let setting = await Setting.findOneAndUpdate(
         {meta_key: 'max_block_crawl'},
         {meta_value: inserted_blocks}, {upsert: true, new: true})
 
-      resolve(_blocks)
+      return _blocks
     })
-  }),
+  },
 
-  getTransactions: () => new Promise(async (resolve, reject) => {
+  getTransactions: async () => {
     let txs = []
 
     // Get blocks transaction for crawl.
@@ -67,15 +67,15 @@ let CronTab = {
         next()
       }, (e) => {
         if (e) {
-          reject(e)
+          throw e
         }
 
-        resolve(txs)
+        return txs
       })
     }
-  }),
+  },
 
-  getPendingTransactions: () => new Promise(async (resolve, reject) => {
+  getPendingTransactions: async () => {
     let txs = []
     // Get blocks transaction pending for crawl.
     let _txs = await Tx.find({blockNumber: null}).limit(50)
@@ -92,15 +92,15 @@ let CronTab = {
         next()
       }, (e) => {
         if (e) {
-          reject(e)
+          throw e
         }
 
-        resolve(txs)
+        return txs
       })
     }
-  }),
+  },
 
-  getTokens: () => new Promise(async (resolve, reject) => {
+  getTokens: async () => {
     let tokens = []
 
     let _addresses = await Account.find({isToken: {$exists: false}}).limit(50)
@@ -113,13 +113,13 @@ let CronTab = {
         next()
       }, (e) => {
         if (e) {
-          reject(e)
+          throw e
         }
 
-        resolve(tokens)
+        return tokens
       })
     }
-  }),
+  },
 
   start: () => {
     try {
@@ -197,7 +197,7 @@ let CronTab = {
       }, 20 * 1000)
       setTimeout(function () {
         tokenJob.start()
-      }, 10 * 1000)
+      }, 30 * 1000)
       blockJob.start()
     }
     catch (e) {
