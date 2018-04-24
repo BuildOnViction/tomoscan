@@ -15,7 +15,7 @@
 					</b-list-group-item>
 					<b-list-group-item>
 						Transaction Count:
-						<span-loading class="pull-right" v-bind:text="address ? address.transactionCount : null"></span-loading>
+						<span-loading class="pull-right" v-bind:text="address ? formatNumber(address.transactionCount) : null"></span-loading>
 					</b-list-group-item>
 					<b-list-group-item>
 						Code:

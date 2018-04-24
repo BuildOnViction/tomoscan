@@ -1,7 +1,6 @@
 import Web3Util from '../helpers/web3'
 import Setting from '../models/Setting'
 import _ from 'lodash'
-import async from 'async'
 import BlockRepository from '../repositories/BlockRepository'
 import Tx from '../models/Tx'
 import TxRepository from '../repositories/TxRepository'
@@ -12,7 +11,7 @@ import Token from '../models/Token'
 let cron = require('cron')
 
 let CronTab = {
-  getBlocks:async () => {
+  getBlocks: async () => {
     let web3 = await
       Web3Util.getWeb3()
     let max_block_num = await
@@ -31,22 +30,17 @@ let CronTab = {
     let arr_indexs = _.range(inserted_blocks, max_block_crawl_num)
     let _blocks = []
 
-    async.each(arr_indexs, async (number, next) => {
+    for (let i = 0; i < arr_indexs.length; i++) {
+      let number = arr_indexs[i]
       let _block = await BlockRepository.addBlockByNumber(number)
       _blocks.push(_block)
+    }
 
-      next()
-    }, async (e) => {
-      if (e) {
-        throw e
-      }
+    let setting = await Setting.findOneAndUpdate(
+      {meta_key: 'max_block_crawl'},
+      {meta_value: inserted_blocks}, {upsert: true, new: true})
 
-      let setting = await Setting.findOneAndUpdate(
-        {meta_key: 'max_block_crawl'},
-        {meta_value: inserted_blocks}, {upsert: true, new: true})
-
-      return _blocks
-    })
+    return _blocks
   },
 
   getTransactions: async () => {
@@ -55,24 +49,17 @@ let CronTab = {
     // Get blocks transaction for crawl.
     let _txs = await Tx.find({crawl: false}).limit(50)
 
-    if (_txs.length) {
-      async.each(_txs, async (tx, next) => {
-        let _tx = await TxRepository.getTxDetail(tx.hash)
-        _tx = await TxRepository.getTxReceipt(tx.hash)
+    for (let i = 0; i < _txs.length; i++) {
+      let tx = _txs[i]
+      let _tx = await TxRepository.getTxDetail(tx.hash)
+      _tx = await TxRepository.getTxReceipt(tx.hash)
 
-        if (_tx) {
-          txs.push(_tx)
-        }
-
-        next()
-      }, (e) => {
-        if (e) {
-          throw e
-        }
-
-        return txs
-      })
+      if (_tx) {
+        txs.push(_tx)
+      }
     }
+
+    return txs
   },
 
   getPendingTransactions: async () => {
@@ -80,24 +67,17 @@ let CronTab = {
     // Get blocks transaction pending for crawl.
     let _txs = await Tx.find({blockNumber: null}).limit(50)
 
-    if (_txs.length) {
-      async.each(_txs, async (tx, next) => {
-        let _tx = await TxRepository.getTxDetail(tx.hash)
-        _tx = await TxRepository.getTxReceipt(tx.hash)
+    for (let i = 0; i < _txs.length; i++) {
+      let tx = _txs[i]
+      let _tx = await TxRepository.getTxDetail(tx.hash)
+      _tx = await TxRepository.getTxReceipt(tx.hash)
 
-        if (_tx) {
-          txs.push(_tx)
-        }
-
-        next()
-      }, (e) => {
-        if (e) {
-          throw e
-        }
-
-        return txs
-      })
+      if (_tx) {
+        txs.push(_tx)
+      }
     }
+
+    return txs
   },
 
   getTokens: async () => {
@@ -105,20 +85,13 @@ let CronTab = {
 
     let _addresses = await Account.find({isToken: {$exists: false}}).limit(50)
 
-    if (_addresses.length) {
-      async.each(_addresses, async (_address, next) => {
-        let token = await TokenRepository.updateToken(_address)
-        tokens.push(token)
-
-        next()
-      }, (e) => {
-        if (e) {
-          throw e
-        }
-
-        return tokens
-      })
+    for (let i = 0; i < _addresses.length; i++) {
+      let _address = _addresses[i]
+      let token = await TokenRepository.updateToken(_address)
+      tokens.push(token)
     }
+
+    return tokens
   },
 
   start: () => {
@@ -130,12 +103,11 @@ let CronTab = {
           let sDate = new Date()
           console.log('START blockJob --- ' + sDate.toISOString())
 
-          CronTab.getBlocks().then((blocks) => {
+          let blocks = await CronTab.getBlocks()
+          if (blocks) {
             let eDate = new Date()
             console.log('END blockJob --- ' + eDate.toISOString())
-          }).catch((e) => {
-            throw e
-          })
+          }
         },
         start: false,
       })
@@ -146,12 +118,11 @@ let CronTab = {
           let sDate = new Date()
           console.log('START txJob --- ' + sDate.toISOString())
 
-          CronTab.getTransactions().then((txs) => {
+          let txs = await CronTab.getTransactions()
+          if (txs) {
             let eDate = new Date()
             console.log('END txJob --- ' + eDate.toISOString())
-          }).catch((e) => {
-            throw e
-          })
+          }
         },
         start: false,
       })
@@ -162,12 +133,11 @@ let CronTab = {
           let sDate = new Date()
           console.log('START txJobPending --- ' + sDate.toISOString())
 
-          CronTab.getPendingTransactions().then((txs) => {
+          let txs = await CronTab.getPendingTransactions()
+          if (txs) {
             let eDate = new Date()
             console.log('END txJobPending --- ' + eDate.toISOString())
-          }).catch((e) => {
-            throw e
-          })
+          }
         },
         start: false,
       })
@@ -178,12 +148,11 @@ let CronTab = {
           let sDate = new Date()
           console.log('START tokenJob --- ' + sDate.toISOString())
 
-          CronTab.getTokens().then((txs) => {
+          let tokens = await CronTab.getTokens()
+          if (tokens) {
             let eDate = new Date()
             console.log('END tokenJob --- ' + eDate.toISOString())
-          }).catch((e) => {
-            throw e
-          })
+          }
         },
         start: false,
       })

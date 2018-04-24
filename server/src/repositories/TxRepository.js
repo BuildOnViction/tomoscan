@@ -1,10 +1,11 @@
 import Tx from '../models/Tx'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
-import async from 'async'
+import web3 from 'web3'
 import Account from '../models/Account'
-import Block from '../models/Block'
+import TokenTx from '../models/TokenTx'
 import BlockRepository from './BlockRepository'
+import { unformatAddress } from '../helpers/utils'
 
 let TxRepository = {
   getTxDetail: async (hash) => {
@@ -34,7 +35,7 @@ let TxRepository = {
         _tx.to_id = to
       }
 
-      tx = await Tx.findOneAndUpdate({hash: _tx.hash}, _tx,
+      tx = await Tx.findOneAndUpdate({hash: hash}, _tx,
         {upsert: true, new: true})
 
       if (tx.to_id === null) {
@@ -77,6 +78,14 @@ let TxRepository = {
           let block = BlockRepository.addBlockByNumber(tx.blockNumber)
           tx.block = block
         }
+        // Parse log.
+        let logs = receipt.logs
+        tx.logs = logs
+        if (logs.length) {
+          logs.forEach((log) => {
+            TxRepository.parseLog(log)
+          })
+        }
       }
     }
 
@@ -94,6 +103,23 @@ let TxRepository = {
     return await Tx.update({hash: {$in: hashes}},
       {block_id: block, blockNumber: block.number, blockHash: block.hash},
       {multi: true})
+  },
+
+  parseLog: async (log) => {
+    const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+    console.log(TOPIC_TRANSFER, log.topics[0])
+    if (log.topics[0] != TOPIC_TRANSFER) {
+      return false
+    }
+
+    let _log = log
+    _log.from = unformatAddress(log.topics[1])
+    _log.to = unformatAddress(log.topics[2])
+    _log.value = web3.utils.hexToNumberString(log.data)
+    _log.valueNumber = web3.utils.hexToNumber(log.data)
+    return await TokenTx.findOneAndUpdate(
+      {hash: _log.transactionHash, from: _log.from, to: _log.to}, _log,
+      {upsert: true, new: true})
   },
 }
 

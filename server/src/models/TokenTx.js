@@ -10,24 +10,16 @@ const schema = new mongoose.Schema({
   transactionIndex: Number,
   from: String,
   to: String,
+  data: String,
   value: String,
-  gas: Number,
-  gasPrice: String,
+  valueNumber: Number,
   input: String,
-  contractAddress: String,
-  cumulativeGasUsed: Number,
-  gasUsed: Number,
-  logs: Array,
-  block_id: {type: Schema.Types.ObjectId, ref: 'Block'},
-  from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
-  to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
-  crawl: {type: Boolean, default: false},
 }, {
   timestamps: true,
   toObject: {virtuals: true, getters: true},
   toJSON: {virtuals: true, getters: true},
 })
 
-let Tx = mongoose.model('Tx', schema)
+let TokenTx = mongoose.model('TokenTx', schema)
 
-export default Tx
+export default TokenTx
