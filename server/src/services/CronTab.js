@@ -7,6 +7,7 @@ import TxRepository from '../repositories/TxRepository'
 import Account from '../models/Account'
 import TokenRepository from '../repositories/TokenRepository'
 import Token from '../models/Token'
+import AccountRepository from '../repositories/AccountRepository'
 
 let cron = require('cron')
 
@@ -47,11 +48,11 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({crawl: false}).limit(20)
+    let _txs = await Tx.find({crawl: false}).limit(100)
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]
-      let _tx = await TxRepository.getTxDetail(tx.hash)
+      let _tx = await TxRepository.getTxPending(tx.hash)
       _tx = await TxRepository.getTxReceipt(tx.hash)
 
       if (_tx) {
@@ -69,8 +70,7 @@ let CronTab = {
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]
-      let _tx = await TxRepository.getTxDetail(tx.hash)
-      _tx = await TxRepository.getTxReceipt(tx.hash)
+      let _tx = await TxRepository.getTxReceipt(tx.hash)
 
       if (_tx) {
         txs.push(_tx)
@@ -78,6 +78,21 @@ let CronTab = {
     }
 
     return txs
+  },
+
+  getAccounts: async () => {
+    let accounts = []
+    // Get blocks transaction pending for crawl.
+    let records = await Account.find(
+      {$or: [{status: {$exists: false}}, {status: false}]}).limit(20)
+
+    for (let i = 0; i < records.length; i++) {
+      let record = records[i]
+      let account = await AccountRepository.updateAccount(record.hash)
+      accounts.push(account)
+    }
+
+    return accounts
   },
 
   getTokens: async () => {
@@ -126,6 +141,21 @@ let CronTab = {
         },
         start: false,
       })
+      // For account detail.
+      let accountJob = new cron.CronJob({
+        cronTime: '0 */2 * * * *', // 2 minutes.
+        onTick: async () => {
+          let sDate = new Date()
+          console.log('START accountJob --- ' + sDate.toISOString())
+
+          let txs = await CronTab.getAccounts()
+          if (txs) {
+            let eDate = new Date()
+            console.log('END accountJob --- ' + eDate.toISOString())
+          }
+        },
+        start: false,
+      })
       // For check tx pending remain.
       let txJobPending = new cron.CronJob({
         cronTime: '0 */2 * * * *',
@@ -168,6 +198,7 @@ let CronTab = {
         tokenJob.start()
       }, 30 * 1000)
       blockJob.start()
+      accountJob.start()
     }
     catch (e) {
       console.log(e)

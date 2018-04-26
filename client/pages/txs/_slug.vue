@@ -23,14 +23,14 @@
 					<tr>
 						<td>From:</td>
 						<td>
-							<i v-if="tx.from_id && tx.from_id.isContract" class="fa fa-file-text-o mr-1"></i>
+							<i v-if="tx.from_model && tx.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
 							<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
 						</td>
 					</tr>
 					<tr>
 						<td>To:</td>
 						<td>
-							<i v-if="tx.to_id && tx.to_id.isContract" class="fa fa-file-text-o mr-1"></i>
+							<i v-if="tx.to_model && tx.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
 							<nuxt-link v-if="tx.to" :to="{name: 'address-slug', params: {slug: tx.to}}">{{ tx.to }}</nuxt-link>
 						</td>
 					</tr>

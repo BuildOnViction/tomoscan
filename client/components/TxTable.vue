@@ -30,7 +30,7 @@
 
 			<template slot="from" slot-scope="props">
 				<div class="address__tag">
-					<i v-if="props.item.from_id && props.item.from_id.isContract" class="fa fa-file-text-o mr-1"></i>
+					<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
 					<span v-if="address == props.item.from">{{ props.item.from }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 				</div>
@@ -42,7 +42,7 @@
 
 			<template slot="to" slot-scope="props">
 				<div class="address__tag">
-					<i v-if="props.item.to_id && props.item.to_id.isContract" class="fa fa-file-text-o mr-1"></i>
+					<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
 					<span v-if="address == props.item.to">{{ props.item.to }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
 						<span>{{ props.item.to }}</span>
