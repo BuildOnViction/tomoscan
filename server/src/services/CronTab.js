@@ -86,10 +86,15 @@ let CronTab = {
     let records = await Account.find(
       {$or: [{status: {$exists: false}}, {status: false}]}).limit(20)
 
-    for (let i = 0; i < records.length; i++) {
-      let record = records[i]
-      let account = await AccountRepository.updateAccount(record.hash)
-      accounts.push(account)
+    if (records.length) {
+      for (let i = 0; i < records.length; i++) {
+        let record = records[i]
+        let account = await AccountRepository.updateAccount(record.hash)
+        accounts.push(account)
+      }
+    }
+    else {
+      Account.update({status: true}, {status: false})
     }
 
     return accounts
@@ -98,12 +103,17 @@ let CronTab = {
   getTokens: async () => {
     let tokens = []
 
-    let _addresses = await Account.find({isToken: {$exists: false}}).limit(50)
+    let records = await Token.find(
+      {$or: [{status: {$exists: false}}, {status: false}]}).limit(20)
 
-    for (let i = 0; i < _addresses.length; i++) {
-      let _address = _addresses[i]
-      let token = await TokenRepository.updateToken(_address)
-      tokens.push(token)
+    if (records.length) {
+      for (let i = 0; i < records.length; i++) {
+        let token = await TokenRepository.updateToken(records[i])
+        tokens.push(token)
+      }
+    }
+    else {
+      Token.update({status: true}, {status: false})
     }
 
     return tokens

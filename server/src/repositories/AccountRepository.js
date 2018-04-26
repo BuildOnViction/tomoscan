@@ -30,6 +30,13 @@ let AccountRepository = {
     let code = await web3.eth.getCode(hash)
     if (_account.code !== code) {
       _account.code = code
+
+      let isToken = await TokenRepository.checkIsToken(code)
+      if (isToken) {
+        // Insert token pending.
+        TokenRepository.addTokenPending(hash)
+      }
+      _account.isToken = isToken
     }
 
     _account.isContract = (_account.code !== '0x') ? true : false
@@ -40,7 +47,7 @@ let AccountRepository = {
       {upsert: true, new: true})
 
     // Check and update token.
-    await TokenRepository.updateToken(account)
+//    await TokenRepository.updateToken(account)
 
     return account
   },
