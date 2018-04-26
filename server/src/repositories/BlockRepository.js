@@ -35,6 +35,8 @@ let BlockRepository = {
     // Update address signer.
     await Account.findOneAndUpdate({hash: signer}, {hash: signer})
 
+    delete _block['_id']
+
     block = await Block.findOneAndUpdate({number: _block.number}, _block,
       {upsert: true, new: true})
 
@@ -57,6 +59,8 @@ let BlockRepository = {
             if (tx.to !== null) {
               tx.to_model = await AccountRepository.addAccountPending(tx.to)
             }
+
+            delete tx['_id']
 
             await Tx.findOneAndUpdate({hash: tx.hash}, tx,
               {upsert: true, new: true})

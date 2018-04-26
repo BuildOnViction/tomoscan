@@ -42,11 +42,10 @@ let AccountRepository = {
     _account.isContract = (_account.code !== '0x') ? true : false
     _account.status = true
 
+    delete _account['_id']
+
     let account = await Account.findOneAndUpdate({hash: hash}, _account,
       {upsert: true, new: true})
-
-    // Check and update token.
-//    await TokenRepository.updateToken(account)
 
     return account
   },
