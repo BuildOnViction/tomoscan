@@ -38,24 +38,24 @@ let TokenRepository = {
     let web3 = await Web3Util.getWeb3()
     if (typeof token.name === 'undefined') {
       let name = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['name']})
+        {to: hash, data: tokenFuncs['name']})
       token.name = web3.utils.hexToAscii(name).trim()
     }
 
     if (typeof token.symbol === 'undefined') {
       let symbol = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['symbol']})
+        {to: hash, data: tokenFuncs['symbol']})
       token.symbol = web3.utils.hexToAscii(symbol).trim()
     }
 
     if (typeof token.decimals === 'undefined') {
       let decimals = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['decimals']})
+        {to: hash, data: tokenFuncs['decimals']})
       token.decimals = web3.utils.hexToNumber(decimals)
     }
 
     let totalSupply = await web3.eth.call(
-      {to: account.hash, data: tokenFuncs['totalSupply']})
+      {to: hash, data: tokenFuncs['totalSupply']})
     totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
     token.totalSupply = totalSupply
     token.totalSupplyNumber = totalSupply
