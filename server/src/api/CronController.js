@@ -41,6 +41,18 @@ CronController.get('/cron/txs', async (req, res) => {
   }
 })
 
+CronController.get('/cron/accounts', async (req, res) => {
+  try {
+    let accounts = await CronTab.getAccounts()
+
+    return res.json({accounts: accounts})
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
 CronController.get('/cron/tokens', async (req, res) => {
   try {
     let tokens = await CronTab.getTokens()

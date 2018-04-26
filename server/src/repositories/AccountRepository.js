@@ -44,6 +44,11 @@ let AccountRepository = {
 
     return account
   },
+
+  addAccountPending: async (hash) => {
+    return await Account.findOneAndUpdate({hash: hash},
+      {hash: hash, status: false}, {upsert: true, new: true})
+  },
 }
 
 export default AccountRepository

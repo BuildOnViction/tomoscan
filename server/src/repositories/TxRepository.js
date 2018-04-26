@@ -4,54 +4,45 @@ import Web3Util from '../helpers/web3'
 import web3 from 'web3'
 import Account from '../models/Account'
 import TokenTx from '../models/TokenTx'
-import BlockRepository from './BlockRepository'
 import { unformatAddress } from '../helpers/utils'
 import Token from '../models/Token'
 import TokenRepository from './TokenRepository'
 import Block from '../models/Block'
 
 let TxRepository = {
-  getTxDetail: async (hash) => {
+  getTxPending: async (hash) => {
     try {
-      if (!hash) {
+      let tx = await Tx.findOne({hash: hash})
+      let web3 = await Web3Util.getWeb3()
+      if (!tx) {
+        tx = {}
+        tx.hash = hash
+      }
+
+      let _tx = await web3.eth.getTransaction(hash)
+      if (!_tx) {
         return false
       }
-      let _tx = await Tx.findOne({hash: hash})
 
-      let tx = null
-      if (_tx && _tx.crawl) {
-        tx = _tx
+      if (_tx.from !== null) {
+        tx.from_model = await AccountRepository.addAccountPending(_tx.from)
+      }
+      if (_tx.to !== null) {
+        tx.to_model = await AccountRepository.addAccountPending(_tx.to)
       }
       else {
-        let web3 = await Web3Util.getWeb3()
-        // Get tx detail using web3.
-        _tx = _tx ? _tx : await web3.eth.getTransaction(hash)
-        if (!_tx) {
-          return false
-        }
-
-        // Insert from account.
-        if (_tx && _tx.from != null) {
-          let from = await AccountRepository.updateAccount(_tx.from)
-          _tx.from_id = from
-        }
-
-        // Insert to account.
-        if (_tx && _tx.to != null) {
-          let to = await AccountRepository.updateAccount(_tx.to)
-          _tx.to_id = to
-        }
-
-        tx = await Tx.findOneAndUpdate({hash: hash}, _tx,
-          {upsert: true, new: true})
-
-        if (tx.to_id === null) {
-          // Get smartcontract address if to is null.
-          await TxRepository.getTxReceipt(hash)
+        let receipt = await web3.eth.getTransactionReceipt(hash)
+        if (receipt && typeof receipt.contractAddress !== 'undefined') {
+          tx.contractAddress = receipt.contractAddress
+          tx.to_model = await Account.findOneAndUpdate(
+            {hash: receipt.contractAddress},
+            {hash: receipt.contractAddress, contractCreation: tx.from})
         }
       }
+      tx = Object.assign(tx, _tx)
 
-      return tx
+      return await Tx.findOneAndUpdate({hash: hash}, tx,
+        {upsert: true, new: true})
     }
     catch (e) {
       console.log(e)
@@ -60,55 +51,50 @@ let TxRepository = {
   },
 
   getTxReceipt: async (hash) => {
-    if (!hash) {
-      return false
-    }
-    // Check exist tx receipt.
-    let tx = await Tx.findOne({hash: hash})
-    if (!tx) {
-      tx = TxRepository.getTxDetail(hash)
-    }
-
-    if (tx && !tx.blockNumber) {
+    try {
+      if (!hash) {
+        return false
+      }
+      let tx = await Tx.findOne({hash: hash})
       let web3 = await Web3Util.getWeb3()
+      if (!tx) {
+        tx = {}
+        tx.hash = hash
+      }
       let receipt = await web3.eth.getTransactionReceipt(hash)
 
-      // Update contract type.
-      if (receipt && typeof receipt.contractAddress !== 'undefined') {
-        tx.contractAddress = receipt.contractAddress
-        await Account.findOneAndUpdate(
-          {hash: receipt.contractAddress},
-          {hash: receipt.contractAddress, contractCreation: tx.from})
+      if (!receipt) {
+        return false
       }
 
-      if (receipt) {
-        tx.cumulativeGasUsed = receipt.cumulativeGasUsed
-        tx.gasUsed = receipt.gasUsed
-        if (receipt.blockNumber) {
-          tx.blockNumber = receipt.blockNumber
-          // find block.
-          let block = BlockRepository.addBlockByNumber(tx.blockNumber)
+      tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+      tx.gasUsed = receipt.gasUsed
+      if (receipt.blockNumber) {
+        tx.blockNumber = receipt.blockNumber
+        // Find block.
+        let block = await Block.findOne({number: receipt.blockNumber})
+        if (block) {
           tx.block = block
         }
-        // Parse log.
-        let logs = receipt.logs
-        tx.logs = logs
-        if (logs.length) {
-          logs.forEach((log) => {
-            TxRepository.parseLog(log)
-          })
+      }
+      // Parse log.
+      let logs = receipt.logs
+      tx.logs = logs
+      if (logs.length) {
+        for (let i = 0; i < logs.length; i++) {
+          let log = logs[i]
+          await TxRepository.parseLog(log)
         }
       }
-    }
+      tx.status = true
 
-    tx.crawl = true
-
-    if (tx) {
-      tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+      return await Tx.findOneAndUpdate({hash: hash}, tx,
         {upsert: true, new: true})
     }
-
-    return tx
+    catch (e) {
+      console.log(e)
+      throw e
+    }
   },
 
   updateBlockForTxs: async (block, hashes) => {
@@ -131,8 +117,12 @@ let TxRepository = {
     }
 
     let _log = log
-    _log.from = unformatAddress(log.topics[1])
-    _log.to = unformatAddress(log.topics[2])
+    if (log.topics[1]) {
+      _log.from = unformatAddress(log.topics[1])
+    }
+    if (log.topics[2]) {
+      _log.to = unformatAddress(log.topics[2])
+    }
     _log.value = web3.utils.hexToNumberString(log.data)
     _log.valueNumber = _log.value
     // Find block by blockNumber.

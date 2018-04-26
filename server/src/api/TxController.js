@@ -9,7 +9,7 @@ const TxController = Router()
 TxController.get('/txs', async (req, res) => {
   try {
     let block_num = !isNaN(req.query.block) ? req.query.block : null
-    let params = {query: {hash: {$ne: null}}, sort: {timestamp: -1}}
+    let params = {query: {status: true}, sort: {timestamp: -1}}
     if (block_num) {
       params.query = {blockNumber: block_num}
       // Get txs by block number.
@@ -32,8 +32,8 @@ TxController.get('/txs', async (req, res) => {
         path: 'block',
         select: 'timestamp',
       },
-      {path: 'from_id'},
-      {path: 'to_id'}]
+      {path: 'from_model'},
+      {path: 'to_model'}]
     switch (type) {
       case 'pending':
         params.query = {blockNumber: null, block: null}
@@ -41,9 +41,9 @@ TxController.get('/txs', async (req, res) => {
         break
       case 'token':
         populates.push(
-          {path: 'from_id', match: {isToken: true}})
+          {path: 'from_model', match: {isToken: true}})
         populates.push(
-          {path: 'to_id', match: {isToken: true}})
+          {path: 'to_model', match: {isToken: true}})
         break
     }
     let address = req.query.address
@@ -65,11 +65,11 @@ TxController.get('/txs', async (req, res) => {
 TxController.get('/txs/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
-    let tx = await TxRepository.getTxDetail(hash)
+    let tx = await TxRepository.getTxPending(hash)
     tx = await TxRepository.getTxReceipt(hash)
     // Re-find tx from db with populates.
     tx = await Tx.findOne({hash: tx.hash}).
-      populate([{path: 'block'}, {path: 'from_id'}, {path: 'to_id'}])
+      populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}])
 
     return res.json(tx)
   }

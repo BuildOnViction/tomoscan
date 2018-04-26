@@ -13,8 +13,7 @@ let Web3Connector = {
           on('data', async (_block) => {
             if (_block) {
               // Insert new block into db.
-              let block = await BlockRepository.addBlockByNumber(_block.number,
-                false, true)
+              let block = await BlockRepository.addBlockByNumber(_block.number)
 
               socket.emit('new__block', block)
             }
@@ -23,7 +22,7 @@ let Web3Connector = {
         web3WS.eth.subscribe('pendingTransactions').
           on('data', async (tx_hash) => {
             // Insert pending transaction into db.
-            let tx = await TxRepository.getTxDetail(tx_hash)
+            let tx = await TxRepository.getTxPending(tx_hash)
           })
       })
     }
