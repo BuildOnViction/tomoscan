@@ -97,12 +97,6 @@ let TxRepository = {
     }
   },
 
-  updateBlockForTxs: async (block, hashes) => {
-    return await Tx.update({hash: {$in: hashes}},
-      {block: block, blockNumber: block.number, blockHash: block.hash},
-      {multi: true})
-  },
-
   parseLog: async (log) => {
     const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
     if (log.topics[0] != TOPIC_TRANSFER) {
