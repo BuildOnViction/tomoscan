@@ -18,7 +18,7 @@ const schema = new mongoose.Schema({
   cumulativeGasUsed: Number,
   gasUsed: Number,
   logs: Array,
-  block_id: {type: Schema.Types.ObjectId, ref: 'Block'},
+  block: {type: Schema.Types.ObjectId, ref: 'Block'},
   from_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   to_id: {type: Schema.Types.ObjectId, ref: 'Account'},
   crawl: {type: Boolean, default: false},

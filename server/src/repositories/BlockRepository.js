@@ -43,7 +43,7 @@ let BlockRepository = {
           async.each(txs, async (tx, next) => {
             if (tx.hash) {
               if (block) {
-                tx.block_id = block
+                tx.block = block
               }
               tx.crawl = false
               if (tx && tx.hash) {
