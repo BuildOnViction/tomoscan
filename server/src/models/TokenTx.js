@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
-  hash: String,
+  address: String,
   blockHash: String,
   blockNumber: Number,
   transactionHash: String,
@@ -13,6 +13,7 @@ const schema = new mongoose.Schema({
   value: String,
   valueNumber: Number,
   input: String,
+  block: {type: Schema.Types.ObjectId, ref: 'Block'},
 }, {
   timestamps: true,
   toObject: {virtuals: true, getters: true},

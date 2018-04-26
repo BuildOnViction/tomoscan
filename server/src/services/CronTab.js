@@ -34,11 +34,11 @@ let CronTab = {
       let number = arr_indexs[i]
       let _block = await BlockRepository.addBlockByNumber(number)
       _blocks.push(_block)
-    }
 
-    let setting = await Setting.findOneAndUpdate(
-      {meta_key: 'max_block_crawl'},
-      {meta_value: inserted_blocks}, {upsert: true, new: true})
+      let setting = await Setting.findOneAndUpdate(
+        {meta_key: 'max_block_crawl'},
+        {meta_value: inserted_blocks}, {upsert: true, new: true})
+    }
 
     return _blocks
   },
