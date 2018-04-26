@@ -40,7 +40,6 @@ let AccountRepository = {
     }
 
     _account.isContract = (_account.code !== '0x') ? true : false
-    _account.crawl = false
     _account.status = true
 
     let account = await Account.findOneAndUpdate({hash: hash}, _account,

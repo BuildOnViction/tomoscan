@@ -131,7 +131,8 @@ let TxRepository = {
     }
 
     return await TokenTx.findOneAndUpdate(
-      {hash: _log.transactionHash, from: _log.from, to: _log.to}, _log,
+      {transactionHash: _log.transactionHash, from: _log.from, to: _log.to},
+      _log,
       {upsert: true, new: true})
   },
 }

@@ -48,7 +48,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({crawl: false}).limit(100)
+    let _txs = await Tx.find({status: false}).limit(100)
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]
