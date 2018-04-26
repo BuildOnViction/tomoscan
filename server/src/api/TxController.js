@@ -29,14 +29,14 @@ TxController.get('/txs', async (req, res) => {
     let type = req.query.type
     let populates = [
       {
-        path: 'block_id',
+        path: 'block',
         select: 'timestamp',
       },
       {path: 'from_id'},
       {path: 'to_id'}]
     switch (type) {
       case 'pending':
-        params.query = {blockNumber: null, block_id: null}
+        params.query = {blockNumber: null, block: null}
         params.limit = 0
         break
       case 'token':
@@ -69,7 +69,7 @@ TxController.get('/txs/:slug', async (req, res) => {
     tx = await TxRepository.getTxReceipt(hash)
     // Re-find tx from db with populates.
     tx = await Tx.findOne({hash: tx.hash}).
-      populate([{path: 'block_id'}, {path: 'from_id'}, {path: 'to_id'}])
+      populate([{path: 'block'}, {path: 'from_id'}, {path: 'to_id'}])
 
     return res.json(tx)
   }

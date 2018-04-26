@@ -26,7 +26,7 @@ let CronTab = {
       ? max_block_num
       : max_block_crawl_num
 
-    let inserted_blocks = parseInt(max_block_crawl_num) - 50
+    let inserted_blocks = parseInt(max_block_crawl_num) - 20
     let arr_indexs = _.range(inserted_blocks, max_block_crawl_num)
     let _blocks = []
 
@@ -34,11 +34,11 @@ let CronTab = {
       let number = arr_indexs[i]
       let _block = await BlockRepository.addBlockByNumber(number)
       _blocks.push(_block)
-    }
 
-    let setting = await Setting.findOneAndUpdate(
-      {meta_key: 'max_block_crawl'},
-      {meta_value: inserted_blocks}, {upsert: true, new: true})
+      let setting = await Setting.findOneAndUpdate(
+        {meta_key: 'max_block_crawl'},
+        {meta_value: inserted_blocks}, {upsert: true, new: true})
+    }
 
     return _blocks
   },
@@ -47,7 +47,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({crawl: false}).limit(50)
+    let _txs = await Tx.find({crawl: false}).limit(20)
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]
@@ -65,7 +65,7 @@ let CronTab = {
   getPendingTransactions: async () => {
     let txs = []
     // Get blocks transaction pending for crawl.
-    let _txs = await Tx.find({blockNumber: null}).limit(50)
+    let _txs = await Tx.find({blockNumber: null}).limit(20)
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]

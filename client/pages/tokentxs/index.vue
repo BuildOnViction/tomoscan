@@ -24,10 +24,6 @@
 				</b-tooltip>
 			</template>
 
-			<template slot="gas" slot-scope="props">
-				<span>{{ formatNumber(props.item.gas) }}</span>
-			</template>
-
 			<template slot="from" slot-scope="props">
 				<div class="address__tag">
 					<i v-if="props.item.from_id && props.item.from_id.isContract" class="fa fa-file-text-o mr-1"></i>
@@ -74,14 +70,13 @@
     mixins: [mixin],
     head () {
       return {
-        title: 'Token (ERC20) Transfers \n',
+        title: 'Token (ERC20) Transfers',
       }
     },
     data: () => ({
       fields: {
         hash: {label: 'TxHash'},
         timestamp: {label: 'LastSeen'},
-        gas: {label: 'gasLimit', thClass: 'text-center', tdClass: 'text-right'},
         from: {label: 'from'},
         arrow: {class: 'text-center'},
         to: {label: 'To'},
@@ -97,6 +92,9 @@
       block: null,
     }),
     async mounted () {
+      // Init breadcrumbs data.
+      this.$store.commit('breadcrumb/setItems', {name: 'tokentxs', to: {name: 'tokentxs'}})
+
       let self = this
       // Init from router.
       let query = self.$route.query
