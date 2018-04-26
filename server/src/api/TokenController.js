@@ -6,7 +6,7 @@ const TokenController = Router()
 TokenController.get('/tokens', async (req, res) => {
   try {
     let data = await paginate(req, 'Token',
-      {sort: {totalSupply: -1}})
+      {query: {status: true}, sort: {totalSupply: -1}})
 
     return res.json(data)
   }

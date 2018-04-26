@@ -24,21 +24,6 @@ let TxRepository = {
         return false
       }
 
-      if (_tx.from !== null) {
-        tx.from_model = await AccountRepository.addAccountPending(_tx.from)
-      }
-      if (_tx.to !== null) {
-        tx.to_model = await AccountRepository.addAccountPending(_tx.to)
-      }
-      else {
-        let receipt = await web3.eth.getTransactionReceipt(hash)
-        if (receipt && typeof receipt.contractAddress !== 'undefined') {
-          tx.contractAddress = receipt.contractAddress
-          tx.to_model = await Account.findOneAndUpdate(
-            {hash: receipt.contractAddress},
-            {hash: receipt.contractAddress, contractCreation: tx.from})
-        }
-      }
       tx = Object.assign(tx, _tx)
 
       return await Tx.findOneAndUpdate({hash: hash}, tx,
@@ -65,6 +50,26 @@ let TxRepository = {
 
       if (!receipt) {
         return false
+      }
+
+      if (tx.from !== null) {
+        tx.from_model = await AccountRepository.addAccountPending(tx.from)
+      }
+      if (tx.to !== null) {
+        tx.to_model = await AccountRepository.addAccountPending(tx.to)
+      }
+      else {
+        if (receipt && typeof receipt.contractAddress !== 'undefined') {
+          tx.contractAddress = receipt.contractAddress
+          tx.to_model = await Account.findOneAndUpdate(
+            {hash: receipt.contractAddress},
+            {
+              hash: receipt.contractAddress,
+              contractCreation: tx.from,
+              isContract: true,
+            },
+            {upsert: true, new: true})
+        }
       }
 
       tx.cumulativeGasUsed = receipt.cumulativeGasUsed
@@ -95,12 +100,6 @@ let TxRepository = {
       console.log(e)
       throw e
     }
-  },
-
-  updateBlockForTxs: async (block, hashes) => {
-    return await Tx.update({hash: {$in: hashes}},
-      {block: block, blockNumber: block.number, blockHash: block.hash},
-      {multi: true})
   },
 
   parseLog: async (log) => {

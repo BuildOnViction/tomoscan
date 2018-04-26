@@ -8,7 +8,8 @@ const schema = new mongoose.Schema({
   totalSupply: String,
   totalSupplyNumber: Number,
   symbol: String,
-  decimals: Number
+  decimals: Number,
+  status: Boolean
 })
 
 let Token = mongoose.model('Token', schema)

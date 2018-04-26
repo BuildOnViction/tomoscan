@@ -10,13 +10,13 @@ let TokenRepository = {
     'name': '0x06fdde03',
   }),
 
-  checkIsToken: (account) => {
+  checkIsToken: (code) => {
     let tokenFuncs = TokenRepository.getTokenFuncs()
     let isToken = false
     for (let name in tokenFuncs) {
       let code = tokenFuncs[name]
       code = code.replace('0x', '')
-      if (account.code.indexOf(code) >= 0) {
+      if (code.indexOf(code) >= 0) {
         isToken = true
       }
     }
@@ -24,50 +24,46 @@ let TokenRepository = {
     return isToken
   },
 
-  updateToken: async (account) => {
-    if (!account) {
+  addTokenPending: async (hash) => {
+    return await Token.findOneAndUpdate({hash: hash},
+      {hash: hash, status: false}, {upsert: true, new: true})
+  },
+
+  updateToken: async (token) => {
+    if (!token) {
       return false
     }
-
-    let isToken = await TokenRepository.checkIsToken(account)
     let tokenFuncs = TokenRepository.getTokenFuncs()
-    let token = {}
 
-    if (!account.crawl && isToken) {
-      token = await Token.findOne({hash: account.hash})
-      token = token ? token : {}
-
-      let web3 = await Web3Util.getWeb3()
-      if (typeof token.name === 'undefined') {
-        let name = await web3.eth.call(
-          {to: account.hash, data: tokenFuncs['name']})
-        token.name = web3.utils.hexToAscii(name).trim()
-      }
-
-      if (typeof token.symbol === 'undefined') {
-        let symbol = await web3.eth.call(
-          {to: account.hash, data: tokenFuncs['symbol']})
-        token.symbol = web3.utils.hexToAscii(symbol).trim()
-      }
-
-      if (typeof token.decimals === 'undefined') {
-        let decimals = await web3.eth.call(
-          {to: account.hash, data: tokenFuncs['decimals']})
-        token.decimals = web3.utils.hexToNumber(decimals)
-      }
-
-      let totalSupply = await web3.eth.call(
-        {to: account.hash, data: tokenFuncs['totalSupply']})
-      totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
-      token.totalSupply = totalSupply
-      token.totalSupplyNumber = totalSupply
-
-      token = await Token.findOneAndUpdate({hash: account.hash}, token,
-        {upsert: true, new: true})
+    let web3 = await Web3Util.getWeb3()
+    if (typeof token.name === 'undefined') {
+      let name = await web3.eth.call(
+        {to: hash, data: tokenFuncs['name']})
+      token.name = web3.utils.hexToAscii(name).trim()
     }
 
-    // Set flag is token for account.
-    await Account.update({hash: account.hash}, {isToken: isToken, crawl: true})
+    if (typeof token.symbol === 'undefined') {
+      let symbol = await web3.eth.call(
+        {to: hash, data: tokenFuncs['symbol']})
+      token.symbol = web3.utils.hexToAscii(symbol).trim()
+    }
+
+    if (typeof token.decimals === 'undefined') {
+      let decimals = await web3.eth.call(
+        {to: hash, data: tokenFuncs['decimals']})
+      token.decimals = web3.utils.hexToNumber(decimals)
+    }
+
+    let totalSupply = await web3.eth.call(
+      {to: hash, data: tokenFuncs['totalSupply']})
+    totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
+    token.totalSupply = totalSupply
+    token.totalSupplyNumber = totalSupply
+
+    token.status = true
+
+    token = await Token.findOneAndUpdate({hash: account.hash}, token,
+      {upsert: true, new: true})
 
     return token
   },
