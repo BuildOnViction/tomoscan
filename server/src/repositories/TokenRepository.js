@@ -38,31 +38,33 @@ let TokenRepository = {
     let web3 = await Web3Util.getWeb3()
     if (typeof token.name === 'undefined') {
       let name = await web3.eth.call(
-        {to: hash, data: tokenFuncs['name']})
+        {to: token.hash, data: tokenFuncs['name']})
       token.name = web3.utils.hexToAscii(name).trim()
     }
 
     if (typeof token.symbol === 'undefined') {
       let symbol = await web3.eth.call(
-        {to: hash, data: tokenFuncs['symbol']})
+        {to: token.hash, data: tokenFuncs['symbol']})
       token.symbol = web3.utils.hexToAscii(symbol).trim()
     }
 
     if (typeof token.decimals === 'undefined') {
       let decimals = await web3.eth.call(
-        {to: hash, data: tokenFuncs['decimals']})
-      token.decimals = web3.utils.hexToNumber(decimals)
+        {to: token.hash, data: tokenFuncs['decimals']})
+      token.decimals = web3.utils.hexToNumberString(decimals)
     }
 
     let totalSupply = await web3.eth.call(
-      {to: hash, data: tokenFuncs['totalSupply']})
+      {to: token.hash, data: tokenFuncs['totalSupply']})
     totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
     token.totalSupply = totalSupply
     token.totalSupplyNumber = totalSupply
 
     token.status = true
 
-    token = await Token.findOneAndUpdate({hash: account.hash}, token,
+    delete token['_id']
+
+    token = await Token.findOneAndUpdate({hash: token.hash}, token,
       {upsert: true, new: true})
 
     return token

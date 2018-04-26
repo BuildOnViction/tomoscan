@@ -26,6 +26,8 @@ let TxRepository = {
 
       tx = Object.assign(tx, _tx)
 
+      delete tx['_id']
+
       return await Tx.findOneAndUpdate({hash: hash}, tx,
         {upsert: true, new: true})
     }
@@ -93,6 +95,8 @@ let TxRepository = {
       }
       tx.status = true
 
+      delete tx['_id']
+
       return await Tx.findOneAndUpdate({hash: hash}, tx,
         {upsert: true, new: true})
     }
@@ -130,8 +134,11 @@ let TxRepository = {
       _log.block = block
     }
 
+    delete _log['_id']
+
     return await TokenTx.findOneAndUpdate(
-      {hash: _log.transactionHash, from: _log.from, to: _log.to}, _log,
+      {transactionHash: _log.transactionHash, from: _log.from, to: _log.to},
+      _log,
       {upsert: true, new: true})
   },
 }
