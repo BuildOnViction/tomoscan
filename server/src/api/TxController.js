@@ -51,7 +51,7 @@ TxController.get('/txs', async (req, res) => {
     let address = req.query.address
     if (typeof address !== 'undefined') {
       params.query = Object.assign(params.query,
-        {$or: [{from: address}, {to: address}]})
+        {$or: [{from: address}, {to: address}, {contractAddress: address}]})
     }
     params.populate = populates
     let data = await paginate(req, 'Tx', params)
@@ -71,7 +71,8 @@ TxController.get('/txs/:slug', async (req, res) => {
     tx = await TxRepository.getTxReceipt(hash)
     // Re-find tx from db with populates.
     tx = await Tx.findOne({hash: tx.hash}).
-      populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}]).lean()
+      populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}]).
+      lean()
 
     let tokenTxs = []
     if (tx) {

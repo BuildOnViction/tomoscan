@@ -19,11 +19,26 @@
 					</b-list-group-item>
 					<b-list-group-item>
 						Code:
-						<code class="address__tag pull-right text-right"><span-loading v-bind:text="address ? address.code : null"></span-loading></code>
+						<code class="address__tag pull-right text-right">
+							<span-loading v-bind:text="address ? address.code : null"></span-loading>
+						</code>
 					</b-list-group-item>
 				</b-list-group>
 			</b-col>
-			<b-col></b-col>
+			<b-col>
+				<b-list-group v-if="address">
+					<b-list-group-item>
+						<span>Contract Creator: &nbsp;</span>
+						<span v-if="address.contractCreation">
+							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
+							<span>at txns&nbsp;</span>
+							<span v-if="address.fromTxn">
+								<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
+							</span>
+						</span>
+					</b-list-group-item>
+				</b-list-group>
+			</b-col>
 		</b-row>
 
 		<b-row>
@@ -49,7 +64,7 @@
     mixins: [mixin],
     components: {
       TxTable,
-	    SpanLoading
+      SpanLoading,
     },
     head () {
       return {
@@ -60,12 +75,12 @@
       hash: null,
       address: null,
     }),
-	  created() {
+    created () {
       let hash = this.$route.params.slug
       if (hash) {
         this.hash = hash
       }
-	  },
+    },
     mounted () {
       let self = this
 
