@@ -22,11 +22,13 @@ AccountController.get('/accounts', async (req, res) => {
 //    data.total_balance = total
 
     // Format rank.
+    let items = data.items
     let base_rank = (data.current_page - 1) * data.per_page
-    data.items.forEach((item, index) => {
-      data.items[index] = item.toObject()
-      data.items[index].rank = base_rank + index + 1
-    })
+    for (let i = 0; i < items.length; i++) {
+      items[i]['rank'] = base_rank + i + 1
+    }
+    data.items = items
+    
     return res.json(data)
   }
   catch (e) {

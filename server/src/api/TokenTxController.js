@@ -8,7 +8,11 @@ const TokenTxController = Router()
 
 TokenTxController.get('/tokentxs', async (req, res) => {
   try {
+    let address = req.query.address
     let params = {}
+    if (address) {
+      params.query = {address: address}
+    }
     params.populate = [{path: 'block'}]
     let data = await paginate(req, 'TokenTx', params)
 
