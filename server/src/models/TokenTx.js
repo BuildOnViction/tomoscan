@@ -1,5 +1,3 @@
-import Token from './Token'
-
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 

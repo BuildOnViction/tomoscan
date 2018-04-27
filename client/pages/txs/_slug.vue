@@ -30,8 +30,15 @@
 					<tr>
 						<td>To:</td>
 						<td>
-							<i v-if="tx.to_model && tx.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
-							<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">{{ tx.to_model.hash }}</nuxt-link>
+							<div v-if="tx.to">
+								<i v-if="tx.to_model && tx.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
+								<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">{{ tx.to_model.hash }}</nuxt-link>
+							</div>
+							<div v-else>
+								<span>[Contract&nbsp;</span>
+								<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">{{ tx.to_model.hash }}</nuxt-link>
+								<span>&nbsp;Created]</span>
+							</div>
 						</td>
 					</tr>
 					<tr>

@@ -28,7 +28,7 @@ AccountController.get('/accounts', async (req, res) => {
       items[i]['rank'] = base_rank + i + 1
     }
     data.items = items
-    
+
     return res.json(data)
   }
   catch (e) {
@@ -41,21 +41,7 @@ AccountController.get('/accounts/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
     let account = await AccountRepository.updateAccount(hash)
-
-    let field = req.query.field
-    if (field instanceof String) {
-      switch (field) {
-        case 'balance':
-          account = await AccountRepository.getBalance(hash)
-          break
-        case 'txCount':
-          account = await AccountRepository.getTransactionCount(hash)
-          break
-        case 'code':
-          account = await AccountRepository.getCode(hash)
-          break
-      }
-    }
+    account = await AccountRepository.formatItem(account)
 
     return res.json(account)
   }

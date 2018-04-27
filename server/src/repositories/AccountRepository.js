@@ -4,7 +4,7 @@ import Tx from '../models/Tx'
 import TokenRepository from './TokenRepository'
 
 let AccountRepository = {
-  updateAccount: async (hash) => {
+  async updateAccount (hash) {
     if (!hash) {
       return false
     }
@@ -45,14 +45,30 @@ let AccountRepository = {
     delete _account['_id']
 
     let account = await Account.findOneAndUpdate({hash: hash}, _account,
-      {upsert: true, new: true})
+      {upsert: true, new: true}).lean()
 
     return account
   },
 
-  addAccountPending: async (hash) => {
+  async addAccountPending (hash) {
     return await Account.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
+  },
+
+  async formatItem (address) {
+    // Find txn create from.
+    let fromTxn = null
+    if (address.isContract) {
+      let tx = await Tx.findOne({
+        from: address.contractCreation,
+        to: null,
+        contractAddress: address.hash,
+      })
+      fromTxn = tx.hash
+    }
+    address.fromTxn = fromTxn
+
+    return address
   },
 }
 
