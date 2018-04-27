@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import Token from '../models/Token'
+import Block from '../models/Block'
+import TokenTxRepository from '../repositories/TokenTxRepository'
 
 const TokenTxController = Router()
 
@@ -11,24 +13,8 @@ TokenTxController.get('/tokentxs', async (req, res) => {
     let data = await paginate(req, 'TokenTx', params)
 
     let items = data.items
-    // Append token for each TokenTx.
     if (items.length) {
-      let tokenHashes = []
-      for (let i = 0; i < items.length; i++) {
-        tokenHashes.push(items[i]['address'])
-      }
-      if (tokenHashes.length) {
-        let tokens = await Token.find({hash: {$in: tokenHashes}})
-        for (let i = 0; i < items.length; i++) {
-          for (let j = 0; j < tokens.length; j++) {
-            if (items[i]['address'] == tokens[j]['hash']) {
-              items[i].symbol = (typeof tokens[j]['symbol'] !== 'undefined')
-                ? tokens[j]['symbol']
-                : null
-            }
-          }
-        }
-      }
+      items = await TokenTxRepository.formatItems(items)
     }
     data.items = items
 

@@ -18,10 +18,12 @@
 			</template>
 
 			<template slot="age" slot-scope="props">
-				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'age__' + props.index">
-					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-				</b-tooltip>
+				<div v-if="props.item.blockTime">
+					<span :id="'age__' + props.index">{{ moment(props.item.blockTime).fromNow() }}</span>
+					<b-tooltip :target="'age__' + props.index">
+						{{ moment(props.item.blockTime).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
+				</div>
 			</template>
 
 			<template slot="from" slot-scope="props">

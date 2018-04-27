@@ -3,6 +3,8 @@ import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
 import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
+import TokenTx from '../models/TokenTx'
+import TokenTxRepository from '../repositories/TokenTxRepository'
 
 const TxController = Router()
 
@@ -69,7 +71,18 @@ TxController.get('/txs/:slug', async (req, res) => {
     tx = await TxRepository.getTxReceipt(hash)
     // Re-find tx from db with populates.
     tx = await Tx.findOne({hash: tx.hash}).
-      populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}])
+      populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}]).lean()
+
+    let tokenTxs = []
+    if (tx) {
+      // Append token transfer to tx.
+      tokenTxs = await TokenTx.find({transactionHash: tx.hash}).
+        lean().
+        exec()
+
+      tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
+    }
+    tx.tokenTxs = tokenTxs
 
     return res.json(tx)
   }
