@@ -22,13 +22,6 @@ const schema = new mongoose.Schema({
   toJSON: {virtuals: true, getters: true},
 })
 
-schema.virtual('token').get(async function () {
-  // Find token by address.
-  let token = await Token.findOne({hash: this.address})
-
-  return token
-})
-
 let TokenTx = mongoose.model('TokenTx', schema)
 
 export default TokenTx

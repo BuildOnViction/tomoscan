@@ -61,11 +61,7 @@ let TokenRepository = {
     token.totalSupplyNumber = totalSupply
 
     token.status = true
-
-    delete token['_id']
-
-    token = await Token.findOneAndUpdate({hash: token.hash}, token,
-      {upsert: true, new: true})
+    token.save()
 
     return token
   },

@@ -9,7 +9,11 @@ const schema = new mongoose.Schema({
   totalSupplyNumber: Number,
   symbol: String,
   decimals: Number,
-  status: Boolean
+  status: Boolean,
+}, {
+  timestamps: true,
+  toJSON: {virtuals: true, getters: true},
+  toObject: {virtuals: true, getters: true},
 })
 
 let Token = mongoose.model('Token', schema)

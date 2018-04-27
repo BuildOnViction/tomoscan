@@ -72,14 +72,14 @@ const mixin = {
         ' ' + sfx
     },
 
-    formatUnit: number => number + ' ' + mixin.methods.baseUnit(),
+    formatUnit: (number, unit = null) => number + ' ' +
+      mixin.methods.baseUnit(unit),
 
     toGwei: (wei) => wei ? mixin.methods.formatNumber(web3.utils.fromWei(wei,
       'gwei')) : '',
 
-    baseUnit: () => {
-      let baseUnit = process.env.BASE_UNIT
-      baseUnit = baseUnit ? baseUnit : 'Ether'
+    baseUnit: (baseUnit) => {
+      baseUnit = baseUnit ? baseUnit : process.env.BASE_UNIT
 
       return baseUnit
     },
