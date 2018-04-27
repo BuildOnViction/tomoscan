@@ -29,7 +29,7 @@ export const paginate = async (
     builder = builder.limit(per_page)
   }
   builder = builder.populate(params.populate)
-  let items = await builder.exec()
+  let items = await builder.lean().exec()
 
   return {
     total: total,

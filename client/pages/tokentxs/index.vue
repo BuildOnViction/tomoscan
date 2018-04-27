@@ -8,8 +8,8 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
-			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+			<template slot="transactionHash" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}</nuxt-link>
 			</template>
 
 			<template slot="block" slot-scope="props">
@@ -18,10 +18,12 @@
 			</template>
 
 			<template slot="age" slot-scope="props">
-				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'age__' + props.index">
-					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-				</b-tooltip>
+				<div v-if="props.item.blockTime">
+					<span :id="'age__' + props.index">{{ moment(props.item.blockTime).fromNow() }}</span>
+					<b-tooltip :target="'age__' + props.index">
+						{{ moment(props.item.blockTime).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
+				</div>
 			</template>
 
 			<template slot="from" slot-scope="props">
@@ -47,7 +49,7 @@
 			</template>
 
 			<template slot="value" slot-scope="props">
-				{{ formatUnit(toEther(props.item.value)) }}
+				{{ formatUnit(toEther(props.item.value), props.item.symbol) }}
 			</template>
 
 			<template slot="txFee" slot-scope="props">
@@ -73,9 +75,12 @@
         title: 'Token (ERC20) Transfers',
       }
     },
+    props: {
+      address: {type: String, default: null},
+    },
     data: () => ({
       fields: {
-        hash: {label: 'TxHash'},
+        transactionHash: {label: 'TxHash'},
         timestamp: {label: 'LastSeen'},
         from: {label: 'from'},
         arrow: {class: 'text-center'},

@@ -116,7 +116,7 @@ let TxRepository = {
     let token = await Token.findOne({hash: log.address})
     if (!token) {
       let account = await AccountRepository.updateAccount(log.address)
-      token = await TokenRepository.updateToken(account)
+      await TokenRepository.updateToken(account)
     }
 
     let _log = log

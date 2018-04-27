@@ -52,6 +52,7 @@
 		white-space: nowrap;
 		overflow: hidden !important;
 		text-overflow: ellipsis;
+		vertical-align: bottom;
 	}
 
 	main, footer {
