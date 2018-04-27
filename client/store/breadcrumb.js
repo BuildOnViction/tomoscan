@@ -107,6 +107,10 @@ br.register('tokens', (brs) => {
   brs.parent('index')
   brs.push('Tokens', {name: 'tokens'})
 })
+br.register('tokens-slug', (brs, location) => {
+  brs.parent('tokens')
+  brs.push('Token Detail', location)
+})
 br.register('tokentxs', (brs) => {
   brs.parent('index')
   brs.push('Token (ERC20) Transfers', {name: 'tokentxs'})

@@ -198,17 +198,21 @@ let CronTab = {
       })
 
       // Start cron job running.
+      setTimeout(() => {
+        blockJob.start()
+      }, 1000)
       setTimeout(function () {
         txJob.start()
       }, 10 * 1000)
       setTimeout(function () {
         txJobPending.start()
       }, 20 * 1000)
+      setTimeout(() => {
+        accountJob.start()
+      }, 30 * 1000)
       setTimeout(function () {
         tokenJob.start()
-      }, 30 * 1000)
-      blockJob.start()
-      accountJob.start()
+      }, 40 * 1000)
     }
     catch (e) {
       console.log(e)

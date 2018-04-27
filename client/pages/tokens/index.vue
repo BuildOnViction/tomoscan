@@ -8,9 +8,13 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
+			<template slot="hash" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+			</template>
+
 			<template slot="name" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-					{{ props.item.name }}
+				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
+					{{ trimWord(props.item.name) }}
 				</nuxt-link>
 			</template>
 
@@ -31,6 +35,7 @@
     mixins: [mixin],
     data: () => ({
       fields: {
+        hash: {label: 'Hash'},
         name: {label: 'Name'},
         symbol: {label: 'Symbol'},
         totalSupply: {label: 'totalSupply', thClass: 'text-center', tdClass: 'text-right'},

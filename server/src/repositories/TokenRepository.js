@@ -1,6 +1,8 @@
 import Web3Util from '../helpers/web3'
 import Token from '../models/Token'
 import Account from '../models/Account'
+import { trimWord } from '../helpers/utils'
+import TokenTx from '../models/TokenTx'
 
 let TokenRepository = {
   getTokenFuncs: () => ({
@@ -14,9 +16,9 @@ let TokenRepository = {
     let tokenFuncs = TokenRepository.getTokenFuncs()
     let isToken = false
     for (let name in tokenFuncs) {
-      let code = tokenFuncs[name]
-      code = code.replace('0x', '')
-      if (code.indexOf(code) >= 0) {
+      let codeCheck = tokenFuncs[name]
+      codeCheck = codeCheck.replace('0x', '')
+      if (code.indexOf(codeCheck) >= 0) {
         isToken = true
       }
     }
@@ -39,13 +41,13 @@ let TokenRepository = {
     if (typeof token.name === 'undefined') {
       let name = await web3.eth.call(
         {to: token.hash, data: tokenFuncs['name']})
-      token.name = web3.utils.hexToAscii(name).trim()
+      token.name = trimWord(web3.utils.hexToAscii(name))
     }
 
     if (typeof token.symbol === 'undefined') {
       let symbol = await web3.eth.call(
         {to: token.hash, data: tokenFuncs['symbol']})
-      token.symbol = web3.utils.hexToAscii(symbol).trim()
+      token.symbol = trimWord(web3.utils.hexToAscii(symbol).trim())
     }
 
     if (typeof token.decimals === 'undefined') {
@@ -64,6 +66,13 @@ let TokenRepository = {
     token.save()
 
     return token
+  },
+
+  formatItem: async (item) => {
+    let tokenTxsCount = await TokenTx.find({address: item.hash}).count()
+    item.tokenTxsCount = tokenTxsCount
+
+    return item
   },
 }
 
