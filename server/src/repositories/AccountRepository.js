@@ -2,6 +2,7 @@ import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import TokenRepository from './TokenRepository'
+import Token from '../models/Token'
 
 let AccountRepository = {
   async updateAccount (hash) {
@@ -64,9 +65,18 @@ let AccountRepository = {
         to: null,
         contractAddress: address.hash,
       })
-      fromTxn = tx.hash
+      if (tx) {
+        fromTxn = tx.hash
+      }
     }
     address.fromTxn = fromTxn
+
+    // Get token.
+    let token = null
+    if (address.isToken) {
+      token = await Token.findOne({hash: address.hash})
+    }
+    address.token = token
 
     return address
   },

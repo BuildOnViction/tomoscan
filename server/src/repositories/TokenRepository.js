@@ -63,7 +63,9 @@ let TokenRepository = {
     token.totalSupplyNumber = totalSupply
 
     token.status = true
-    token.save()
+    if (token) {
+      token.save()
+    }
 
     return token
   },
