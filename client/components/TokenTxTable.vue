@@ -17,11 +17,11 @@
 				<span v-else class="text-muted">Pending...</span>
 			</template>
 
-			<template slot="age" slot-scope="props">
-				<div v-if="props.item.blockTime">
-					<span :id="'age__' + props.index">{{ moment(props.item.blockTime).fromNow() }}</span>
+			<template slot="timestamp" slot-scope="props">
+				<div v-if="props.item.timestamp">
+					<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
 					<b-tooltip :target="'age__' + props.index">
-						{{ moment(props.item.blockTime).format('MMM-DD-Y hh:mm:ss A') }}
+						{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 					</b-tooltip>
 				</div>
 			</template>
@@ -70,7 +70,7 @@
   export default {
     mixins: [mixin],
     props: {
-      address: {type: String, default: null},
+      token: {type: String, default: null},
     },
     data: () => ({
       fields: {
@@ -89,14 +89,8 @@
       current_page: 1,
       per_page: 15,
       pages: 1,
-      block: null,
+      address: null,
     }),
-    created () {
-      // Format fields.
-      if (this.address) {
-        delete this.fields.token
-      }
-    },
     async mounted () {
       let self = this
       // Init from router.
@@ -107,8 +101,9 @@
       if (query.limit) {
         self.per_page = parseInt(query.limit)
       }
-      if (query.block) {
-        self.block = query.block
+
+      if (query.address) {
+        self.address = query.address
       }
 
       this.getDataFromApi()
@@ -127,6 +122,9 @@
 
         this.$router.replace({query: params})
 
+        if (self.token) {
+          params.token = self.token
+        }
         if (self.address) {
           params.address = self.address
         }
@@ -138,28 +136,10 @@
         self.current_page = data.current_page
         self.pages = data.pages
 
-        // Format data.
-        self.items = self.formatData(self.items)
-
         // Hide loading.
         self.loading = false
 
         return data
-      },
-      formatData (items = []) {
-        let _items = []
-        items.forEach((item) => {
-          let _item = item
-
-          // Format for timestamp.
-          if (!item.block) {
-            _item.timestamp = item.createdAt
-          }
-
-          _items.push(_item)
-        })
-
-        return _items
       },
       onChangePaginate (page) {
         let self = this

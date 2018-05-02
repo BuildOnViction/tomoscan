@@ -9,10 +9,10 @@
 			:loading="loading"
 			:items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}, query: {address: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.token }}</nuxt-link>
 			</template>
 			<template slot="quantity" slot-scope="props">
-				{{ toEther(props.item.quantity) }}
+				{{ formatUnit(toEther(props.item.quantity), props.item.tokenObj.symbol) }}
 			</template>
 		</b-table>
 		<b-pagination
@@ -33,10 +33,8 @@
     },
     data: () => ({
       fields: {
-        rank: {label: 'Rank'},
-        hash: {label: 'Address'},
-        quantity: {label: 'quantity', class: 'text-right'},
-        percentAge: {label: 'Percentage', class: 'text-right'},
+        hash: {label: 'Token'},
+        quantity: {label: 'Quantity', class: 'text-right'},
       },
       loading: true,
       pagination: {},
@@ -45,6 +43,7 @@
       current_page: 1,
       per_page: 15,
       pages: 1,
+      block: null,
     }),
     async mounted () {
       let self = this
@@ -74,7 +73,7 @@
         this.$router.replace({query: params})
 
         if (self.address) {
-          params.address = self.address
+          params.hash = self.address
         }
 
         let query = this.serializeQuery(params)

@@ -19,7 +19,7 @@
 						<td>
 							Total Supply:
 						</td>
-						<td class="text-right">{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
+						<td class="text-right">{{ formatUnit(toEther(token.totalSupply), symbol) }}</td>
 					</tr>
 					<tr>
 						<td>
@@ -60,7 +60,7 @@
 				<b-card no-body>
 					<b-tabs card>
 						<b-tab title="Token Transfers">
-							<token-tx-table :address="hash"></token-tx-table>
+							<token-tx-table :token="hash"></token-tx-table>
 						</b-tab>
 						<b-tab title="Token Holders">
 							<token-holder-table :address="hash"></token-holder-table>
