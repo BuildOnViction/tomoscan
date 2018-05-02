@@ -8,10 +8,10 @@ let TokenHolderRepository = {
 
     // Add holder from.
     await TokenHolderRepository.updateQuality(tokenTx.from,
-      tokenTx.address, -tokenTx.valueNumber)
+      tokenTx.address, -tokenTx.value)
     // Add holder to.
     await TokenHolderRepository.updateQuality(tokenTx.to,
-      tokenTx.address, tokenTx.valueNumber)
+      tokenTx.address, tokenTx.value)
   },
 
   async updateQuality (hash, token, quantity) {
@@ -27,8 +27,9 @@ let TokenHolderRepository = {
     }
     quantity = new BigNumber(quantity)
     let holderQuantity = new BigNumber(holder.quantity)
-    holder.quantity = holderQuantity.plus(quantity)
-    holder.quantityNumber = holder.quantity
+    let quantityCalc = holderQuantity.plus(quantity)
+    holder.quantity = quantityCalc.toString()
+    holder.quantityNumber = quantityCalc.toString()
     holder.save()
 
     return holder
