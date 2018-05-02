@@ -23,6 +23,10 @@
 							<span-loading v-bind:text="address ? address.code : null"></span-loading>
 						</code>
 					</b-list-group-item>
+					<b-list-group-item v-if="address && address.isToken">
+						Token Contract:
+						<nuxt-link class="pull-right text-right" :to="{name: 'tokens-slug', params: {slug: address.token.hash}}">{{ address.token.name }}({{ address.token.symbol }})</nuxt-link>
+					</b-list-group-item>
 				</b-list-group>
 			</b-col>
 			<b-col>
