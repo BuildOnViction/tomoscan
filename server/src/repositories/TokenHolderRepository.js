@@ -1,4 +1,5 @@
 import TokenHolder from '../models/TokenHolder'
+import BigNumber from 'bignumber.js'
 
 let TokenHolderRepository = {
   async addHoldersFromTokenTx (tokenTx) {
@@ -24,15 +25,19 @@ let TokenHolderRepository = {
         quantityNumber: 0,
       })
     }
-    holder.quantityNumber = holder.quantityNumber + quantity
-    holder.quantity = holder.quantityNumber
+    quantity = new BigNumber(quantity)
+    let holderQuantity = new BigNumber(holder.quantity)
+    holder.quantity = holderQuantity.plus(quantity)
+    holder.quantityNumber = holder.quantity
     holder.save()
 
     return holder
   },
 
   formatItem (tokenHolder, totalSupply) {
-    tokenHolder.percentAge = tokenHolder.quantityNumber / totalSupply * 100
+    totalSupply = new BigNumber(totalSupply)
+    let quantity = new BigNumber(tokenHolder.quantity)
+    tokenHolder.percentAge = quantity.div(totalSupply) * 100
 
     return tokenHolder
   },
