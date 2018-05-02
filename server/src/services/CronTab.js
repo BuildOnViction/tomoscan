@@ -108,7 +108,7 @@ let CronTab = {
 
     if (records.length) {
       for (let i = 0; i < records.length; i++) {
-        let token = await TokenRepository.updateToken(records[i])
+        let token = await TokenRepository.updateToken(records[i].hash)
         tokens.push(token)
       }
     }

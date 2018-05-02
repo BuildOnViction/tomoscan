@@ -8,6 +8,7 @@ import { unformatAddress } from '../helpers/utils'
 import Token from '../models/Token'
 import TokenRepository from './TokenRepository'
 import Block from '../models/Block'
+import TokenTxRepository from './TokenTxRepository'
 
 let TxRepository = {
   getTxPending: async (hash) => {
@@ -116,30 +117,10 @@ let TxRepository = {
     let token = await Token.findOne({hash: log.address})
     if (!token) {
       let account = await AccountRepository.updateAccount(log.address)
-      await TokenRepository.updateToken(account)
+      await TokenRepository.updateToken(account.hash)
     }
 
-    let _log = log
-    if (log.topics[1]) {
-      _log.from = unformatAddress(log.topics[1])
-    }
-    if (log.topics[2]) {
-      _log.to = unformatAddress(log.topics[2])
-    }
-    _log.value = web3.utils.hexToNumberString(log.data)
-    _log.valueNumber = _log.value
-    // Find block by blockNumber.
-    let block = await Block.findOne({number: _log.blockNumber})
-    if (block) {
-      _log.block = block
-    }
-
-    delete _log['_id']
-
-    return await TokenTx.findOneAndUpdate(
-      {transactionHash: _log.transactionHash, from: _log.from, to: _log.to},
-      _log,
-      {upsert: true, new: true})
+    return await TokenTxRepository.addTokenTxFromLog(log)
   },
 }
 

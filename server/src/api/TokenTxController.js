@@ -6,7 +6,7 @@ import TokenTxRepository from '../repositories/TokenTxRepository'
 
 const TokenTxController = Router()
 
-TokenTxController.get('/tokentxs', async (req, res) => {
+TokenTxController.get('/token-txs', async (req, res) => {
   try {
     let address = req.query.address
     let params = {}

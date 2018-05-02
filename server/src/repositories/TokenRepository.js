@@ -31,43 +31,49 @@ let TokenRepository = {
       {hash: hash, status: false}, {upsert: true, new: true})
   },
 
-  updateToken: async (token) => {
-    if (!token) {
-      return false
-    }
-    let tokenFuncs = TokenRepository.getTokenFuncs()
+  updateToken: async (address) => {
+    try {
+      let token = await Token.findOne({hash: address})
+      if (!token) {
+        return false
+      }
+      let tokenFuncs = TokenRepository.getTokenFuncs()
 
-    let web3 = await Web3Util.getWeb3()
-    if (typeof token.name === 'undefined') {
-      let name = await web3.eth.call(
-        {to: token.hash, data: tokenFuncs['name']})
-      token.name = trimWord(web3.utils.hexToAscii(name))
-    }
+      let web3 = await Web3Util.getWeb3()
+      if (typeof token.name === 'undefined') {
+        let name = await web3.eth.call(
+          {to: token.hash, data: tokenFuncs['name']})
+        token.name = trimWord(web3.utils.hexToAscii(name))
+      }
 
-    if (typeof token.symbol === 'undefined') {
-      let symbol = await web3.eth.call(
-        {to: token.hash, data: tokenFuncs['symbol']})
-      token.symbol = trimWord(web3.utils.hexToAscii(symbol).trim())
-    }
+      if (typeof token.symbol === 'undefined') {
+        let symbol = await web3.eth.call(
+          {to: token.hash, data: tokenFuncs['symbol']})
+        token.symbol = trimWord(web3.utils.hexToAscii(symbol).trim())
+      }
 
-    if (typeof token.decimals === 'undefined') {
-      let decimals = await web3.eth.call(
-        {to: token.hash, data: tokenFuncs['decimals']})
-      token.decimals = web3.utils.hexToNumberString(decimals)
-    }
+      if (typeof token.decimals === 'undefined') {
+        let decimals = await web3.eth.call(
+          {to: token.hash, data: tokenFuncs['decimals']})
+        token.decimals = web3.utils.hexToNumberString(decimals)
+      }
 
-    let totalSupply = await web3.eth.call(
-      {to: token.hash, data: tokenFuncs['totalSupply']})
-    totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
-    token.totalSupply = totalSupply
-    token.totalSupplyNumber = totalSupply
+      let totalSupply = await web3.eth.call(
+        {to: token.hash, data: tokenFuncs['totalSupply']})
+      totalSupply = web3.utils.hexToNumberString(totalSupply).trim()
+      token.totalSupply = totalSupply
+      token.totalSupplyNumber = totalSupply
 
-    token.status = true
-    if (token) {
+      token.status = true
       token.save()
-    }
 
-    return token
+      return token
+    }
+    catch (e) {
+      console.log(token)
+      console.log(e)
+      throw e
+    }
   },
 
   formatItem: async (item) => {
