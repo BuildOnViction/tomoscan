@@ -52,6 +52,9 @@
 						<b-tab title="Transactions">
 							<tx-table :address="hash"></tx-table>
 						</b-tab>
+						<b-tab title="Token Balances">
+							<tokens-by-account-table :address="hash"></tokens-by-account-table>
+						</b-tab>
 					</b-tabs>
 				</b-card>
 			</b-col>
@@ -62,12 +65,14 @@
   import async from 'async'
   import mixin from '~/plugins/mixin'
   import TxTable from '~/components/TxTable'
+  import TokensByAccountTable from '~/components/TokensByAccountTable'
   import SpanLoading from '~/components/SpanLoading'
 
   export default {
     mixins: [mixin],
     components: {
       TxTable,
+      TokensByAccountTable,
       SpanLoading,
     },
     head () {

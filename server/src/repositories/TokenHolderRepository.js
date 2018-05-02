@@ -23,6 +23,7 @@ let TokenHolderRepository = {
         hash: hash,
         token: token,
         quantityNumber: 0,
+        quantity: 0,
       })
     }
     quantity = new BigNumber(quantity)
@@ -36,9 +37,14 @@ let TokenHolderRepository = {
   },
 
   formatItem (tokenHolder, totalSupply) {
-    totalSupply = new BigNumber(totalSupply)
-    let quantity = new BigNumber(tokenHolder.quantity)
-    tokenHolder.percentAge = quantity.div(totalSupply) * 100
+    if (totalSupply) {
+      totalSupply = new BigNumber(totalSupply)
+      let quantity = new BigNumber(tokenHolder.quantity)
+      let percentAge = quantity.div(totalSupply) * 100
+      percentAge = percentAge.toFixed(4)
+      percentAge = (percentAge.toString() == '0.0000') ? '0.0001' : percentAge
+      tokenHolder.percentAge = percentAge
+    }
 
     return tokenHolder
   },

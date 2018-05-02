@@ -3,6 +3,7 @@ import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import TokenRepository from './TokenRepository'
 import Token from '../models/Token'
+import TokenHolder from '../models/TokenHolder'
 
 let AccountRepository = {
   async updateAccount (hash) {
