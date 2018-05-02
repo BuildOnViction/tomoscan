@@ -3,7 +3,7 @@
 		<b-row>
 			<b-col>
 				<h2>ERC20-TOKEN</h2>
-				<p class="lead">Token</p>
+				<p class="lead" v-html="tokenName"></p>
 			</b-col>
 		</b-row>
 		<b-row v-if="token">
@@ -19,7 +19,7 @@
 						<td>
 							Total Supply:
 						</td>
-						<td class="text-right">{{ formatNumber(token.totalSupply) }}</td>
+						<td class="text-right">{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
 					</tr>
 					<tr>
 						<td>
@@ -62,6 +62,9 @@
 						<b-tab title="Token Transfers">
 							<token-tx-table :address="hash"></token-tx-table>
 						</b-tab>
+						<b-tab title="Token Holders">
+							<token-holder-table :address="hash"></token-holder-table>
+						</b-tab>
 					</b-tabs>
 				</b-card>
 			</b-col>
@@ -71,11 +74,13 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TokenTxTable from '~/components/TokenTxTable'
+  import TokenHolderTable from '~/components/TokenHolderTable'
 
   export default {
     mixins: [mixin],
     components: {
       TokenTxTable,
+      TokenHolderTable,
     },
     head () {
       return {
@@ -86,6 +91,8 @@
       return {
         hash: null,
         token: null,
+        tokenName: null,
+        symbol: null,
       }
     },
     created () {
@@ -99,6 +106,8 @@
 
       let {data} = await self.$axios.get('/api/tokens/' + self.hash)
       self.token = data
+      self.tokenName = data.name
+      self.symbol = data.symbol
     },
   }
 </script>

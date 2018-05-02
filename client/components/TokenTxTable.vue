@@ -132,7 +132,7 @@
         }
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/tokentxs' + '?' + query)
+        let {data} = await this.$axios.get('/api/token-txs' + '?' + query)
         self.items = data.items
         self.total = data.total
         self.current_page = data.current_page

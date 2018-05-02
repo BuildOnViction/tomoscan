@@ -56,7 +56,7 @@ let AccountRepository = {
       {hash: hash, status: false}, {upsert: true, new: true})
   },
 
-  async formatItem (address) {
+  async formatItem (address, baseRank) {
     // Find txn create from.
     let fromTxn = null
     if (address.isContract) {
