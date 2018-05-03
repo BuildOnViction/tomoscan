@@ -1,5 +1,7 @@
 <template>
 	<section>
+		<p>Total {{ total }} items found</p>
+
 		<b-table
 			striped
 			responsive
