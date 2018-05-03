@@ -1,6 +1,9 @@
 import api from './api'
 import Web3Connector from './services/Web3Connector'
 import CronTab from './services/CronTab'
+import aclService from './services/Acl'
+import authService from './services/Auth'
+import aclStore from './helpers/aclStore'
 
 const express = require('express')
 const logger = require('morgan')
@@ -18,11 +21,34 @@ const app = express()
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
 
-mongoose.connect(process.env.MONGODB_URI)
-mongoose.connection.on('error', function () {
-  console.log(
-    'MongoDB Connection Error. Please make sure that MongoDB is running.')
-  process.exit(1)
+app.set('port', process.env.PORT || 3333)
+app.use(compression())
+app.use(logger('dev'))
+app.use(cors())
+
+// Init acl and jwt.
+app.use(authService.initialize())
+authService.setJwtStrategy()
+
+mongoose.connect(process.env.MONGODB_URI, (err) => {
+  if (err) {
+    console.log(
+      'MongoDB Connection Error. Please make sure that MongoDB is running.')
+    process.exit(1)
+  }
+  else {
+    aclService(mongoose.connection.db)
+
+    let acl = aclStore.acl
+
+    // initialize api
+    app.use('/api', api)
+
+    app.all('*', authService.authenticate(), (req, res, next) => next())
+
+    // Will return error message as a string -> "Insufficient permissions to access resource"
+    app.use(acl.middleware.errorHandler('json'))
+  }
 })
 if (process.env.DEBUG_QUERY == true) {
   mongoose.set('debug', function (coll, method, query, doc, options) {
@@ -39,13 +65,6 @@ if (process.env.DEBUG_QUERY == true) {
     })
   })
 }
-
-app.set('port', process.env.PORT || 3333)
-app.use(compression())
-app.use(logger('dev'))
-app.use(cors())
-
-app.use('/api', api)
 
 // Production error handler
 if (app.get('env') === 'production') {
