@@ -11,7 +11,7 @@
 				<b-list-group>
 					<b-list-group-item>
 						Balance:
-						<span-loading class="pull-right" v-bind:text="address ? toEther(address.balance) : null"></span-loading>
+						<span-loading class="pull-right" v-bind:text="address ? formatUnit(toEther(address.balance)) : null"></span-loading>
 					</b-list-group-item>
 					<b-list-group-item>
 						Transaction Count:
@@ -31,7 +31,7 @@
 			</b-col>
 			<b-col>
 				<b-list-group v-if="address">
-					<b-list-group-item>
+					<b-list-group-item v-if="address.isContract">
 						<span>Contract Creator: &nbsp;</span>
 						<span v-if="address.contractCreation">
 							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
@@ -52,8 +52,11 @@
 						<b-tab title="Transactions">
 							<tx-table :address="hash"></tx-table>
 						</b-tab>
-						<b-tab title="Token Balances">
+						<b-tab v-if="address && address.isToken" title="Token Balances">
 							<tokens-by-account-table :address="hash"></tokens-by-account-table>
+						</b-tab>
+						<b-tab title="Mined Blocks">
+							<tx-by-account-table></tx-by-account-table>
 						</b-tab>
 					</b-tabs>
 				</b-card>
@@ -66,6 +69,7 @@
   import mixin from '~/plugins/mixin'
   import TxTable from '~/components/TxTable'
   import TokensByAccountTable from '~/components/TokensByAccountTable'
+  import TxByAccountTable from '~/components/TxByAccountTable'
   import SpanLoading from '~/components/SpanLoading'
 
   export default {
@@ -73,6 +77,7 @@
     components: {
       TxTable,
       TokensByAccountTable,
+      TxByAccountTable,
       SpanLoading,
     },
     head () {

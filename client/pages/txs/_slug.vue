@@ -46,10 +46,6 @@
 						<td>{{ formatUnit(toEther(tx.value)) }}</td>
 					</tr>
 					<tr>
-						<td>Gas Limit:</td>
-						<td>{{ tx.gasLimit }}</td>
-					</tr>
-					<tr>
 						<td>Gas Used By Txn:</td>
 						<td>{{ tx.gasUsed }}</td>
 					</tr>
@@ -61,7 +57,7 @@
 						<td>Actual Tx Cost/Fee:</td>
 						<td>{{ formatUnit(toEther(tx.gasPrice * tx.gas)) }}</td>
 					</tr>
-					<tr v-if="tx.tokenTxs">
+					<tr v-if="tx.tokenTxs.length">
 						<td>Token Transfer:</td>
 						<td>
 							<ul>
