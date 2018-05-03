@@ -74,20 +74,21 @@ TxController.get('/txs/:slug', async (req, res) => {
       populate([{path: 'block'}, {path: 'from_model'}, {path: 'to_model'}]).
       lean()
 
-    let tokenTxs = []
-    if (tx) {
-      // Append token transfer to tx.
-      tokenTxs = await TokenTx.find({transactionHash: tx.hash}).
-        lean().
-        exec()
-
-      tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
+    if (!tx) {
+      return res.status(404).send()
     }
+    // Append token transfer to tx.
+    let tokenTxs = await TokenTx.find({transactionHash: tx.hash}).
+      lean().
+      exec()
+
+    tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
     tx.tokenTxs = tokenTxs
 
     return res.json(tx)
   }
   catch (e) {
+    console.log(e)
     return res.status(404).send()
   }
 })
