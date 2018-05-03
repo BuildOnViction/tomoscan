@@ -51,4 +51,22 @@ AccountController.get('/accounts/:slug', async (req, res) => {
   }
 })
 
+AccountController.get('/accounts/:slug/mined', async (req, res) => {
+  try {
+    let hash = req.params.slug
+    let params = {}
+    if (hash) {
+      params.query = {signer: hash}
+    }
+    params.sort = {number: -1}
+    let data = await paginate(req, 'Block', params)
+
+    return res.json(data)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
 export default AccountController
