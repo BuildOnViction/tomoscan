@@ -1,5 +1,7 @@
 <template>
 	<section>
+		<p>Total {{ total }} items found</p>
+
 		<b-table
 			striped
 			responsive
@@ -88,6 +90,7 @@
         self.total = data.total
         self.current_page = data.current_page
         self.pages = data.pages
+        self.per_page = data.per_page
 
         // Hide loading.
         self.loading = false

@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<section>
+		<p>Total {{ total }} items found</p>
+
 		<b-table
 			striped
 			responsive
@@ -68,7 +70,7 @@
 			:per-page="per_page"
 			@change="onChangePaginate"
 		></b-pagination>
-	</div>
+	</section>
 </template>
 
 <script>
@@ -177,7 +179,8 @@
           // Format for timestamp.
           if (!item.block) {
             _item.timestamp = item.createdAt
-          } else {
+          }
+          else {
             _item.timestamp = item.block.timestamp
           }
 
