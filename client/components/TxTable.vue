@@ -17,7 +17,7 @@
 				<span v-else class="text-muted">Pending...</span>
 			</template>
 
-			<template slot="age" slot-scope="props">
+			<template slot="timestamp" slot-scope="props">
 				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
 				<b-tooltip :target="'age__' + props.index">
 					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
@@ -89,7 +89,7 @@
       fields: {
         hash: {label: 'TxHash'},
         block: {label: 'Block'},
-        age: {label: 'Age', sortable: false},
+        timestamp: {label: 'Age', sortable: false},
         from: {label: 'from'},
         arrow: {class: 'text-center'},
         to: {label: 'To'},
@@ -177,6 +177,8 @@
           // Format for timestamp.
           if (!item.block) {
             _item.timestamp = item.createdAt
+          } else {
+            _item.timestamp = item.block.timestamp
           }
 
           _items.push(_item)

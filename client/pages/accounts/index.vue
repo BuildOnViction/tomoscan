@@ -11,7 +11,7 @@
 				{{ props.item.rank }}
 			</template>
 			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 			<template slot="balance" slot-scope="props">
 				<span v-html="formatUnit(toEther(props.item.balance))"></span>
