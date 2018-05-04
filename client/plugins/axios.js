@@ -7,7 +7,7 @@ export default function ({$axios, redirect}) {
 
   $axios.onError(error => {
     const code = parseInt(error.response && error.response.status)
-    if (code) {
+    if (code && code != 422) {
       window.$nuxt.error({message: error.response.statusText, statusCode: code})
     }
   })

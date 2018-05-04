@@ -39,10 +39,10 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
   }
   else {
     // Apply auth for route group.
-    app.all('/api/*', authService.authenticate(), (req, res, next) => {
-      console.log(req.user)
-      return next()
-    })
+//    app.all('/api/*', authService.authenticate(), (req, res, next) => {
+//      console.log(req.user)
+//      return next()
+//    })
 
     // Initialize public api
     app.use('/api', api)
