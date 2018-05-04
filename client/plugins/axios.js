@@ -1,7 +1,14 @@
-export default function ({$axios, redirect}) {
+import Cookie from 'js-cookie'
+
+export default function ({$axios, redirect, app, store}) {
   $axios.onRequest(config => {
     if (process.client) {
       window.$nuxt.$loading.start()
+
+      let token = Cookie.get('token')
+      if (token) {
+        config.headers.common['Authorization'] = token
+      }
     }
   })
 

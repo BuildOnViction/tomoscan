@@ -30,8 +30,8 @@ module.exports = {
   },
   plugins: [
     '~/plugins/axios',
-    '~/plugins/bootstrap-vue',
     '~/plugins/veevalidate',
+    '~/plugins/bootstrap-vue'
   ],
   modules: [
     '@nuxtjs/axios',

@@ -16,6 +16,18 @@
 					<b-nav-item :to="{name: 'tokentxs'}">Token Transfers</b-nav-item>
 				</b-navbar-nav>
 				<search></search>
+				<b-navbar-nav v-if="!user">
+					<b-nav-item v-b-modal="'loginModal'">Login</b-nav-item>
+					<b-nav-item v-b-modal="'registerModal'">Register</b-nav-item>
+				</b-navbar-nav>
+				<b-navbar-nav v-else>
+					<b-nav-item-dropdown right>
+						<template slot="button-content">
+							<em>{{ user.email }}</em>
+						</template>
+						<b-dropdown-item @click="onLogout">Logout</b-dropdown-item>
+					</b-nav-item-dropdown>
+				</b-navbar-nav>
 			</b-collapse>
 		</b-navbar>
 
@@ -25,6 +37,9 @@
 				<nuxt/>
 			</b-container>
 		</main>
+
+		<register :modalId="'registerModal'"></register>
+		<login :modalId="'loginModal'"></login>
 	</div>
 </template>
 
@@ -32,15 +47,34 @@
   import MyFooter from '~/components/Footer.vue'
   import Search from '~/components/Search.vue'
   import Breadcrumb from '~/components/Breadcrumb.vue'
+  import Register from '~/components/Register.vue'
+  import Login from '~/components/Login.vue'
 
   export default {
     components: {
       MyFooter,
       Search,
       Breadcrumb,
+      Register,
+      Login,
     },
-
+    computed: {
+      user () {
+        let user = this.$store.state.user
+        return user ? user.data : null
+      },
+    },
     mounted () {
+      let self = this
+
+      self.$store.dispatch('user/getCachedUser')
+    },
+    methods: {
+      onLogout () {
+        let self = this
+
+        self.$store.dispatch('user/logout')
+      },
     },
   }
 </script>

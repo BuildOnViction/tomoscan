@@ -10,7 +10,7 @@ AuthController.post('/login', async (req, res) => {
 
     let user = await User.findOne({email: email})
     if (!user)
-      return res.status(422)
+      return res.sendStatus(404)
 
     let isMatch = await user.authenticate(password)
 
@@ -25,6 +25,7 @@ AuthController.post('/login', async (req, res) => {
     return res.json({user, token})
   }
   catch (e) {
+    console.log(e)
     return res.sendStatus(422)
   }
 })
@@ -36,7 +37,7 @@ AuthController.post('/register', async (req, res) => {
 
     let user = await User.findOne({email: email})
     if (user)
-      return res.sendStatus(422)
+      return res.status(422).json({message: 'Email exists in DB!'})
 
     user = await User.create({
       email: email,
@@ -46,11 +47,12 @@ AuthController.post('/register', async (req, res) => {
     if (!user)
       return res.sendStatus(422)
 
-    token = await user.generateToken()
+    let token = await user.generateToken(user)
 
     return res.json({user, token})
   }
   catch (error) {
+    console.log(error)
     return res.status(422).json({error})
   }
 })

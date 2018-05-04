@@ -38,6 +38,8 @@ schema.methods.authenticate = async function (password) {
 }
 
 schema.methods.generateToken = async function (user) {
+  if (!user)
+    return false
   const payload = {
     id: user._id,
     email: user.email,

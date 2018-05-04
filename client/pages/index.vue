@@ -9,7 +9,7 @@
 						small
 						responsive
 						:items="blocks"
-						:fields="block_headers" responsive>
+						:fields="block_headers">
 						<template slot="block" slot-scope="props">
 							<transition name="fade">
 								<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
