@@ -9,9 +9,8 @@ AuthController.post('/login', async (req, res) => {
     const password = req.body.password
 
     let user = await User.findOne({email: email})
-    if (!user) {
-      return res.sendStatus(422)
-    }
+    if (!user)
+      return res.status(422)
 
     let isMatch = await user.authenticate(password)
 
@@ -26,12 +25,11 @@ AuthController.post('/login', async (req, res) => {
     return res.json({user, token})
   }
   catch (e) {
-    console.log(e)
     return res.sendStatus(422)
   }
 })
 
-AuthController.post('/signup', async (req, res) => {
+AuthController.post('/register', async (req, res) => {
   try {
     const email = req.body.email
     const password = req.body.password
@@ -48,11 +46,12 @@ AuthController.post('/signup', async (req, res) => {
     if (!user)
       return res.sendStatus(422)
 
-    return res.json(user)
+    token = await user.generateToken()
+
+    return res.json({user, token})
   }
-  catch (e) {
-    console.log(e)
-    return res.sendStatus(422)
+  catch (error) {
+    return res.status(422).json({error})
   }
 })
 

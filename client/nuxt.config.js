@@ -6,10 +6,15 @@ module.exports = {
   */
   head: {
     title: 'TOMO Explorer', meta: [
-      {charset: 'utf-8'}, {
-        name: 'viewport', content: 'width=device-width, initial-scale=1',
-      }, {
-        hid: 'description', name: 'description', content: 'TOMO Explorer project',
+      {charset: 'utf-8'},
+      {
+        name: 'viewport',
+        content: 'width=device-width, initial-scale=1',
+      },
+      {
+        hid: 'description',
+        name: 'description',
+        content: 'TOMO Explorer project',
       },
     ], link: [
       {
@@ -26,16 +31,17 @@ module.exports = {
   plugins: [
     '~/plugins/axios',
     '~/plugins/bootstrap-vue',
+    '~/plugins/veevalidate',
   ],
   modules: [
-    '@nuxtjs/axios'
+    '@nuxtjs/axios',
   ],
   css: [
     '~/assets/scss/app.scss',
   ],
   env: process.env,
   axios: {
-    baseURL: process.env.API_URL
+    baseURL: process.env.API_URL,
   },
   loading: {
     color: '#fff',
