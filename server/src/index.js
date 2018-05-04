@@ -1,9 +1,7 @@
 import api from './api'
 import Web3Connector from './services/Web3Connector'
 import CronTab from './services/CronTab'
-import aclService from './services/Acl'
 import authService from './services/Auth'
-import aclStore from './helpers/aclStore'
 
 const express = require('express')
 const logger = require('morgan')
@@ -11,6 +9,7 @@ const compression = require('compression')
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
 const cors = require('cors')
+const bodyParser = require('body-parser')
 
 // Load environment variables from .env file
 dotenv.load()
@@ -25,8 +24,10 @@ app.set('port', process.env.PORT || 3333)
 app.use(compression())
 app.use(logger('dev'))
 app.use(cors())
+app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 
-// Init acl and jwt.
+// Init auth and jwt.
 app.use(authService.initialize())
 authService.setJwtStrategy()
 
@@ -37,17 +38,14 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
     process.exit(1)
   }
   else {
-    aclService(mongoose.connection.db)
+    // Apply auth for route group.
+    app.all('/api/*', authService.authenticate(), (req, res, next) => {
+      console.log(req.user)
+      return next()
+    })
 
-    let acl = aclStore.acl
-
-    // initialize api
+    // Initialize public api
     app.use('/api', api)
-
-    app.all('*', authService.authenticate(), (req, res, next) => next())
-
-    // Will return error message as a string -> "Insufficient permissions to access resource"
-    app.use(acl.middleware.errorHandler('json'))
   }
 })
 if (process.env.DEBUG_QUERY == true) {
