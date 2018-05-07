@@ -14,8 +14,18 @@ export default function ({$axios, redirect, app, store}) {
 
   $axios.onError(error => {
     const code = parseInt(error.response && error.response.status)
-    if (code && code != 422) {
-      window.$nuxt.error({message: error.response.statusText, statusCode: code})
+    if (code) {
+      switch (code) {
+        case 401:
+          store.dispatch('user/logout')
+          // Redirect to home.
+          return window.$nuxt.$router.replace({name: 'index'})
+          break
+        default:
+          window.$nuxt.error(
+            {message: error.response.statusText, statusCode: code})
+          break
+      }
     }
   })
 }

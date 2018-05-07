@@ -115,6 +115,10 @@ br.register('tokentxs', (brs) => {
   brs.parent('index')
   brs.push('Token (ERC20) Transfers', {name: 'tokentxs'})
 })
+br.register('follows', (brs) => {
+  brs.parent('index')
+  brs.push('Follow List', {name: 'follows'})
+})
 
 export const state = () => ({
   items: null,

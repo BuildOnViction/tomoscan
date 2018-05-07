@@ -15,19 +15,21 @@ function setJwtStrategy () {
     secretOrKey: process.env.JWT_SECRET,
     passReqToCallback: true,
   }
-  const strategy = new passportJwt.Strategy(opts, (req, jwtPayload, next) => {
-    const _id = jwtPayload.id
+  const strategy = new passportJwt.Strategy(opts,
+    (req, jwtPayload, next) => {
+      const _id = jwtPayload.id
 
-    User.findOne({_id}, (err, user) => {
-      if (err)
-        next(err, false)
+      User.findOne({_id}, (err, user) => {
+        if (err) {
+          return next(err, false)
+        }
 
-      // Append user to request.
-      req.user = user
+        // Append user to request.
+        req.user = user
 
-      next(null, user || false)
+        return next(null, user || false)
+      })
     })
-  })
 
   passport.use(strategy)
 }
