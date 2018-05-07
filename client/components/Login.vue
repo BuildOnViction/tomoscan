@@ -56,10 +56,10 @@
         const password = self.form.password
 
         self.$store.dispatch('user/login', {email, password}).then((data) => {
-          self.resetModal()
-
           // Close modal.
           self.$refs.modalRegister.hide()
+
+          self.resetModal()
         }).catch((e) => {
           self.errorMessage = e.message
         })

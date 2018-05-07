@@ -38,12 +38,6 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
     process.exit(1)
   }
   else {
-    // Apply auth for route group.
-//    app.all('/api/*', authService.authenticate(), (req, res, next) => {
-//      console.log(req.user)
-//      return next()
-//    })
-
     // Initialize public api
     app.use('/api', api)
   }

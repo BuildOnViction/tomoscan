@@ -46,7 +46,7 @@ schema.methods.generateToken = async function (user) {
   }
 
   const options = {
-    expiresIn: 10080,
+    expiresIn: 10080 * 1000,
   }
 
   const token = jwt.sign(payload, process.env.JWT_SECRET, options)
