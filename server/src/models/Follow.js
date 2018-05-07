@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
   address: String,
-  description: String,
+  name: String,
   authCode: String,
   sendEmail: Boolean,
   notifyReceive: Boolean,
