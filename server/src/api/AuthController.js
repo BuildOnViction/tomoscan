@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import User from '../models/User'
+import EmailService from '../services/Email'
 
 const AuthController = Router()
 
@@ -48,6 +49,10 @@ AuthController.post('/register', async (req, res) => {
       return res.sendStatus(422)
 
     let token = await user.generateToken(user)
+
+    // Send email welcome.
+    let emailServoce = new EmailService()
+    emailServoce.newUserRegister(user)
 
     return res.json({user, token})
   }

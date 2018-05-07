@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import Web3Util from '../helpers/web3'
 import CronTab from '../services/CronTab'
+import EmailService from '../services/Email'
 
 const CronController = Router()
 
@@ -58,6 +59,19 @@ CronController.get('/cron/tokens', async (req, res) => {
     let tokens = await CronTab.getTokens()
 
     return res.json({tokens: tokens})
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
+CronController.get('/cron/test', async (req, res) => {
+  try {
+    let email = new EmailService()
+    let resp = await email.newUserRegister()
+
+    return res.json({status: resp})
   }
   catch (e) {
     console.log(e)
