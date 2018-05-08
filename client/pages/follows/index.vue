@@ -3,6 +3,7 @@
 		<div class="mb-4">
 			<b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-1"></i>Add New Address</b-btn>
 			<b-modal
+				ref="modalNewAddress"
 				@ok="onAddNewFollowAddress"
 				@keydown.native.enter="onAddNewFollowAddress"
 				id="modalAddFollow"
@@ -14,13 +15,16 @@
 
 				<div class="form-group">
 					<label class="control-label">Address:</label>
-					<input type="text" class="form-control" v-model="form.address"
-					       v-validate="'required'"
-					       data-vv-as="Address">
+					<input
+						v-model="form.address"
+						v-validate="'required|test'"
+						data-vv-as="Address"
+						type="text" class="form-control" name="address">
+					<span class="text-danger" v-show="errors.has('address')">{{ errors.first('address') }}</span>
 				</div>
 				<div class="form-group">
 					<label class="control-label">Description (Optional):</label>
-					<input type="text" class="form-control" v-modal="form.name">
+					<input type="text" class="form-control" v-model="form.name">
 				</div>
 				<p>You can monitor and receive an alert when an address on your follow list receives an incoming TOMO Transaction.</p>
 				<div class="form-group">
@@ -119,7 +123,7 @@
         return data
       },
 
-      async onAddNewFollowAddress () {
+      async onAddNewFollowAddress (e) {
         let self = this
         e.preventDefault()
 
@@ -129,9 +133,12 @@
         }
 
         try {
-          let {data} = await self.$axios.post('/api/follows', self.form)
+          let body = self.form
+          body.notifyReceive = true
+
+          let {data} = await self.$axios.post('/api/follows', body)
           // Close modal.
-          self.$refs.modalRegister.hide()
+          self.$refs.modalNewAddress.hide()
 
           self.resetModal()
         }

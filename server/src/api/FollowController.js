@@ -35,7 +35,7 @@ FollowController.post('/follows', authService.authenticate(),
         return res.sendStatus(401)
       }
 
-      let follow = await FollowRepository.firstOrUpdate(req)
+      let follow = await FollowRepository.firstOrUpdate(req, user)
       
       return res.json(follow)
     }

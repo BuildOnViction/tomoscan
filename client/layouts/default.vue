@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<section>
 		<b-navbar toggleable="md" type="dark" variant="primary">
 			<b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
 			<b-navbar-brand :to="{name: 'index'}">TOMO Explorer</b-navbar-brand>
@@ -41,7 +41,7 @@
 
 		<register :modalId="'registerModal'"></register>
 		<login :modalId="'loginModal'"></login>
-	</div>
+	</section>
 </template>
 
 <script>
@@ -71,10 +71,13 @@
       self.$store.dispatch('user/getCachedUser')
     },
     methods: {
-      onLogout () {
+      async onLogout () {
         let self = this
 
-        self.$store.dispatch('user/logout')
+        await self.$store.dispatch('user/logout')
+
+        // Redirect to home page.
+        self.$router.replace({name: 'index'})
       },
     },
   }
