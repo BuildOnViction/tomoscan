@@ -1,11 +1,51 @@
 <template>
 	<section>
+		<div class="mb-4">
+			<b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-1"></i>Add New Address</b-btn>
+			<b-modal
+				@ok="onAddNewFollowAddress"
+				@keydown.native.enter="onAddNewFollowAddress"
+				id="modalAddFollow"
+				title="Add a New Address to your Follow List">
+
+				<div class="alert alert-danger" v-show="errorMessage">
+					{{ errorMessage }}
+				</div>
+
+				<div class="form-group">
+					<label class="control-label">Address:</label>
+					<input type="text" class="form-control" v-model="form.address"
+					       v-validate="'required'"
+					       data-vv-as="Address">
+				</div>
+				<div class="form-group">
+					<label class="control-label">Description (Optional):</label>
+					<input type="text" class="form-control" v-modal="form.name">
+				</div>
+				<p>You can monitor and receive an alert when an address on your follow list receives an incoming TOMO Transaction.</p>
+				<div class="form-group">
+					<label class="control-label">Please select your notification method below:</label>
+					<div class="form-check form-check-inline">
+						<input id="emailNotify" name="sendEmail" v-model="form.sendEmail" value="1" type="radio" class="form-check-input">
+						<label for="emailNotify" class="form-check-label">Email Notification</label>
+					</div>
+
+					<div class="form-check form-check-inline">
+						<input id="noNotify" name="sendEmail" v-model="form.sendEmail" value="0" type="radio" class="form-check-input">
+						<label for="noNotify" class="form-check-label">No Notification</label>
+					</div>
+				</div>
+			</b-modal>
+		</div>
+
 		<b-table
 			striped
 			responsive
 			foot-clone
-			small>
-
+			small
+			:fields="fields"
+			:loading="loading"
+			:items="items">
 		</b-table>
 	</section>
 </template>
@@ -17,6 +57,12 @@
     mixins: [mixin],
     data () {
       return {
+        fields: {
+          action: {label: 'Action'},
+          address: {label: 'Address'},
+          balance: {label: 'Balance', sortable: false},
+          notification: {label: 'Notification'},
+        },
         loading: true,
         pagination: {},
         total: 0,
@@ -24,6 +70,12 @@
         current_page: 1,
         per_page: 15,
         pages: 1,
+        errorMessage: null,
+        form: {
+          address: '',
+          name: '',
+          sendEmail: '',
+        },
       }
     },
     mounted () {
@@ -65,6 +117,34 @@
         self.loading = false
 
         return data
+      },
+
+      async onAddNewFollowAddress () {
+        let self = this
+        e.preventDefault()
+
+        let result = await self.$validator.validateAll()
+        if (!result) {
+          return
+        }
+
+        try {
+          let {data} = await self.$axios.post('/api/follows', self.form)
+          // Close modal.
+          self.$refs.modalRegister.hide()
+
+          self.resetModal()
+        }
+        catch (e) {
+          self.errorMessage = e.message
+        }
+      },
+
+      resetModal () {
+        this.form.address = ''
+        this.form.name = ''
+        this.form.sendE = ''
+        this.errorMessage = ''
       },
     },
   }

@@ -36,6 +36,8 @@ FollowController.post('/follows', authService.authenticate(),
       }
 
       let follow = await FollowRepository.firstOrUpdate(req)
+      
+      return res.json(follow)
     }
     catch (e) {
       console.log(e)
