@@ -1,5 +1,7 @@
+import Follow from '../models/Follow'
+
 let FollowRepository = {
-  async firstOrUpdate (req) {
+  async firstOrUpdate (req, user) {
     let address = req.body.address
     let name = req.body.name
     let update = {
@@ -11,7 +13,7 @@ let FollowRepository = {
       notifySent: req.body.notifySent,
     }
 
-    return awaitFollow.firstOrCreate({user: user, address: address},
+    return await Follow.findOneAndUpdate({user: user, address: address},
       update, {upsert: true, new: true})
   },
 }
