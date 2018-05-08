@@ -4,6 +4,7 @@ import mongoose from 'mongoose'
 import { paginate } from '../helpers/utils'
 import Follow from '../models/Follow'
 import FollowRepository from '../repositories/FollowRepository'
+import User from '../models/User'
 
 const FollowController = Router()
 
@@ -16,8 +17,12 @@ FollowController.get('/follows', authService.authenticate(),
       }
 
       let params = {}
-      params.query = {user: new mongoose.Types.ObjectId(user.id)}
-      let data = paginate(req, 'Follow', params)
+      params.query = {
+        user: user.id,
+      }
+      let data = await paginate(req, 'Follow', params)
+      let items = data.items
+      data.items = await FollowRepository.formatItems(items)
 
       return res.json(data)
     }
@@ -36,7 +41,7 @@ FollowController.post('/follows', authService.authenticate(),
       }
 
       let follow = await FollowRepository.firstOrUpdate(req, user)
-      
+
       return res.json(follow)
     }
     catch (e) {
