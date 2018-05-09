@@ -5,17 +5,22 @@ WORKDIR /var/www/
 # between docker containers
 ENV HOST 0.0.0.0
 
-ADD server/package.json /var/www/package.json
+COPY server/package.json /var/www/package.json
+
+RUN \
+  apt-get update && \
+  apt-get install -y python python-dev python-pip python-virtualenv && \
+  apt-get install -y git nano && \
+  rm -rf /var/lib/apt/lists/*
 
 RUN npm i npm@latest -g
 RUN npm install
-#RUN npm install -g nuxt dotenv node-gyp
+RUN npm install -g dotenv node-gyp pm2
 
-ADD server/.env.example /var/www/.env
-ADD server /var/www
-#
-RUN cd /var/www && npm run build
-#
-CMD ["npm", "start"]
+COPY server/.env.example /var/www/.env
+COPY server /var/www
+COPY pm2.json /var/www/pm2.json
+
+CMD sleep 300
 
 EXPOSE 3333

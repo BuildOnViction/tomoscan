@@ -1,0 +1,38 @@
+version: '3'
+services:
+  mongo:
+    image: mongo:latest
+    volumes:
+    - ./db/dev:/data/db
+    ports:
+    - "27017:27017"
+  server:
+    build:
+      context: .
+      dockerfile: server.dockerfile
+    command: pm2 start /var/www/pm2.json --only dev
+    ports:
+     - "3333:3333"
+    environment:
+     - MONGODB_URI=mongodb://mongo:27017/explorer
+    links:
+     - mongo
+    depends_on:
+     - mongo
+    volumes:
+     - ./server:/var/www
+     - /var/www/node_modules
+  web:
+    build:
+      context: .
+      dockerfile: client.dockerfile
+    command: pm2 start /var/www/pm2.json --only dev
+    ports:
+      - "3000:3000"
+    links:
+      - mongo
+    depends_on:
+      - server
+    volumes:
+      - ./client:/var/www
+      - /var/www/node_modules
