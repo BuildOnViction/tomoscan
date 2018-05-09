@@ -19,7 +19,7 @@ RUN npm install -g dotenv node-gyp pm2
 
 COPY server/.env.example /var/www/.env
 COPY server /var/www
-COPY pm2.json /var/www/pm2.json
+COPY server/pm2.json /var/www/pm2.json
 
 CMD sleep 300
 
