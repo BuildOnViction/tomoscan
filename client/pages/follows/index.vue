@@ -50,6 +50,22 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
+
+			<template slot="address" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'accounts-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
+			</template>
+
+			<template slot="balance" slot-scope="props">
+				<ul>
+					<li>{{ formatUnit(toEther(props.item.addressObj.balance)) }}</li>
+				</ul>
+			</template>
+
+			<template slot="notification" slot-scope="props">
+				<span v-if="props.item.sendEmail">Email Notification,</span>
+				<span v-if="props.item.notifyReceive">Notify Receive,</span>
+				<span v-if="props.item.notifySent">Notify Sent,</span>
+			</template>
 		</b-table>
 	</section>
 </template>
