@@ -10,7 +10,7 @@ services:
     build:
       context: .
       dockerfile: server.dockerfile
-    command: npm run build && pm2 start /var/www/pm2.json --only prod
+    command: npm run build && pm2 start /var/www/pm2.json --only prod --no-daemon
     ports:
      - "3333:3333"
     environment:
@@ -26,7 +26,7 @@ services:
     build:
       context: .
       dockerfile: client.dockerfile
-    command: npm run build && pm2 start /var/www/pm2.json --only prod
+    command: npm run build && pm2 start /var/www/pm2.json --only prod --no-daemon
     ports:
       - "3000:3000"
     links:

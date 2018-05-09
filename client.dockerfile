@@ -19,7 +19,7 @@ RUN npm install -g nuxt dotenv node-gyp pm2
 
 COPY client/.env.example /var/www/.env
 COPY client /var/www
-COPY pm2.json /var/www/pm2.json
+COPY client/pm2.json /var/www/pm2.json
 
 CMD sleep 300
 
