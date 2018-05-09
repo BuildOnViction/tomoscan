@@ -1,5 +1,15 @@
 version: '3'
 services:
+  nginx:
+    build:
+      context: .
+      dockerfile: nginx.dockerfile
+    links:
+      - mongo
+      - web
+      - server
+    ports:
+      - "80:80"
   mongo:
     image: mongo:latest
     volumes:
