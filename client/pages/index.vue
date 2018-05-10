@@ -73,6 +73,7 @@
   import mixin from '~/plugins/mixin'
   import socket from '~/plugins/socket.io'
   import _ from 'lodash'
+  import web3 from 'web3'
 
   export default {
     mixins: [mixin],
@@ -124,6 +125,8 @@
 
       self.getLastestBlocks()
       self.getLatestTxs()
+
+//      alert(web3.utils.hexToUtf8('0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016476c6f62616c204d6573736167696e6720546f6b656e00000000000000000000').replace(/[\uE000-\uF8FF]/g, '1'))
     },
     methods: {
       async getLastestBlocks () {
