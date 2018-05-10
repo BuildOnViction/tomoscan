@@ -9,8 +9,7 @@ services:
   server:
     build:
       context: .
-      dockerfile: server.dockerfile
-    command: npm run dev
+      dockerfile: server-dev.dockerfile
     working_dir: /var/www
     ports:
      - "3333:3333"
@@ -26,8 +25,7 @@ services:
   web:
     build:
       context: .
-      dockerfile: client.dockerfile
-    command: npm run dev
+      dockerfile: client-dev.dockerfile
     working_dir: /var/www
     ports:
       - "3000:3000"
