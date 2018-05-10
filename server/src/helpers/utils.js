@@ -42,6 +42,7 @@ export const paginate = async (
 
 export const trimWord = (word) => word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
   replace('\t', '').
+  replace(/\u0000/g, '').
   trim()
 
 export const getSigner = (block) => {
