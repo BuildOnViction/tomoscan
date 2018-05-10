@@ -54,7 +54,7 @@ module.exports = {
     extractCSS: true,
     cssSourceMap: true,
     vendor: [
-      '~/plugins/mixin',
+      '~/plugins/mixin'
     ],
     /*
     ** Run ESLINT on save

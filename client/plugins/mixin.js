@@ -74,7 +74,7 @@ const mixin = {
 
     trimWord: (word) => word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
       replace('\t', '').
-      replace(/[^\x00-\x7F]/g, '').
+      replace(/\u0000/g, '').
       trim(),
 
     formatUnit: (number, unit = null) => number + ' ' +
