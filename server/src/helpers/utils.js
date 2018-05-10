@@ -1,5 +1,4 @@
 import mongoose from 'mongoose'
-import CryptoJS from 'crypto-js'
 
 const ethUtils = require('ethereumjs-util')
 const ethBlock = require('ethereumjs-block/from-rpc')
@@ -40,10 +39,10 @@ export const paginate = async (
   }
 }
 
-export const trimWord = (word) => CryptoJS.enc.Utf8.parse(
-  word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
-    replace('\t', '').
-    replace(/\u0000/g, '')).trim()
+export const trimWord = (word) => word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
+  replace('\t', '').
+  replace(/[^\x00-\x7F]/g, '').
+  trim()
 
 export const getSigner = (block) => {
   let signer = null
