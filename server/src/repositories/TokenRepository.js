@@ -70,7 +70,6 @@ let TokenRepository = {
       return token
     }
     catch (e) {
-      console.log(token)
       console.log(e)
       throw e
     }
