@@ -10,8 +10,8 @@ http {
   server {
     listen 80;
     server_name localhost;
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/web.access.log;
+    error_log /var/log/nginx/web.error.log;
 
 
     location / {
@@ -30,8 +30,8 @@ http {
   server {
     listen 80;
     server_name api.localhost;
-    access_log /var/log/nginx/access.log;
-    error_log /var/log/nginx/error.log;
+    access_log /var/log/nginx/api.access.log;
+    error_log /var/log/nginx/api.error.log;
 
 
     location / {
