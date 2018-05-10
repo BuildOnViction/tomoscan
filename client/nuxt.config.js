@@ -31,7 +31,7 @@ module.exports = {
   plugins: [
     '~/plugins/axios',
     '~/plugins/veevalidate',
-    '~/plugins/bootstrap-vue'
+    '~/plugins/bootstrap-vue',
   ],
   modules: [
     '@nuxtjs/axios',
@@ -53,6 +53,9 @@ module.exports = {
   build: {
     extractCSS: true,
     cssSourceMap: true,
+    vendor: [
+      '~/plugins/mixin',
+    ],
     /*
     ** Run ESLINT on save
     */

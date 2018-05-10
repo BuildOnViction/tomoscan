@@ -21,6 +21,6 @@ COPY server/.env.example /var/www/.env
 COPY server /var/www
 COPY server/pm2.json /var/www/pm2.json
 
-CMD sleep 300
+CMD npm run dev
 
 EXPOSE 3333

@@ -4,6 +4,10 @@ services:
     build:
       context: .
       dockerfile: nginx.dockerfile
+    depends_on:
+      - mongo
+      - web
+      - server
     links:
       - mongo
       - web
