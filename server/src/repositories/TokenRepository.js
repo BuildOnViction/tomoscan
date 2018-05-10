@@ -43,13 +43,13 @@ let TokenRepository = {
       if (typeof token.name === 'undefined') {
         let name = await web3.eth.call(
           {to: token.hash, data: tokenFuncs['name']})
-        token.name = trimWord(web3.utils.hexToAscii(name))
+        token.name = trimWord(web3.utils.hexToUtf8(name))
       }
 
       if (typeof token.symbol === 'undefined') {
         let symbol = await web3.eth.call(
           {to: token.hash, data: tokenFuncs['symbol']})
-        token.symbol = trimWord(web3.utils.hexToAscii(symbol).trim())
+        token.symbol = trimWord(web3.utils.hexToUtf8(symbol).trim())
       }
 
       if (typeof token.decimals === 'undefined') {
