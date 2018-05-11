@@ -10,6 +10,9 @@ TokenController.get('/tokens', async (req, res) => {
     let data = await paginate(req, 'Token',
       {query: {status: true}, sort: {totalSupply: -1}})
 
+    let items = data.items
+    data.items = await TokenRepository.formatItems(items)
+
     return res.json(data)
   }
   catch (e) {
