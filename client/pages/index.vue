@@ -1,6 +1,24 @@
 <template>
 	<section>
 		<b-row class="mb-2">
+			<b-col sm="4">
+				<ul class="list-group">
+					<li class="list-group-item">Total Blocks: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalBlock) : null"></span-loading></li>
+					<li class="list-group-item">Total Wallet: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalAddress) : null"></span-loading></li>
+					<li class="list-group-item">Total Token: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalToken) : null"></span-loading></li>
+					<li class="list-group-item">Total SmartContract: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalSmartContract) : null"></span-loading></li>
+				</ul>
+			</b-col>
+			<b-col sm="8">
+				<div class="card">
+					<div class="card-body">
+
+					</div>
+				</div>
+			</b-col>
+		</b-row>
+
+		<b-row class="mb-2">
 			<b-col sm="6" class="mb-3">
 				<b-card title="Recent Blocks">
 					<b-table
@@ -74,9 +92,13 @@
   import socket from '~/plugins/socket.io'
   import _ from 'lodash'
   import web3 from 'web3'
+  import SpanLoading from '~/components/SpanLoading'
 
   export default {
     mixins: [mixin],
+    components: {
+      SpanLoading,
+    },
     head () {
       return {
         title: 'TOMO Explorer',
@@ -99,6 +121,7 @@
         value: {label: 'Value'},
       },
       txs: [],
+      stats: null,
     }),
     beforeMount () {
       let self = this
@@ -125,8 +148,7 @@
 
       self.getLastestBlocks()
       self.getLatestTxs()
-
-//      alert(web3.utils.hexToUtf8('0x00000000000000000000000000000000000000000000000000000000000000200000000000000000000000000000000000000000000000000000000000000016476c6f62616c204d6573736167696e6720546f6b656e00000000000000000000').replace(/[\uE000-\uF8FF]/g, '1'))
+      self.getStats()
     },
     methods: {
       async getLastestBlocks () {
@@ -156,6 +178,12 @@
         self.loading_tx = false
 
         self.txs = data.items
+      },
+
+      async getStats () {
+        let self = this
+        let {data} = await self.$axios.get('/api/setting')
+        self.stats = data.stats
       },
     },
   }

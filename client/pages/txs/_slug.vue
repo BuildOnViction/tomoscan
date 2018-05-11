@@ -63,7 +63,9 @@
 							<ul>
 								<li v-for="tokenTx, index in tx.tokenTxs">
 									<span>{{ toEther(tokenTx.value) }}</span>
-									<nuxt-link :to="{name: 'tokens-slug', params: {slug: tokenTx.address}}">ERC20 ({{ tokenTx.symbol.trim() }})</nuxt-link>
+									<nuxt-link :to="{name: 'tokens-slug', params: {slug: tokenTx.address}}">
+										<span v-html="'ERC20 (' + tokenTx.symbol.trim() + ')'"></span>
+									</nuxt-link>
 									<span>&nbsp;from&nbsp;</span>
 									<nuxt-link class="address__tag" :to="{name: 'accounts-slug', params: {slug: tokenTx.from}}">{{ tokenTx.from }}</nuxt-link>
 									<span><i class="fa fa-arrow-right ml-1 mr-1 text-success"></i></span>
