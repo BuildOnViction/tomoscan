@@ -88,4 +88,11 @@ export const unformatAddress = (address) => address.replace(
 export const formatAddress = (address) => address.replace('0x',
   '0x000000000000000000000000')
 
+export const formatAscIIJSON = (obj) => {
+  let json = JSON.stringify(obj)
+  json = json.replace(/(\\u[\da-zA-Z]{4})/gm, '')
+
+  return JSON.parse(json)
+}
+
 
