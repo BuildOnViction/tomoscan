@@ -49,7 +49,7 @@ let TokenRepository = {
       if (typeof token.symbol === 'undefined') {
         let symbol = await web3.eth.call(
           {to: token.hash, data: tokenFuncs['symbol']})
-        token.symbol = trimWord(web3.utils.hexToUtf8(symbol).trim())
+        token.symbol = trimWord(web3.utils.hexToUtf8(symbol))
       }
 
       if (typeof token.decimals === 'undefined') {

@@ -39,7 +39,7 @@ export const paginate = async (
   }
 }
 
-export const trimWord = (word) => word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
+export const trimWord = (word) => word.
   replace('\t', '').
   replace(/\u0000/g, '').
   trim()
