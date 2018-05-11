@@ -20,14 +20,13 @@
 				{{ formatNumber(props.item.transactionCount) }}
 			</template>
 		</b-table>
-		<div class="text-xs-center pt-2">
-			<b-pagination
-				align="center"
-				:total-rows="total"
-				:per-page="per_page"
-				@change="onChangePaginate"
-			></b-pagination>
-		</div>
+
+		<b-pagination
+			align="center"
+			:total-rows="total"
+			:per-page="per_page"
+			@change="onChangePaginate"
+		></b-pagination>
 	</section>
 </template>
 
