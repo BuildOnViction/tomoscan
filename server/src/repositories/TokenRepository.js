@@ -88,6 +88,8 @@ let TokenRepository = {
   formatItem: async (item) => {
     let tokenTxsCount = await TokenTx.find({address: item.hash}).count()
     item.tokenTxsCount = tokenTxsCount
+    item.name = formatAscIIJSON(item.name)
+    item.symbol = formatAscIIJSON(item.symbol)
 
     return item
   },
