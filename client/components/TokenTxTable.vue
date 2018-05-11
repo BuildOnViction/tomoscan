@@ -55,7 +55,8 @@
 			</template>
 
 			<template slot="token" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
+				<nuxt-link v-if="props.item.symbol" :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
+				<i v-else>ERC20</i>
 			</template>
 		</b-table>
 		<b-pagination
@@ -141,7 +142,7 @@
         // Hide loading.
         self.loading = false
 
-	      // Format data.
+        // Format data.
         self.items = self.formatData(self.items)
 
         return data
@@ -154,7 +155,8 @@
           // Format for timestamp.
           if (!item.block) {
             _item.timestamp = item.createdAt
-          } else {
+          }
+          else {
             _item.timestamp = item.block.timestamp
           }
 
