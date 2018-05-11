@@ -1,5 +1,7 @@
 <template>
-	<div>
+	<section>
+		<p>Total {{ formatNumber(total) }} items found</p>
+
 		<b-table
 			striped
 			responsive
@@ -45,7 +47,7 @@
 			:per-page="per_page"
 			@change="onChangePaginate"
 		></b-pagination>
-	</div>
+	</section>
 </template>
 
 <script>
