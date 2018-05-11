@@ -65,7 +65,6 @@
 	</div>
 </template>
 <script>
-  import async from 'async'
   import mixin from '~/plugins/mixin'
   import TxTable from '~/components/TxTable'
   import TokensByAccountTable from '~/components/TokensByAccountTable'

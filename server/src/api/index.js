@@ -9,6 +9,7 @@ import TokenTxController from './TokenTxController'
 import TokenHolderController from './TokenHolderController'
 import AuthController from './AuthController'
 import FollowController from './FollowController'
+import SettingController from './SettingController'
 
 const router = Router()
 
@@ -22,5 +23,6 @@ router.use(TokenController)
 router.use(TokenTxController)
 router.use(TokenHolderController)
 router.use(FollowController)
+router.use(SettingController)
 
 export default router
