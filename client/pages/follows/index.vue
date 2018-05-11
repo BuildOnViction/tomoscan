@@ -42,6 +42,8 @@
 			</b-modal>
 		</div>
 
+		<p>Total {{ formatNumber(total) }} items found</p>
+
 		<b-table
 			striped
 			responsive
