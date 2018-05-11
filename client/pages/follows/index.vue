@@ -67,6 +67,13 @@
 				<span v-if="props.item.notifySent">Notify Sent,</span>
 			</template>
 		</b-table>
+
+		<b-pagination
+			align="center"
+			:total-rows="total"
+			:per-page="per_page"
+			@change="onChangePaginate"
+		></b-pagination>
 	</section>
 </template>
 
@@ -137,6 +144,13 @@
         self.loading = false
 
         return data
+      },
+
+      onChangePaginate (page) {
+        let self = this
+        self.current_page = page
+
+        self.getDataFromApi()
       },
 
       async onAddNewFollowAddress (e) {
