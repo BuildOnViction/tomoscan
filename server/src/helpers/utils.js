@@ -91,6 +91,7 @@ export const formatAddress = (address) => address.replace('0x',
 export const formatAscIIJSON = (obj) => {
   let json = JSON.stringify(obj)
   json = json.replace(/(\\u[\da-zA-Z]{4})/gm, '')
+  json = json.replace(/(\\b)/gm, '')
 
   return JSON.parse(json)
 }

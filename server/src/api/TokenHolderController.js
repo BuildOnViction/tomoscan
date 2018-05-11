@@ -27,7 +27,9 @@ TokenHolderController.get('/token-holders', async (req, res) => {
       let totalSupply = null
       if (address) {
         let token = await Token.findOne({hash: address})
-        totalSupply = token.totalSupply
+        if (token) {
+          totalSupply = token.totalSupply
+        }
       }
       let length = items.length
       let baseRank = (data.current_page - 1) * data.per_page
