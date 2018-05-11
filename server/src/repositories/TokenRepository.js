@@ -75,6 +75,17 @@ let TokenRepository = {
     }
   },
 
+  formatItems: async (items) => {
+    for (let i = 0; i < items.length; i++) {
+      let item = items[i]
+      // Remove non ascii characters.
+      item.name = item.name.replace(/[^\x00-\x7F]/g, '')
+      item.symbol = item.name.replace(/[^\x00-\x7F]/g, '')
+    }
+
+    return items
+  },
+
   formatItem: async (item) => {
     let tokenTxsCount = await TokenTx.find({address: item.hash}).count()
     item.tokenTxsCount = tokenTxsCount
