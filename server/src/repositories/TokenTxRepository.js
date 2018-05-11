@@ -8,6 +8,11 @@ import TokenHolderRepository from './TokenHolderRepository'
 let TokenTxRepository = {
   async addTokenTxFromLog (log) {
     let _log = log
+    if (typeof log.topics[1] == 'undefined' ||
+      typeof log.topics[2] == 'undefined') {
+      return false
+    }
+
     if (log.topics[1]) {
       _log.from = unformatAddress(log.topics[1])
     }
