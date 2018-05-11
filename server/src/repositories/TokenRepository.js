@@ -1,7 +1,7 @@
 import Web3Util from '../helpers/web3'
 import Token from '../models/Token'
 import Account from '../models/Account'
-import { trimWord } from '../helpers/utils'
+import { formatAscIIJSON, trimWord } from '../helpers/utils'
 import TokenTx from '../models/TokenTx'
 
 let TokenRepository = {
@@ -78,9 +78,8 @@ let TokenRepository = {
   formatItems: async (items) => {
     for (let i = 0; i < items.length; i++) {
       let item = items[i]
-      // Remove non ascii characters.
-      item.name = item.name.replace(/[^\x00-\x7F]/g, '')
-      item.symbol = item.name.replace(/[^\x00-\x7F]/g, '')
+      items[i].name = formatAscIIJSON(item.name)
+      items[i].symbol = formatAscIIJSON(item.symbol)
     }
 
     return items
