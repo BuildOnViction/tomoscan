@@ -8,7 +8,7 @@
 		<div class="alert alert-danger" v-show="errorMessage">
 			{{ errorMessage }}
 		</div>
-		<div>
+		<form>
 			<div class="form-group">
 				<label class="control-label">Email:</label>
 				<input v-model="form.email"
@@ -33,7 +33,7 @@
 				       name="password_confirmation" type="password" class="form-control" required placeholder="Enter your password confirmation">
 				<span class="text-danger" v-show="errors.has('password_confirmation')">{{ errors.first('password_confirmation') }}</span>
 			</div>
-		</div>
+		</form>
 	</b-modal>
 </template>
 <script>
