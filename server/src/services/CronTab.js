@@ -75,6 +75,11 @@ let CronTab = {
       if (_tx) {
         txs.push(_tx)
       }
+      else {
+        if (_tx.createdAt + (4 * 60 * 60 * 1000) < Date.now()) {
+          await Tx.findOneAndRemove({_id: _tx._id})
+        }
+      }
     }
 
     return txs
