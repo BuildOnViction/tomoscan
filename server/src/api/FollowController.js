@@ -53,4 +53,25 @@ FollowController.post('/follows', authService.authenticate(),
     }
   })
 
+FollowController.delete('/follows/:id', authService.authenticate(),
+  async (req, res, next) => {
+    try {
+      let user = req.user
+
+      if (!user) {
+        return res.sendStatus(401)
+      }
+
+      let id = req.params.id
+      let follow = await Follow.findOneAndRemove(
+        {_id: id, user: user._id})
+
+      return res.json(follow)
+    }
+    catch (e) {
+      console.log(e)
+      throw e
+    }
+  })
+
 export default FollowController

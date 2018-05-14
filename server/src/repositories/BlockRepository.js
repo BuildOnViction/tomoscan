@@ -73,7 +73,6 @@ let BlockRepository = {
               startBlock: {$lte: tx.blockNumber},
               $or: [{address: tx.from}, {address: tx.to}],
             })
-            console.log(followers, tx.from, tx.to)
 
             if (followers.length) {
               let email = new EmailService()

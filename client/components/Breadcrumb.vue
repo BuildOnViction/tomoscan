@@ -3,7 +3,7 @@
 		<ol class="breadcrumb">
 			<li v-for="item in items" class="breadcrumb-item">
 				<nuxt-link :to="item.location" active-class="active">
-				{{ item.title }}
+					{{ item.title }}
 				</nuxt-link>
 			</li>
 		</ol>
@@ -15,6 +15,6 @@
       items () {
         return this.$store.state.breadcrumb.items
       },
-    }
+    },
   }
 </script>
