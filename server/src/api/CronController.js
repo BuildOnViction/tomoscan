@@ -42,6 +42,18 @@ CronController.get('/cron/txs', async (req, res) => {
   }
 })
 
+CronController.get('/cron/txs/pending', async (req, res) => {
+  try {
+    let txs = await CronTab.getPendingTransactions()
+
+    return res.json({txs: txs})
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
 CronController.get('/cron/accounts', async (req, res) => {
   try {
     let accounts = await CronTab.getAccounts()
