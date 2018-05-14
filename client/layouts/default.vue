@@ -15,13 +15,15 @@
 					<b-nav-item :to="{name: 'tokens'}">Tokens</b-nav-item>
 					<b-nav-item :to="{name: 'tokentxs'}">Token Transfers</b-nav-item>
 				</b-navbar-nav>
-				<search></search>
-				<b-navbar-nav v-if="!user">
-					<b-nav-item v-b-modal="'loginModal'">Login</b-nav-item>
-					<b-nav-item v-b-modal="'registerModal'">Register</b-nav-item>
-				</b-navbar-nav>
-				<b-navbar-nav v-else>
-					<b-nav-item-dropdown right>
+				<b-navbar-nav class="ml-auto">
+					<div class="form-inline" v-if="! isHomePage()">
+						<input type="search" v-model="search" class="form-control form-control-sm" placeholder="Search Address / TX / Block" @keyup.enter="onGotoRoute"/>
+						<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>
+					</div>
+
+					<b-nav-item v-b-modal="'loginModal'" v-if="!user">Login</b-nav-item>
+					<b-nav-item v-b-modal="'registerModal'" v-if="!user">Register</b-nav-item>
+					<b-nav-item-dropdown right v-if="user">
 						<template slot="button-content">
 							<em>{{ user.email }}</em>
 						</template>
@@ -33,10 +35,25 @@
 		</b-navbar>
 
 		<main>
-			<b-container>
-				<breadcrumb/>
+			<div class="container">
+				<breadcrumb v-if="! isHomePage()"/>
+				<div class="jumbotron" v-if="isHomePage()">
+					<b-row>
+						<b-col sm="3"></b-col>
+						<b-col sm="6">
+							<div class="input-group">
+								<input type="text" v-model="search" class="form-control" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
+								<div class="input-group-append">
+									<button class="btn btn-primary" @click="onGotoRoute">Search</button>
+								</div>
+							</div>
+						</b-col>
+						<b-col sm="3"></b-col>
+					</b-row>
+				</div>
+
 				<nuxt/>
-			</b-container>
+			</div>
 		</main>
 
 		<register :modalId="'registerModal'"></register>
@@ -46,7 +63,6 @@
 
 <script>
   import MyFooter from '~/components/Footer.vue'
-  import Search from '~/components/Search.vue'
   import Breadcrumb from '~/components/Breadcrumb.vue'
   import Register from '~/components/Register.vue'
   import Login from '~/components/Login.vue'
@@ -54,10 +70,14 @@
   export default {
     components: {
       MyFooter,
-      Search,
       Breadcrumb,
       Register,
       Login,
+    },
+    data () {
+      return {
+        search: null,
+      }
     },
     computed: {
       user () {
@@ -71,6 +91,9 @@
       self.$store.dispatch('user/getCachedUser')
     },
     methods: {
+      isHomePage () {
+        return this.$route.name.indexOf(['index']) >= 0
+      },
       async onLogout () {
         let self = this
 
@@ -79,66 +102,32 @@
         // Redirect to home page.
         self.$router.replace({name: 'index'})
       },
+      onGotoRoute () {
+        let search = this.search.trim()
+        let regexpTx = /[0-9a-zA-Z]{66}?/
+        let regexpAddr = /^(0x)?[0-9a-f]{40}$/
+        let regexpBlock = /[0-9]+?/
+        let to = null
+
+        if (regexpAddr.test(search)) {
+          to = {name: 'address-slug', params: {slug: search}}
+        }
+        else if (regexpTx.test(search)) {
+          to = {name: 'txs-slug', params: {slug: search}}
+        }
+        else if (regexpBlock.test(search)) {
+          to = {name: 'blocks-slug', params: {slug: search}}
+        }
+
+        if (!to) {
+          return false
+        }
+
+        return this.$router.push(to)
+      },
     },
   }
 </script>
 
 <style>
-	.address__tag {
-		display: inline-block;
-		width: 132px;
-		white-space: nowrap;
-		overflow: hidden !important;
-		text-overflow: ellipsis;
-		vertical-align: bottom;
-	}
-
-	main, footer {
-		margin-top: 35px;
-	}
-
-	.container {
-		transition: all .5s cubic-bezier(.55, 0, .1, 1);
-	}
-
-	.page-enter-active, .page-leave-active {
-		transition: opacity .5s
-	}
-
-	.page-enter, .page-leave-active {
-		opacity: 0
-	}
-
-	.bounce-enter-active {
-		animation: bounce-in .8s;
-	}
-
-	.bounce-leave-active {
-		animation: bounce-out .5s;
-	}
-
-	@keyframes bounce-in {
-		0% {
-			transform: scale(0)
-		}
-		50% {
-			transform: scale(1.5)
-		}
-		100% {
-			transform: scale(1)
-		}
-	}
-
-	@keyframes bounce-out {
-		0% {
-			transform: scale(1)
-		}
-		50% {
-			transform: scale(1.5)
-		}
-		100% {
-			transform: scale(0)
-		}
-	}
-
 </style>
