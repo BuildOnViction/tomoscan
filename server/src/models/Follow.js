@@ -8,6 +8,7 @@ const schema = new mongoose.Schema({
   sendEmail: Boolean,
   notifyReceive: Boolean,
   notifySent: Boolean,
+  startBlock: Number,
   user: {type: Schema.Types.ObjectId, ref: 'User'},
 }, {
   timestamps: true,

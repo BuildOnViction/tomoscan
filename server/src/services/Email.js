@@ -26,6 +26,22 @@ class EmailService {
     })
   }
 
+  followAlert (user, tx, address) {
+    if (!user || !tx || !address)
+      return false
+
+    return this.send('follow', user.email, process.env.BASE_UNIT +
+      ' transfer at ' + address, {
+      name: user.email,
+      from: tx.from,
+      to: tx.to,
+      wei: tx.value,
+      blockNumber: tx.blockNumber,
+      txLink: process.env.CLIENT_URL + 'txs/' + tx.hash,
+      addressLink: process.env.CLIENT_URL + 'address/' + address,
+    })
+  }
+
   async send (templatePath, to, subject, params) {
     let email = new Email({
       views: {root: this.templateDir},
