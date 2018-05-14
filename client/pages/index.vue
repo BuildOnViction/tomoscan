@@ -1,20 +1,48 @@
 <template>
 	<section>
-		<b-row class="mb-2">
-			<b-col sm="4">
+		<div class="jumbotron">
+			<b-row>
+				<b-col sm="3"></b-col>
+				<b-col sm="6">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Search Address / TX / Block...">
+						<div class="input-group-append">
+							<button class="btn btn-primary" type="button">Search</button>
+						</div>
+					</div>
+				</b-col>
+				<b-col sm="3"></b-col>
+			</b-row>
+		</div>
+
+		<b-row class="mb-4">
+			<b-col sm="3">
 				<ul class="list-group">
-					<li class="list-group-item">Total Blocks: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalBlock) : null"></span-loading></li>
-					<li class="list-group-item">Total Wallet: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalAddress) : null"></span-loading></li>
-					<li class="list-group-item">Total Token: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalToken) : null"></span-loading></li>
-					<li class="list-group-item">Total SmartContract: <span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalSmartContract) : null"></span-loading></li>
+					<li class="list-group-item">Total Blocks:
+						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalBlock) : null"></span-loading>
+					</li>
 				</ul>
 			</b-col>
-			<b-col sm="8">
-				<div class="card">
-					<div class="card-body">
-
-					</div>
-				</div>
+			<b-col sm="3">
+				<ul class="list-group">
+					<li class="list-group-item">Total Wallet:
+						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalAddress) : null"></span-loading>
+					</li>
+				</ul>
+			</b-col>
+			<b-col sm="3">
+				<ul class="list-group">
+					<li class="list-group-item">Total Token:
+						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalToken) : null"></span-loading>
+					</li>
+				</ul>
+			</b-col>
+			<b-col sm="3">
+				<ul class="list-group">
+					<li class="list-group-item">Total SmartContract:
+						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalSmartContract) : null"></span-loading>
+					</li>
+				</ul>
 			</b-col>
 		</b-row>
 
@@ -142,9 +170,6 @@
     },
     mounted () {
       let self = this
-
-      // Init breadcrumbs props.
-      this.$store.commit('breadcrumb/setItems', {name: 'index', to: {name: 'index'}})
 
       self.getLastestBlocks()
       self.getLatestTxs()

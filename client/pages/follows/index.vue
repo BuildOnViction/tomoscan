@@ -53,6 +53,10 @@
 			:loading="loading"
 			:items="items">
 
+			<template slot="action" slot-scope="props">
+				<button class="btn btn-sm btn-link" @click="onUnfollow(props.item._id)"><i class="fa fa-trash mr-1"></i>Remove</button>
+			</template>
+
 			<template slot="address" slot-scope="props">
 				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
 			</template>
@@ -153,6 +157,18 @@
         self.current_page = page
 
         self.getDataFromApi()
+      },
+
+      async onUnfollow (id) {
+        let self = this
+        let result = confirm('Are you sure want to delete this item?')
+        if (result) {
+          let {data} = await this.$axios.delete('/api/follows/' + id)
+
+          if (data) {
+            self.getDataFromApi()
+          }
+        }
       },
 
       async onAddNewFollowAddress (e) {
