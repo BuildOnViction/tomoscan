@@ -5,6 +5,9 @@ import { getSigner, toAddress } from '../helpers/utils'
 import TxRepository from './TxRepository'
 import AccountRepository from './AccountRepository'
 import Account from '../models/Account'
+import Follow from '../models/Follow'
+import EmailService from '../services/Email'
+import User from '../models/User'
 
 let BlockRepository = {
   addBlockByNumber: async (number) => {
@@ -62,8 +65,33 @@ let BlockRepository = {
 
             delete tx['_id']
 
-            await Tx.findOneAndUpdate({hash: tx.hash}, tx,
+            tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
               {upsert: true, new: true})
+
+            // Send email to follower.
+            let followers = await Follow.find({
+              startBlock: {$lte: tx.blockNumber},
+              $or: [{address: tx.from}, {address: tx.to}],
+            })
+            console.log(followers, tx.from, tx.to)
+
+            if (followers.length) {
+              let email = new EmailService()
+              for (let i = 0; i < followers.length; i++) {
+                let follow = followers[i]
+                let user = await User.findOne({_id: follow.user})
+                if (user) {
+                  if (follow.address === tx.from) {
+                    // isSent email template.
+                    email.followAlert(user, tx, follow.address)
+                  }
+                  if (follow.address === tx.to) {
+                    // isReceive email template.
+                    email.followAlert(user, tx, follow.address)
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -103,30 +103,6 @@ let TxRepository = {
       tx = await Tx.findOneAndUpdate({hash: hash}, tx,
         {upsert: true, new: true})
 
-      // Send email to follower.
-      let followers = await Follow.find({
-        startBlock: {$gte: tx.blockNumber},
-        $or: [{address: tx.from}, {address: tx.to}],
-      })
-
-      if (followers.length) {
-        let email = new EmailService()
-        for (let i = 0; i < followers.length; i++) {
-          let follow = followers[i]
-          let user = await User.findOne({_id: follow.user})
-          if (user) {
-            if (follow.address === tx.from) {
-              // isSent email template.
-              email.followAlert(user, tx, follow.address)
-            }
-            if (follow.address === tx.to) {
-              // isReceive email template.
-              email.followAlert(user, tx, follow.address)
-            }
-          }
-        }
-      }
-
       return tx
     }
     catch (e) {

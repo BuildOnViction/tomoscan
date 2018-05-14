@@ -54,7 +54,7 @@
 			:items="items">
 
 			<template slot="address" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'accounts-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
+				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
 			</template>
 
 			<template slot="balance" slot-scope="props">
@@ -173,6 +173,10 @@
           self.$refs.modalNewAddress.hide()
 
           self.resetModal()
+
+          if (data) {
+            self.getDataFromApi()
+          }
         }
         catch (e) {
           self.errorMessage = e.message

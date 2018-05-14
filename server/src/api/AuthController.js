@@ -41,15 +41,10 @@ AuthController.post('/register', async (req, res) => {
     if (user)
       return res.status(422).json({message: 'Email exists in DB!'})
 
-    let lastBlock = await Block.findOne().sort({number: -1})
-    let blockNumber = lastBlock ? lastBlock.number : 0
     user = await User.create({
       email: email,
       password: password,
     })
-
-    user.startBlock = blockNumber
-    user.save()
 
     if (!user)
       return res.sendStatus(422)

@@ -3,7 +3,7 @@ import AccountRepository from './AccountRepository'
 import Account from '../models/Account'
 
 let FollowRepository = {
-  async firstOrUpdate (req, user) {
+  async firstOrUpdate (req, user, startBlock) {
     let address = req.body.address
     let name = req.body.name
     let update = {
@@ -13,6 +13,7 @@ let FollowRepository = {
       sendEmail: req.body.sendEmail,
       notifyReceive: req.body.notifyReceive,
       notifySent: req.body.notifySent,
+      startBlock: startBlock,
     }
 
     return await Follow.findOneAndUpdate({user: user, address: address},

@@ -5,6 +5,7 @@ import { paginate } from '../helpers/utils'
 import Follow from '../models/Follow'
 import FollowRepository from '../repositories/FollowRepository'
 import User from '../models/User'
+import Block from '../models/Block'
 
 const FollowController = Router()
 
@@ -40,7 +41,9 @@ FollowController.post('/follows', authService.authenticate(),
         return res.sendStatus(401)
       }
 
-      let follow = await FollowRepository.firstOrUpdate(req, user)
+      let lastBlock = await Block.findOne().sort({number: -1})
+      let blockNumber = lastBlock ? lastBlock.number : 0
+      let follow = await FollowRepository.firstOrUpdate(req, user, blockNumber)
 
       return res.json(follow)
     }
