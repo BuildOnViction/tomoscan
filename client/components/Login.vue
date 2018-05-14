@@ -14,7 +14,7 @@
 				<input v-model="form.email"
 				       v-validate="'required|email'"
 				       data-vv-as="Email"
-				       name="email" type="email" class="form-control" required placeholder="Enter email">
+				       name="email" type="email" autocomplete="email" class="form-control" required placeholder="Enter email">
 				<span class="text-danger" v-show="errors.has('email')">{{ errors.first('email') }}</span>
 			</div>
 			<div class="form-group">
@@ -22,7 +22,7 @@
 				<input v-model="form.password"
 				       v-validate="'required'"
 				       data-vv-as="Password"
-				       name="password" type="password" class="form-control" required placeholder="Enter your password">
+				       name="password" type="password"  autocomplete="new-password" class="form-control" required placeholder="Enter your password">
 				<span class="text-danger" v-show="errors.has('password')">{{ errors.first('password') }}</span>
 			</div>
 		</form>

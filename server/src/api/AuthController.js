@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import User from '../models/User'
 import EmailService from '../services/Email'
+import Block from '../models/Block'
 
 const AuthController = Router()
 

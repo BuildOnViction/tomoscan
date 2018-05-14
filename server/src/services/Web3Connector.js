@@ -19,11 +19,11 @@ let Web3Connector = {
             }
           })
 
-        web3WS.eth.subscribe('pendingTransactions').
-          on('data', async (tx_hash) => {
-            // Insert pending transaction into db.
-            let tx = await TxRepository.getTxPending(tx_hash)
-          })
+//        web3WS.eth.subscribe('pendingTransactions').
+//          on('data', async (tx_hash) => {
+//            // Insert pending transaction into db.
+//            let tx = await TxRepository.getTxPending(tx_hash)
+//          })
       })
     }
     catch (e) {

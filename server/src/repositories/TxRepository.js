@@ -9,6 +9,8 @@ import Token from '../models/Token'
 import TokenRepository from './TokenRepository'
 import Block from '../models/Block'
 import TokenTxRepository from './TokenTxRepository'
+import Follow from '../models/Follow'
+import EmailService from '../services/Email'
 
 let TxRepository = {
   getTxPending: async (hash) => {
@@ -98,8 +100,10 @@ let TxRepository = {
 
       delete tx['_id']
 
-      return await Tx.findOneAndUpdate({hash: hash}, tx,
+      tx = await Tx.findOneAndUpdate({hash: hash}, tx,
         {upsert: true, new: true})
+
+      return tx
     }
     catch (e) {
       console.log(e)
