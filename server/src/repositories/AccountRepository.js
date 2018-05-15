@@ -75,9 +75,13 @@ let AccountRepository = {
     // Get token.
     let token = null
     if (address.isToken) {
-      token = await Token.findOne({hash: address.hash})
+      token = await Token.findOne({hash: address.hash, quantityNumber: {$gte: 0}})
     }
     address.token = token
+
+    // Check has token holders.
+    let hasTokens = await TokenHolder.findOne({hash: address.hash})
+    address.hashTokens = hasTokens ? true : false
 
     return address
   },

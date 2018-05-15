@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nuxtjs/axios": "^5.3.1",
+    "@xkeshi/vue-qrcode": "^0.3.0",
     "async": "^2.6.0",
     "bignumber.js": "^6.0.0",
     "bootstrap-vue": "^2.0.0-rc.8",

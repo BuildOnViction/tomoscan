@@ -11,7 +11,7 @@
 			:loading="loading"
 			:items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.token }}</nuxt-link>
+				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
 			</template>
 			<template slot="quantity" slot-scope="props">
 				{{ formatUnit(toEther(props.item.quantity), props.item.tokenObj.symbol) }}
@@ -36,7 +36,7 @@
     data: () => ({
       fields: {
         hash: {label: 'Token'},
-        quantity: {label: 'Quantity', class: 'text-right'},
+        quantity: {label: 'Quantity'},
       },
       loading: true,
       pagination: {},
