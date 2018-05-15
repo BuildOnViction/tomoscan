@@ -26,7 +26,7 @@
 		<b-pagination
 			align="center"
 			:total-rows="total"
-			:per-page="per_page"
+			:per-page="perPage"
 			@change="onChangePaginate"
 		></b-pagination>
 	</section>
@@ -52,8 +52,8 @@
       pagination: {},
       total: 0,
       items: [],
-      current_page: 1,
-      per_page: 15,
+      currentPage: 1,
+      perPage: 15,
       pages: 1,
     }),
     async mounted () {
@@ -65,10 +65,10 @@
       let query = self.$route.query
 
       if (query.page) {
-        self.current_page = parseInt(query.page)
+        self.currentPage = parseInt(query.page)
       }
       if (query.limit) {
-        self.per_page = parseInt(query.limit)
+        self.perPage = parseInt(query.limit)
       }
 
       await self.getDataFromApi()
@@ -80,8 +80,8 @@
         self.loading = true
 
         let params = {
-          page: self.current_page,
-          limit: self.per_page,
+          page: self.currentPage,
+          limit: self.perPage,
         }
         this.$router.replace({query: params})
 
@@ -89,7 +89,7 @@
         let {data} = await this.$axios.get('/api/accounts' + '?' + query)
         self.items = data.items
         self.total = data.total
-        self.current_page = data.current_page
+        self.currentPage = data.currentPage
         self.pages = data.pages
 
         // Hide loading.
@@ -100,7 +100,7 @@
 
       onChangePaginate (page) {
         let self = this
-        self.current_page = page
+        self.currentPage = page
 
         self.getDataFromApi()
       },
@@ -109,7 +109,7 @@
         let self = this
         let query = {
           page: page_numb,
-          limit: self.per_page,
+          limit: self.perPage,
         }
 
         return {

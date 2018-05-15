@@ -6,6 +6,7 @@
 				ref="modalNewAddress"
 				@ok="onAddNewFollowAddress"
 				@keydown.native.enter="onAddNewFollowAddress"
+				@hide="resetForm"
 				id="modalAddFollow"
 				title="Add a New Address to your Follow List">
 
@@ -16,26 +17,27 @@
 				<div class="form-group">
 					<label class="control-label">Address:</label>
 					<input
-						v-model="form.address"
-						v-validate="'required|test'"
-						data-vv-as="Address"
+						v-model="formAddress"
+						@input="$v.formAddress.$touch()"
+						:class="($v.formAddress.$dirty && $v.formAddress.$invalid) ? 'is-invalid' : ''"
 						type="text" class="form-control" name="address">
-					<span class="text-danger" v-show="errors.has('address')">{{ errors.first('address') }}</span>
+					<div class="text-danger" v-if="$v.formAddress.$dirty && ! $v.formAddress.required">Address is required</div>
+					<div class="text-danger text-block" v-if="$v.formAddress.$dirty && ! $v.formAddress.isEthAddress">Address not eth address format</div>
 				</div>
 				<div class="form-group">
 					<label class="control-label">Description (Optional):</label>
-					<input type="text" class="form-control" v-model="form.name">
+					<input type="text" class="form-control" v-model="formName">
 				</div>
 				<p>You can monitor and receive an alert when an address on your follow list receives an incoming TOMO Transaction.</p>
 				<div class="form-group">
 					<label class="control-label">Please select your notification method below:</label>
 					<div class="form-check form-check-inline">
-						<input id="emailNotify" name="sendEmail" v-model="form.sendEmail" value="1" type="radio" class="form-check-input">
+						<input id="emailNotify" name="sendEmail" v-model="formSendEmail" value="1" type="radio" class="form-check-input">
 						<label for="emailNotify" class="form-check-label">Email Notification</label>
 					</div>
 
 					<div class="form-check form-check-inline">
-						<input id="noNotify" name="sendEmail" v-model="form.sendEmail" value="0" type="radio" class="form-check-input">
+						<input id="noNotify" name="sendEmail" v-model="formSendEmail" value="0" type="radio" class="form-check-input">
 						<label for="noNotify" class="form-check-label">No Notification</label>
 					</div>
 				</div>
@@ -55,6 +57,7 @@
 
 			<template slot="action" slot-scope="props">
 				<button class="btn btn-sm btn-link" @click="onUnfollow(props.item._id)"><i class="fa fa-trash mr-1"></i>Remove</button>
+				<button class="btn btn-sm btn-link" @click="onEditNotify(props.item)"><i class="fa fa-pencil mr-1"></i>Edit</button>
 			</template>
 
 			<template slot="address" slot-scope="props">
@@ -77,7 +80,7 @@
 		<b-pagination
 			align="center"
 			:total-rows="total"
-			:per-page="per_page"
+			:per-page="perPage"
 			@change="onChangePaginate"
 		></b-pagination>
 	</section>
@@ -85,9 +88,13 @@
 
 <script>
   import mixin from '~/plugins/mixin'
+  import { validationMixin, withParams } from 'vuelidate'
+  import { required, email } from 'vuelidate/lib/validators'
+
+  export const isEthAddress = withParams({type: 'isEthAddress'}, value => /^(0x)?[0-9a-zA-Z]{40}$/.test(value))
 
   export default {
-    mixins: [mixin],
+    mixins: [mixin, validationMixin],
     data () {
       return {
         fields: {
@@ -100,16 +107,21 @@
         pagination: {},
         total: 0,
         items: [],
-        current_page: 1,
-        per_page: 15,
+        currentPage: 1,
+        perPage: 15,
         pages: 1,
         errorMessage: null,
-        form: {
-          address: '',
-          name: '',
-          sendEmail: '',
-        },
+        formName: '',
+        formAddress: '',
+        formSendEmail: '',
+        formIsEdit: false,
+        currentNotify: null,
       }
+    },
+    validations: {
+      formAddress: {
+        required, isEthAddress,
+      },
     },
     mounted () {
       // Init breadcrumbs data.
@@ -118,10 +130,10 @@
       let self = this
       let query = self.$route.query
       if (query.page) {
-        self.current_page = parseInt(query.page)
+        self.currentPage = parseInt(query.page)
       }
       if (query.limit) {
-        self.per_page = parseInt(query.limit)
+        self.perPage = parseInt(query.limit)
       }
 
       this.getDataFromApi()
@@ -134,8 +146,8 @@
         self.loading = true
 
         let params = {
-          page: self.current_page,
-          limit: self.per_page,
+          page: self.currentPage,
+          limit: self.perPage,
         }
         this.$router.replace({query: params})
 
@@ -143,7 +155,7 @@
         let {data} = await this.$axios.get('/api/follows' + '?' + query)
         self.items = data.items
         self.total = data.total
-        self.current_page = data.current_page
+        self.currentPage = data.currentPage
         self.pages = data.pages
 
         // Hide loading.
@@ -154,9 +166,37 @@
 
       onChangePaginate (page) {
         let self = this
-        self.current_page = page
+        self.currentPage = page
 
         self.getDataFromApi()
+      },
+
+      async onAddNewFollowAddress (e) {
+        let self = this
+        e.preventDefault()
+
+        console.log(this.$v)
+
+//        try {
+//          let body = {
+//            name: self.formName,
+//            address: self.formAddress,
+//            sendEmail: self.formSendEmail,
+//          }
+//          body.notifyReceive = true
+//          console.log(body)
+//
+//          let {data} = await self.$axios.post('/api/follows', body)
+//          // Close modal.
+//          self.$refs.modalNewAddress.hide()
+//
+//          if (data) {
+//            self.getDataFromApi()
+//          }
+//        }
+//        catch (e) {
+//          self.errorMessage = e.message
+//        }
       },
 
       async onUnfollow (id) {
@@ -171,38 +211,21 @@
         }
       },
 
-      async onAddNewFollowAddress (e) {
+      async onEditNotify (item) {
         let self = this
-        e.preventDefault()
-
-        let result = await self.$validator.validateAll()
-        if (!result) {
-          return
-        }
-
-        try {
-          let body = self.form
-          body.notifyReceive = true
-
-          let {data} = await self.$axios.post('/api/follows', body)
-          // Close modal.
-          self.$refs.modalNewAddress.hide()
-
-          self.resetModal()
-
-          if (data) {
-            self.getDataFromApi()
-          }
-        }
-        catch (e) {
-          self.errorMessage = e.message
-        }
+        self.formAddress = item.address
+        self.formName = item.name
+        self.formSendEmail = item.sendEmail
+        self.formIsEdit = true
+        // Show modal.
+        self.$refs.modalNewAddress.show()
       },
 
-      resetModal () {
-        this.form.address = ''
-        this.form.name = ''
-        this.form.sendE = ''
+      resetForm () {
+        this.formAddress = ''
+        this.formName = ''
+        this.formSendEmail = ''
+        this.formIsEdit = false
         this.errorMessage = ''
       },
     },

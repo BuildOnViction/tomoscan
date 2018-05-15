@@ -30,7 +30,7 @@ module.exports = {
   },
   plugins: [
     '~/plugins/axios',
-    '~/plugins/veevalidate',
+    '~/plugins/vuelidate',
     '~/plugins/bootstrap-vue',
   ],
   modules: [
@@ -54,7 +54,7 @@ module.exports = {
     extractCSS: true,
     cssSourceMap: true,
     vendor: [
-      '~/plugins/mixin'
+      '~/plugins/mixin',
     ],
     /*
     ** Run ESLINT on save

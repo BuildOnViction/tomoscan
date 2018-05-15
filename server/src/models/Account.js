@@ -13,10 +13,8 @@ const schema = new mongoose.Schema({
   isToken: Boolean,
 }, {
   timestamps: true,
-//  toJSON: {virtuals: true, getters: true},
+  versionKey: false,
 })
-
-//schema.path('balance').get(value => toLongNumberString(value))
 
 let Account = mongoose.model('Account', schema)
 
