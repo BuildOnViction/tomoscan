@@ -2,6 +2,7 @@ import { Router } from 'express'
 import Block from '../models/Block'
 import Account from '../models/Account'
 import Token from '../models/Token'
+import axios from 'axios'
 
 const SettingController = Router()
 
@@ -19,6 +20,19 @@ SettingController.get('/setting', async (req, res, next) => {
         lastBlock,
         stats: {totalBlock, totalAddress, totalToken, totalSmartContract},
       })
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
+SettingController.get('/setting/usd', async (req, res, next) => {
+  try {
+    let {data} = await axios.get('https://api.coinmarketcap.com/v2/ticker/' +
+      process.env.CMC_ID + '/?convert=USD')
+
+    return res.json(data)
   }
   catch (e) {
     console.log(e)

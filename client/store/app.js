@@ -1,5 +1,5 @@
 export const state = () => ({
-  usdPrice: null,
+  usdPrice: 0,
 })
 
 export const mutations = {
@@ -11,8 +11,7 @@ export const mutations = {
 export const actions = {
   async getUSDPrice ({commit}) {
     try {
-      let {data} = await this.$axios.get('https://api.coinmarketcap.com/v2/ticker/' +
-        process.env.CMC_ID + '/?convert=USD')
+      let {data} = await this.$axios.get('/api/setting/usd')
 
       commit('setUSDPrice', data.data.quotes.USD.price)
 

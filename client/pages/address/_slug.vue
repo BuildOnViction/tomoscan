@@ -3,7 +3,7 @@
 		<div class="card mb-3">
 			<div class="card-body">
 				<b-row>
-					<b-col sm="9">
+					<b-col md="9">
 						<h2 class="mb-4">{{ hash }}</h2>
 
 						<table class="table">
@@ -16,7 +16,9 @@
 							</tr>
 							<tr>
 								<td>TOMO USD Value:</td>
-								<td>$0</td>
+								<td>
+									$&nbsp;<span-loading v-bind:text="address ? usdPrice * toEther(address.balance) : null"></span-loading>
+								</td>
 							</tr>
 							<tr>
 								<td>No Of Transactions:</td>
@@ -51,10 +53,17 @@
 							</tbody>
 						</table>
 					</b-col>
-					<b-col sm="3" class="text-center">
-						<vue-qrcode :value="currentUrl" :options="{size: 200}"></vue-qrcode>
+					<b-col md="3" class="text-center">
+						<vue-qrcode class="img-fluid" :value="currentUrl" :options="{size: 250}"></vue-qrcode>
 					</b-col>
 				</b-row>
+			</div>
+		</div>
+
+		<div class="card mb-3" v-if="address && address.hashTokens">
+			<div class="card-body">
+				<h5 class="card-title">Token Balances</h5>
+				<tokens-by-account-table :address="hash"></tokens-by-account-table>
 			</div>
 		</div>
 
@@ -64,9 +73,6 @@
 					<b-tabs card>
 						<b-tab title="Transactions">
 							<tx-table :address="hash"></tx-table>
-						</b-tab>
-						<b-tab v-if="address && address.isToken" title="Token Balances">
-							<tokens-by-account-table :address="hash"></tokens-by-account-table>
 						</b-tab>
 						<b-tab title="Mined Blocks">
 							<tx-by-account-table></tx-by-account-table>
@@ -99,6 +105,11 @@
         title: 'Address ' + this.hash,
       }
     },
+    computed: {
+      usdPrice () {
+        return this.$store.state.app.usdPrice
+      },
+    },
     data: () => ({
       hash: null,
       address: null,
@@ -120,6 +131,7 @@
       this.$store.commit('breadcrumb/setItems', {name: 'address-slug', to: {name: 'address-slug', params: {slug: self.hash}}})
 
       self.getAccountFromApi()
+      self.getUSDPrice()
     },
     methods: {
       async getAccountFromApi () {
@@ -127,6 +139,11 @@
 
         let {data} = await this.$axios.get('/api/accounts/' + self.hash)
         self.address = data
+      },
+      async getUSDPrice () {
+        let self = this
+
+        self.$store.dispatch('app/getUSDPrice')
       },
     },
   }

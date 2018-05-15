@@ -92,7 +92,8 @@
     },
     methods: {
       isHomePage () {
-        return this.$route.name.indexOf(['index']) >= 0
+        let name = this.$route.name
+        return name ? name.indexOf(['index']) >= 0 : false
       },
       async onLogout () {
         let self = this
