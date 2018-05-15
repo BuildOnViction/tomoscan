@@ -57,13 +57,12 @@
         let self = this
         e.preventDefault()
 
-        let result = await self.$validator.validateAll()
-        if (!result) {
+        if (this.$v.$error) {
           return
         }
 
-        const email = self.form.email
-        const password = self.form.password
+        const email = self.formEmail
+        const password = self.formPassword
 
         self.$store.dispatch('user/login', {email, password}).then((data) => {
           // Close modal.

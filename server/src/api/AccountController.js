@@ -23,7 +23,7 @@ AccountController.get('/accounts', async (req, res) => {
 
     // Format rank.
     let items = data.items
-    let baseRank = (data.current_page - 1) * data.per_page
+    let baseRank = (data.currentPage - 1) * data.perPage
     for (let i = 0; i < items.length; i++) {
       items[i]['rank'] = baseRank + i + 1
     }

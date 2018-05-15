@@ -11,10 +11,10 @@ const BlockController = Router()
 
 BlockController.get('/blocks', async (req, res, next) => {
   try {
-    let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
+    let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
     let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-    per_page = Math.min(25, per_page)
-    let calc_page = page * per_page
+    perPage = Math.min(25, perPage)
+    let calc_page = page * perPage
 
     let web3 = await Web3Util.getWeb3()
     // Get latest block number count.
@@ -22,8 +22,8 @@ BlockController.get('/blocks', async (req, res, next) => {
     let offset = max_block_number - calc_page
     let block_numbers = [], remain_numbers = []
 
-    if (calc_page - max_block_number < per_page) {
-      let max = offset + per_page
+    if (calc_page - max_block_number < perPage) {
+      let max = offset + perPage
       max = max < max_block_number ? max : max_block_number
       block_numbers = _.range(offset, max)
       let exists_numbers = await Block.distinct('number',
