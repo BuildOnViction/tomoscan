@@ -23,8 +23,8 @@
     "nuxt": "^1.4.0",
     "socket.io-client": "^2.1.0",
     "store": "^2.0.12",
-    "vee-validate": "^2.0.9",
     "vue": "^2.5.16",
+    "vuelidate": "^0.6.2",
     "web3": "^1.0.0-beta.34"
   },
   "devDependencies": {

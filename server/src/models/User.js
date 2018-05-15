@@ -1,7 +1,6 @@
 const bcrypt = require('bcrypt-nodejs')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
-const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
   name: String,
@@ -18,6 +17,7 @@ const schema = new mongoose.Schema({
   },
 }, {
   timestamps: true,
+  versionKey: false,
 })
 
 schema.pre('save', function (callback) {

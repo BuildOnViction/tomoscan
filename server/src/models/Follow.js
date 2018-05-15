@@ -12,6 +12,7 @@ const schema = new mongoose.Schema({
   user: {type: Schema.Types.ObjectId, ref: 'User'},
 }, {
   timestamps: true,
+  versionKey: false,
 })
 
 let Follow = mongoose.model('Follow', schema)

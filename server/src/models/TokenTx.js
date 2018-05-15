@@ -18,6 +18,7 @@ const schema = new mongoose.Schema({
   timestamps: true,
   toObject: {virtuals: true, getters: true},
   toJSON: {virtuals: true, getters: true},
+  versionKey: false,
 })
 
 let TokenTx = mongoose.model('TokenTx', schema)
