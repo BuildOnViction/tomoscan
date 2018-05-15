@@ -32,7 +32,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
         }
       }
       let length = items.length
-      let baseRank = (data.current_page - 1) * data.per_page
+      let baseRank = (data.currentPage - 1) * data.perPage
       for (let i = 0; i < length; i++) {
         items[i] = await TokenHolderRepository.formatItem(items[i], totalSupply)
         items[i]['rank'] = baseRank + i + 1

@@ -5,8 +5,8 @@ const ethBlock = require('ethereumjs-block/from-rpc')
 
 export const paginate = async (
   req, model_name, params = {}, manual_paginate = false) => {
-  let per_page = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-  per_page = Math.min(25, per_page)
+  let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+  perPage = Math.min(25, perPage)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
   page = page > 2000 ? 2000 : page
 
@@ -17,23 +17,23 @@ export const paginate = async (
 
   let count = await mongoose.model(model_name).find(params.query).count()
   let total = params.total ? params.total : count
-  let pages = Math.ceil(total / per_page)
+  let pages = Math.ceil(total / perPage)
   pages = Math.min(2000, pages)
   let builder = mongoose.model(model_name).
     find(params.query).
     sort(params.sort)
   if (!manual_paginate) {
-    let offset = page > 1 ? (page - 1) * per_page : 0
+    let offset = page > 1 ? (page - 1) * perPage : 0
     builder = builder.skip(offset)
-    builder = builder.limit(per_page)
+    builder = builder.limit(perPage)
   }
   builder = builder.populate(params.populate)
   let items = await builder.lean().exec()
 
   return {
     total: total,
-    per_page: per_page,
-    current_page: page,
+    perPage: perPage,
+    currentPage: page,
     pages: pages,
     items: items,
   }
