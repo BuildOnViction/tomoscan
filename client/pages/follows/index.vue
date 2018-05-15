@@ -175,28 +175,35 @@
         let self = this
         e.preventDefault()
 
-        console.log(this.$v)
+        if (this.$v.$error) {
+          return
+        }
 
-//        try {
-//          let body = {
-//            name: self.formName,
-//            address: self.formAddress,
-//            sendEmail: self.formSendEmail,
-//          }
-//          body.notifyReceive = true
-//          console.log(body)
-//
-//          let {data} = await self.$axios.post('/api/follows', body)
-//          // Close modal.
-//          self.$refs.modalNewAddress.hide()
-//
-//          if (data) {
-//            self.getDataFromApi()
-//          }
-//        }
-//        catch (e) {
-//          self.errorMessage = e.message
-//        }
+        try {
+          let body = {
+            name: self.formName,
+            address: self.formAddress,
+            sendEmail: self.formSendEmail,
+          }
+          body.notifyReceive = true
+
+          let url = '/api/follows'
+          if (self.currentNotify) {
+            url += '/' + self.currentNotify._id
+          }
+          console.log(url)
+
+          let {data} = await self.$axios.post(url, body)
+          // Close modal.
+          self.$refs.modalNewAddress.hide()
+
+          if (data) {
+            self.getDataFromApi()
+          }
+        }
+        catch (e) {
+          self.errorMessage = e.message
+        }
       },
 
       async onUnfollow (id) {
@@ -217,6 +224,7 @@
         self.formName = item.name
         self.formSendEmail = item.sendEmail
         self.formIsEdit = true
+        self.currentNotify = item
         // Show modal.
         self.$refs.modalNewAddress.show()
       },
@@ -226,6 +234,7 @@
         this.formName = ''
         this.formSendEmail = ''
         this.formIsEdit = false
+        this.currentNotify = null
         this.errorMessage = ''
       },
     },

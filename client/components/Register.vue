@@ -71,6 +71,10 @@
         let self = this
         e.preventDefault()
 
+        if (this.$v.$error) {
+          return
+        }
+
         const email = self.formEmail
         const password = self.formPassword
 

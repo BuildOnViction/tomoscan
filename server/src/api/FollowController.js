@@ -53,6 +53,32 @@ FollowController.post('/follows', authService.authenticate(),
     }
   })
 
+FollowController.post('/follows/:id', authService.authenticate(),
+  async (req, res, next) => {
+    try {
+      let user = req.user
+
+      if (!user) {
+        return res.sendStatus(401)
+      }
+
+      let id = req.params.id
+      let follow = await Follow.findOne({_id: id, user: user._id})
+      if (!follow) {
+        return res.sendStatus(404)
+      }
+
+      follow.notifyReceive = req.body.notifyReceive
+      follow.sendEmail = req.body.sendEmail
+
+      return res.json(follow)
+    }
+    catch (e) {
+      console.log(e)
+      throw e
+    }
+  })
+
 FollowController.delete('/follows/:id', authService.authenticate(),
   async (req, res, next) => {
     try {
