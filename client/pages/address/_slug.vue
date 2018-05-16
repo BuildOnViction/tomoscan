@@ -52,6 +52,11 @@
 							</tr>
 							</tbody>
 						</table>
+
+						<p v-if="address && address.isContract">Are you The Contract Creator?
+							<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
+							your Contract Source Code Today!
+						</p>
 					</b-col>
 					<b-col md="3" class="text-center">
 						<vue-qrcode class="img-fluid" :value="currentUrl" :options="{size: 250}"></vue-qrcode>
