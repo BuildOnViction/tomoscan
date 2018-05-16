@@ -26,12 +26,19 @@ class EmailService {
     })
   }
 
-  followAlert (user, tx, address) {
+  followAlert (user, tx, address, type = 'received') {
     if (!user || !tx || !address)
       return false
 
-    return this.send('follow', user.email, process.env.BASE_UNIT +
-      ' transfer at ' + address, {
+    let subject = ''
+    if (type === 'received') {
+      subject = 'TOMO received at ' + address
+    }
+    else {
+      subject = 'TOMO sent at ' + address
+    }
+    return this.send('follow', user.email, subject, {
+      type: type,
       name: user.email,
       from: tx.from,
       to: tx.to,

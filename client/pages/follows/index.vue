@@ -4,7 +4,6 @@
 			<b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-1"></i>Add New Address</b-btn>
 			<b-modal
 				ref="modalNewAddress"
-				@ok="onAddNewFollowAddress"
 				@keydown.native.enter="onAddNewFollowAddress"
 				@hide="resetForm"
 				id="modalAddFollow"
@@ -32,14 +31,31 @@
 				<div class="form-group">
 					<label class="control-label">Please select your notification method below:</label>
 					<div class="form-check form-check-inline">
-						<input id="emailNotify" name="sendEmail" v-model="formSendEmail" value="1" type="radio" class="form-check-input">
+						<input
+							v-model="formSendEmail"
+							id="emailNotify" name="sendEmail" :value="true" type="radio" class="form-check-input">
 						<label for="emailNotify" class="form-check-label">Email Notification</label>
 					</div>
 
 					<div class="form-check form-check-inline">
-						<input id="noNotify" name="sendEmail" v-model="formSendEmail" value="0" type="radio" class="form-check-input">
+						<input id="noNotify" name="sendEmail" v-model="formSendEmail" :value="false" type="radio" class="form-check-input">
 						<label for="noNotify" class="form-check-label">No Notification</label>
 					</div>
+				</div>
+				<div class="form-group" v-if="formSendEmail">
+					<div class="form-check form-check-inline">
+						<input id="notifyReceive" type="checkbox" v-model="formNotifyReceive" value="1" class="form-check-input">
+						<label for="notifyReceive">Notify on Incoming (Receive) Txns Only</label>
+					</div>
+					<div class="form-check form-check-inline">
+						<input id="notifySent" type="checkbox" v-model="formNotifySent" value="1" class="form-check-input">
+						<label for="notifySent">Notify on Outgoing (Sent) Txns Only</label>
+					</div>
+				</div>
+				<div slot="modal-footer" class="w-100">
+					<button type="submit" class="btn btn-primary float-right" @click="onAddNewFollowAddress">Submit</button>
+					<button type="button" class="btn btn-secondary float-right mr-1" @click="$refs.modalNewAddress.hide()">Cancel</button>
+					<button v-if="currentNotify" type="button" class="btn btn-danger float-left mr-1" @click="onUnfollow"><i class="fa fa-trash mr-1"></i>Delete</button>
 				</div>
 			</b-modal>
 		</div>
@@ -56,7 +72,6 @@
 			:items="items">
 
 			<template slot="action" slot-scope="props">
-				<button class="btn btn-sm btn-link" @click="onUnfollow(props.item._id)"><i class="fa fa-trash mr-1"></i>Remove</button>
 				<button class="btn btn-sm btn-link" @click="onEditNotify(props.item)"><i class="fa fa-pencil mr-1"></i>Edit</button>
 			</template>
 
@@ -71,9 +86,10 @@
 			</template>
 
 			<template slot="notification" slot-scope="props">
-				<span v-if="props.item.sendEmail">Email Notification,</span>
-				<span v-if="props.item.notifyReceive">Notify Receive,</span>
-				<span v-if="props.item.notifySent">Notify Sent,</span>
+				<span class="mr-1" v-if="props.item.sendEmail">Email Notification,</span>
+				<span class="mr-1" v-else>Disabled</span>
+				<span class="mr-1" v-if="props.item.notifyReceive">Notify Receive,</span>
+				<span class="mr-1" v-if="props.item.notifySent">Notify Sent,</span>
 			</template>
 		</b-table>
 
@@ -114,6 +130,8 @@
         formName: '',
         formAddress: '',
         formSendEmail: '',
+        formNotifySent: null,
+        formNotifyReceive: null,
         formIsEdit: false,
         currentNotify: null,
       }
@@ -184,37 +202,26 @@
             name: self.formName,
             address: self.formAddress,
             sendEmail: self.formSendEmail,
+            notifySent: self.formSendEmail ? self.formNotifySent : false,
+            notifyReceive: self.formSendEmail ? self.formNotifyReceive : false,
           }
-          body.notifyReceive = true
 
           let url = '/api/follows'
           if (self.currentNotify) {
             url += '/' + self.currentNotify._id
           }
-          console.log(url)
 
           let {data} = await self.$axios.post(url, body)
-          // Close modal.
-          self.$refs.modalNewAddress.hide()
 
           if (data) {
-            self.getDataFromApi()
+            await self.getDataFromApi()
           }
+
+          // Close modal.
+          self.$refs.modalNewAddress.hide()
         }
         catch (e) {
           self.errorMessage = e.message
-        }
-      },
-
-      async onUnfollow (id) {
-        let self = this
-        let result = confirm('Are you sure want to delete this item?')
-        if (result) {
-          let {data} = await this.$axios.delete('/api/follows/' + id)
-
-          if (data) {
-            self.getDataFromApi()
-          }
         }
       },
 
@@ -224,9 +231,28 @@
         self.formName = item.name
         self.formSendEmail = item.sendEmail
         self.formIsEdit = true
+        self.formNotifySent = item.notifySent
+        self.formNotifyReceive = item.notifyReceive
         self.currentNotify = item
         // Show modal.
         self.$refs.modalNewAddress.show()
+      },
+
+      async onUnfollow () {
+        let self = this
+        if (!self.currentNotify) {
+          return
+        }
+        let id = self.currentNotify._id
+        let result = confirm('Are you sure want to delete this item?')
+        if (result) {
+          let {data} = await this.$axios.delete('/api/follows/' + id)
+
+          if (data) {
+            await self.getDataFromApi()
+            self.resetForm()
+          }
+        }
       },
 
       resetForm () {
@@ -235,6 +261,8 @@
         this.formSendEmail = ''
         this.formIsEdit = false
         this.currentNotify = null
+        this.formNotifyReceive = null
+        this.formNotifySent = null
         this.errorMessage = ''
       },
     },

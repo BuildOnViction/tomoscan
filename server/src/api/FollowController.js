@@ -69,7 +69,9 @@ FollowController.post('/follows/:id', authService.authenticate(),
       }
 
       follow.notifyReceive = req.body.notifyReceive
+      follow.notifySent = req.body.notifySent
       follow.sendEmail = req.body.sendEmail
+      await follow.save()
 
       return res.json(follow)
     }
