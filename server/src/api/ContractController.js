@@ -14,6 +14,7 @@ ContractController.get('/contracts/soljsons', async (req, res, next) => {
       versions = data.builds.map((item) => item.longVersion)
     }
     versions.reverse()
+    versions = versions.slice(0, 100)
 
     return res.json(versions)
   }

@@ -119,6 +119,14 @@ br.register('follows', (brs) => {
   brs.parent('index')
   brs.push('Follow List', {name: 'follows'})
 })
+br.register('contracts', (brs) => {
+  brs.parent('index')
+  brs.push('Contracts', {name: 'contracts'})
+})
+br.register('contracts-verify', (brs) => {
+  brs.parent('contracts')
+  brs.push('Contracts Verify', {name: 'contracts-verify'})
+})
 
 export const state = () => ({
   items: null,
