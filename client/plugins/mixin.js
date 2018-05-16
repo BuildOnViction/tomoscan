@@ -14,7 +14,7 @@ const mixin = {
           key = (prefix ? `${prefix}[${key}]` : key)
 
         if (typeof value === 'object')
-          return serializeQuery(value, key)
+          return this.serializeQuery(value, key)
         else
           return `${key}=${encodeURIComponent(value)}`
       })

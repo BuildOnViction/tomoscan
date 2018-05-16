@@ -40,7 +40,7 @@
 	</b-modal>
 </template>
 <script>
-  import { validationMixin, withParams } from 'vuelidate'
+  import { validationMixin } from 'vuelidate'
   import { required, sameAs, minLength, email } from 'vuelidate/lib/validators'
 
   export default {
