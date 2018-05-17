@@ -7,6 +7,9 @@ const schema = new mongoose.Schema({
   compiler: {type: String},
   sourceCode: String,
   abiCode: String,
+  functionHashes: String,
+  opcodes: String,
+  bytecode: String,
   code: String,
   balance: String,
   balanceNumber: Number,
@@ -15,6 +18,6 @@ const schema = new mongoose.Schema({
   versionKey: false,
 })
 
-let Block = mongoose.model('Block', schema)
+let Contract = mongoose.model('Contract', schema)
 
-export default Block
+export default Contract

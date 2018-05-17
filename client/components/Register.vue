@@ -71,7 +71,7 @@
         let self = this
         e.preventDefault()
 
-        if (this.$v.$error) {
+        if (this.$v.$invalid) {
           return
         }
 

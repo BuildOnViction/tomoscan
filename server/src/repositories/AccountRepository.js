@@ -75,7 +75,8 @@ let AccountRepository = {
     // Get token.
     let token = null
     if (address.isToken) {
-      token = await Token.findOne({hash: address.hash, quantityNumber: {$gte: 0}})
+      token = await Token.findOne(
+        {hash: address.hash, quantityNumber: {$gte: 0}})
     }
     address.token = token
 
@@ -84,6 +85,23 @@ let AccountRepository = {
     address.hashTokens = hasTokens ? true : false
 
     return address
+  },
+
+  async getCode (hash) {
+    if (!hash)
+      return
+
+    let code = ''
+    let account = await Account.findOne({hash: hash})
+    if (!account) {
+      let web3 = await Web3Util.getWeb3()
+      code = await web3.eth.getCode(hash)
+    }
+    else {
+      code = account.code
+    }
+
+    return code
   },
 }
 
