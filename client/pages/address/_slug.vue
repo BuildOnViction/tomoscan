@@ -83,7 +83,7 @@
 							<tx-by-account-table></tx-by-account-table>
 						</b-tab>
 						<b-tab v-if="address && address.isContract" title="Code">
-							<b-form-group label="Code">
+							<b-form-group label="Smart Contract Code">
 								<textarea
 									disabled
 									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>

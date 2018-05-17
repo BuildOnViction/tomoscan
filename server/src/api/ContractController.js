@@ -4,8 +4,22 @@ import md5 from 'blueimp-md5'
 import ContractRepository from '../repositories/ContractRepository'
 import AccountRepository from '../repositories/AccountRepository'
 import Contract from '../models/Contract'
+import { paginate } from '../helpers/utils'
 
 const ContractController = Router()
+
+ContractController.get('/contracts', async (req, res, next) => {
+  try {
+    let data = await paginate(req, 'Contract',
+      {query: {}})
+
+    return res.json(data)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
 
 ContractController.get('/contracts/soljsons', async (req, res, next) => {
   try {

@@ -3,7 +3,7 @@ const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
   hash: {type: String},
-  name: {type: String},
+  contractName: {type: String},
   compiler: {type: String},
   sourceCode: String,
   abiCode: String,

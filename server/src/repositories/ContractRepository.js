@@ -22,7 +22,7 @@ let ContractRepository = {
       opcodes: ouput.contracts[':' + contractName].opcodes,
       bytecode: ouput.contracts[':' + contractName].bytecode,
     }
-    
+
     return await Contract.findOneAndUpdate({hash: contractAddress},
       update,
       {upsert: true, new: true}).lean()
