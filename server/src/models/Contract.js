@@ -7,7 +7,7 @@ const schema = new mongoose.Schema({
   compiler: {type: String},
   sourceCode: String,
   abiCode: String,
-  functionHashes: String,
+  functionHashes: {},
   opcodes: String,
   bytecode: String,
   code: String,
