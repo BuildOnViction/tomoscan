@@ -11,7 +11,10 @@
 						<b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
 						<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
 					</b-nav-item-dropdown>
-					<b-nav-item :to="{name: 'accounts'}">Accounts</b-nav-item>
+					<b-nav-item-dropdown text="Accounts">
+						<b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
+						<b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
+					</b-nav-item-dropdown>
 					<b-nav-item :to="{name: 'tokens'}">Tokens</b-nav-item>
 					<b-nav-item :to="{name: 'tokentxs'}">Token Transfers</b-nav-item>
 				</b-navbar-nav>
