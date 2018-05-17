@@ -26,7 +26,7 @@
 									<span-loading v-bind:text="address ? formatNumber(address.transactionCount) : null"></span-loading>&nbsp;txns
 								</td>
 							</tr>
-							<tr>
+							<tr v-if="address && !address.isContract">
 								<td>Code:</td>
 								<td>
 									<code class="address__tag">
@@ -81,6 +81,13 @@
 						</b-tab>
 						<b-tab title="Mined Blocks">
 							<tx-by-account-table></tx-by-account-table>
+						</b-tab>
+						<b-tab v-if="address && address.isContract" title="Code">
+							<b-form-group label="Code">
+								<textarea
+									disabled
+									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
+							</b-form-group>
 						</b-tab>
 					</b-tabs>
 				</b-card>

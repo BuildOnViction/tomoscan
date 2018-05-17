@@ -117,6 +117,9 @@
     mounted () {
       let self = this
 
+      // Init breadcrumbs data.
+      this.$store.commit('breadcrumb/setItems', {name: 'contracts-verify', to: {name: 'contracts-verify'}})
+
       let address = self.$route.query.address
       if (address) {
         self.formContractAddress = address
@@ -129,7 +132,7 @@
         let self = this
         let {data} = await self.$axios.get('/api/contracts/soljsons')
 
-        self.compilers = data.versions.map((version, i) => ({value: i, text: version}))
+        self.compilers = data.map((version, i) => ({value: i, text: version}))
       },
 
       async onSubmitVerifyContract () {
@@ -147,11 +150,12 @@
         self.errors = []
         self.loadingForm = true
         let {data} = await self.$axios.post('/api/contracts', body)
-        if (data.errors.length) {
+        if (data.errors) {
           self.errors = data.errors
         }
-        console.log(data)
         self.loadingForm = false
+
+        return self.$router.replace.go({name: 'address-slug', params: {slug: data.hash}})
       },
 
       onResetForm () {

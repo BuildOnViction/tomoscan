@@ -13,6 +13,7 @@ services:
     working_dir: /var/www
     ports:
      - "3333:3333"
+     - "9229:9229"
     environment:
      - MONGODB_URI=mongodb://mongo:27017/explorer
     links:

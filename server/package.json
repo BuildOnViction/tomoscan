@@ -30,6 +30,7 @@
     "babel-runtime": "^6.26.0",
     "bcrypt-nodejs": "0.0.3",
     "bignumber.js": "^7.0.1",
+    "blueimp-md5": "^2.10.0",
     "body-parser": "^1.13.3",
     "compression": "^1.7.2",
     "cors": "^2.8.4",
