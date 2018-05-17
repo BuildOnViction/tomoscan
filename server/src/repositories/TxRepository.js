@@ -13,7 +13,7 @@ import Follow from '../models/Follow'
 import EmailService from '../services/Email'
 
 let TxRepository = {
-  getTxPending: async (hash) => {
+  async getTxPending (hash) {
     try {
       let tx = await Tx.findOne({hash: hash})
       let web3 = await Web3Util.getWeb3()
@@ -40,40 +40,46 @@ let TxRepository = {
     }
   },
 
-  getTxReceipt: async (hash) => {
+  async getTxReceipt (hash) {
     try {
       if (!hash) {
         return false
       }
-      let tx = await Tx.findOne({hash: hash})
-      let web3 = await Web3Util.getWeb3()
+      let tx = await
+        Tx.findOne({hash: hash})
+      let web3 = await
+        Web3Util.getWeb3()
       if (!tx) {
         tx = {}
         tx.hash = hash
       }
-      let receipt = await web3.eth.getTransactionReceipt(hash)
+      let receipt = await
+        web3.eth.getTransactionReceipt(hash)
 
       if (!receipt) {
         return false
       }
 
       if (tx.from !== null) {
-        tx.from_model = await AccountRepository.addAccountPending(tx.from)
+        tx.from_model = await
+          AccountRepository.addAccountPending(tx.from)
       }
       if (tx.to !== null) {
-        tx.to_model = await AccountRepository.addAccountPending(tx.to)
+        tx.to_model = await
+          AccountRepository.addAccountPending(tx.to)
       }
       else {
         if (receipt && typeof receipt.contractAddress !== 'undefined') {
           tx.contractAddress = receipt.contractAddress
-          tx.to_model = await Account.findOneAndUpdate(
-            {hash: receipt.contractAddress},
-            {
-              hash: receipt.contractAddress,
-              contractCreation: tx.from,
-              isContract: true,
-            },
-            {upsert: true, new: true})
+          tx.to_model = await
+            Account.findOneAndUpdate(
+              {hash: receipt.contractAddress},
+              {
+                hash: receipt.contractAddress,
+                contractCreation: tx.from,
+                isContract: true,
+              },
+              {upsert: true, new: true})
         }
       }
 
@@ -82,7 +88,8 @@ let TxRepository = {
       if (receipt.blockNumber) {
         tx.blockNumber = receipt.blockNumber
         // Find block.
-        let block = await Block.findOne({number: receipt.blockNumber})
+        let block = await
+          Block.findOne({number: receipt.blockNumber})
         if (block) {
           tx.block = block
         }
@@ -93,15 +100,17 @@ let TxRepository = {
       if (logs.length) {
         for (let i = 0; i < logs.length; i++) {
           let log = logs[i]
-          await TxRepository.parseLog(log)
+          await
+            TxRepository.parseLog(log)
         }
       }
       tx.status = true
 
       delete tx['_id']
 
-      tx = await Tx.findOneAndUpdate({hash: hash}, tx,
-        {upsert: true, new: true})
+      tx = await
+        Tx.findOneAndUpdate({hash: hash}, tx,
+          {upsert: true, new: true})
 
       return tx
     }
@@ -111,7 +120,7 @@ let TxRepository = {
     }
   },
 
-  parseLog: async (log) => {
+  async parseLog (log) {
     const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
     if (log.topics[0] != TOPIC_TRANSFER) {
       return false

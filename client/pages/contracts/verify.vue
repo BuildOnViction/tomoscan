@@ -8,6 +8,10 @@
 				<p>Step 3: Contract Source Code is published online and publicably verifiable by anyone</p>
 				<hr>
 
+				<div class="alert alert-danger" v-if="errors.length">
+					<p v-for="error in errors">{{ error }}</p>
+				</div>
+
 				<div class="row">
 					<div class="col-sm-3">
 						<div class="form-group">
@@ -34,12 +38,11 @@
 					<div class="col-sm-4">
 						<div class="form-group">
 							<label for="compiler">Compiler:</label>
-							<select
+							<b-form-select
+								v-model="formCompiler"
+								:options="compilers"
 								@input="$v.formCompiler.$touch()"
-								:class="($v.formCompiler.$dirty && $v.formCompiler.$invalid) ? 'is-invalid' : ''"
-								id="compiler" class="form-control" v-model="formCompiler">
-								<option v-for="option in compilers" v-bind:value="option">{{ option }}</option>
-							</select>
+								:class="($v.formCompiler.$dirty && $v.formCompiler.$invalid) ? 'is-invalid' : ''"></b-form-select>
 							<div class="text-danger" v-if="$v.formCompiler.$dirty && ! $v.formCompiler.required">Compiler is required</div>
 						</div>
 					</div>
@@ -47,6 +50,7 @@
 						<div class="form-group">
 							<label for="optimization">Optimization:</label>
 							<select
+								v-model="formOptimization"
 								@input="$v.formOptimization.$touch()"
 								:class="($v.formOptimization.$dirty && $v.formOptimization.$invalid) ? 'is-invalid' : ''"
 								id="optimization" class="form-control">
@@ -62,14 +66,14 @@
 					<label for="solidityCode">Enter the Solidity Contract Code below</label>
 					<textarea
 						@input="$v.formCode.$touch()"
+						v-model="formCode"
 						:class="($v.formCode.$dirty && $v.formCode.$invalid) ? 'is-invalid' : ''"
 						id="solidityCode" cols="30" rows="10" class="form-control"></textarea>
 					<div class="text-danger" v-if="$v.formCode.$dirty && ! $v.formCode.required">Solidity Code is required</div>
 				</div>
 
 				<div class="form-group">
-					<button type="button" class="btn btn-primary mr-1" @click="onSubmitVerifyContract">Submit</button>
-					<button type="button" class="btn btn-secondary" @click="onResetForm">Cancel</button>
+					<button type="button" class="btn btn-primary mr-1" @click="onSubmitVerifyContract" :disabled="$v.$invalid || loadingForm"><i class="fa fa-spinner fa-pulse mr-1" v-if="loadingForm"></i>Submit</button>
 				</div>
 			</div>
 		</div>
@@ -89,6 +93,8 @@
         formCompiler: '',
         formOptimization: '',
         formCode: '',
+        errors: [],
+        loadingForm: false,
       }
     },
     validations: {
@@ -123,12 +129,12 @@
         let self = this
         let {data} = await self.$axios.get('/api/contracts/soljsons')
 
-        self.compilers = data
+        self.compilers = data.versions.map((version, i) => ({value: i, text: version}))
       },
 
       async onSubmitVerifyContract () {
         let self = this
-        if (self.$v.$error) {
+        if (self.$v.$invalid) {
           return
         }
         let body = {
@@ -138,9 +144,14 @@
           version: self.formCompiler,
         }
 
+        self.errors = []
+        self.loadingForm = true
         let {data} = await self.$axios.post('/api/contracts', body)
-
+        if (data.errors.length) {
+          self.errors = data.errors
+        }
         console.log(data)
+        self.loadingForm = false
       },
 
       onResetForm () {
@@ -150,7 +161,7 @@
         self.formContractName = ''
         self.formCompiler = ''
         self.formOptimization = ''
-        self.formCode
+        self.formCode = ''
       },
     },
   }
