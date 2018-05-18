@@ -73,7 +73,7 @@ ContractController.post('/contracts', async (req, res, next) => {
 
         let contract = await ContractRepository.insertOrUpdate(contractName,
           contractAddress,
-          versionRelease, sourceCode, output)
+          versionRelease, sourceCode, optimization, output)
 
         return res.json(contract)
       })
@@ -81,6 +81,22 @@ ContractController.post('/contracts', async (req, res, next) => {
   catch (e) {
     console.log(e)
     return res.sendStatus(403)
+  }
+})
+
+ContractController.get('/contracts/:slug', async (req, res, next) => {
+  try {
+    let hash = req.params.slug
+    let contract = await Contract.findOne({hash: hash})
+    if (!contract) {
+      return res.status(404).send()
+    }
+
+    return res.json(contract)
+  }
+  catch (e) {
+    console.log(e)
+    return res.sendStatus(500)
   }
 })
 

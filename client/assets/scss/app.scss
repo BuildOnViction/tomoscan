@@ -64,3 +64,26 @@ main, footer {
     transform: scale(0)
   }
 }
+
+
+// BEGIN Hjs
+.hljs__code {
+  width: 100%;
+  display: block;
+  background: #f8f8f8;
+  max-height: 330px;
+  overflow: scroll;
+  font-size: 12px;
+  border: 1px solid $border-color;
+  border-radius: $border-radius;
+
+  .hljs {
+    font-family: Inconsolata, Monaco, Andale Mono, Lucida Console, Bitstream Vera Sans Mono, Courier New, Courier, monospace !important;
+    overflow-x: auto;
+    position: relative;
+    padding: 1em;
+    margin-bottom: 1em;
+  }
+}
+
+// END Hjs
