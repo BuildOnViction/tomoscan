@@ -11,7 +11,7 @@
 			:loading="loading"
 			:items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}, query: {address: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 			<template slot="quantity" slot-scope="props">
 				{{ toEther(props.item.quantity) }}

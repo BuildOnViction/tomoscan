@@ -1,5 +1,7 @@
 import axios from 'axios'
 import Contract from '../models/Contract'
+import ContractEvent from '../models/ContractEvent'
+import _ from 'lodash'
 
 let ContractRepository = {
   async getVersions () {
@@ -28,6 +30,17 @@ let ContractRepository = {
     return await Contract.findOneAndUpdate({hash: contractAddress},
       update,
       {upsert: true, new: true}).lean()
+  },
+
+  async addNew (address, functionHash, functionName, obj) {
+    let exist = await ContractEvent.findOne({id: obj.id})
+    if (exist) {
+      return null
+    }
+    obj.address = address
+    obj.functionHash = functionHash
+    obj.functionName = functionName
+    return await ContractEvent.create(obj)
   },
 }
 

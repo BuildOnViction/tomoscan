@@ -4,6 +4,7 @@ import Tx from '../models/Tx'
 import TokenRepository from './TokenRepository'
 import Token from '../models/Token'
 import TokenHolder from '../models/TokenHolder'
+import Contract from '../models/Contract'
 
 let AccountRepository = {
   async updateAccount (hash) {
@@ -79,6 +80,9 @@ let AccountRepository = {
         {hash: address.hash, quantityNumber: {$gte: 0}})
     }
     address.token = token
+
+    // Inject contract to address object.
+    address.contract = await Contract.findOne({hash: address.hash})
 
     // Check has token holders.
     let hasTokens = await TokenHolder.findOne({hash: address.hash})

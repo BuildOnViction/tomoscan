@@ -67,6 +67,7 @@ TxController.get('/txs', async (req, res) => {
 TxController.get('/txs/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
     let tx = await TxRepository.getTxPending(hash)
     tx = await TxRepository.getTxReceipt(hash)
     // Re-find tx from db with populates.

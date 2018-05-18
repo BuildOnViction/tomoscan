@@ -5,6 +5,9 @@ import ContractRepository from '../repositories/ContractRepository'
 import AccountRepository from '../repositories/AccountRepository'
 import Contract from '../models/Contract'
 import { paginate } from '../helpers/utils'
+import Web3Util from '../helpers/web3'
+import ContractEvent from '../models/ContractEvent'
+import _ from 'lodash'
 
 const ContractController = Router()
 
@@ -84,15 +87,63 @@ ContractController.post('/contracts', async (req, res, next) => {
   }
 })
 
-ContractController.get('/contracts/:slug', async (req, res, next) => {
+ContractController.get('/contracts/:slug/events', async (req, res, next) => {
   try {
     let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
     let contract = await Contract.findOne({hash: hash})
     if (!contract) {
       return res.status(404).send()
     }
 
-    return res.json(contract)
+    let abiObject = JSON.parse(contract.abiCode)
+    let contractEvents = abiObject.filter((item) => item.type === 'event')
+
+    let web3 = await Web3Util.getWeb3()
+    let web3Contract = new web3.eth.Contract(abiObject,
+      contract.hash)
+
+    let pastEvents = await ContractEvent.find(
+      {address: hash}).
+      sort({blockNumber: -1}).lean()
+    let fromBlock = 0
+    let events = []
+    if (pastEvents.length) {
+      fromBlock = pastEvents[0].blockNumber
+      events = events.concat(pastEvents)
+    }
+
+    if (contractEvents.length) {
+      for (let i = 0; i < contractEvents.length; i++) {
+        let event = contractEvents[i]
+        let results = await web3Contract.getPastEvents(event.name, {
+          fromBlock: fromBlock,
+          toBlock: 'latest',
+        })
+        if (results.length) {
+          for (let j = 0; j < results.length; j++) {
+            // Get tx relate.
+            let tx = await web3.eth.getTransaction(
+              results[j].transactionHash)
+
+            let functionHash = tx.input.substring(0, 10)
+            functionHash = functionHash.replace('0x', '')
+            let functionName = _.findKey(contract.functionHashes,
+              (o) => o === functionHash)
+
+            let contractEvent = await ContractRepository.addNew(hash,
+              functionHash, functionName,
+              results[j])
+
+            if (contractEvent) {
+              events.push(contractEvent)
+            }
+          }
+        }
+      }
+    }
+
+    return res.json(events)
   }
   catch (e) {
     console.log(e)
