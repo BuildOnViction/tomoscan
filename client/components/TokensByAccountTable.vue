@@ -14,7 +14,7 @@
 				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
 			</template>
 			<template slot="quantity" slot-scope="props">
-				{{ formatUnit(toEther(props.item.quantity), props.item.tokenObj.symbol) }}
+				{{ formatUnit(props.item.quantity, props.item.tokenObj.symbol) }}
 			</template>
 		</b-table>
 		<b-pagination

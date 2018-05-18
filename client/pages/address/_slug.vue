@@ -53,7 +53,7 @@
 							</tbody>
 						</table>
 
-						<p v-if="address && address.isContract">Are you The Contract Creator?
+						<p v-if="address && address.isContract && ! address.contract">Are you The Contract Creator?
 							<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
 							your Contract Source Code Today!
 						</p>
@@ -189,12 +189,7 @@
 
         let {data} = await this.$axios.get('/api/accounts/' + self.hash)
         self.address = data
-
-        if (self.address.isContract) {
-          // Get smart contract verified information.
-          let {data} = await self.$axios.get('/api/contracts/' + self.hash)
-          self.smartContract = data
-        }
+        self.smartContract = data.contract
       },
       async getUSDPrice () {
         let self = this

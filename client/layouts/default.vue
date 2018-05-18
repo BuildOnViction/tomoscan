@@ -15,8 +15,10 @@
 						<b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
 						<b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
 					</b-nav-item-dropdown>
-					<b-nav-item :to="{name: 'tokens'}">Tokens</b-nav-item>
-					<b-nav-item :to="{name: 'tokentxs'}">Token Transfers</b-nav-item>
+					<b-nav-item-dropdown text="Tokens">
+						<b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
+						<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
+					</b-nav-item-dropdown>
 				</b-navbar-nav>
 				<b-navbar-nav class="ml-auto">
 					<div class="form-inline" v-if="! isHomePage()">

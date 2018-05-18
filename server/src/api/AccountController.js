@@ -40,6 +40,7 @@ AccountController.get('/accounts', async (req, res) => {
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
     let account = await AccountRepository.updateAccount(hash)
     account = await AccountRepository.formatItem(account)
 
@@ -54,6 +55,7 @@ AccountController.get('/accounts/:slug', async (req, res) => {
 AccountController.get('/accounts/:slug/mined', async (req, res) => {
   try {
     let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
     let params = {}
     if (hash) {
       params.query = {signer: hash}

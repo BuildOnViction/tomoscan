@@ -100,8 +100,7 @@ let TxRepository = {
       if (logs.length) {
         for (let i = 0; i < logs.length; i++) {
           let log = logs[i]
-          await
-            TxRepository.parseLog(log)
+          await TxRepository.parseLog(log)
         }
       }
       tx.status = true
