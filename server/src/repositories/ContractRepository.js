@@ -11,7 +11,8 @@ let ContractRepository = {
   },
 
   async insertOrUpdate (
-    contractName, contractAddress, releaseVersion, sourceCode, ouput) {
+    contractName, contractAddress, releaseVersion, sourceCode, optimization,
+    ouput) {
     let update = {
       hash: contractAddress,
       contractName: contractName,
@@ -21,6 +22,7 @@ let ContractRepository = {
       functionHashes: ouput.contracts[':' + contractName].functionHashes,
       opcodes: ouput.contracts[':' + contractName].opcodes,
       bytecode: ouput.contracts[':' + contractName].bytecode,
+      optimization: optimization,
     }
 
     return await Contract.findOneAndUpdate({hash: contractAddress},

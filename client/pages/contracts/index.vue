@@ -8,6 +8,9 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
+			<template slot="hash" slot-scope="props">
+				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+			</template>
 		</b-table>
 		<b-pagination
 			align="center"

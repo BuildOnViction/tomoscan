@@ -13,6 +13,7 @@ const schema = new mongoose.Schema({
   code: String,
   balance: String,
   balanceNumber: Number,
+  optimization: Boolean,
 }, {
   timestamps: true,
   versionKey: false,

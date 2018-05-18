@@ -83,6 +83,43 @@
 							<tx-by-account-table></tx-by-account-table>
 						</b-tab>
 						<b-tab v-if="address && address.isContract" title="Code">
+							<section v-if="smartContract">
+								<h5 class="mb-3"><i class="fa fa-check-circle-o text-success mr-1"></i>Contract Source Code Verified</h5>
+								<b-row class="mb-3">
+									<b-col md="6">
+										<b-table
+											:items="[
+											{key: 'Contract Name', value: smartContract.contractName},
+											{key: 'Compiler Version', value: smartContract.compiler},
+										]"
+											thead-class="d-none"></b-table>
+									</b-col>
+
+									<b-col md="6">
+										<b-table
+											:items="[
+											{key: 'Verified At', value: smartContract.updatedAt},
+											{key: 'Optimization Enabled:', value: smartContract.optimization},
+										]"
+											thead-class="d-none"></b-table>
+									</b-col>
+								</b-row>
+
+								<b-form-group>
+									<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
+									<pre v-highlightjs="smartContract.sourceCode" class="hljs__code">
+										<code class="javascript"></code>
+									</pre>
+								</b-form-group>
+
+								<b-form-group>
+									<label>Contract ABI<i class="fa fa-cogs ml-1"></i></label>
+									<code class="hljs__code" v-highlightjs="smartContract.abiCode">
+										<code class="json"></code>
+									</code>
+								</b-form-group>
+							</section>
+
 							<b-form-group label="Smart Contract Code">
 								<textarea
 									disabled
@@ -126,6 +163,7 @@
       hash: null,
       address: null,
       currentUrl: '',
+      smartContract: null,
     }),
     created () {
       let hash = this.$route.params.slug
@@ -151,6 +189,12 @@
 
         let {data} = await this.$axios.get('/api/accounts/' + self.hash)
         self.address = data
+
+        if (self.address.isContract) {
+          // Get smart contract verified information.
+          let {data} = await self.$axios.get('/api/contracts/' + self.hash)
+          self.smartContract = data
+        }
       },
       async getUSDPrice () {
         let self = this
