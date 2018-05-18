@@ -40,6 +40,19 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
   else {
     // Initialize public api
     app.use('/api', api)
+
+    // Production error handler
+    if (app.get('env') === 'production') {
+      app.use(function (err, req, res, next) {
+        var slack = require('slack-notify')(process.env.SLACK_WEBHOOK_URL)
+        slack.send({
+          channel: '#tm_explorer',
+          text: err.stack,
+        })
+
+        res.sendStatus(err.status || 500)
+      })
+    }
   }
 })
 if (process.env.DEBUG_QUERY == true) {
@@ -55,14 +68,6 @@ if (process.env.DEBUG_QUERY == true) {
     console.log({
       dbQuery: set,
     })
-  })
-}
-
-// Production error handler
-if (app.get('env') === 'production') {
-  app.use(function (err, req, res, next) {
-    console.error(err.stack)
-    res.sendStatus(err.status || 500)
   })
 }
 

@@ -51,6 +51,7 @@
     "passport": "^0.4.0",
     "passport-jwt": "^4.0.0",
     "pug": "^2.0.3",
+    "slack-notify": "^0.1.6",
     "socket.io": "^2.1.0",
     "solc": "^0.4.23",
     "web3": "^1.0.0-beta.34"

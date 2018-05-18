@@ -126,6 +126,8 @@
 									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
 							</b-form-group>
 						</b-tab>
+						<b-tab v-if="events.length" title="Events">
+						</b-tab>
 					</b-tabs>
 				</b-card>
 			</b-col>
@@ -164,6 +166,7 @@
       address: null,
       currentUrl: '',
       smartContract: null,
+      events: [],
     }),
     created () {
       let hash = this.$route.params.slug
@@ -182,6 +185,7 @@
 
       self.getAccountFromApi()
       self.getUSDPrice()
+      self.getAddressEvents()
     },
     methods: {
       async getAccountFromApi () {
@@ -195,6 +199,11 @@
         let self = this
 
         self.$store.dispatch('app/getUSDPrice')
+      },
+      async getAddressEvents () {
+        let self = this
+        let {data} = await self.$axios.get('/api/contracts/' + self.hash + '/events')
+        self.events = data
       },
     },
   }
