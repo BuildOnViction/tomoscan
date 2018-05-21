@@ -12,10 +12,17 @@
 			:items="items">
 			<template slot="label" slot-scope="props">
 				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}" class="address__tag">{{ props.item.transactionHash }}...</nuxt-link>
-				<p>#
+				<div>#
 					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
-				</p>
-				<small></small>
+				</div>
+				<small v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</small>
+			</template>
+			<template slot="logs" slot-scope="props">
+				<ul class="list-unstyled">
+					<li v-for="(topic, i) in props.item.topics">
+						<span :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</span>
+					</li>
+				</ul>
 			</template>
 		</b-table>
 		<b-pagination
