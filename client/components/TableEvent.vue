@@ -15,12 +15,47 @@
 				<div>#
 					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 				</div>
-				<small v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</small>
+				<div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
+			</template>
+			<template slot="method" slot-scope="props">
+				<div class="d-block" v-html="props.item.methodName"></div>
+				<div class="d-block">[{{ props.item.methodCode }}]</div>
 			</template>
 			<template slot="logs" slot-scope="props">
+				<div v-if="isTransferEvent(props.item.topics[0])">
+					<b-link v-b-toggle="'collapse' + props.index">Transfer</b-link>
+					(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
+				</div>
+				<b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
+					<b-card v-if="isTransferEvent(props.item.topics[0])">
+						<ul class="list-unstyled">
+							<li>
+								<p>
+									<span class="d-block"><i class="text-muted">address</i> from</span>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.topics[1])}}">{{ unformatAddress(props.item.topics[1]) }}</nuxt-link>
+								</p>
+							</li>
+							<li>
+								<p>
+									<span class="d-block"><i class="text-muted">address</i> to</span>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.topics[2])}}">{{ unformatAddress(props.item.topics[2]) }}</nuxt-link>
+								</p>
+							</li>
+							<li>
+								<p>
+									<span class="d-block"><i class="text-muted">unit256</i> value</span>
+									<span class="d-block">{{ convertHexToInt(props.item.data) }} ({{ formatUnit(toEther(convertHexToInt(props.item.data))) }})</span>
+								</p>
+							</li>
+						</ul>
+					</b-card>
+				</b-collapse>
 				<ul class="list-unstyled">
 					<li v-for="(topic, i) in props.item.topics">
-						<span :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</span>
+						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
+					</li>
+					<li>
+						<i class="fa fa-arrow-right mr-1"></i>{{ props.item.data }}
 					</li>
 				</ul>
 			</template>
@@ -99,9 +134,6 @@
         self.currentPage = data.currentPage
         self.pages = data.pages
 
-        // Format data.
-        self.items = self.formatData(self.items)
-
         // Hide loading.
         self.loading = false
 
@@ -113,6 +145,7 @@
 
         self.getDataFromApi()
       },
+      isTransferEvent: (code) => code === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
     },
   }
 </script>
