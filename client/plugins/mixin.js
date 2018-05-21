@@ -69,6 +69,11 @@ const mixin = {
         ' ' + sfx
     },
 
+    unformatAddress: (address) => address.replace(
+      '0x000000000000000000000000', '0x'),
+
+    convertHexToInt: (hex) => parseInt(hex),
+
     trimWord: (word) => word.replace(/^\s+|\s+$|\s+(?=\s)/g, '').
       replace('\t', '').
       replace(/\u0000/g, '').
