@@ -50,7 +50,7 @@ let TokenTxRepository = {
       let tokens = await Token.find({hash: {$in: tokenHashes}})
       for (let i = 0; i < items.length; i++) {
         for (let j = 0; j < tokens.length; j++) {
-          if (items[i]['address'] == tokens[j]['hash']) {
+          if (items[i]['address'] === tokens[j]['hash']) {
             items[i].symbol = (typeof tokens[j]['symbol'] !== 'undefined')
               ? tokens[j]['symbol']
               : null

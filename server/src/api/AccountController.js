@@ -3,6 +3,7 @@ import { paginate } from '../helpers/utils'
 import Account from '../models/Account'
 import AccountRepository from '../repositories/AccountRepository'
 import async from 'async'
+import LogRepository from '../repositories/LogRepository'
 
 const AccountController = Router()
 
@@ -40,7 +41,6 @@ AccountController.get('/accounts', async (req, res) => {
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
-    hash = hash ? hash.toLowerCase() : hash
     let account = await AccountRepository.updateAccount(hash)
     account = await AccountRepository.formatItem(account)
 
@@ -55,13 +55,34 @@ AccountController.get('/accounts/:slug', async (req, res) => {
 AccountController.get('/accounts/:slug/mined', async (req, res) => {
   try {
     let hash = req.params.slug
-    hash = hash ? hash.toLowerCase() : hash
     let params = {}
     if (hash) {
       params.query = {signer: hash}
     }
     params.sort = {number: -1}
     let data = await paginate(req, 'Block', params)
+
+    return res.json(data)
+  }
+  catch (e) {
+    console.log(e)
+    throw e
+  }
+})
+
+AccountController.get('/accounts/:slug/events', async (req, res) => {
+  try {
+    let hash = req.params.slug
+    let params = {}
+    if (hash) {
+      params.query = {address: hash}
+    }
+    params.sort = {blockNumber: -1}
+    let data = await paginate(req, 'Log', params)
+    let items = data.items
+    for (let i = 0; i < items.length; i++) {
+      data.items[i] = await LogRepository.formatItem(items[i])
+    }
 
     return res.json(data)
   }

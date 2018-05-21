@@ -36,6 +36,7 @@ module.exports = {
   ],
   modules: [
     '@nuxtjs/axios',
+    '@nuxtjs/moment',
   ],
   css: [
     '~/assets/scss/app.scss',

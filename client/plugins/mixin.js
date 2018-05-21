@@ -1,4 +1,3 @@
-import moment from 'moment'
 import web3 from 'web3'
 import BigNumber from 'bignumber.js'
 
@@ -49,8 +48,6 @@ const mixin = {
 
       return str + str2
     },
-
-    moment: (date) => moment(date),
 
     toEther: (wei) => {
       if (!wei) {

@@ -116,7 +116,7 @@
       let {data} = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
 
       this.block = data
-      let moment = this.moment(data.timestamp)
+      let moment = self.$moment(data.timestamp)
       this.timestamp_moment = moment.fromNow() + ' (' + moment.format('MMM-DD-Y hh:mm:ss A') + ' +UTC)'
     },
   }
