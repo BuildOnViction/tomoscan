@@ -86,13 +86,28 @@
 				</table>
 			</b-col>
 		</b-row>
+		<b-row>
+			<b-col>
+				<b-card no-body>
+					<b-tabs card>
+						<b-tab title="Events">
+							<table-event :tx="hash"></table-event>
+						</b-tab>
+					</b-tabs>
+				</b-card>
+			</b-col>
+		</b-row>
 	</section>
 </template>
 <script>
   import mixin from '~/plugins/mixin'
+  import TableEvent from '~/components/TableEvent'
 
   export default {
     mixins: [mixin],
+    components: {
+      TableEvent,
+    },
     head () {
       return {
         title: 'Transaction ' + this.$route.params.slug + ' Info',
