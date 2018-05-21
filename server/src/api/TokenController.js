@@ -24,7 +24,6 @@ TokenController.get('/tokens', async (req, res) => {
 TokenController.get('/tokens/:slug', async (req, res) => {
   try {
     let hash = req.params.slug
-    hash = hash ? hash.toLowerCase() : hash
     let token = await Token.findOne({hash: hash}).lean()
     if (!token) {
       return res.status(404).send()
