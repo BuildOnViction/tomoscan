@@ -126,7 +126,8 @@
 									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
 							</b-form-group>
 						</b-tab>
-						<b-tab v-if="events.length" title="Events">
+						<b-tab title="Events">
+							<table-event :address="hash"></table-event>
 						</b-tab>
 					</b-tabs>
 				</b-card>
@@ -139,6 +140,7 @@
   import TxTable from '~/components/TxTable'
   import TokensByAccountTable from '~/components/TokensByAccountTable'
   import TxByAccountTable from '~/components/TxByAccountTable'
+  import TableEvent from '~/components/TableEvent'
   import SpanLoading from '~/components/SpanLoading'
   import VueQrcode from '@xkeshi/vue-qrcode'
 
@@ -148,6 +150,7 @@
       TxTable,
       TokensByAccountTable,
       TxByAccountTable,
+      TableEvent,
       SpanLoading,
       VueQrcode,
     },
@@ -166,7 +169,6 @@
       address: null,
       currentUrl: '',
       smartContract: null,
-      events: [],
     }),
     created () {
       let hash = this.$route.params.slug
@@ -185,7 +187,6 @@
 
       self.getAccountFromApi()
       self.getUSDPrice()
-      self.getAddressEvents()
     },
     methods: {
       async getAccountFromApi () {
@@ -199,11 +200,6 @@
         let self = this
 
         self.$store.dispatch('app/getUSDPrice')
-      },
-      async getAddressEvents () {
-        let self = this
-        let {data} = await self.$axios.get('/api/contracts/' + self.hash + '/events')
-        self.events = data
       },
     },
   }

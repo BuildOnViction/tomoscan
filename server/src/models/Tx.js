@@ -17,7 +17,6 @@ const schema = new mongoose.Schema({
   contractAddress: String,
   cumulativeGasUsed: Number,
   gasUsed: Number,
-  logs: Array,
   block: {type: Schema.Types.ObjectId, ref: 'Block'},
   from_model: {type: Schema.Types.ObjectId, ref: 'Account'},
   to_model: {type: Schema.Types.ObjectId, ref: 'Account'},

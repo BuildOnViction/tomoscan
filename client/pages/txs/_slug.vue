@@ -116,7 +116,7 @@
       let {data} = await this.$axios.get('/api/txs/' + self.hash)
 
       this.tx = data
-      let moment = this.moment(data.timestamp)
+      let moment = self.$moment(data.timestamp)
       this.tx.timestamp_moment = moment.fromNow() + ' (' + moment.format('MMM-DD-Y hh:mm:ss A') + ')'
     },
   }

@@ -20,9 +20,9 @@
 			</template>
 
 			<template slot="timestamp" slot-scope="props">
-				<span :id="'age__' + props.index">{{ moment(props.item.timestamp).fromNow() }}</span>
+				<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
 				<b-tooltip :target="'age__' + props.index">
-					{{ moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 				</b-tooltip>
 			</template>
 

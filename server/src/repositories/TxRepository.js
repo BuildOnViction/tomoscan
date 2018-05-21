@@ -11,6 +11,7 @@ import Block from '../models/Block'
 import TokenTxRepository from './TokenTxRepository'
 import Follow from '../models/Follow'
 import EmailService from '../services/Email'
+import Log from '../models/Log'
 
 let TxRepository = {
   async getTxPending (hash) {
@@ -101,6 +102,9 @@ let TxRepository = {
         for (let i = 0; i < logs.length; i++) {
           let log = logs[i]
           await TxRepository.parseLog(log)
+          // Save log into db.
+          await Log.findOneAndUpdate({id: log.id}, log,
+            {upsert: true, new: true})
         }
       }
       tx.status = true

@@ -10,18 +10,12 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
-
-			<template slot="block" slot-scope="props">
-				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
-			</template>
-
-			<template slot="timestamp" slot-scope="props">
-				<div v-if="props.item.timestamp">
-					<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'age__' + props.index">
-						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-					</b-tooltip>
-				</div>
+			<template slot="label" slot-scope="props">
+				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}" class="address__tag">{{ props.item.transactionHash }}...</nuxt-link>
+				<p>#
+					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				</p>
+				<small></small>
 			</template>
 		</b-table>
 		<b-pagination
@@ -32,20 +26,20 @@
 		></b-pagination>
 	</section>
 </template>
+
 <script>
   import mixin from '~/plugins/mixin'
 
   export default {
     mixins: [mixin],
     props: {
-      token: {type: String, default: null},
+      address: {type: String, default: null},
     },
     data: () => ({
       fields: {
-        block: {label: 'Block'},
-        timestamp: {label: 'Age'},
-        e_tx: {label: 'txn', class: 'text-right'},
-        gasUsed: {label: 'gasUsed', class: 'text-right'},
+        label: {label: 'TxHash|Block|Age'},
+        method: {label: 'Method'},
+        logs: {label: 'Event Logs'},
       },
       loading: true,
       pagination: {},
@@ -65,6 +59,9 @@
       if (query.limit) {
         self.perPage = parseInt(query.limit)
       }
+      if (query.block) {
+        self.block = query.block
+      }
 
       this.getDataFromApi()
     },
@@ -79,18 +76,24 @@
           page: self.currentPage,
           limit: self.perPage,
         }
+        if (self.block) {
+          params.block = self.block
+        }
+        if (self.type) {
+          params.type = self.type
+        }
 
         this.$router.replace({query: params})
 
-        let hash = this.$route.params.slug
-
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/accounts/' + hash + '/mined?' + query)
+        let {data} = await self.$axios.get('/api/accounts/' + self.address + '/events?' + query)
         self.items = data.items
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
-        self.perPage = data.perPage
+
+        // Format data.
+        self.items = self.formatData(self.items)
 
         // Hide loading.
         self.loading = false
