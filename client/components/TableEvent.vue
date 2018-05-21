@@ -44,7 +44,7 @@
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">unit256</i> value</span>
-									<span class="d-block">{{ convertHexToInt(props.item.data) }} ({{ formatUnit(toEther(convertHexToInt(props.item.data))) }})</span>
+									<span class="d-block">{{ convertHexToInt(props.item.data) }}</span>
 								</p>
 							</li>
 						</ul>
@@ -76,12 +76,13 @@
     mixins: [mixin],
     props: {
       address: {type: String, default: null},
+      tx: {type: String, default: null},
     },
     data: () => ({
       fields: {
-        label: {label: 'TxHash|Block|Age'},
-        method: {label: 'Method'},
-        logs: {label: 'Event Logs'},
+        label: {label: 'TxHash|Block|Age', tdClass: 'small'},
+        method: {label: 'Method', tdClass: 'small'},
+        logs: {label: 'Event Logs', tdClass: 'small'},
       },
       loading: true,
       pagination: {},
@@ -125,10 +126,17 @@
           params.type = self.type
         }
 
+        if (self.address) {
+          params.address = self.address
+        }
+        if (self.tx) {
+          params.tx = self.tx
+        }
+
         this.$router.replace({query: params})
 
         let query = this.serializeQuery(params)
-        let {data} = await self.$axios.get('/api/accounts/' + self.address + '/events?' + query)
+        let {data} = await self.$axios.get('/api/logs?' + query)
         self.items = data.items
         self.total = data.total
         self.currentPage = data.currentPage
