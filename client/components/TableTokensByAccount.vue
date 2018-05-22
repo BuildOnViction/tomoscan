@@ -3,16 +3,20 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table class="tm__table"
-			foot-clone
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
+		         foot-clone
+		         small
+		         :fields="fields"
+		         :loading="loading"
+		         :items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+				<div class="tm__cell">
+					<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+				</div>
 			</template>
 			<template slot="quantity" slot-scope="props">
-				{{ formatUnit(props.item.quantity, props.item.tokenObj.symbol) }}
+				<div class="tm__cell">
+					{{ formatUnit(props.item.quantity, props.item.tokenObj.symbol) }}
+				</div>
 			</template>
 		</b-table>
 		<b-pagination

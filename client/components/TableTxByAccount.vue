@@ -8,11 +8,22 @@
 			:fields="fields"
 			:loading="loading"
 			:items="items">
-			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+
+			<template slot="block" slot-scope="props">
+				<div class="tm__cell">
+					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+				</div>
 			</template>
-			<template slot="quantity" slot-scope="props">
-				{{ toEther(props.item.quantity) }}
+
+			<template slot="timestamp" slot-scope="props">
+				<div class="tm__cell">
+					<div v-if="props.item.timestamp">
+						<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+						<b-tooltip :target="'age__' + props.index">
+							{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+						</b-tooltip>
+					</div>
+				</div>
 			</template>
 		</b-table>
 		<b-pagination
@@ -29,14 +40,14 @@
   export default {
     mixins: [mixin],
     props: {
-      address: {type: String, default: null},
+      token: {type: String, default: null},
     },
     data: () => ({
       fields: {
-        rank: {label: 'Rank'},
-        hash: {label: 'Address'},
-        quantity: {label: 'quantity', class: 'text-right'},
-        percentAge: {label: 'Percentage', class: 'text-right'},
+        block: {label: 'Block'},
+        timestamp: {label: 'Age'},
+        e_tx: {label: 'txn', class: 'text-right'},
+        gasUsed: {label: 'gasUsed', class: 'text-right'},
       },
       loading: true,
       pagination: {},
@@ -73,16 +84,15 @@
 
         this.$router.replace({query: params})
 
-        if (self.address) {
-          params.address = self.address
-        }
+        let hash = this.$route.params.slug
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/token-holders' + '?' + query)
+        let {data} = await this.$axios.get('/api/accounts/' + hash + '/mined?' + query)
         self.items = data.items
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
+        self.perPage = data.perPage
 
         // Hide loading.
         self.loading = false
