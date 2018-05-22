@@ -5,7 +5,7 @@
 		@ok="onRegister"
 		@keydown.native.enter="onRegister"
 		title="Register">
-		<div class="alert alert-danger" v-show="errorMessage">
+		<div class="alert alert-danger" v-if="errorMessage">
 			{{ errorMessage }}
 		</div>
 		<form>
@@ -78,20 +78,23 @@
         const email = self.formEmail
         const password = self.formPassword
 
-        self.$store.dispatch('user/register', {email, password}).then((data) => {
+        try {
+          let data = await self.$store.dispatch('user/register', {email, password})
           self.resetModal()
 
           // Close modal.
           self.$refs.modalRegister.hide()
-        }).catch((e) => {
-          self.errorMessage = e.message
-        })
+        }
+        catch (e) {
+          if (e.response.status === 422) {
+            self.errorMessage = e.response.data.message
+          }
+        }
       },
       resetModal () {
         this.formEmail = ''
         this.formPassword = ''
         this.formPasswordConfirmation = ''
-        this.errorMessage = ''
       },
     },
   }
