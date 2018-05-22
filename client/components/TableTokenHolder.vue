@@ -3,22 +3,29 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table class="tm__table"
-			foot-clone
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
-
-			<template slot="block" slot-scope="props">
-				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+		         foot-clone
+		         small
+		         :fields="fields"
+		         :loading="loading"
+		         :items="items">
+			<template slot="rank" slot-scope="props">
+				<div class="tm__cell">
+					{{ props.item.rank }}
+				</div>
 			</template>
-
-			<template slot="timestamp" slot-scope="props">
-				<div v-if="props.item.timestamp">
-					<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'age__' + props.index">
-						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-					</b-tooltip>
+			<template slot="hash" slot-scope="props">
+				<div class="tm__cell">
+					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				</div>
+			</template>
+			<template slot="quantity" slot-scope="props">
+				<div class="tm__cell">
+					{{ toEther(props.item.quantity) }}
+				</div>
+			</template>
+			<template slot="percentAge" slot-scope="props">
+				<div class="tm__cell">
+					{{ props.item.percentAge }}
 				</div>
 			</template>
 		</b-table>
@@ -36,14 +43,14 @@
   export default {
     mixins: [mixin],
     props: {
-      token: {type: String, default: null},
+      address: {type: String, default: null},
     },
     data: () => ({
       fields: {
-        block: {label: 'Block'},
-        timestamp: {label: 'Age'},
-        e_tx: {label: 'txn', class: 'text-right'},
-        gasUsed: {label: 'gasUsed', class: 'text-right'},
+        rank: {label: 'Rank'},
+        hash: {label: 'Address'},
+        quantity: {label: 'quantity', class: 'text-right'},
+        percentAge: {label: 'Percentage', class: 'text-right'},
       },
       loading: true,
       pagination: {},
@@ -80,15 +87,16 @@
 
         this.$router.replace({query: params})
 
-        let hash = this.$route.params.slug
+        if (self.address) {
+          params.address = self.address
+        }
 
         let query = this.serializeQuery(params)
-        let {data} = await this.$axios.get('/api/accounts/' + hash + '/mined?' + query)
+        let {data} = await this.$axios.get('/api/token-holders' + '?' + query)
         self.items = data.items
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
-        self.perPage = data.perPage
 
         // Hide loading.
         self.loading = false

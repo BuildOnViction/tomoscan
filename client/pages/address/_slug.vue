@@ -68,7 +68,7 @@
 		<div class="card mb-3" v-if="address && address.hashTokens">
 			<div class="card-body">
 				<h5 class="card-title">Token Balances</h5>
-				<tokens-by-account-table :address="hash"></tokens-by-account-table>
+				<table-tokens-by-account :address="hash"></table-tokens-by-account>
 			</div>
 		</div>
 
@@ -80,7 +80,7 @@
 							<table-tx :address="hash"></table-tx>
 						</b-tab>
 						<b-tab title="Mined Blocks">
-							<tx-by-account-table></tx-by-account-table>
+							<table-tx-by-account></table-tx-by-account>
 						</b-tab>
 						<b-tab v-if="address && address.isContract" title="Code">
 							<section v-if="smartContract">
@@ -88,20 +88,20 @@
 								<b-row class="mb-3">
 									<b-col md="6">
 										<b-table class="tm__table"
-											:items="[
+										         :items="[
 											{key: 'Contract Name', value: smartContract.contractName},
 											{key: 'Compiler Version', value: smartContract.compiler},
 										]"
-											thead-class="d-none"></b-table>
+										         thead-class="d-none"></b-table>
 									</b-col>
 
 									<b-col md="6">
 										<b-table class="tm__table"
-											:items="[
+										         :items="[
 											{key: 'Verified At', value: smartContract.updatedAt},
 											{key: 'Optimization Enabled:', value: smartContract.optimization},
 										]"
-											thead-class="d-none"></b-table>
+										         thead-class="d-none"></b-table>
 									</b-col>
 								</b-row>
 
@@ -138,8 +138,8 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableTx from '~/components/TableTx'
-  import TokensByAccountTable from '~/components/TokensByAccountTable'
-  import TxByAccountTable from '~/components/TxByAccountTable'
+  import TableTokensByAccount from '~/components/TableTokensByAccount'
+  import TableTxByAccount from '~/components/TableTxByAccount'
   import TableEvent from '~/components/TableEvent'
   import SpanLoading from '~/components/SpanLoading'
   import VueQrcode from '@xkeshi/vue-qrcode'
@@ -148,8 +148,8 @@
     mixins: [mixin],
     components: {
       TableTx,
-      TokensByAccountTable,
-      TxByAccountTable,
+      TableTokensByAccount,
+      TableTxByAccount,
       TableEvent,
       SpanLoading,
       VueQrcode,
@@ -169,7 +169,7 @@
       address: null,
       currentUrl: '',
       smartContract: null,
-      itemsLength: 0
+      itemsLength: 0,
     }),
     created () {
       let hash = this.$route.params.slug

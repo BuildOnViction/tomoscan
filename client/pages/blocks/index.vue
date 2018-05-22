@@ -14,31 +14,43 @@
 				</div>
 			</template>
 			<template slot="timestamp" slot-scope="props">
-				<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'timestamp__' + props.index">
-					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-				</b-tooltip>
+				<div class="tm__cell">
+					<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+					<b-tooltip :target="'timestamp__' + props.index">
+						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
+				</div>
 			</template>
 			<template slot="e_tx" slot-scope="props">
-				<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
+				<div class="tm__cell">
+					<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
+				</div>
 			</template>
 			<template slot="uncles" slot-scope="props">
-				{{ props.item.uncles.length }}
+				<div class="tm__cell">
+					{{ props.item.uncles.length }}
+				</div>
 			</template>
 			<template slot="miner" slot-scope="props">
-				<div class="address__tag">
-					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-						<span v-if="props.item.signer">{{ props.item.signer }}</span>
-						<span v-else>{{ props.item.miner }}</span>
-					</nuxt-link>
+				<div class="tm__cell">
+					<div class="address__tag">
+						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+							<span v-if="props.item.signer">{{ props.item.signer }}</span>
+							<span v-else>{{ props.item.miner }}</span>
+						</nuxt-link>
+					</div>
 				</div>
 			</template>
 			<template slot="gasUsed" slot-scope="props">
-				<div>{{ formatNumber(props.item.gasUsed) }}</div>
-				<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+				<div class="tm__cell">
+					<div>{{ formatNumber(props.item.gasUsed) }}</div>
+					<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+				</div>
 			</template>
 			<template slot="gasLimit" slot-scope="props">
-				{{ formatNumber(props.item.gasLimit) }}
+				<div class="tm__cell">
+					{{ formatNumber(props.item.gasLimit) }}
+				</div>
 			</template>
 		</b-table>
 		<b-pagination

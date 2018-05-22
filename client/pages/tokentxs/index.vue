@@ -1,15 +1,15 @@
 <template>
 	<section>
-		<token-tx-table></token-tx-table>
+		<table-token-tx></table-token-tx>
 	</section>
 </template>
 
 <script>
-  import TokenTxTable from '~/components/TokenTxTable'
+  import TableTokenTx from '~/components/TableTokenTx'
 
   export default {
     components: {
-      TokenTxTable,
+      TableTokenTx,
     },
     head () {
       return {

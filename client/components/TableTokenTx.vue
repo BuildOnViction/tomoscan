@@ -9,52 +9,68 @@
 			:loading="loading"
 			:items="items">
 			<template slot="transactionHash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}</nuxt-link>
+				<div class="tm__cell">
+					<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}</nuxt-link>
+				</div>
 			</template>
 
 			<template slot="block" slot-scope="props">
-				<nuxt-link v-if="props.item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
-				<span v-else class="text-muted">Pending...</span>
+				<div class="tm__cell">
+					<nuxt-link v-if="props.item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+					<span v-else class="text-muted">Pending...</span>
+				</div>
 			</template>
 
 			<template slot="timestamp" slot-scope="props">
-				<div v-if="props.item.timestamp">
-					<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'age__' + props.index">
-						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-					</b-tooltip>
+				<div class="tm__cell">
+					<div v-if="props.item.timestamp">
+						<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+						<b-tooltip :target="'age__' + props.index">
+							{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+						</b-tooltip>
+					</div>
 				</div>
 			</template>
 
 			<template slot="from" slot-scope="props">
-				<div class="address__tag">
-					<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
-					<span v-if="address == props.item.from">{{ props.item.from }}</span>
-					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+				<div class="tm__cell">
+					<div class="address__tag">
+						<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
+						<span v-if="address == props.item.from">{{ props.item.from }}</span>
+						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+					</div>
 				</div>
 			</template>
 
 			<template slot="arrow" slot-scope="props">
-				<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+				<div class="tm__cell">
+					<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+				</div>
 			</template>
 
 			<template slot="to" slot-scope="props">
-				<div class="address__tag">
-					<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
-					<span v-if="address == props.item.to">{{ props.item.to }}</span>
-					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-						<span>{{ props.item.to }}</span>
-					</nuxt-link>
+				<div class="tm__cell">
+					<div class="address__tag">
+						<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
+						<span v-if="address == props.item.to">{{ props.item.to }}</span>
+						<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
+							<span>{{ props.item.to }}</span>
+						</nuxt-link>
+					</div>
 				</div>
 			</template>
 
 			<template slot="value" slot-scope="props">
-				{{ toEther(props.item.value) }}
+				<div class="tm__cell">
+					{{ toEther(props.item.value) }}
+				</div>
 			</template>
 
 			<template slot="token" slot-scope="props">
-				<nuxt-link v-if="props.item.symbol" :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
-				<i v-else>ERC20</i>
+				<div class="tm__cell">
+					<nuxt-link v-if="props.item.symbol" :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
+					<i v-else>ERC20</i>
+				</div>
 			</template>
 		</b-table>
 		<b-pagination

@@ -60,10 +60,10 @@
 				<b-card no-body>
 					<b-tabs card>
 						<b-tab title="Token Transfers">
-							<token-tx-table :token="hash"></token-tx-table>
+							<table-token-tx :token="hash"></table-token-tx>
 						</b-tab>
 						<b-tab title="Token Holders">
-							<token-holder-table :address="hash"></token-holder-table>
+							<table-token-holder :address="hash"></table-token-holder>
 						</b-tab>
 					</b-tabs>
 				</b-card>
@@ -73,14 +73,14 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
-  import TokenTxTable from '~/components/TokenTxTable'
-  import TokenHolderTable from '~/components/TokenHolderTable'
+  import TableTokenTx from '~/components/TableTokenTx'
+  import TableTokenHolder from '~/components/TableTokenHolder'
 
   export default {
     mixins: [mixin],
     components: {
-      TokenTxTable,
-      TokenHolderTable,
+      TableTokenTx,
+      TableTokenHolder,
     },
     head () {
       return {
