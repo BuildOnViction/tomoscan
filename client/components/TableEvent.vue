@@ -28,23 +28,23 @@
 				</div>
 				<b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
 					<b-card v-if="isTransferEvent(props.item.topics[0])">
-						<ul class="list-unstyled">
+						<ul class="list-unstyled" v-if="props.item.transfer">
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">address</i> from</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.datas[0])}}">{{ unformatAddress(props.item.datas[0]) }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.from)}}">{{ unformatAddress(props.item.transfer.from) }}</nuxt-link>
 								</p>
 							</li>
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">address</i> to</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.datas[1])}}">{{ unformatAddress(props.item.datas[1]) }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">{{ unformatAddress(props.item.transfer.to) }}</nuxt-link>
 								</p>
 							</li>
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">unit256</i> value</span>
-									<span class="d-block">{{ convertHexToInt(props.item.data) }}</span>
+									<span class="d-block">{{ convertHexToInt(props.item.transfer.value) }}</span>
 								</p>
 							</li>
 						</ul>
@@ -54,8 +54,10 @@
 					<li v-for="(topic, i) in props.item.topics">
 						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
 					</li>
-					<li>
-						<i class="fa fa-arrow-right mr-1"></i>{{ props.item.data }}
+				</ul>
+				<ul class="list-unstyled">
+					<li v-for="data in props.item.datas">
+						<i class="fa fa-arrow-right mr-1"></i>{{ data }}
 					</li>
 				</ul>
 			</template>
@@ -163,6 +165,18 @@
         let data = item.data
         data = data.replace('0x', '')
         item.datas = data.match(/.{1,64}/g)
+        item.hexDatas = item.datas.map((item) => item.replace(/^0+/, '')).map((item) => '0x' + item)
+        item.transfer = {}
+        if (item.topics.length < 3) {
+          item.transfer.from = item.hexDatas[0]
+          item.transfer.to = item.hexDatas[1]
+          item.transfer.value = item.hexDatas[2]
+        }
+        else {
+          item.transfer.from = item.topics[1]
+          item.transfer.to = item.topics[2]
+          item.transfer.value = item.data
+        }
 
         return item
       },
