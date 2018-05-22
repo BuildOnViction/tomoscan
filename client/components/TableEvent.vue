@@ -32,13 +32,13 @@
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">address</i> from</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.topics[1])}}">{{ unformatAddress(props.item.topics[1]) }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.datas[0])}}">{{ unformatAddress(props.item.datas[0]) }}</nuxt-link>
 								</p>
 							</li>
 							<li>
 								<p>
 									<span class="d-block"><i class="text-muted">address</i> to</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.topics[2])}}">{{ unformatAddress(props.item.topics[2]) }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.datas[1])}}">{{ unformatAddress(props.item.datas[1]) }}</nuxt-link>
 								</p>
 							</li>
 							<li>
@@ -141,6 +141,11 @@
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
+        if (self.items.length) {
+          for (let i = 0; i < self.items.length; i++) {
+            self.items[i] = self.formatItem(self.items[i])
+          }
+        }
 
         // Hide loading.
         self.loading = false
@@ -152,6 +157,14 @@
         self.currentPage = page
 
         self.getDataFromApi()
+      },
+      formatItem (item) {
+        // Parse input data to array.
+        let data = item.data
+        data = data.replace('0x', '')
+        item.datas = data.match(/.{1,64}/g)
+
+        return item
       },
       isTransferEvent: (code) => code === '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef',
     },
