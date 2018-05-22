@@ -2,16 +2,16 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table
-			striped
-			responsive
-			foot-clone
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
+		<b-table class="tm__table"
+		         foot-clone
+		         small
+		         :fields="fields"
+		         :loading="loading"
+		         :items="items">
 			<template slot="number" slot-scope="props">
-				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+				<div class="tm__cell">
+					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+				</div>
 			</template>
 			<template slot="timestamp" slot-scope="props">
 				<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>

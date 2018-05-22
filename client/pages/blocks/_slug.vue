@@ -85,11 +85,11 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
-  import TxTable from '~/components/TxTable'
+  import TableTx from '~/components/TableTx'
 
   export default {
     mixins: [mixin],
-    components: {TxTable},
+    components: {TableTx},
     head () {
       return {
         title: 'Block ' + this.$route.params.slug + ' Info',

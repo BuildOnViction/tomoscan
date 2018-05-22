@@ -1,15 +1,13 @@
 <template>
-	<div>
-		<tx-table></tx-table>
-	</div>
+	<table-tx></table-tx>
 </template>
 
 <script>
-  import TxTable from '~/components/TxTable'
+  import TableTx from '~/components/TableTx'
 
   export default {
     components: {
-      'tx-table': TxTable,
+      TableTx
     },
     mounted () {
       // Init breadcrumbs data.
