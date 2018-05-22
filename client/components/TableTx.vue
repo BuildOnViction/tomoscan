@@ -2,66 +2,82 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table
-			striped
-			responsive
-			foot-clone
-			small
-			:fields="isPending() ? fields_pending : fields"
-			:loading="loading"
-			:items="items">
+		<b-table class="tm__table"
+		         foot-clone
+		         small
+		         :fields="isPending() ? fields_pending : fields"
+		         :loading="loading"
+		         :items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<div class="tm__cell">
+					<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				</div>
 			</template>
 
 			<template slot="block" slot-scope="props">
-				<nuxt-link v-if="props.item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
-				<span v-else class="text-muted">Pending...</span>
+				<div class="tm__cell">
+					<nuxt-link v-if="props.item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+					<span v-else class="text-muted">Pending...</span>
+				</div>
 			</template>
 
 			<template slot="timestamp" slot-scope="props">
-				<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'age__' + props.index">
-					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-				</b-tooltip>
+				<div class="tm__cell">
+					<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+					<b-tooltip :target="'age__' + props.index">
+						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
+				</div>
 			</template>
 
 			<template slot="gas" slot-scope="props">
-				<span>{{ formatNumber(props.item.gas) }}</span>
+				<div class="tm__cell">
+					<span>{{ formatNumber(props.item.gas) }}</span>
+				</div>
 			</template>
 
 			<template slot="from" slot-scope="props">
-				<div class="address__tag">
-					<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
-					<span v-if="address == props.item.from">{{ props.item.from }}</span>
-					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+				<div class="tm__cell">
+					<div class="address__tag">
+						<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
+						<span v-if="address == props.item.from">{{ props.item.from }}</span>
+						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
+					</div>
 				</div>
 			</template>
 
 			<template slot="arrow" slot-scope="props">
-				<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+				<div class="tm__cell">
+					<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+				</div>
 			</template>
 
 			<template slot="to" slot-scope="props">
-				<div v-if="props.item.to" class="address__tag">
-					<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
-					<span v-if="address == props.item.to">{{ props.item.to }}</span>
-					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-						<span>{{ props.item.to }}</span>
-					</nuxt-link>
-				</div>
-				<div v-else>
-					<i class="fa fa-table mr-1"></i>
-					<span>Contract Creation</span>
+				<div class="tm__cell">
+					<div v-if="props.item.to" class="address__tag">
+						<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
+						<span v-if="address == props.item.to">{{ props.item.to }}</span>
+						<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
+							<span>{{ props.item.to }}</span>
+						</nuxt-link>
+					</div>
+					<div v-else>
+						<i class="fa fa-table mr-1"></i>
+						<span>Contract Creation</span>
+					</div>
 				</div>
 			</template>
 
 			<template slot="value" slot-scope="props">
-				{{ formatUnit(toEther(props.item.value)) }}
+				<div class="tm__cell">
+					{{ formatUnit(toEther(props.item.value)) }}
+				</div>
 			</template>
 
 			<template slot="txFee" slot-scope="props">
-				{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}
+				<div class="tm__cell">
+					{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}
+				</div>
 			</template>
 		</b-table>
 		<b-pagination

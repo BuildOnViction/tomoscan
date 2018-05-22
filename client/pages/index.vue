@@ -34,11 +34,9 @@
 		<b-row class="mb-2">
 			<b-col sm="6" class="mb-3">
 				<b-card title="Recent Blocks">
-					<b-table
-						striped
+					<b-table class="tm__table"
 						hover
 						small
-						responsive
 						:items="blocks"
 						:fields="block_headers">
 						<template slot="block" slot-scope="props">
@@ -60,10 +58,8 @@
 
 			<b-col sm="6" class="mb-3">
 				<b-card title="Recent Transactions">
-					<b-table
-						striped
+					<b-table class="tm__table"
 						hover
-						responsive
 						small
 						:items="txs"
 						:fields="tx_headers">

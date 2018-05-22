@@ -1,15 +1,15 @@
 <template>
 	<div>
-		<tx-table :type="'pending'"></tx-table>
+		<table-tx :type="'pending'"></table-tx>
 	</div>
 </template>
 
 <script>
-  import TxTable from '~/components/TxTable'
+  import TableTx from '~/components/TableTx'
 
   export default {
     components: {
-      'tx-table': TxTable,
+      TableTx,
     },
     mounted () {
       // Init breadcrumbs data.

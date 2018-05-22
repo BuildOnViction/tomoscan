@@ -77,7 +77,7 @@
 				<b-card no-body>
 					<b-tabs card>
 						<b-tab title="Transactions">
-							<tx-table :address="hash"></tx-table>
+							<table-tx :address="hash"></table-tx>
 						</b-tab>
 						<b-tab title="Mined Blocks">
 							<tx-by-account-table></tx-by-account-table>
@@ -87,7 +87,7 @@
 								<h5 class="mb-3"><i class="fa fa-check-circle-o text-success mr-1"></i>Contract Source Code Verified</h5>
 								<b-row class="mb-3">
 									<b-col md="6">
-										<b-table
+										<b-table class="tm__table"
 											:items="[
 											{key: 'Contract Name', value: smartContract.contractName},
 											{key: 'Compiler Version', value: smartContract.compiler},
@@ -96,7 +96,7 @@
 									</b-col>
 
 									<b-col md="6">
-										<b-table
+										<b-table class="tm__table"
 											:items="[
 											{key: 'Verified At', value: smartContract.updatedAt},
 											{key: 'Optimization Enabled:', value: smartContract.optimization},
@@ -137,7 +137,7 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
-  import TxTable from '~/components/TxTable'
+  import TableTx from '~/components/TableTx'
   import TokensByAccountTable from '~/components/TokensByAccountTable'
   import TxByAccountTable from '~/components/TxByAccountTable'
   import TableEvent from '~/components/TableEvent'
@@ -147,7 +147,7 @@
   export default {
     mixins: [mixin],
     components: {
-      TxTable,
+      TableTx,
       TokensByAccountTable,
       TxByAccountTable,
       TableEvent,

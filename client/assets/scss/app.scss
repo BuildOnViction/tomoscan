@@ -2,26 +2,25 @@
 
 // BEGIN Navbar
 .tm__nav {
-  padding: 0px;
-
   .tm__logo {
     width: 138px;
     height: 47px;
   }
 
-  .nav-item {
-    > a {
-      padding: 33px 20px !important;
-
-      &.active {
-        border-bottom: 4px solid $blue
-      }
-    }
-  }
-
   /* Landscape phones and portrait tablets */
   @media (min-width: 767px) {
+    padding: 0px;
     min-height: 94px;
+
+    .nav-item {
+      > a {
+        padding: 33px 20px !important;
+
+        &.active {
+          border-bottom: 4px solid $blue
+        }
+      }
+    }
 
     .tm__nav_wrapper {
       min-height: 94px;
@@ -34,11 +33,6 @@
 // BEGIN body wrapper
 main {
   margin: 0px;
-}
-
-.tm__body_wrapper {
-  margin-top: 80px;
-  margin-bottom: 80px;
 }
 
 // END body wrapper
@@ -129,3 +123,71 @@ main, footer {
 }
 
 // END Hjs
+
+// BEGIN table
+.b-table {
+  thead {
+    th {
+      font-weight: 400;
+    }
+  }
+}
+
+/* Landscape phones and portrait tablets */
+@media (min-width: 768px) {
+  .tm__table {
+    th {
+      padding: 0px 0px 16px;
+    }
+
+    td, th {
+      border: 0px !important;
+    }
+
+    td {
+      padding: 0px;
+    }
+
+    .tm__cell {
+      padding-top: 30px;
+      padding-bottom: 30px;
+      padding-right: 20px;
+      padding-left: 20px;
+      background: $white;
+      margin-bottom: 20px;
+      box-shadow: 40px 8px 40px 0 rgba(0, 0, 0, 0.07);
+    }
+
+    tr {
+      td {
+        &:first-child {
+          .tm__cell {
+            border-bottom-left-radius: 10px;
+            border-top-left-radius: 10px;
+            padding-left: 40px;
+            box-shadow: 8px 8px 60px 0 rgba(0, 0, 0, 0.07);
+            overflow: visible;
+          }
+        }
+        &:last-child {
+          .tm__cell {
+            border-bottom-right-radius: 10px;
+            border-top-right-radius: 10px;
+            padding-right: 40px;
+            box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
+          }
+        }
+      }
+    }
+  }
+}
+
+// END table
+
+/* Landscape phones and portrait tablets */
+@media (min-width: 768px) {
+  .tm__body_wrapper {
+    margin-top: 80px;
+    margin-bottom: 80px;
+  }
+}
