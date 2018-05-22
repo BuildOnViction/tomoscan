@@ -126,8 +126,8 @@
 									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
 							</b-form-group>
 						</b-tab>
-						<b-tab title="Events">
-							<table-event :address="hash"></table-event>
+						<b-tab :title="'Events (' + itemsLength + ')'">
+							<table-event :address="hash" :page="this"></table-event>
 						</b-tab>
 					</b-tabs>
 				</b-card>
@@ -169,6 +169,7 @@
       address: null,
       currentUrl: '',
       smartContract: null,
+      itemsLength: 0
     }),
     created () {
       let hash = this.$route.params.slug

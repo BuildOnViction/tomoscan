@@ -79,6 +79,7 @@
     props: {
       address: {type: String, default: null},
       tx: {type: String, default: null},
+      page: {default: null},
     },
     data: () => ({
       fields: {
@@ -151,6 +152,7 @@
 
         // Hide loading.
         self.loading = false
+        self.page.itemsLength = self.total
 
         return data
       },
