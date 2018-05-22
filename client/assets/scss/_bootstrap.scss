@@ -1,0 +1,37 @@
+$white: #fff;
+$black: #000;
+$green: #00e389;
+$blue: #34a1ff;
+$orange: #f26c22;
+$yellow: #ffd925;
+$red: #e5001e;
+$body-bg: #F8F8FA;
+$navbar-light-hover-color: $blue;
+$navbar-light-active-color: $blue;
+$container-max-widths: (
+        sm: 540px,
+        md: 720px,
+        lg: 960px,
+        xl: 1760px
+) !default;
+$text-muted: #868f9b;
+
+@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+
+.breadcrumb {
+  padding: 0px;
+  background-color: $body-bg;
+
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 768px) {
+    margin-bottom: 60px;
+  }
+}
+
+.breadcrumb-item {
+  &:last-child {
+    a {
+      color: $text-muted
+    }
+  }
+}

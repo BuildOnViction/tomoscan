@@ -60,7 +60,7 @@
 			</b-modal>
 		</div>
 
-		<p>Total {{ formatNumber(total) }} items found</p>
+		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table
 			striped
