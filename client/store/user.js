@@ -31,30 +31,20 @@ export const actions = {
     }
   },
   async login ({commit}, {email, password}) {
-    try {
-      let {data} = await this.$axios.post('/api/login', {email, password})
+    let {data} = await this.$axios.post('/api/login', {email, password})
 
-      commit('setData', data.user)
-      commit('setToken', data.token)
+    commit('setData', data.user)
+    commit('setToken', data.token)
 
-      return Promise.resolve()
-    }
-    catch (e) {
-      return Promise.reject(e)
-    }
+    return data
   },
   async register ({commit}, {email, password}) {
-    try {
-      let {data} = await this.$axios.post('/api/register', {email, password})
+    let {data} = await this.$axios.post('/api/register', {email, password})
 
-      commit('setData', data.user)
-      commit('setToken', data.token)
+    commit('setData', data.user)
+    commit('setToken', data.token)
 
-      return Promise.resolve()
-    }
-    catch (e) {
-      return Promise.reject(e.response.data)
-    }
+    return data
   },
   async logout ({commit}) {
     try {

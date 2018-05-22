@@ -64,14 +64,19 @@
         const email = self.formEmail
         const password = self.formPassword
 
-        self.$store.dispatch('user/login', {email, password}).then((data) => {
+        try {
+          let {data} = self.$store.dispatch('user/login', {email, password})
+
           // Close modal.
           self.$refs.modalRegister.hide()
 
           self.resetModal()
-        }).catch((e) => {
-          self.errorMessage = e.message
-        })
+        }
+        catch (e) {
+          if (e.response.status === 422) {
+            self.errorMessage = e.response.data.message
+          }
+        }
       },
       resetModal () {
         this.formEmail = ''

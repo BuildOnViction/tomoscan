@@ -21,6 +21,8 @@ export default function ({$axios, redirect, app, store}) {
           // Redirect to home.
           return window.$nuxt.$router.replace({name: 'index'})
           break
+        case 422:
+          break
         default:
           window.$nuxt.error(
             {message: error.response.statusText, statusCode: code})
