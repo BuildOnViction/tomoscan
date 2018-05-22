@@ -1,45 +1,49 @@
 <template>
 	<section>
-		<b-navbar toggleable="md" type="dark" variant="primary">
-			<b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
-			<b-navbar-brand :to="{name: 'index'}">TOMO Explorer</b-navbar-brand>
+		<b-navbar toggleable="md" variant="white" class="tm__nav">
+			<div class="container tm__nav_wrapper">
+				<b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+				<b-navbar-brand :to="{name: 'index'}">
+					<img src="~/assets/img/logo.png" alt="TOMO Explorer" class="tm__logo">
+				</b-navbar-brand>
 
-			<b-collapse is-nav id="nav_collapse">
-				<b-navbar-nav>
-					<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
-					<b-nav-item-dropdown text="Transactions">
-						<b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
-						<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
-					</b-nav-item-dropdown>
-					<b-nav-item-dropdown text="Accounts">
-						<b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
-						<b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
-					</b-nav-item-dropdown>
-					<b-nav-item-dropdown text="Tokens">
-						<b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
-						<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
-					</b-nav-item-dropdown>
-				</b-navbar-nav>
-				<b-navbar-nav class="ml-auto">
-					<div class="form-inline" v-if="! isHomePage()">
-						<input type="search" v-model="search" class="form-control form-control-sm" placeholder="Search Address / TX / Block" @keyup.enter="onGotoRoute"/>
-						<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>
-					</div>
+				<b-collapse is-nav id="nav_collapse">
+					<b-navbar-nav class="mx-auto">
+						<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
+						<b-nav-item-dropdown text="Transactions">
+							<b-dropdown-item :to="{name: 'txs'}" @click="onActiveMenu()">All Transactions</b-dropdown-item>
+							<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
+						</b-nav-item-dropdown>
+						<b-nav-item-dropdown text="Accounts">
+							<b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
+							<b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
+						</b-nav-item-dropdown>
+						<b-nav-item-dropdown text="Tokens">
+							<b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
+							<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
+						</b-nav-item-dropdown>
+					</b-navbar-nav>
+					<b-navbar-nav>
+						<!--<div class="form-inline" v-if="! isHomePage()">-->
+						<!--<input type="search" v-model="search" class="form-control form-control-sm" placeholder="Search Address / TX / Block" @keyup.enter="onGotoRoute"/>-->
+						<!--<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>-->
+						<!--</div>-->
 
-					<b-nav-item v-b-modal="'loginModal'" v-if="!user">Login</b-nav-item>
-					<b-nav-item v-b-modal="'registerModal'" v-if="!user">Register</b-nav-item>
-					<b-nav-item-dropdown right v-if="user">
-						<template slot="button-content">
-							<em>{{ user.email }}</em>
-						</template>
-						<b-dropdown-item :to="{name: 'follows'}">Follow List</b-dropdown-item>
-						<b-dropdown-item @click="onLogout">Logout</b-dropdown-item>
-					</b-nav-item-dropdown>
-				</b-navbar-nav>
-			</b-collapse>
+						<b-nav-item v-b-modal="'loginModal'" v-if="!user">Login</b-nav-item>
+						<b-nav-item v-b-modal="'registerModal'" v-if="!user">Register</b-nav-item>
+						<b-nav-item-dropdown right v-if="user">
+							<template slot="button-content">
+								<em>{{ user.email }}</em>
+							</template>
+							<b-dropdown-item :to="{name: 'follows'}">Follow List</b-dropdown-item>
+							<b-dropdown-item @click="onLogout">Logout</b-dropdown-item>
+						</b-nav-item-dropdown>
+					</b-navbar-nav>
+				</b-collapse>
+			</div>
 		</b-navbar>
 
-		<main>
+		<main class="tm__body_wrapper">
 			<div class="container">
 				<breadcrumb v-if="! isHomePage()"/>
 				<div class="jumbotron" v-if="isHomePage()">
@@ -131,6 +135,9 @@
 
         return this.$router.push(to)
       },
+      onActiveMenu() {
+        console.log(123)
+      }
     },
   }
 </script>

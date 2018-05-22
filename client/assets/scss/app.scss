@@ -1,12 +1,47 @@
-$white: #fff;
-$black: #000;
-$green: #00e389;
-$blue: #3399ff;
-$orange: #f26c22;
-$yellow: #ffd925;
-$red: #e5001e;
+@import "bootstrap";
 
-@import '../../node_modules/bootstrap/scss/bootstrap.scss';
+// BEGIN Navbar
+.tm__nav {
+  padding: 0px;
+
+  .tm__logo {
+    width: 138px;
+    height: 47px;
+  }
+
+  .nav-item {
+    > a {
+      padding: 33px 20px !important;
+
+      &.active {
+        border-bottom: 4px solid $blue
+      }
+    }
+  }
+
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 767px) {
+    min-height: 94px;
+
+    .tm__nav_wrapper {
+      min-height: 94px;
+    }
+  }
+}
+
+// END Navbar
+
+// BEGIN body wrapper
+main {
+  margin: 0px;
+}
+
+.tm__body_wrapper {
+  margin-top: 80px;
+  margin-bottom: 80px;
+}
+
+// END body wrapper
 
 .address__tag {
   display: inline-block;
@@ -65,6 +100,14 @@ main, footer {
   }
 }
 
+.tm__total {
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 768px) {
+    font-size: 24px;
+    color: $black;
+    margin-bottom: 40px;
+  }
+}
 
 // BEGIN Hjs
 .hljs__code {
