@@ -9,7 +9,7 @@ LogController.get('/logs', async (req, res) => {
     let address = req.query.address
     let params = {}
     if (address) {
-      params.query = {address: address}
+      params.query = {address: address, $where: 'this.topics.length > 1'}
     }
     let tx = req.query.tx
     if (tx) {
