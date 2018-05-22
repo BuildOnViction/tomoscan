@@ -42,7 +42,7 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
     app.use('/api', api)
 
     // Production error handler
-    if (app.get('env') === 'production') {
+    if (process.env.APP_ENV === 'prod') {
       app.use(function (err, req, res, next) {
         var slack = require('slack-notify')(process.env.SLACK_WEBHOOK_URL)
         slack.send({
