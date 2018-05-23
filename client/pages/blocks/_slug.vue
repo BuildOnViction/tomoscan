@@ -40,10 +40,6 @@
 							</td>
 						</tr>
 						<tr>
-							<td>Sha3Uncles:</td>
-							<td>{{ block.sha3Uncles }}</td>
-						</tr>
-						<tr>
 							<td>Mined By:</td>
 							<td>
 								<nuxt-link :to="{name: 'address-slug', params: {slug: block.signer}}">

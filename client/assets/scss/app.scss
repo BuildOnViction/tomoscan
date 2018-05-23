@@ -155,7 +155,7 @@ main, footer {
       padding-left: 20px;
       background: $white;
       margin-bottom: 20px;
-      box-shadow: 40px 8px 40px 0 rgba(0, 0, 0, 0.07);
+      box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
     }
 
     tr {
@@ -165,7 +165,7 @@ main, footer {
             border-bottom-left-radius: 10px;
             border-top-left-radius: 10px;
             padding-left: 40px;
-            box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+            box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
             overflow: visible;
           }
         }
@@ -181,8 +181,25 @@ main, footer {
     }
   }
 }
-
 // END table
+
+// BEGIN page-item
+.page-item {
+  margin-right: 20px;
+  span, a {
+    border-radius: 50% !important;
+    min-width: 38px;
+    text-align: center;
+    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+    border: 0px;
+  }
+}
+// END page-item
+
+.card {
+  background: none;
+  
+}
 
 /* Landscape phones and portrait tablets */
 @media (min-width: 768px) {
