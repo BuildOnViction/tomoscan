@@ -20,7 +20,7 @@ module.exports = {
       {
         rel: 'icon',
         type: 'image/x-icon',
-        href: '/favicon.ico',
+        href: '/favicon.ico?v=001',
       },
       {
         rel: 'stylesheet',

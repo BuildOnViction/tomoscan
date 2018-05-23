@@ -2,7 +2,7 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
+		<b-table class="tm__table tm__table_block"
 		         foot-clone
 		         small
 		         :fields="fields"
@@ -24,11 +24,6 @@
 			<template slot="e_tx" slot-scope="props">
 				<div class="tm__cell">
 					<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
-				</div>
-			</template>
-			<template slot="uncles" slot-scope="props">
-				<div class="tm__cell">
-					{{ props.item.uncles.length }}
 				</div>
 			</template>
 			<template slot="miner" slot-scope="props">
@@ -75,7 +70,6 @@
         number: {label: 'Number'},
         timestamp: {label: 'Age'},
         e_tx: {label: 'txn'},
-        uncles: {label: 'Uncles'},
         miner: {label: 'Miner'},
         gasUsed: {label: 'GasUsed', tdClass: 'text-right'},
         gasLimit: {label: 'GasLimit'},
@@ -138,5 +132,13 @@
   }
 </script>
 
-<style scoped>
+<style lang="scss" scoped type="text/scss">
+	/* Landscape phones and portrait tablets */
+	@media (min-width: 768px) {
+		.tm__table_block {
+			.tm__cell {
+				min-height: 108px;
+			}
+		}
+	}
 </style>
