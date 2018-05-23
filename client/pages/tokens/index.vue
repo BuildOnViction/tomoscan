@@ -3,7 +3,6 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table class="tm__table"
-			foot-clone
 			small
 			:fields="fields"
 			:loading="loading"

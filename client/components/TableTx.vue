@@ -3,7 +3,6 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table class="tm__table"
-		         foot-clone
 		         small
 		         :fields="isPending() ? fields_pending : fields"
 		         :loading="loading"
@@ -38,8 +37,8 @@
 
 			<template slot="from" slot-scope="props">
 				<div class="tm__cell">
+					<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
 					<div class="address__tag">
-						<i v-if="props.item.from_model && props.item.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
 						<span v-if="address == props.item.from">{{ props.item.from }}</span>
 						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 					</div>
@@ -48,19 +47,19 @@
 
 			<template slot="arrow" slot-scope="props">
 				<div class="tm__cell">
-					<i class="fa fa-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+					<i class="tm-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
 				</div>
 			</template>
 
 			<template slot="to" slot-scope="props">
 				<div class="tm__cell">
-					<div v-if="props.item.to" class="address__tag">
-						<i v-if="props.item.to_model && props.item.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
+					<span v-if="props.item.to">
+						<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
 						<span v-if="address == props.item.to">{{ props.item.to }}</span>
-						<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
+						<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}" class="address__tag">
 							<span>{{ props.item.to }}</span>
 						</nuxt-link>
-					</div>
+					</span>
 					<div v-else>
 						<i class="fa fa-table mr-1"></i>
 						<span>Contract Creation</span>
@@ -111,8 +110,8 @@
         from: {label: 'from'},
         arrow: {class: 'text-center'},
         to: {label: 'To'},
-        value: {label: 'Value', class: 'text-right'},
-        txFee: {label: 'TxFee', class: 'text-right'},
+        value: {label: 'Value', tdClass: 'text-right'},
+        txFee: {label: 'TxFee', tdClass: 'text-right'},
       },
       fields_pending: {
         hash: {label: 'TxHash'},

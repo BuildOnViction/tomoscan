@@ -13,7 +13,9 @@
 		el.innerHTML = '<span style="font-family: \'icon-tomo\'">' + entity + '</span>' + html;
 	}
 	var icons = {
-		'tm-icon-contract': '&#xe900;',
+		'tm-arrow-left': '&#xe900;',
+		'tm-arrow-right': '&#xe901;',
+		'tm-icon-contract': '&#xe902;',
 		'0': 0
 		},
 		els = document.getElementsByTagName('*'),
