@@ -13,20 +13,20 @@
 			<div class="tm__table_body">
 				<div class="row tm__table_row" v-for="(item, index) in items">
 					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						`
+
 						<div v-if="key === 'hash'">
-							<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+							<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
 						</div>
 
 						<div v-if="key === 'name'">
-							<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
-								{{ trimWord(props.item.name) }}
+							<nuxt-link :to="{name: 'tokens-slug', params: {slug: item.hash}}">
+								{{ trimWord(item.name) }}
 							</nuxt-link>
 						</div>
 
-						<div v-if="key === 'symbol'">{{ props.item.symbol }}</div>
+						<div v-if="key === 'symbol'">{{ item.symbol }}</div>
 
-						<div v-if="key === 'totalSupply'">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</div>
+						<div v-if="key === 'totalSupply'">{{ formatNumber(item.totalSupply) }} {{ item.symbol }}</div>
 					</div>
 				</div>
 			</div>
@@ -110,3 +110,12 @@
     },
   }
 </script>
+
+<style lang="scss" scoped type="text/scss">
+	/* Landscape phones and portrait tablets */
+	@media (min-width: 768px) {
+		.tm__table_cell {
+			min-height: 108px;
+		}
+	}
+</style>
