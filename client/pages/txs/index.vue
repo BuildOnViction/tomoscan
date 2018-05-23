@@ -7,7 +7,7 @@
 
   export default {
     components: {
-      TableTx
+      TableTx,
     },
     mounted () {
       // Init breadcrumbs data.
