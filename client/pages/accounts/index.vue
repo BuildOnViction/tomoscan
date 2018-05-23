@@ -19,9 +19,9 @@
 							<nuxt-link :to="{name: 'address-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
 						</div>
 
-						<div v-if="key === 'balance'"><span v-html="formatUnit(toEther(item.balance))"></span></div>
+						<div v-if="key === 'balance'" class="text-right"><span v-html="formatUnit(toEther(item.balance))"></span></div>
 
-						<div v-if="key === 'transactionCount'">{{ formatNumber(item.transactionCount) }}</div>
+						<div v-if="key === 'transactionCount'" class="text-right">{{ formatNumber(item.transactionCount) }}</div>
 					</div>
 				</div>
 			</div>
@@ -49,8 +49,8 @@
       fields: {
         rank: {label: 'Rank'},
         hash: {label: 'Address'},
-        balance: {label: 'Balance', tdClass: 'text-right', thClass: 'text-center'},
-        transactionCount: {label: 'TxCount', tdClass: 'text-right', thClass: 'text-center'},
+        balance: {label: 'Balance'},
+        transactionCount: {label: 'TxCount'},
       },
       loading: true,
       pagination: {},

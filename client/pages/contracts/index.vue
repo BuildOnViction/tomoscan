@@ -12,8 +12,9 @@
 				<div class="row tm__table_row" v-for="(item, index) in items">
 					<div class="col tm__table_cell" v-for="(field, key) in fields">
 						<div v-if="key === 'hash'">
-							<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+							<nuxt-link :to="{name: 'address-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
 						</div>
+						<div v-if="key === 'txCount'" class="text-right">{{ item.txCount }}</div>
 						<div v-else>{{ item[key] }}</div>
 					</div>
 				</div>

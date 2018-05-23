@@ -35,7 +35,7 @@
 							</div>
 						</div>
 
-						<div v-if="key === 'gasUsed'">
+						<div v-if="key === 'gasUsed'" class="text-right">
 							<div>{{ formatNumber(item.gasUsed) }}</div>
 							<small>({{ formatNumber(100 * item.gasUsed / item.gasLimit) }} %)</small>
 						</div>
@@ -133,10 +133,8 @@
 <style lang="scss" scoped type="text/scss">
 	/* Landscape phones and portrait tablets */
 	@media (min-width: 768px) {
-		.tm__table_block {
-			.tm__cell {
-				min-height: 108px;
-			}
+		.tm__table_cell {
+			min-height: 108px;
 		}
 	}
 </style>
