@@ -2,51 +2,54 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table tm__table_block"
-		         small
-		         :fields="fields"
-		         :loading="loading"
-		         :items="items">
-			<template slot="number" slot-scope="props">
-				<div class="tm__cell">
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
-				</div>
-			</template>
-			<template slot="timestamp" slot-scope="props">
-				<div class="tm__cell">
-					<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'timestamp__' + props.index">
-						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-					</b-tooltip>
-				</div>
-			</template>
-			<template slot="e_tx" slot-scope="props">
-				<div class="tm__cell">
-					<nuxt-link :to="{name: 'txs', query: {block: props.item.number}}">{{ props.item.e_tx }}</nuxt-link>
-				</div>
-			</template>
-			<template slot="miner" slot-scope="props">
-				<div class="tm__cell">
-					<div class="address__tag">
-						<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-							<span v-if="props.item.signer">{{ props.item.signer }}</span>
-							<span v-else>{{ props.item.miner }}</span>
-						</nuxt-link>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
 					</div>
 				</div>
-			</template>
-			<template slot="gasUsed" slot-scope="props">
-				<div class="tm__cell">
-					<div>{{ formatNumber(props.item.gasUsed) }}</div>
-					<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'number'">
+							<nuxt-link :to="{name: 'blocks-slug', params: {slug: item.number}}">{{ item.number }}</nuxt-link>
+						</div>
+
+						<div v-if="key === 'timestamp'">
+							<span :id="'timestamp__' + index">{{ $moment(item.timestamp).fromNow() }}</span>
+							<b-tooltip :target="'timestamp__' + index">
+								{{ $moment(item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+							</b-tooltip>
+						</div>
+
+						<div v-if="key === 'e_tx'">
+							<nuxt-link :to="{name: 'txs', query: {block: item.number}}">{{ item.e_tx }}</nuxt-link>
+						</div>
+
+						<div v-if="key === 'e_tx'">
+							<div class="address__tag">
+								<nuxt-link :to="{name: 'address-slug', params: {slug: item.signer}}">
+									<span v-if="item.signer">{{ item.signer }}</span>
+									<span v-else>{{ item.miner }}</span>
+								</nuxt-link>
+							</div>
+						</div>
+
+						<div v-if="key === 'miner'"></div>
+
+						<div v-if="key === 'gasUsed'">
+							<div>{{ formatNumber(item.gasUsed) }}</div>
+							<small>({{ formatNumber(100 * item.gasUsed / item.gasLimit) }} %)</small>
+						</div>
+
+						<div v-if="key === 'gasLimit'">{{ formatNumber(item.gasLimit) }}</div>
+					</div>
 				</div>
-			</template>
-			<template slot="gasLimit" slot-scope="props">
-				<div class="tm__cell">
-					{{ formatNumber(props.item.gasLimit) }}
-				</div>
-			</template>
-		</b-table>
+			</div>
+		</div>
+
 		<b-pagination
 			align="center"
 			:total-rows="total"

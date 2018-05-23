@@ -134,69 +134,67 @@ main, footer {
   }
 }
 
-/* Landscape phones and portrait tablets */
-@media (min-width: 768px) {
-  .tm__table {
-    th {
-      padding: 0px 0px 16px;
-      text-align: center;
-    }
-
-    td, th {
-      border: 0px !important;
-    }
-
-    td {
-      text-align: center;
-      padding: 0px;
-    }
-
-    .tm__cell {
-      padding-top: 30px;
-      padding-bottom: 30px;
-      padding-right: 20px;
-      padding-left: 20px;
-      background: $white;
-      margin-bottom: 20px;
-      box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
-      min-height: 92px;
-
-      a, span, i {
-        display: inline-block;
-        line-height: 28px;
-      }
-      i {
-        font-size: 24px;
-      }
-    }
-
-    tr {
-      td {
-        &:first-child {
-          .tm__cell {
-            border-bottom-left-radius: 10px;
-            border-top-left-radius: 10px;
-            padding-left: 40px;
-            box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
-            overflow: visible;
-          }
-        }
-        &:last-child {
-          .tm__cell {
-            border-bottom-right-radius: 10px;
-            border-top-right-radius: 10px;
-            padding-right: 40px;
-            box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
-          }
-        }
-      }
-    }
-  }
-}
-
 .tm__no_border {
   td, th {
     border: none;
+  }
+}
+
+.tm__table {
+  display: table;
+  width: 100%;
+
+  .tm__table_heading {
+    padding: 0px 0px 16px;
+    text-align: center;
+  }
+
+  .tm__table_head {
+  }
+
+  .tm__table_body {
+  }
+
+  .tm__table_row {
+    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+    margin-bottom: 20px;
+
+    .tm__table_cell {
+      display: table;
+      min-height: 108px;
+
+      > div {
+        display: table-cell;
+        vertical-align: middle;
+      }
+
+      &:first-child {
+        border-bottom-left-radius: 10px;
+        border-top-left-radius: 10px;
+        padding-left: 40px;
+        overflow: visible;
+      }
+
+      &:last-child {
+        border-bottom-right-radius: 10px;
+        border-top-right-radius: 10px;
+        padding-right: 40px;
+      }
+    }
+  }
+
+  .tm__table_cell {
+    text-align: center;
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-right: 20px;
+    padding-left: 20px;
+    background: $white;
+
+    i {
+      font-size: 20px;
+      line-height: 28px;
+    }
   }
 }
 

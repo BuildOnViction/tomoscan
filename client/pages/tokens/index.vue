@@ -2,29 +2,35 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
-			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
-			</template>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
+				</div>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						`
+						<div v-if="key === 'hash'">
+							<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+						</div>
 
-			<template slot="name" slot-scope="props">
-				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
-					{{ trimWord(props.item.name) }}
-				</nuxt-link>
-			</template>
+						<div v-if="key === 'name'">
+							<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
+								{{ trimWord(props.item.name) }}
+							</nuxt-link>
+						</div>
 
-			<template slot="symbol" slot-scope="props">
-				{{ props.item.symbol }}
-			</template>
+						<div v-if="key === 'symbol'">{{ props.item.symbol }}</div>
 
-			<template slot="totalSupply" slot-scope="props">
-				<span>{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</span>
-			</template>
-		</b-table>
+						<div v-if="key === 'totalSupply'">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<b-pagination
 			align="center"

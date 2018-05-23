@@ -2,22 +2,29 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-		         small
-		         :fields="fields"
-		         :loading="loading"
-		         :items="items">
-			<template slot="hash" slot-scope="props">
-				<div class="tm__cell">
-					<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
 				</div>
-			</template>
-			<template slot="quantity" slot-scope="props">
-				<div class="tm__cell">
-					{{ formatUnit(props.item.quantity, props.item.tokenObj.symbol) }}
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'hash'">
+							<nuxt-link :to="{name: 'tokens-slug', params: {slug: item.token}}">{{ item.tokenObj ? item.tokenObj.name : item.token }}</nuxt-link>
+						</div>
+
+						<div v-if="key === 'quantity'">{{ formatUnit(item.quantity, item.tokenObj.symbol) }}</div>
+
+
+					</div>
 				</div>
-			</template>
-		</b-table>
+			</div>
+		</div>
+
 		<b-pagination
 			align="center"
 			:total-rows="total"

@@ -128,7 +128,7 @@ let CronTab = {
     try {
       // For blocks detail.
       let blockJob = new cron.CronJob({
-        cronTime: '0 */2 * * * *', // 2 minutes.
+        cronTime: '0 */5 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('START blockJob --- ' + sDate.toISOString())
@@ -158,7 +158,7 @@ let CronTab = {
       })
       // For account detail.
       let accountJob = new cron.CronJob({
-        cronTime: '0 */2 * * * *', // 2 minutes.
+        cronTime: '0 */3 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('START accountJob --- ' + sDate.toISOString())
@@ -173,7 +173,7 @@ let CronTab = {
       })
       // For check tx pending remain.
       let txJobPending = new cron.CronJob({
-        cronTime: '0 */2 * * * *',
+        cronTime: '0 */4 * * * *',
         onTick: async () => {
           let sDate = new Date()
           console.log('START txJobPending --- ' + sDate.toISOString())

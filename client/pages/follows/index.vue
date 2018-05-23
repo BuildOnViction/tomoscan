@@ -62,33 +62,41 @@
 
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
+				</div>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'action'">
+							<button class="btn btn-sm btn-link" @click="onEditNotify(item)"><i class="fa fa-pencil mr-1"></i>Edit</button>
+						</div>
 
-			<template slot="action" slot-scope="props">
-				<button class="btn btn-sm btn-link" @click="onEditNotify(props.item)"><i class="fa fa-pencil mr-1"></i>Edit</button>
-			</template>
+						<div v-if="key === 'address'">
+							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: item.address}}">{{ item.address }}</nuxt-link>
+						</div>
 
-			<template slot="address" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
-			</template>
+						<div v-if="key === 'balance'">
+							<ul>
+								<li>{{ formatUnit(toEther(item.addressObj.balance)) }}</li>
+							</ul>
+						</div>
 
-			<template slot="balance" slot-scope="props">
-				<ul>
-					<li>{{ formatUnit(toEther(props.item.addressObj.balance)) }}</li>
-				</ul>
-			</template>
-
-			<template slot="notification" slot-scope="props">
-				<span class="mr-1" v-if="props.item.sendEmail">Email Notification,</span>
-				<span class="mr-1" v-else>Disabled</span>
-				<span class="mr-1" v-if="props.item.notifyReceive">Notify Receive,</span>
-				<span class="mr-1" v-if="props.item.notifySent">Notify Sent,</span>
-			</template>
-		</b-table>
+						<div v-if="key === 'notification'">
+							<span class="mr-1" v-if="item.sendEmail">Email Notification,</span>
+							<span class="mr-1" v-else>Disabled</span>
+							<span class="mr-1" v-if="item.notifyReceive">Notify Receive,</span>
+							<span class="mr-1" v-if="item.notifySent">Notify Sent,</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<b-pagination
 			align="center"
