@@ -2,29 +2,36 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
-
-			<template slot="block" slot-scope="props">
-				<div class="tm__cell">
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
-				</div>
-			</template>
-
-			<template slot="timestamp" slot-scope="props">
-				<div class="tm__cell">
-					<div v-if="props.item.timestamp">
-						<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-						<b-tooltip :target="'age__' + props.index">
-							{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-						</b-tooltip>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
 					</div>
 				</div>
-			</template>
-		</b-table>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'block'">
+							<nuxt-link :to="{name: 'blocks-slug', params: {slug: item.number}}">{{ item.number }}</nuxt-link>
+						</div>
+
+						<div v-if="item.timestamp">
+							<span :id="'age__' + index">{{ $moment(item.timestamp).fromNow() }}</span>
+							<b-tooltip :target="'age__' + index">
+								{{ $moment(item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+							</b-tooltip>
+						</div>
+
+						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
+
+						<div v-if="key === 'gasUsed'">{{ item.gasUsed }}</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
 		<b-pagination
 			align="center"
 			:total-rows="total"

@@ -2,32 +2,33 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-		         small
-		         :fields="fields"
-		         :loading="loading"
-		         :items="items">
-			<template slot="rank" slot-scope="props">
-				<div class="tm__cell">
-					{{ props.item.rank }}
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
 				</div>
-			</template>
-			<template slot="hash" slot-scope="props">
-				<div class="tm__cell">
-					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'rank'">{{ item.rank }}</div>
+
+						<div v-if="key === 'hash'">
+							<nuxt-link :to="{name: 'address-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
+						</div>
+
+						<div v-if="key === 'quantity'">
+							{{ toEther(props.item.quantity) }}
+						</div>
+
+						<div v-if="key === 'percentAge'">{{ props.item.percentAge }}</div>
+					</div>
 				</div>
-			</template>
-			<template slot="quantity" slot-scope="props">
-				<div class="tm__cell">
-					{{ toEther(props.item.quantity) }}
-				</div>
-			</template>
-			<template slot="percentAge" slot-scope="props">
-				<div class="tm__cell">
-					{{ props.item.percentAge }}
-				</div>
-			</template>
-		</b-table>
+			</div>
+		</div>
+
 		<b-pagination
 			align="center"
 			:total-rows="total"

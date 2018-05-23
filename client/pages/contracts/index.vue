@@ -1,14 +1,24 @@
 <template>
 	<section>
-		<b-table class="tm__table"
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
-			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
-			</template>
-		</b-table>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
+				</div>
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'hash'">
+							<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+						</div>
+						<div v-else>{{ item[key] }}</div>
+					</div>
+				</div>
+			</div>
+		</div>
 		<b-pagination
 			align="center"
 			:total-rows="total"

@@ -2,63 +2,75 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<b-table class="tm__table"
-			small
-			:fields="fields"
-			:loading="loading"
-			:items="items">
-			<template slot="label" slot-scope="props">
-				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}" class="address__tag">{{ props.item.transactionHash }}...</nuxt-link>
-				<div>#
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+		<div class="tm__table">
+			<div class="tm__table_heading">
+				<div class="row">
+					<div class="col" v-for="field in fields">
+						{{ field.label }}
+					</div>
 				</div>
-				<div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
-			</template>
-			<template slot="method" slot-scope="props">
-				<div class="d-block" v-html="props.item.methodName"></div>
-				<div class="d-block">[{{ props.item.methodCode }}]</div>
-			</template>
-			<template slot="logs" slot-scope="props">
-				<div v-if="isTransferEvent(props.item.topics[0])">
-					<b-link v-b-toggle="'collapse' + props.index">Transfer</b-link>
-					(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
+			</div>
+			<div class="tm__table_body">
+				<div class="row tm__table_row" v-for="(item, index) in items">
+					<div class="col tm__table_cell" v-for="(field, key) in fields">
+						<div v-if="key === 'label'">
+							<nuxt-link :to="{name: 'txs-slug', params: {slug: item.transactionHash}}" class="address__tag">{{ item.transactionHash }}...</nuxt-link>
+							<div>#
+								<nuxt-link :to="{name: 'blocks-slug', params: {slug: item.blockNumber}}">{{ item.blockNumber }}</nuxt-link>
+							</div>
+							<div v-if="item.block">{{ $moment(item.block.timestamp).fromNow() }}</div>
+						</div>
+
+						<div v-if="key === 'method'">
+							<div class="d-block" v-html="item.methodName"></div>
+							<div class="d-block">[{{ item.methodCode }}]</div>
+						</div>
+
+						<div v-if="key === 'logs'">
+							<div v-if="isTransferEvent(item.topics[0])">
+								<b-link v-b-toggle="'collapse' + index">Transfer</b-link>
+								(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
+							</div>
+							<b-collapse :id="'collapse' + index" class="mt-2 mb-2">
+								<b-card v-if="isTransferEvent(item.topics[0])">
+									<ul class="list-unstyled" v-if="item.transfer">
+										<li>
+											<p>
+												<span class="d-block"><i class="text-muted">address</i> from</span>
+												<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(item.transfer.from)}}">{{ unformatAddress(item.transfer.from) }}</nuxt-link>
+											</p>
+										</li>
+										<li>
+											<p>
+												<span class="d-block"><i class="text-muted">address</i> to</span>
+												<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(item.transfer.to)}}">{{ unformatAddress(item.transfer.to) }}</nuxt-link>
+											</p>
+										</li>
+										<li>
+											<p>
+												<span class="d-block"><i class="text-muted">unit256</i> value</span>
+												<span class="d-block">{{ convertHexToInt(item.transfer.value) }}</span>
+											</p>
+										</li>
+									</ul>
+								</b-card>
+							</b-collapse>
+							<ul class="list-unstyled">
+								<li v-for="(topic, i) in item.topics">
+									<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
+								</li>
+							</ul>
+							<ul class="list-unstyled">
+								<li v-for="data in item.datas">
+									<i class="tm-arrow-right mr-1"></i>{{ data }}
+								</li>
+							</ul>
+						</div>
+					</div>
 				</div>
-				<b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
-					<b-card v-if="isTransferEvent(props.item.topics[0])">
-						<ul class="list-unstyled" v-if="props.item.transfer">
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">address</i> from</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.from)}}">{{ unformatAddress(props.item.transfer.from) }}</nuxt-link>
-								</p>
-							</li>
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">address</i> to</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">{{ unformatAddress(props.item.transfer.to) }}</nuxt-link>
-								</p>
-							</li>
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">unit256</i> value</span>
-									<span class="d-block">{{ convertHexToInt(props.item.transfer.value) }}</span>
-								</p>
-							</li>
-						</ul>
-					</b-card>
-				</b-collapse>
-				<ul class="list-unstyled">
-					<li v-for="(topic, i) in props.item.topics">
-						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
-					</li>
-				</ul>
-				<ul class="list-unstyled">
-					<li v-for="data in props.item.datas">
-						<i class="tm-arrow-right mr-1"></i>{{ data }}
-					</li>
-				</ul>
-			</template>
-		</b-table>
+			</div>
+		</div>
+
 		<b-pagination
 			align="center"
 			:total-rows="total"
