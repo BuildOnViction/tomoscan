@@ -18,8 +18,6 @@
 						</div>
 
 						<div v-if="key === 'quantity'">{{ formatUnit(item.quantity, item.tokenObj.symbol) }}</div>
-
-
 					</div>
 				</div>
 			</div>

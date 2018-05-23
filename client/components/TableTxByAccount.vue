@@ -26,7 +26,7 @@
 
 						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
 
-						<div v-if="key === 'gasUsed'">{{ item.gasUsed }}</div>
+						<div v-if="key === 'gasUsed'" class="text-right">{{ item.gasUsed }}</div>
 					</div>
 				</div>
 			</div>
@@ -52,8 +52,8 @@
       fields: {
         block: {label: 'Block'},
         timestamp: {label: 'Age'},
-        e_tx: {label: 'txn', class: 'text-right'},
-        gasUsed: {label: 'gasUsed', class: 'text-right'},
+        e_tx: {label: 'txn'},
+        gasUsed: {label: 'gasUsed'},
       },
       loading: true,
       pagination: {},

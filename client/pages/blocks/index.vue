@@ -28,7 +28,9 @@
 							<nuxt-link :to="{name: 'txs', query: {block: item.number}}">{{ item.e_tx }}</nuxt-link>
 						</div>
 
-						<div v-if="key === 'e_tx'">
+						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
+
+						<div v-if="key === 'miner'">
 							<div class="address__tag">
 								<nuxt-link :to="{name: 'address-slug', params: {slug: item.signer}}">
 									<span v-if="item.signer">{{ item.signer }}</span>
@@ -36,8 +38,6 @@
 								</nuxt-link>
 							</div>
 						</div>
-
-						<div v-if="key === 'miner'"></div>
 
 						<div v-if="key === 'gasUsed'">
 							<div>{{ formatNumber(item.gasUsed) }}</div>
