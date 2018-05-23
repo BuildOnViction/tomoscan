@@ -1,7 +1,6 @@
 <template>
 	<section>
 		<b-table class="tm__table"
-			foot-clone
 			small
 			:fields="fields"
 			:loading="loading"

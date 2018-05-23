@@ -3,7 +3,6 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<b-table class="tm__table"
-			foot-clone
 			small
 			:fields="fields"
 			:loading="loading"
@@ -55,7 +54,7 @@
 				</ul>
 				<ul class="list-unstyled">
 					<li v-for="data in props.item.datas">
-						<i class="fa fa-arrow-right mr-1"></i>{{ data }}
+						<i class="tm-arrow-right mr-1"></i>{{ data }}
 					</li>
 				</ul>
 			</template>

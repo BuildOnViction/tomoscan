@@ -127,7 +127,7 @@ main, footer {
 
 // BEGIN table
 .b-table {
-  thead {
+  thead, tfoot {
     th {
       font-weight: 400;
     }
@@ -139,6 +139,7 @@ main, footer {
   .tm__table {
     th {
       padding: 0px 0px 16px;
+      text-align: center;
     }
 
     td, th {
@@ -146,6 +147,7 @@ main, footer {
     }
 
     td {
+      text-align: center;
       padding: 0px;
     }
 
@@ -157,6 +159,15 @@ main, footer {
       background: $white;
       margin-bottom: 20px;
       box-shadow: 30px 8px 40px 0 rgba(0, 0, 0, 0.07);
+      min-height: 92px;
+
+      a, span, i {
+        display: inline-block;
+        line-height: 28px;
+      }
+      i {
+        font-size: 24px;
+      }
     }
 
     tr {

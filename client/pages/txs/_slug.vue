@@ -26,7 +26,7 @@
 								<tr>
 									<td>From:</td>
 									<td>
-										<i v-if="tx.from_model && tx.from_model.isContract" class="fa fa-file-text-o mr-1"></i>
+										<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
 										<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
 									</td>
 								</tr>
@@ -34,7 +34,7 @@
 									<td>To:</td>
 									<td>
 										<div v-if="tx.to">
-											<i v-if="tx.to_model && tx.to_model.isContract" class="fa fa-file-text-o mr-1"></i>
+											<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
 											<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">{{ tx.to_model.hash }}</nuxt-link>
 										</div>
 										<div v-else>
