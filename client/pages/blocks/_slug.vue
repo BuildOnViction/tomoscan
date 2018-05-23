@@ -1,12 +1,18 @@
 <template>
 	<section>
-		<b-row class="mb-5">
-			<b-col>
-				<h3>Block #{{ number }}</h3>
-				<p class="lead">Information on block #{{ number }}</p>
+		<div class="card">
+			<div class="card-body">
+				<div class="row tm__block_header">
+					<div class="col-sm-auto">
+						<img src="~/assets/img/icon-block.png">
+					</div>
+					<div class="col-md-auto align-items-center row">
+						<h3 class="col">Block #{{ number }}</h3>
+					</div>
+				</div>
 
 				<div v-if="block">
-					<table class="datatable table">
+					<table class="table tm__no_border tm__block_table">
 						<tbody>
 						<tr>
 							<td>Height:</td>
@@ -75,8 +81,8 @@
 						</tbody>
 					</table>
 				</div>
-			</b-col>
-		</b-row>
+			</div>
+		</div>
 	</section>
 </template>
 <script>
@@ -117,3 +123,25 @@
     },
   }
 </script>
+<style lang="scss" type="text/scss">
+	.tm__block_table {
+		overflow: auto;
+		width: 100%;
+		display: block;
+
+		td {
+			padding-top: 20px;
+			padding-bottom: 20px;
+		}
+
+		tr {
+			td:first-child {
+				color: #868f9b;
+			}
+		}
+	}
+
+	.tm__block_header {
+		margin-bottom: 20px;
+	}
+</style>
