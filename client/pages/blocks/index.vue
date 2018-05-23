@@ -24,10 +24,6 @@
 							</b-tooltip>
 						</div>
 
-						<div v-if="key === 'e_tx'">
-							<nuxt-link :to="{name: 'txs', query: {block: item.number}}">{{ item.e_tx }}</nuxt-link>
-						</div>
-
 						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
 
 						<div v-if="key === 'miner'">

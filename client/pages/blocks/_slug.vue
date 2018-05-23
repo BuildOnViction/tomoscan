@@ -4,7 +4,7 @@
 			<div class="card-body">
 				<div class="row tm__block_header">
 					<div class="col-sm-auto">
-						<img src="~/assets/img/icon-block.png">
+						<img src="~/assets/img/icon-block.png" class="tm__icon">
 					</div>
 					<div class="col-md-auto align-items-center row">
 						<h3 class="col">Block #{{ number }}</h3>
@@ -139,9 +139,5 @@
 				color: #868f9b;
 			}
 		}
-	}
-
-	.tm__block_header {
-		margin-bottom: 20px;
 	}
 </style>
