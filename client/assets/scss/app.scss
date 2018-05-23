@@ -181,6 +181,13 @@ main, footer {
     }
   }
 }
+
+.tm__no_border {
+  td, th {
+    border: none;
+  }
+}
+
 // END table
 
 // BEGIN page-item
@@ -194,11 +201,18 @@ main, footer {
     border: 0px;
   }
 }
+
 // END page-item
 
 .card {
-  background: none;
-  
+  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+  border: none;
+  border-radius: 10px;
+}
+
+h3 {
+  font-size: 24px;
+  font-weight: 400;
 }
 
 /* Landscape phones and portrait tablets */
