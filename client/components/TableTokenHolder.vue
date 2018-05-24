@@ -9,7 +9,7 @@
 				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 
-			<template slot="quantity" slot-scope="props">{{ toEther(props.item.quantity) }}</template>
+			<template slot="quantity" slot-scope="props">{{ toEther(convertHexToFloat(props.item.quantity, 16)) }}</template>
 		</table-base>
 
 		<b-pagination

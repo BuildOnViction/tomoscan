@@ -57,16 +57,14 @@
 
 		<b-row>
 			<b-col>
-				<b-card no-body>
-					<b-tabs card>
-						<b-tab title="Token Transfers">
-							<table-token-tx :token="hash"></table-token-tx>
-						</b-tab>
-						<b-tab title="Token Holders">
-							<table-token-holder :address="hash"></table-token-holder>
-						</b-tab>
-					</b-tabs>
-				</b-card>
+				<b-tabs>
+					<b-tab title="Token Transfers">
+						<table-token-tx :token="hash"></table-token-tx>
+					</b-tab>
+					<b-tab title="Token Holders">
+						<table-token-holder :address="hash"></table-token-holder>
+					</b-tab>
+				</b-tabs>
 			</b-col>
 		</b-row>
 	</section>

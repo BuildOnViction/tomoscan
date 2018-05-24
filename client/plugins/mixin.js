@@ -90,6 +90,15 @@ const mixin = {
 
       return baseUnit
     },
+
+    convertHexToFloat: (str, radix) => {
+      var parts = str.split('.')
+      if (parts.length > 1) {
+        return parseInt(parts[0], radix) + parseInt(parts[1], radix) /
+          Math.pow(radix, parts[1].length)
+      }
+      return parseInt(parts[0], radix)
+    },
   },
 }
 
