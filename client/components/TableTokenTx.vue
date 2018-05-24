@@ -16,8 +16,8 @@
 
 			<template slot="timestamp" slot-scope="props">
 				<div v-if="props.item.timestamp">
-					<span :id="'age__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-					<b-tooltip :target="'age__' + index">
+					<span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+					<b-tooltip :target="'age__' + props.index">
 						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 					</b-tooltip>
 				</div>

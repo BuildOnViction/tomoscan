@@ -7,8 +7,6 @@ let TokenHolderRepository = {
     if (!tokenTx)
       return false
 
-    console.log(tokenTx.value)
-
     // Add holder from.
     await TokenHolderRepository.updateQuality(tokenTx.from,
       tokenTx.address, -tokenTx.value)
@@ -43,6 +41,7 @@ let TokenHolderRepository = {
       newQuantity = newQuantity.padStart(64, '0')
     }
     holder.quantity = newQuantity
+    holder.quantityNumber = quantityCalc
     holder.save()
 
     return holder
