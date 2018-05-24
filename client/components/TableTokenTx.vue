@@ -2,67 +2,56 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
+		<table-base
+			:fields="fields"
+			:items="items">
+			<template slot="transactionHash" slot-scope="props">
+				<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}</nuxt-link>
+			</template>
+
+			<template slot="block" slot-scope="props">
+				<nuxt-link v-if="props.item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				<span v-else class="text-muted">Pending...</span>
+			</template>
+
+			<template slot="timestamp" slot-scope="props">
+				<div v-if="props.item.timestamp">
+					<span :id="'age__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+					<b-tooltip :target="'age__' + index">
+						{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+					</b-tooltip>
 				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'transactionHash'">
-							<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: item.transactionHash}}">{{ item.transactionHash }}</nuxt-link>
-						</div>
+			</template>
 
-						<div v-if="key === 'block'">
-							<nuxt-link v-if="item.block" class="address__tag" :to="{name: 'blocks-slug', params: {slug: item.blockNumber}}">{{ item.blockNumber }}</nuxt-link>
-							<span v-else class="text-muted">Pending...</span>
-						</div>
-
-						<div v-if="key === 'timestamp'">
-							<div v-if="item.timestamp">
-								<span :id="'age__' + index">{{ $moment(item.timestamp).fromNow() }}</span>
-								<b-tooltip :target="'age__' + index">
-									{{ $moment(item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-								</b-tooltip>
-							</div>
-						</div>
-
-						<div v-if="key === 'from'">
-							<div class="address__tag">
-								<i v-if="item.from_model && item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
-								<span v-if="address == item.from">{{ item.from }}</span>
-								<nuxt-link v-else :to="{name: 'address-slug', params: {slug: item.from}}">{{ item.from }}</nuxt-link>
-							</div>
-						</div>
-
-						<div v-if="key === 'arrow'">
-							<i class="tm-arrow-right" :class="item.from == address ? 'text-danger' : 'text-success'"></i>
-						</div>
-
-						<div v-if="key === 'to'">
-							<div class="address__tag">
-								<i v-if="item.to_model && item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
-								<span v-if="address == item.to">{{ item.to }}</span>
-								<nuxt-link v-else :to="{name: 'address-slug', params:{slug: item.to}}">
-									<span>{{ item.to }}</span>
-								</nuxt-link>
-							</div>
-						</div>
-
-						<div v-if="key === 'token'">
-							<nuxt-link v-if="item.symbol" :to="{name: 'tokens-slug', params: {slug: item.address}}">ERC20 ({{ item.symbol }})</nuxt-link>
-							<i v-else>ERC20</i>
-						</div>
-
-						<div v-if="key === 'value'" class="text-right">{{ formatUnit(toEther(item.value), item.symbol) }}</div>
-					</div>
+			<template slot="from" slot-scope="props">
+				<div class="address__tag">
+					<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
+					<span v-if="address == props.item.from">{{ props.item.from }}</span>
+					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
 				</div>
-			</div>
-		</div>
+			</template>
+
+			<template slot="arrow" slot-scope="props">
+				<i class="tm-arrow-right" :class="props.item.from == address ? 'text-danger' : 'text-success'"></i>
+			</template>
+
+			<template slot="to" slot-scope="props">
+				<div class="address__tag">
+					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
+					<span v-if="address == props.item.to">{{ props.item.to }}</span>
+					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
+						<span>{{ props.item.to }}</span>
+					</nuxt-link>
+				</div>
+			</template>
+
+			<template slot="token" slot-scope="props">
+				<nuxt-link v-if="props.item.symbol" :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
+				<i v-else>ERC20</i>
+			</template>
+
+			<template slot="value" slot-scope="props">{{ formatUnit(toEther(props.item.value), props.item.symbol) }}</template>
+		</table-base>
 
 		<b-pagination
 			align="center"
@@ -74,8 +63,12 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
+  import TableBase from '~/components/TableBase'
 
   export default {
+    components: {
+      TableBase,
+    },
     mixins: [mixin],
     props: {
       token: {type: String, default: null},
@@ -87,8 +80,8 @@
         from: {label: 'from'},
         arrow: {class: 'text-center'},
         to: {label: 'To'},
-        value: {label: 'Value'},
-        token: {label: 'Token'},
+        value: {label: 'Value', tdClass: 'text-right'},
+        token: {label: 'Token', tdClass: 'text-right'},
       },
       loading: true,
       pagination: {},
@@ -158,11 +151,11 @@
           let _item = item
 
           // Format for timestamp.
-          if (!item.block) {
-            _item.timestamp = item.createdAt
+          if (!props.item.block) {
+            _props.item.timestamp = props.item.createdAt
           }
           else {
-            _item.timestamp = item.block.timestamp
+            _props.item.timestamp = props.item.block.timestamp
           }
 
           _items.push(_item)

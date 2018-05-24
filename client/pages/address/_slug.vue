@@ -121,9 +121,9 @@
 				</section>
 
 				<b-form-group label="Smart Contract Code">
-								<textarea
-									disabled
-									cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
+					<textarea
+						disabled
+						cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
 				</b-form-group>
 			</b-tab>
 			<b-tab :title="'Events (' + itemsLength + ')'">
