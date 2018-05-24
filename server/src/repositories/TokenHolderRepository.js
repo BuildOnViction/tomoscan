@@ -28,7 +28,7 @@ let TokenHolderRepository = {
     quantity = new BigNumber(quantity)
     let holderQuantity = new BigNumber(holder.quantity)
     let quantityCalc = holderQuantity.plus(quantity)
-    holder.quantity = quantityCalc.toString(16)
+    holder.quantity = quantityCalc.toString(16).padStart(64)
     holder.save()
 
     return holder
