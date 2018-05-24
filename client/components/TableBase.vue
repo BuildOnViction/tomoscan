@@ -2,16 +2,16 @@
 	<div class="tm__table">
 		<div class="tm__table_heading">
 			<div class="row">
-				<div class="col" v-for="field in fields">
+				<div class="col" v-for="field in fields" :class="field.thClass">
 					{{ field.label }}
 				</div>
 			</div>
 		</div>
 		<div class="tm__table_body">
 			<div class="row tm__table_row" v-for="(item, index) in items">
-				<div class="col tm__table_cell" v-for="(field, key) in fields">
+				<div class="col tm__table_cell" :class="field.tdClass" v-for="(field, key) in fields">
 					<div class="d__table">
-						<div class="d__cell" :class="field.tdClass">
+						<div class="d__cell">
 							<slot :name="key" v-bind:item="item" v-bind:index="index">{{ item[key] }}</slot>
 						</div>
 					</div>
@@ -38,6 +38,5 @@
 	.d__cell {
 		display: table-cell;
 		vertical-align: middle;
-		text-align: center;
 	}
 </style>

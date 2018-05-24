@@ -59,10 +59,10 @@
 							</tbody>
 						</table>
 
-						<p v-if="address && address.isContract && ! address.contract">Are you The Contract Creator?
+						<div class="col-sm-auto" v-if="address && address.isContract && ! address.contract">Are you The Contract Creator?
 							<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
 							your Contract Source Code Today!
-						</p>
+						</div>
 					</div>
 					<div class="col-md-3 text-center">
 						<vue-qrcode class="img-fluid" :value="currentUrl" :options="{size: 250}"></vue-qrcode>

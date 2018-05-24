@@ -48,7 +48,7 @@
 					</b-card>
 				</b-collapse>
 				<ul class="list-unstyled">
-					<li v-for="(topic, i) in props.item.topics">
+					<li v-for="(topic, i) in props.item.topics" class="text-truncate">
 						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
 					</li>
 				</ul>
@@ -83,9 +83,9 @@
     },
     data: () => ({
       fields: {
-        label: {label: 'TxHash|Block|Age', tdClass: 'text-left'},
-        method: {label: 'Method'},
-        logs: {label: 'Event Logs', tdClass: 'text-left'},
+        label: {label: 'TxHash|Block|Age', tdClass: 'col-sm-3 text-left', thClass: 'col-sm-3'},
+        method: {label: 'Method', tdClass: 'col-sm-3', thClass: 'col-sm-3'},
+        logs: {label: 'Event Logs', tdClass: 'col-sm-6 text-left', thClass: 'col-sm-6'},
       },
       loading: true,
       pagination: {},
