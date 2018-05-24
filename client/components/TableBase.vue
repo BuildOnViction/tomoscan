@@ -8,11 +8,11 @@
 			</div>
 		</div>
 		<div class="tm__table_body">
-			<div class="row tm__table_row" v-for="(item, index) in items" v-bind:index="index">
+			<div class="row tm__table_row" v-for="(item, index) in items">
 				<div class="col tm__table_cell" v-for="(field, key) in fields">
 					<div class="d__table">
 						<div class="d__cell" :class="field.tdClass">
-							<slot :name="key" v-bind:item="item">{{ item[key] }}</slot>
+							<slot :name="key" v-bind:item="item" v-bind:index="index">{{ item[key] }}</slot>
 						</div>
 					</div>
 				</div>
@@ -23,8 +23,8 @@
 <script>
   export default {
     props: {
-      fields: [],
-      items: [],
+      fields: Object,
+      items: Array,
     },
   }
 </script>
