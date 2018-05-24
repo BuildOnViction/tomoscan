@@ -151,11 +151,11 @@
           let _item = item
 
           // Format for timestamp.
-          if (!props.item.block) {
-            _props.item.timestamp = props.item.createdAt
+          if (!item.block) {
+            _item.timestamp = item.createdAt
           }
           else {
-            _props.item.timestamp = props.item.block.timestamp
+            _item.timestamp = item.block.timestamp
           }
 
           _items.push(_item)

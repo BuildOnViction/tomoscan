@@ -22,15 +22,13 @@ let TokenHolderRepository = {
       holder = await TokenHolder.create({
         hash: hash,
         token: token,
-        quantityNumber: 0,
         quantity: 0,
       })
     }
     quantity = new BigNumber(quantity)
     let holderQuantity = new BigNumber(holder.quantity)
     let quantityCalc = holderQuantity.plus(quantity)
-    holder.quantity = quantityCalc.toString()
-    holder.quantityNumber = quantityCalc.toString()
+    holder.quantity = quantityCalc.toString(16)
     holder.save()
 
     return holder

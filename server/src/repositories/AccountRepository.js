@@ -77,7 +77,7 @@ let AccountRepository = {
     let token = null
     if (address.isToken) {
       token = await Token.findOne(
-        {hash: address.hash, quantityNumber: {$gte: 0}})
+        {hash: address.hash, quantity: {$gte: 0}})
     }
     address.token = token
 

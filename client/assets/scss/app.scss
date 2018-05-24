@@ -176,6 +176,9 @@ main, footer {
     margin-bottom: 20px;
 
     .tm__table_cell {
+      text-align: center;
+      overflow: auto;
+
       &:first-child {
         border-bottom-left-radius: 10px;
         border-top-left-radius: 10px;
