@@ -227,7 +227,7 @@ main, footer {
 // END page-item
 
 // BEGIN tab
-.tm__tabs {
+.tabs {
   .nav-tabs {
     border: none;
     margin-bottom: 40px;
@@ -272,6 +272,11 @@ main, footer {
 h3 {
   font-size: 24px;
   font-weight: 400;
+}
+
+.font-14 {
+  font-size: 14px !important;
+  line-height: 18px !important;
 }
 
 /* Landscape phones and portrait tablets */
