@@ -15,13 +15,13 @@
 					<div class="col tm__table_cell" v-for="(field, key) in fields">
 						<div v-if="key === 'rank'">{{ item.rank }}</div>
 
-						<div v-if="key === 'hash'">
+						<div v-else-if="key === 'hash'">
 							<nuxt-link :to="{name: 'address-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
 						</div>
 
-						<div v-if="key === 'balance'" class="text-right"><span v-html="formatUnit(toEther(item.balance))"></span></div>
+						<div v-else-if="key === 'balance'" class="text-right"><span v-html="formatUnit(toEther(item.balance))"></span></div>
 
-						<div v-if="key === 'transactionCount'" class="text-right">{{ formatNumber(item.transactionCount) }}</div>
+						<div v-else-if="key === 'transactionCount'" class="text-right">{{ formatNumber(item.transactionCount) }}</div>
 					</div>
 				</div>
 			</div>

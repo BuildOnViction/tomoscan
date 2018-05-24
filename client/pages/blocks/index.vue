@@ -2,49 +2,38 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
+		<table-base
+		:fields="fields"
+		:items="items">
+			<template slot="number" slot-scope="props">
+				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+			</template>
+
+			<template slot="timestamp" slot-scope="props">
+				<span :id="'timestamp__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'timestamp__' + index">
+					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+				</b-tooltip>
+			</template>
+
+			<template slot="e_tx" slot-scope="props">{{ props.item.e_tx }}</template>
+
+			<template slot="miner" slot-scope="props">
+				<div class="address__tag">
+					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+						<span v-if="props.item.signer">{{ props.item.signer }}</span>
+						<span v-else>{{ props.item.miner }}</span>
+					</nuxt-link>
 				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'number'">
-							<nuxt-link :to="{name: 'blocks-slug', params: {slug: item.number}}">{{ item.number }}</nuxt-link>
-						</div>
+			</template>
 
-						<div v-if="key === 'timestamp'">
-							<span :id="'timestamp__' + index">{{ $moment(item.timestamp).fromNow() }}</span>
-							<b-tooltip :target="'timestamp__' + index">
-								{{ $moment(item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-							</b-tooltip>
-						</div>
+			<template slot="gasUsed" slot-scope="props">
+				<div>{{ formatNumber(props.item.gasUsed) }}</div>
+				<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+			</template>
 
-						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
-
-						<div v-if="key === 'miner'">
-							<div class="address__tag">
-								<nuxt-link :to="{name: 'address-slug', params: {slug: item.signer}}">
-									<span v-if="item.signer">{{ item.signer }}</span>
-									<span v-else>{{ item.miner }}</span>
-								</nuxt-link>
-							</div>
-						</div>
-
-						<div v-if="key === 'gasUsed'" class="text-right">
-							<div>{{ formatNumber(item.gasUsed) }}</div>
-							<small>({{ formatNumber(100 * item.gasUsed / item.gasLimit) }} %)</small>
-						</div>
-
-						<div v-if="key === 'gasLimit'">{{ formatNumber(item.gasLimit) }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
+			<template slot="gasLimit" slot-scope="props">{{ formatNumber(props.item.gasLimit) }}</template>
+		</table-base>
 
 		<b-pagination
 			align="center"
@@ -57,8 +46,12 @@
 
 <script>
   import mixin from '~/plugins/mixin'
+  import TableBase from '~/components/TableBase'
 
   export default {
+    components: {
+      TableBase,
+    },
     mixins: [mixin],
     head: () => ({
       title: 'Blocks',
@@ -131,10 +124,4 @@
 </script>
 
 <style lang="scss" scoped type="text/scss">
-	/* Landscape phones and portrait tablets */
-	@media (min-width: 768px) {
-		.tm__table_cell {
-			min-height: 108px;
-		}
-	}
 </style>

@@ -176,14 +176,6 @@ main, footer {
     margin-bottom: 20px;
 
     .tm__table_cell {
-      display: table;
-      min-height: 90px;
-
-      > div {
-        display: table-cell;
-        vertical-align: middle;
-      }
-
       &:first-child {
         border-bottom-left-radius: 10px;
         border-top-left-radius: 10px;
@@ -197,6 +189,10 @@ main, footer {
         padding-right: 40px;
       }
     }
+  }
+
+  .tm__double {
+    min-height: 108px !important;
   }
 
   .tm__table_cell {

@@ -11,7 +11,7 @@
 					<b-navbar-nav class="mx-auto">
 						<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
 						<b-nav-item-dropdown text="Transactions">
-							<b-dropdown-item :to="{name: 'txs'}" @click="onActiveMenu()">All Transactions</b-dropdown-item>
+							<b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
 							<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
 						</b-nav-item-dropdown>
 						<b-nav-item-dropdown text="Accounts">
@@ -135,9 +135,6 @@
 
         return this.$router.push(to)
       },
-      onActiveMenu() {
-        console.log(123)
-      }
     },
   }
 </script>

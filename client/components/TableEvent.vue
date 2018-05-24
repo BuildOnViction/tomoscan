@@ -21,12 +21,12 @@
 							<div v-if="item.block">{{ $moment(item.block.timestamp).fromNow() }}</div>
 						</div>
 
-						<div v-if="key === 'method'">
+						<div v-else-if="key === 'method'">
 							<div class="d-block" v-html="item.methodName"></div>
 							<div class="d-block">[{{ item.methodCode }}]</div>
 						</div>
 
-						<div v-if="key === 'logs'">
+						<div v-else-if="key === 'logs'">
 							<div v-if="isTransferEvent(item.topics[0])">
 								<b-link v-b-toggle="'collapse' + index">Transfer</b-link>
 								(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
@@ -176,7 +176,9 @@
         let data = item.data
         data = data.replace('0x', '')
         item.datas = data.match(/.{1,64}/g)
-        item.hexDatas = item.datas.map((item) => item.replace(/^0+/, '')).map((item) => '0x' + item)
+        if (item.datas) {
+          item.hexDatas = item.datas.map((item) => item.replace(/^0+/, '')).map((item) => '0x' + item)
+        }
         item.transfer = {}
         if (item.topics.length < 3) {
           item.transfer.from = item.hexDatas[0]
