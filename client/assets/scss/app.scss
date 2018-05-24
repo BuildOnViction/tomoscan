@@ -37,6 +37,16 @@
   font-size: 3rem;
 }
 
+.bg__none {
+  background: transparent !important;
+}
+
+a {
+  &:hover {
+    text-decoration: none;
+  }
+}
+
 // BEGIN Navbar
 .tm__nav {
   .tm__logo {
