@@ -1,10 +1,13 @@
 import TokenHolder from '../models/TokenHolder'
 import BigNumber from 'bignumber.js'
+import { convertHexToFloat } from '../helpers/utils'
 
 let TokenHolderRepository = {
   async addHoldersFromTokenTx (tokenTx) {
     if (!tokenTx)
       return false
+
+    console.log(tokenTx.value)
 
     // Add holder from.
     await TokenHolderRepository.updateQuality(tokenTx.from,
@@ -25,10 +28,21 @@ let TokenHolderRepository = {
         quantity: 0,
       })
     }
-    quantity = new BigNumber(quantity)
-    let holderQuantity = new BigNumber(holder.quantity)
-    let quantityCalc = holderQuantity.plus(quantity)
-    holder.quantity = quantityCalc.toString(16).padStart(64)
+
+    // Convert number to hex.
+    quantity = parseFloat(quantity).toString(16)
+    let quantityCalc = convertHexToFloat(holder.quantity, 16) +
+      convertHexToFloat(quantity, 16)
+    let newQuantity = quantityCalc.toString(16)
+    if (newQuantity.indexOf('-') >= 0) {
+      newQuantity = newQuantity.replace('-', '')
+      newQuantity = newQuantity.padStart(64, '0')
+      newQuantity = '-' + newQuantity
+    }
+    else {
+      newQuantity = newQuantity.padStart(64, '0')
+    }
+    holder.quantity = newQuantity
     holder.save()
 
     return holder
