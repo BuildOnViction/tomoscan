@@ -45,8 +45,6 @@ let TokenHolderRepository = {
     holder.quantity = newQuantity
     holder.save()
 
-    console.log(holder)
-
     return holder
   },
 
