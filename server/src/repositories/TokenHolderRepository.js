@@ -50,7 +50,7 @@ let TokenHolderRepository = {
   formatItem (tokenHolder, totalSupply) {
     if (totalSupply) {
       totalSupply = new BigNumber(totalSupply)
-      let quantity = new BigNumber(tokenHolder.quantity)
+      let quantity = new BigNumber(convertHexToFloat(tokenHolder.quantity, 16))
       let percentAge = quantity.div(totalSupply) * 100
       percentAge = percentAge.toFixed(4)
       percentAge = (percentAge.toString() == '0.0000') ? '0.0001' : percentAge

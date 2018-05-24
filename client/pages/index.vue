@@ -1,97 +1,68 @@
 <template>
 	<section>
-		<b-row class="mb-4">
-			<b-col sm="3">
-				<ul class="list-group">
-					<li class="list-group-item">Total Blocks:
-						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalBlock) : null"></span-loading>
-					</li>
-				</ul>
-			</b-col>
-			<b-col sm="3">
-				<ul class="list-group">
-					<li class="list-group-item">Total Wallet:
-						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalAddress) : null"></span-loading>
-					</li>
-				</ul>
-			</b-col>
-			<b-col sm="3">
-				<ul class="list-group">
-					<li class="list-group-item">Total Token:
-						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalToken) : null"></span-loading>
-					</li>
-				</ul>
-			</b-col>
-			<b-col sm="3">
-				<ul class="list-group">
-					<li class="list-group-item">Total SmartContract:
-						<span-loading class="pull-right" v-bind:text="stats ? formatNumber(stats.totalSmartContract) : null"></span-loading>
-					</li>
-				</ul>
-			</b-col>
-		</b-row>
 
-		<b-row class="mb-2">
-			<b-col sm="6" class="mb-3">
-				<b-card title="Recent Blocks">
-					<b-table class="tm__table"
-						hover
-						small
-						:items="blocks"
-						:fields="block_headers">
-						<template slot="block" slot-scope="props">
-							<transition name="fade">
-								<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
-							</transition>
-						</template>
 
-						<template slot="txns" slot-scope="props">{{ props.item.e_tx }}</template>
+		<!--<b-row class="mb-2">-->
+		<!--<b-col sm="6" class="mb-3">-->
+		<!--<b-card title="Recent Blocks">-->
+		<!--<b-table class="tm__table"-->
+		<!--hover-->
+		<!--small-->
+		<!--:items="blocks"-->
+		<!--:fields="block_headers">-->
+		<!--<template slot="block" slot-scope="props">-->
+		<!--<transition name="fade">-->
+		<!--<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>-->
+		<!--</transition>-->
+		<!--</template>-->
 
-						<template slot="signer" slot-scope="props">
-							<transition name="fade">
-								<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>
-							</transition>
-						</template>
-					</b-table>
-				</b-card>
-			</b-col>
+		<!--<template slot="txns" slot-scope="props">{{ props.item.e_tx }}</template>-->
 
-			<b-col sm="6" class="mb-3">
-				<b-card title="Recent Transactions">
-					<b-table class="tm__table"
-						hover
-						small
-						:items="txs"
-						:fields="tx_headers">
-						<template slot="hash" slot-scope="props">
-							<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
-						</template>
+		<!--<template slot="signer" slot-scope="props">-->
+		<!--<transition name="fade">-->
+		<!--<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>-->
+		<!--</transition>-->
+		<!--</template>-->
+		<!--</b-table>-->
+		<!--</b-card>-->
+		<!--</b-col>-->
 
-						<template slot="arrow" slot-scope="props">
-							<i class="fa fa-arrow-right text-success"></i>
-						</template>
+		<!--<b-col sm="6" class="mb-3">-->
+		<!--<b-card title="Recent Transactions">-->
+		<!--<b-table class="tm__table"-->
+		<!--hover-->
+		<!--small-->
+		<!--:items="txs"-->
+		<!--:fields="tx_headers">-->
+		<!--<template slot="hash" slot-scope="props">-->
+		<!--<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>-->
+		<!--</template>-->
 
-						<template slot="from" slot-scope="props">
-							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">
-								<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
-								{{ props.item.from }}
-							</nuxt-link>
-						</template>
+		<!--<template slot="arrow" slot-scope="props">-->
+		<!--<i class="fa fa-arrow-right text-success"></i>-->
+		<!--</template>-->
 
-						<template slot="to" slot-scope="props">
-							<nuxt-link v-if="props.item.to" class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.to}}">
-								<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
-								{{ props.item.to }}
-							</nuxt-link>
-						</template>
+		<!--<template slot="from" slot-scope="props">-->
+		<!--<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.from}}">-->
+		<!--<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>-->
+		<!--{{ props.item.from }}-->
+		<!--</nuxt-link>-->
+		<!--</template>-->
 
-						<template slot="value" slot-scope="props">
-							{{ formatUnit(toEther(props.item.value)) }}
-						</template>
-					</b-table>
-				</b-card>
-			</b-col>
-		</b-row>
+		<!--<template slot="to" slot-scope="props">-->
+		<!--<nuxt-link v-if="props.item.to" class="address__tag" :to="{name: 'address-slug', params: {slug: props.item.to}}">-->
+		<!--<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>-->
+		<!--{{ props.item.to }}-->
+		<!--</nuxt-link>-->
+		<!--</template>-->
+
+		<!--<template slot="value" slot-scope="props">-->
+		<!--{{ formatUnit(toEther(props.item.value)) }}-->
+		<!--</template>-->
+		<!--</b-table>-->
+		<!--</b-card>-->
+		<!--</b-col>-->
+		<!--</b-row>-->
 	</section>
 </template>
 
@@ -114,83 +85,75 @@
       }
     },
     data: () => ({
-      loading_block: true,
-      loading_tx: true,
-      block_headers: {
-        block: {label: 'Block', sortable: false},
-        txns: {label: 'Txns', sortable: false},
-        signer: {label: 'Miner', sortable: false, tdClass: ''},
-      },
-      blocks: [],
-      tx_headers: {
-        hash: {label: 'TXID'},
-        from: {label: 'From'},
-        arrow: {class: 'text-center'},
-        to: {label: 'To'},
-        value: {label: 'Value'},
-      },
-      txs: [],
-      stats: null,
+//      loading_block: true,
+//      loading_tx: true,
+//      block_headers: {
+//        block: {label: 'Block', sortable: false},
+//        txns: {label: 'Txns', sortable: false},
+//        signer: {label: 'Miner', sortable: false, tdClass: ''},
+//      },
+//      blocks: [],
+//      tx_headers: {
+//        hash: {label: 'TXID'},
+//        from: {label: 'From'},
+//        arrow: {class: 'text-center'},
+//        to: {label: 'To'},
+//        value: {label: 'Value'},
+//      },
+//      txs: [],
     }),
     beforeMount () {
       let self = this
-      socket.on('new__block', (block) => {
-        self.loading_block = true
-        if (block) {
-          let find = _.find(self.blocks, item => item.number == block.number)
-          if (!find) {
-            self.blocks.unshift(block)
-            self.blocks = self.blocks.slice(0, 5)
-          }
-
-          // Refresh txs recent too.
-          self.getLatestTxs()
-        }
-        self.loading_block = false
-      })
+//      socket.on('new__block', (block) => {
+//        self.loading_block = true
+//        if (block) {
+//          let find = _.find(self.blocks, item => item.number == block.number)
+//          if (!find) {
+//            self.blocks.unshift(block)
+//            self.blocks = self.blocks.slice(0, 5)
+//          }
+//
+//          // Refresh txs recent too.
+//          self.getLatestTxs()
+//        }
+//        self.loading_block = false
+//      })
     },
     mounted () {
       let self = this
 
-      self.getLastestBlocks()
-      self.getLatestTxs()
-      self.getStats()
+//      self.getLastestBlocks()
+//      self.getLatestTxs()
     },
     methods: {
-      async getLastestBlocks () {
-        let self = this
-        let params = {
-          filter: 'latest',
-          limit: 5,
-        }
-        let query = this.serializeQuery(params)
-        self.loading_block = true
-        let {data} = await self.$axios.get('/api/blocks?' + query)
-        self.loading_block = false
-
-        self.blocks = data.items
-      },
-
-      async getLatestTxs () {
-        let self = this
-        let params = {
-          filter: 'latest',
-          limit: 5,
-        }
-
-        let query = this.serializeQuery(params)
-        self.loading_tx = true
-        let {data} = await self.$axios.get('/api/txs?' + query)
-        self.loading_tx = false
-
-        self.txs = data.items
-      },
-
-      async getStats () {
-        let self = this
-        let {data} = await self.$axios.get('/api/setting')
-        self.stats = data.stats
-      },
+//      async getLastestBlocks () {
+//        let self = this
+//        let params = {
+//          filter: 'latest',
+//          limit: 5,
+//        }
+//        let query = this.serializeQuery(params)
+//        self.loading_block = true
+//        let {data} = await self.$axios.get('/api/blocks?' + query)
+//        self.loading_block = false
+//
+//        self.blocks = data.items
+//      },
+//
+//      async getLatestTxs () {
+//        let self = this
+//        let params = {
+//          filter: 'latest',
+//          limit: 5,
+//        }
+//
+//        let query = this.serializeQuery(params)
+//        self.loading_tx = true
+//        let {data} = await self.$axios.get('/api/txs?' + query)
+//        self.loading_tx = false
+//
+//        self.txs = data.items
+//      },
     },
   }
 </script>
