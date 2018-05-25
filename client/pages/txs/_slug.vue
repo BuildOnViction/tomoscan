@@ -1,6 +1,7 @@
 <template>
 	<section>
-		<p class="lead">TXID: {{ hash }}</p>
+		<h3 class="mb-4">TXID: {{ hash }}</h3>
+
 		<b-row>
 			<b-col>
 				<b-tabs>

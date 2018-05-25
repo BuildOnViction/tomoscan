@@ -1,59 +1,64 @@
 <template>
 	<section>
-		<b-row>
+		<b-row class="mb-4">
 			<b-col>
 				<h2>ERC20-TOKEN</h2>
 				<p class="lead" v-html="tokenName"></p>
 			</b-col>
 		</b-row>
-		<b-row v-if="token">
-			<b-col>
-				<table class="datatable table">
-					<thead>
-					<tr>
-						<th colspan="2">TokenTracker Summary</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>
-							Total Supply:
-						</td>
-						<td class="text-right">{{ formatUnit(toEther(token.totalSupply), symbol) }}</td>
-					</tr>
-					<tr>
-						<td>
-							No Of Transfers:
-						</td>
-						<td class="text-right">{{ formatNumber(token.tokenTxsCount) }}</td>
-					</tr>
-					</tbody>
-				</table>
-			</b-col>
-			<b-col>
-				<table class="datatable table">
-					<thead>
-					<tr>
-						<th colspan="2" class="text-right">Reputation</th>
-					</tr>
-					</thead>
-					<tbody>
-					<tr>
-						<td>
-							ERC20 Contract:
-						</td>
-						<td>
-							<nuxt-link :to="{name: 'address-slug', params: {slug: token.hash}}">{{ token.hash }}</nuxt-link>
-						</td>
-					</tr>
-					<tr>
-						<td>Decimal:</td>
-						<td>{{ token.decimals }}</td>
-					</tr>
-					</tbody>
-				</table>
-			</b-col>
-		</b-row>
+
+		<div class="card mb-5">
+			<div class="card-body">
+				<b-row v-if="token">
+					<b-col>
+						<table class="tm__no_border table">
+							<thead>
+							<tr>
+								<th colspan="2">TokenTracker Summary</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									Total Supply:
+								</td>
+								<td class="text-right">{{ formatUnit(toEther(token.totalSupply), symbol) }}</td>
+							</tr>
+							<tr>
+								<td>
+									No Of Transfers:
+								</td>
+								<td class="text-right">{{ formatNumber(token.tokenTxsCount) }}</td>
+							</tr>
+							</tbody>
+						</table>
+					</b-col>
+					<b-col>
+						<table class="tm__no_border table">
+							<thead>
+							<tr>
+								<th colspan="2" class="text-right">Reputation</th>
+							</tr>
+							</thead>
+							<tbody>
+							<tr>
+								<td>
+									ERC20 Contract:
+								</td>
+								<td>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: token.hash}}">{{ token.hash }}</nuxt-link>
+								</td>
+							</tr>
+							<tr>
+								<td>Decimal:</td>
+								<td>{{ token.decimals }}</td>
+							</tr>
+							</tbody>
+						</table>
+					</b-col>
+				</b-row>
+			</div>
+		</div>
 
 		<b-row>
 			<b-col>
