@@ -3,7 +3,7 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
-			class="tm__table table__no_shadow mb-4"
+			class="tm__table table__no_shadow mb-4 table__event_logs"
 			:fields="fields"
 			:items="items">
 			<template slot="label" slot-scope="props">
@@ -48,12 +48,12 @@
 						</ul>
 					</div>
 				</b-collapse>
-				<ul class="list-unstyled">
+				<ul class="list-unstyled event__logs">
 					<li v-for="(topic, i) in props.item.topics" class="text-truncate">
 						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
 					</li>
 				</ul>
-				<ul class="list-unstyled">
+				<ul class="list-unstyled event__logs">
 					<li v-for="data in props.item.datas"><i class="font-14 tm-arrow-right mr-1"></i>{{ data }}</li>
 				</ul>
 			</template>
@@ -193,6 +193,12 @@
 	.event__logs {
 		li {
 			line-height: 2;
+		}
+	}
+
+	.table__event_logs {
+		.d__cell {
+			vertical-align: top;
 		}
 	}
 </style>
