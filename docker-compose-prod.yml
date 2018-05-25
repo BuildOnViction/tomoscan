@@ -4,6 +4,8 @@ services:
     build:
       context: .
       dockerfile: nginx.dockerfile
+    volumes:
+      - ./nginx/certs:/certs
     depends_on:
       - mongo
       - web
@@ -14,6 +16,7 @@ services:
       - server
     ports:
       - "80:80"
+      - "443:443"
   mongo:
     image: mongo:latest
     volumes:
