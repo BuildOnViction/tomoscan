@@ -30,9 +30,7 @@
 						</tr>
 						<tr>
 							<td>Transactions:</td>
-							<td>
-								<nuxt-link :to="{name: 'txs', query:{block: block.number}}">{{ block.e_tx }}&nbsp;transactions</nuxt-link>
-							</td>
+							<td>{{ block.e_tx }}&nbsp;transactions</td>
 						</tr>
 						<tr>
 							<td>Hash</td>
@@ -83,6 +81,12 @@
 				</div>
 			</div>
 		</div>
+
+		<b-tabs class="mt-5">
+			<b-tab title="Transactions">
+				<table-tx :block="number"></table-tx>
+			</b-tab>
+		</b-tabs>
 	</section>
 </template>
 <script>

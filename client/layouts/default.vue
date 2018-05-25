@@ -186,6 +186,10 @@
 </script>
 
 <style type="text/scss" lang="scss">
+	footer {
+		margin-bottom: 50px;
+	}
+	
 	.jumbotron {
 		padding: 15rem 2rem;
 	}
