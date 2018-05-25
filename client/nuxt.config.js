@@ -46,15 +46,15 @@ module.exports = {
     baseURL: process.env.API_URL,
   },
   loading: {
-    color: '#fff',
+    color: '#34a1ff',
     height: '2px',
   },
   /*
   ** Add axios globally
   */
   build: {
-    extractCSS: true,
-    cssSourceMap: true,
+//    extractCSS: true,
+//    cssSourceMap: true,
     vendor: [
       '~/plugins/mixin',
     ],

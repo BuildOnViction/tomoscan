@@ -24,7 +24,7 @@
 			<template slot="gas" slot-scope="props">{{ formatNumber(props.item.gas) }}</template>
 
 			<template slot="from" slot-scope="props">
-				<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
+				<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
 				<div class="address__tag">
 					<span v-if="address == props.item.from">{{ props.item.from }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
@@ -37,7 +37,7 @@
 
 			<template slot="to" slot-scope="props">
 				<div v-if="props.item.to">
-					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract pull-left mr-1"></i>
+					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
 					<div v-if="address == props.item.to" class="address__tag">{{ props.item.to }}</div>
 					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}" class="address__tag">
 						<span>{{ props.item.to }}</span>
@@ -80,6 +80,7 @@
     props: {
       address: {type: String, default: null},
       type: {type: String},
+      block: String,
     },
     data: () => ({
       fields: {},
@@ -109,7 +110,7 @@
       currentPage: 1,
       perPage: 15,
       pages: 1,
-      block: null,
+      blockNumber: null,
     }),
     async mounted () {
       let self = this
@@ -123,8 +124,11 @@
       if (query.limit) {
         self.perPage = parseInt(query.limit)
       }
+      if (self.block) {
+        self.blockNumber = self.block
+      }
       if (query.block) {
-        self.block = query.block
+        self.blockNumber = query.block
       }
 
       this.getDataFromApi()
@@ -140,8 +144,8 @@
           page: self.currentPage,
           limit: self.perPage,
         }
-        if (self.block) {
-          params.block = self.block
+        if (self.blockNumber) {
+          params.block = self.blockNumber
         }
         if (self.type) {
           params.type = self.type

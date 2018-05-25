@@ -184,6 +184,17 @@ main, footer {
   td, th {
     border: none;
   }
+
+  td {
+    padding: 20px;
+  }
+
+  tr {
+    td:first-child {
+      padding-left: 0px;
+      color: $text-muted;
+    }
+  }
 }
 
 .tm__icon {
