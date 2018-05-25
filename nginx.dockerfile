@@ -12,6 +12,7 @@ RUN echo "daemon off;" >> /etc/nginx/nginx.conf
 
 # Expose ports
 EXPOSE 80
+EXPOSE 443
 
 # Define default command
 CMD service nginx start
