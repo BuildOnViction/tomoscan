@@ -22,6 +22,8 @@ COPY client/.env.example /var/www/.env
 COPY client /var/www
 COPY client/pm2.json /var/www/pm2.json
 
-CMD npm run build && pm2-docker start pm2.json --only prod
+RUN npm run build
+
+CMD pm2-docker start pm2.json --only prod
 
 EXPOSE 3000
