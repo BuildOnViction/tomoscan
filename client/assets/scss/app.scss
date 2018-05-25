@@ -268,6 +268,24 @@ main, footer {
       line-height: 28px;
     }
   }
+
+  &.table__no_shadow {
+    .tm__table_body {
+      border-radius: 10px;
+      background: $white;
+      box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+    }
+
+    .tm__table_row {
+      margin-bottom: 0px !important;
+      box-shadow: none;
+    }
+
+    .tm__table_cell {
+      border-radius: 0px !important;
+      background: transparent;
+    }
+  }
 }
 
 // END table
