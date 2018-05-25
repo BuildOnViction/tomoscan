@@ -3,6 +3,7 @@
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
+			class="tm__table table__no_shadow mb-4"
 			:fields="fields"
 			:items="items">
 			<template slot="label" slot-scope="props">
@@ -24,7 +25,7 @@
 					(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
 				</div>
 				<b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
-					<b-card v-if="isTransferEvent(props.item.topics[0])">
+					<div v-if="isTransferEvent(props.item.topics[0])" class="event__logs">
 						<ul class="list-unstyled" v-if="props.item.transfer">
 							<li>
 								<p>
@@ -45,7 +46,7 @@
 								</p>
 							</li>
 						</ul>
-					</b-card>
+					</div>
 				</b-collapse>
 				<ul class="list-unstyled">
 					<li v-for="(topic, i) in props.item.topics" class="text-truncate">
@@ -85,7 +86,7 @@
       fields: {
         label: {label: 'TxHash|Block|Age', tdClass: 'col-sm-3 text-left', thClass: 'col-sm-3'},
         method: {label: 'Method', tdClass: 'col-sm-3', thClass: 'col-sm-3'},
-        logs: {label: 'Event Logs', tdClass: 'col-sm-6 text-left', thClass: 'col-sm-6'},
+        logs: {label: 'Event Logs', tdClass: 'col-sm-6 text-right', thClass: 'col-sm-6'},
       },
       loading: true,
       pagination: {},
@@ -188,3 +189,10 @@
     },
   }
 </script>
+<style lang="scss" type="text/scss">
+	.event__logs {
+		li {
+			line-height: 2;
+		}
+	}
+</style>

@@ -29,6 +29,11 @@
   }
 </script>
 <style type="text/scss" lang="scss">
+	.tm__table_body {
+		margin-right: -15px;
+		margin-left: -15px;
+	}
+
 	.d__table {
 		display: table;
 		width: 100%;
