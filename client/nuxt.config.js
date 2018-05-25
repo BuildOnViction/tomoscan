@@ -22,10 +22,6 @@ module.exports = {
         type: 'image/x-icon',
         href: '/favicon.ico?v=001',
       },
-      {
-        rel: 'stylesheet',
-        href: 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css',
-      },
     ],
   },
   plugins: [
@@ -37,6 +33,12 @@ module.exports = {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/moment',
+    '@nuxtjs/font-awesome',
+    [
+      'nuxt-imagemin', {
+      optipng: {optimizationLevel: 5},
+      gifsicle: {optimizationLevel: 2},
+    }],
   ],
   css: [
     '~/assets/scss/app.scss',

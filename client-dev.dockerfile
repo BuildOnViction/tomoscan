@@ -11,6 +11,7 @@ RUN \
   apt-get update && \
   apt-get install -y python python-dev python-pip python-virtualenv && \
   apt-get install -y git nano && \
+  apt-get install -y libpng-dev && \
   rm -rf /var/lib/apt/lists/*
 
 RUN npm install
