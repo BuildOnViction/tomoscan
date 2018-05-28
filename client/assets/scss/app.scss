@@ -67,6 +67,10 @@ a {
           border-bottom: 4px solid $blue
         }
       }
+
+      &.active {
+        border-bottom: 4px solid $blue
+      }
     }
 
     .tm__nav_wrapper {
