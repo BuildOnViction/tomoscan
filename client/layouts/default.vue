@@ -92,7 +92,15 @@
 			<div class="container">
 				<div class="row">
 					<div class="col">Tomoscan 2018 - Running Tomochain</div>
-					<div class="col"></div>
+					<div class="col text-right">
+						<ul class="list-inline">
+							<li>
+								<a href="https://github.com/tomochain/tomo-explorer" target="_blank">
+									<img src="~/assets/img/icon-git.png" alt="TOMO Explorer github">
+								</a>
+							</li>
+						</ul>
+					</div>
 				</div>
 			</div>
 		</footer>
