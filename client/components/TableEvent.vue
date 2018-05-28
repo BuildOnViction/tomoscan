@@ -192,7 +192,7 @@
 <style lang="scss" type="text/scss">
 	.event__logs {
 		margin-bottom: 0px;
-		
+
 		li {
 			line-height: 2;
 		}
