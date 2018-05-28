@@ -218,8 +218,6 @@ main, footer {
 .tm__table {
   display: table;
   width: 100%;
-  padding-left: 15px;
-  padding-right: 15px;
 
   .tm__table_heading {
     padding: 0px 0px 16px;
@@ -271,8 +269,6 @@ main, footer {
 
   .tm__table_row {
     box-shadow: none;
-    margin-right: 40px;
-    margin-left: 40px;
   }
 
   &.table__no_shadow {
@@ -287,7 +283,7 @@ main, footer {
       border-bottom: 2px solid rgb(186, 192, 198);
 
       &:last-child {
-        boder-bottom: none;
+        border-bottom: none;
       }
     }
 

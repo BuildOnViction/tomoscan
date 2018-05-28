@@ -191,6 +191,8 @@
 </script>
 <style lang="scss" type="text/scss">
 	.event__logs {
+		margin-bottom: 0px;
+		
 		li {
 			line-height: 2;
 		}
@@ -200,5 +202,10 @@
 		.d__cell {
 			vertical-align: top;
 		}
+	}
+
+	.tm__table_row {
+		margin-left: 15px;
+		margin-right: 15px;
 	}
 </style>
