@@ -9,17 +9,17 @@
 
 				<b-collapse is-nav id="nav_collapse">
 					<b-navbar-nav class="mx-auto">
-						<b-nav-item :to="{name: 'index'}">Home</b-nav-item>
+						<b-nav-item :to="{name: 'index'}" :exact="true">Home</b-nav-item>
 						<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
-						<b-nav-item-dropdown text="Transactions">
+						<b-nav-item-dropdown text="Transactions" :class="(isTxs) ? 'active' : ''">
 							<b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
 							<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
 						</b-nav-item-dropdown>
-						<b-nav-item-dropdown text="Accounts">
+						<b-nav-item-dropdown text="Accounts" :class="(isAccounts || isContracts) ? 'active' : ''">
 							<b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
 							<b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
 						</b-nav-item-dropdown>
-						<b-nav-item-dropdown text="Tokens">
+						<b-nav-item-dropdown text="Tokens" :class="(isTokens || isTokenTxs) ? 'active' : ''">
 							<b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
 							<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
 						</b-nav-item-dropdown>
@@ -130,6 +130,21 @@
         let user = this.$store.state.user
         return user ? user.data : null
       },
+      isTxs () {
+        return this.$route.fullPath.startsWith('/txs')
+      },
+      isAccounts () {
+        return this.$route.fullPath.startsWith('/accounts')
+      },
+      isContracts () {
+        return this.$route.fullPath.startsWith('/contracts')
+      },
+      isTokens () {
+        return this.$route.fullPath.startsWith('/tokens')
+      },
+      isTokenTxs () {
+        return this.$route.fullPath.startsWith('/tokentxs')
+      },
     },
     mounted () {
       let self = this
@@ -189,7 +204,7 @@
 	footer {
 		margin-bottom: 50px;
 	}
-	
+
 	.jumbotron {
 		padding: 15rem 2rem;
 	}

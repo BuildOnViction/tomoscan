@@ -67,6 +67,10 @@ a {
           border-bottom: 4px solid $blue
         }
       }
+
+      &.active {
+        border-bottom: 4px solid $blue
+      }
     }
 
     .tm__nav_wrapper {
@@ -239,14 +243,12 @@ main, footer {
       &:first-child {
         border-bottom-left-radius: 10px;
         border-top-left-radius: 10px;
-        padding-left: 40px;
         overflow: visible;
       }
 
       &:last-child {
         border-bottom-right-radius: 10px;
         border-top-right-radius: 10px;
-        padding-right: 40px;
       }
     }
   }
@@ -259,14 +261,18 @@ main, footer {
     text-align: center;
     padding-top: 30px;
     padding-bottom: 30px;
-    padding-right: 20px;
-    padding-left: 20px;
     background: $white;
 
     i {
       font-size: 20px;
       line-height: 28px;
     }
+  }
+
+  .tm__table_row {
+    box-shadow: none;
+    margin-right: 40px;
+    margin-left: 40px;
   }
 
   &.table__no_shadow {
@@ -278,7 +284,11 @@ main, footer {
 
     .tm__table_row {
       margin-bottom: 0px !important;
-      box-shadow: none;
+      border-bottom: 2px solid rgb(186, 192, 198);
+
+      &:last-child {
+        boder-bottom: none;
+      }
     }
 
     .tm__table_cell {

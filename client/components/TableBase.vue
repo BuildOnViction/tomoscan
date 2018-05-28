@@ -8,11 +8,13 @@
 			</div>
 		</div>
 		<div class="tm__table_body">
-			<div class="row tm__table_row" v-for="(item, index) in items">
-				<div class="col tm__table_cell" :class="field.tdClass" v-for="(field, key) in fields">
-					<div class="d__table">
-						<div class="d__cell">
-							<slot :name="key" v-bind:item="item" v-bind:index="index">{{ item[key] }}</slot>
+			<div class="tm__table_row" v-for="(item, index) in items">
+				<div class="row">
+					<div class="col tm__table_cell" :class="field.tdClass" v-for="(field, key) in fields">
+						<div class="d__table">
+							<div class="d__cell">
+								<slot :name="key" v-bind:item="item" v-bind:index="index">{{ item[key] }}</slot>
+							</div>
 						</div>
 					</div>
 				</div>
