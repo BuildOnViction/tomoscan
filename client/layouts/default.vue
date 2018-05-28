@@ -72,22 +72,26 @@
 							<div class="d-flex justify-content-center">
 								<div class="stat__box">
 									<nuxt-link :to="{name: 'blocks'}">
-										<span-loading v-bind:text="stats ? formatNumber(stats.totalBlock) : null"></span-loading>&nbsp;Block
+										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
 								<div class="stat__box">
 									<nuxt-link :to="{name: 'accounts'}">
-										<span-loading v-bind:text="stats ? formatNumber(stats.totalAddress) : null"></span-loading>&nbsp;Wallet
+										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Wallets</span>
 									</nuxt-link>
 								</div>
 								<div class="stat__box">
 									<nuxt-link :to="{name: 'tokens'}">
-										<span-loading v-bind:text="stats ? formatNumber(stats.totalToken) : null"></span-loading>&nbsp;Token
+										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<span v-else>{{ formatNumber(stats.totalToken) }}&nbsp;Tokens</span>
 									</nuxt-link>
 								</div>
 								<div class="stat__box">
 									<nuxt-link :to="{name: 'contracts'}">
-										<span-loading v-bind:text="stats ? formatNumber(stats.totalSmartContract) : null"></span-loading>&nbsp;Contract
+										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<span v-else>{{ formatNumber(stats.totalSmartContract) }}&nbsp;Contracts</span>
 									</nuxt-link>
 								</div>
 							</div>
@@ -128,7 +132,6 @@
   import Breadcrumb from '~/components/Breadcrumb.vue'
   import Register from '~/components/Register.vue'
   import Login from '~/components/Login.vue'
-  import SpanLoading from '~/components/SpanLoading'
 
   export default {
     mixins: [mixin],
@@ -137,7 +140,6 @@
       Breadcrumb,
       Register,
       Login,
-      SpanLoading,
     },
     data () {
       return {
