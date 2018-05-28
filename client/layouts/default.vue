@@ -44,7 +44,7 @@
 			</div>
 		</b-navbar>
 
-		<main class="tm__body_wrapper">
+		<main class="tm__body_wrapper" :class="isHomePage() ? 'is__homepage' : ''">
 			<div class="container">
 				<div class="row" v-if="! isHomePage()">
 					<div class="col">
@@ -99,7 +99,6 @@
 						<b-col sm="3"></b-col>
 					</b-row>
 				</div>
-
 				<nuxt/>
 			</div>
 		</main>
@@ -223,7 +222,7 @@
 </script>
 
 <style type="text/scss" lang="scss">
-	.tm__body_wrapper {
+	.tm__body_wrapper.is__homepage {
 		background: url('~/assets/img/bg-image.png')
 	}
 

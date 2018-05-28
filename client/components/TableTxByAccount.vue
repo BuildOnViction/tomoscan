@@ -2,35 +2,24 @@
 	<section>
 		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
-				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'block'">
-							<nuxt-link :to="{name: 'blocks-slug', params: {slug: item.number}}">{{ item.number }}</nuxt-link>
-						</div>
+		<table-base
+			:fields="fields"
+			:items="items">
+			<template slot="block" slot-scope="props">
+				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
+			</template>
 
-						<div v-if="item.timestamp">
-							<span :id="'age__' + index">{{ $moment(item.timestamp).fromNow() }}</span>
-							<b-tooltip :target="'age__' + index">
-								{{ $moment(item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
-							</b-tooltip>
-						</div>
+			<template slot="timestamp" slot-scope="props">
+				<span :id="'age__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'age__' + index">
+					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
+				</b-tooltip>
+			</template>
 
-						<div v-if="key === 'e_tx'">{{ item.e_tx }}</div>
+			<template slot="e_tx" slot-scope="props">{{ props.item.e_tx }}</template>
 
-						<div v-if="key === 'gasUsed'" class="text-right">{{ item.gasUsed }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
+			<template slot="gasUsed" slot-scope="props">{{ props.item.gasUsed }}</template>
+		</table-base>
 
 		<b-pagination
 			align="center"
@@ -42,9 +31,13 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
+  import TableBase from '~/components/TableBase'
 
   export default {
     mixins: [mixin],
+    components: {
+      TableBase,
+    },
     props: {
       token: {type: String, default: null},
     },
