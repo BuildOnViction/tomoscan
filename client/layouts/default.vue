@@ -223,6 +223,10 @@
 </script>
 
 <style type="text/scss" lang="scss">
+	.tm__body_wrapper {
+		background: url('~/assets/img/bg-image.png')
+	}
+
 	footer {
 		margin-bottom: 50px;
 	}
