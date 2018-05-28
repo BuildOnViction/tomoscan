@@ -46,7 +46,19 @@
 
 		<main class="tm__body_wrapper">
 			<div class="container">
-				<breadcrumb v-if="! isHomePage()"/>
+				<div class="row" v-if="! isHomePage()">
+					<div class="col">
+						<breadcrumb/>
+					</div>
+					<div class="col">
+						<div class="input-group search__form mini d-flex justify-content-end">
+							<div class="input-group-prepend">
+								<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
+							</div>
+							<input type="text" v-model="search" class="form-control" placeholder="Search" @keyup.enter="onGotoRoute">
+						</div>
+					</div>
+				</div>
 				<div class="jumbotron bg__none" v-else>
 					<b-row>
 						<b-col sm="3"></b-col>
@@ -251,6 +263,14 @@
 
 			&::placeholder {
 				color: rgb(167, 167, 167) !important;
+			}
+		}
+
+		&.mini {
+			margin-bottom: 0px !important;
+
+			.form-control {
+				max-width: 200px;
 			}
 		}
 	}
