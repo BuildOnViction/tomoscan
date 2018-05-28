@@ -69,6 +69,8 @@ const mixin = {
         ' ' + sfx
     },
 
+    toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
+
     unformatAddress: (address) => address.replace(
       '0x000000000000000000000000', '0x'),
 

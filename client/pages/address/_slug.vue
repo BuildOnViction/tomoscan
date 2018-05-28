@@ -23,7 +23,7 @@
 							<tr>
 								<td>TOMO USD Value:</td>
 								<td>
-									$&nbsp;<span-loading v-bind:text="address ? usdPrice * toEther(address.balance) : null"></span-loading>
+									$&nbsp;<span-loading v-bind:text="address ? formatNumber(usdPrice * toEtherNumber(address.balance)) : null"></span-loading>
 								</td>
 							</tr>
 							<tr>
