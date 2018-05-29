@@ -228,6 +228,8 @@ main, footer {
   }
 
   .tm__table_body {
+    margin-right: 15px;
+    margin-left: 15px;
   }
 
   .tm__table_row {
@@ -268,15 +270,8 @@ main, footer {
   }
 
   &.table__no_shadow {
-    .tm__table_body {
-      border-radius: 10px;
-      background: $white;
-      box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-    }
-
     .tm__table_row {
       margin-bottom: 0px !important;
-      border-bottom: 2px solid rgb(186, 192, 198);
 
       &:last-child {
         border-bottom: none;
