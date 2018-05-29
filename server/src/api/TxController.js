@@ -54,6 +54,9 @@ TxController.get('/txs', async (req, res) => {
         {$or: [{from: address}, {to: address}, {contractAddress: address}]})
     }
     params.populate = populates
+    if (!params.sort) {
+      params.sort = {blockNumber: -1}
+    }
     let data = await paginate(req, 'Tx', params)
 
     return res.json(data)
