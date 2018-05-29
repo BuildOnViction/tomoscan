@@ -266,9 +266,12 @@ main, footer {
 
     i {
       font-size: 20px;
-      display: block;
-      float: left;
       line-height: 28px;
+
+      &.tm-icon-contract {
+        display: block;
+        float: left;
+      }
     }
   }
 
