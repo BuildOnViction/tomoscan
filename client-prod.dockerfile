@@ -5,8 +5,6 @@ WORKDIR /var/www/
 # between docker containers
 ENV HOST 0.0.0.0
 
-COPY client/package.json /var/www/package.json
-
 RUN \
   apt-get update && \
   apt-get install -y python python-dev python-pip python-virtualenv && \
@@ -14,16 +12,16 @@ RUN \
   apt-get install -y libpng-dev && \
   rm -rf /var/lib/apt/lists/*
 
+COPY client/package.json /var/www/package.json
 RUN npm install
 RUN npm i npm@latest -g
 RUN npm install -g nuxt dotenv node-gyp pm2
 
 COPY client/.env.example /var/www/.env
 COPY client /var/www
-COPY client/pm2.json /var/www/pm2.json
-
 RUN npm run build
 
+COPY client/pm2.json /var/www/pm2.json
 CMD pm2-docker start pm2.json --only prod
 
 EXPOSE 3000
