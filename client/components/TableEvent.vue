@@ -202,10 +202,24 @@
 		.d__cell {
 			vertical-align: top;
 		}
-	}
 
-	.tm__table_row {
-		margin-left: 15px;
-		margin-right: 15px;
+		.tm__table_row {
+			padding-left: 0px;
+			padding-right: 0px;
+			margin-right: 15px;
+			margin-left: 15px;
+			box-shadow: none;
+		}
+
+		.tm__table_body {
+			border-radius: 10px;
+			background: #fff;
+			box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
+			margin: 0px;
+		}
+
+		.tm__table_cell {
+			border-bottom: 2px solid rgb(186, 192, 198);
+		}
 	}
 </style>
