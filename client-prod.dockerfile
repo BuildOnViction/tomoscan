@@ -12,10 +12,11 @@ RUN \
   apt-get install -y libpng-dev && \
   rm -rf /var/lib/apt/lists/*
 
-COPY client/package.json /var/www/package.json
-RUN npm install
 RUN npm i npm@latest -g
 RUN npm install -g nuxt dotenv node-gyp pm2
+COPY client/package.json /var/www/package.json
+COPY client/package-lock.json /var/www/package-lock.json
+RUN npm install
 
 COPY client/.env.example /var/www/.env
 COPY client /var/www
