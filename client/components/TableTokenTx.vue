@@ -24,7 +24,7 @@
 			</template>
 
 			<template slot="from" slot-scope="props">
-				<div class="address__tag">
+				<div class="address__tag text-left">
 					<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
 					<span v-if="address == props.item.from">{{ props.item.from }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ props.item.from }}</nuxt-link>
@@ -36,7 +36,7 @@
 			</template>
 
 			<template slot="to" slot-scope="props">
-				<div class="address__tag">
+				<div class="address__tag text-left">
 					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
 					<span v-if="address == props.item.to">{{ props.item.to }}</span>
 					<nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
