@@ -209,6 +209,12 @@
 			margin-right: 15px;
 			margin-left: 15px;
 			box-shadow: none;
+
+			&:last-child {
+				.tm__table_cell {
+					border-bottom: none !important;
+				}
+			}
 		}
 
 		.tm__table_body {
