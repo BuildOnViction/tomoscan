@@ -83,7 +83,7 @@ export const toAddress = (text, length) => {
 }
 
 export const unformatAddress = (address) => address.replace(
-  '0x000000000000000000000000', '0x')
+  '0x000000000000000000000000', '0x').toLowerCase()
 
 export const formatAddress = (address) => address.replace('0x',
   '0x000000000000000000000000')
