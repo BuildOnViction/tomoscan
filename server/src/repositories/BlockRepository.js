@@ -65,14 +65,7 @@ let BlockRepository = {
         let tx = txs[i]
 
         // Insert crawl for tx.
-        Crawl.findOneAndUpdate({
-          type: 'tx',
-          data: tx.hash,
-        }, {
-          type: 'tx',
-          data: tx.hash,
-          crawl: false,
-        }, {upsert: true, new: true})
+        await CrawlRepository.add('tx', tx.hash)
 
         if (tx.hash) {
           if (block) {
