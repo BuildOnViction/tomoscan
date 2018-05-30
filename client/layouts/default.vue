@@ -30,7 +30,7 @@
 							<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
 						</b-nav-item-dropdown>
 					</b-navbar-nav>
-					<b-navbar-nav>
+					<b-navbar-nav class="tomo-nav__login">
 						<!--<div class="form-inline" v-if="! isHomePage()">-->
 						<!--<input type="search" v-model="search" class="form-control form-control-sm" placeholder="Search Address / TX / Block" @keyup.enter="onGotoRoute"/>-->
 						<!--<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>-->
