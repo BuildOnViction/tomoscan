@@ -78,12 +78,16 @@ COMPONENTS
 Specific UI components.
 This is where majority of our work takes place and our UI components are often composed of Objects and Components
 */
+@import '../../node_modules/bootstrap/scss/buttons';
+@import '../../node_modules/bootstrap/scss/card';
 @import '../../node_modules/bootstrap/scss/dropdown';
 @import '../../node_modules/bootstrap/scss/forms';
+@import '../../node_modules/bootstrap/scss/input-group';
 @import '../../node_modules/bootstrap/scss/nav';
 @import '../../node_modules/bootstrap/scss/navbar';
-@import '../../node_modules/bootstrap/scss/card';
+@import '../../node_modules/bootstrap/scss/pagination';
 @import '../../node_modules/bootstrap/scss/tooltip';
+@import '../../node_modules/bootstrap/scss/type';
 @import 'components/breadcrumb';
 @import 'components/card';
 @import 'components/container';
@@ -91,6 +95,9 @@ This is where majority of our work takes place and our UI components are often c
 @import 'components/hightlightjs';
 @import 'components/nav';
 @import 'components/navbar-toggle';
+@import 'components/tm-pagination';
+@import 'components/tm-table';
+@import 'components/tm-tabs';
 
 /*
 TRUMPS
