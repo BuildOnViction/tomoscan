@@ -5,6 +5,7 @@ import Setting from './models/Setting'
 import AccountRepository from './repositories/AccountRepository'
 import CrawlRepository from './repositories/CrawlRepository'
 import TokenRepository from './repositories/TokenRepository'
+import TxRepository from './repositories/TxRepository'
 
 const dotenv = require('dotenv')
 const mongoose = require('mongoose')
