@@ -1,8 +1,14 @@
 
-.tm__nav {
-  .tm__logo {
-    width: 138px;
-    height: 47px;
+.tomo-nav {
+
+  &__logo {
+    max-width: 138px;
+  }
+
+  @include media-breakpoint-down(lg) {
+    #nav_collapse {
+      display: block;
+    }
   }
 
   /* Landscape phones and portrait tablets */
@@ -24,7 +30,7 @@
       }
     }
 
-    .tm__nav_wrapper {
+    .tomo-nav__wrapper {
       min-height: 94px;
     }
   }

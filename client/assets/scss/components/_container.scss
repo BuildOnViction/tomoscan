@@ -1,3 +1,9 @@
 .container {
   transition: all .5s cubic-bezier(.55, 0, .1, 1);
 }
+
+@include media-breakpoint-up(lg) {
+  .container.container--wide {
+    max-width: 90%;
+  }
+}
