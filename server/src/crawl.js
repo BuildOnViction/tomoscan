@@ -60,7 +60,9 @@ let watch = async () => {
           crawl.crawl = true
           crawl.save()
 
-          console.log('--- Crawl data: ' + JSON.stringify(crawl))
+          if (process.env.APP_ENV === 'dev') {
+            console.log('--- Crawl data: ' + JSON.stringify(crawl))
+          }
         }
       }
     }

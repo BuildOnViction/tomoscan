@@ -42,16 +42,6 @@ let BlockRepository = {
     // Insert crawl for signer.
     await CrawlRepository.add('address', signer)
 
-    // Insert crawl for address.
-    Crawl.findOneAndUpdate({
-      type: 'address',
-      data: signer,
-    }, {
-      type: 'address',
-      data: signer,
-      crawl: false,
-    })
-
     delete _block['_id']
 
     block = await Block.findOneAndUpdate({number: _block.number}, _block,
@@ -59,13 +49,10 @@ let BlockRepository = {
 
     // Sync txs.
     let tx_count = Tx.find({blockNumber: block.number}).count()
-    if (tx_count != block.e_tx) {
+    if (tx_count !== block.e_tx) {
       // Insert transaction before.
       for (let i = 0; i < txs.length; i++) {
         let tx = txs[i]
-
-        // Insert crawl for tx.
-        await CrawlRepository.add('tx', tx.hash)
 
         if (tx.hash) {
           if (block) {
@@ -90,6 +77,9 @@ let BlockRepository = {
 
             tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
               {upsert: true, new: true})
+
+            // Insert crawl for tx.
+            await CrawlRepository.add('tx', tx.hash)
 
             // Send email to follower.
             let followers = await Follow.find({

@@ -44,9 +44,9 @@
 			</div>
 		</b-navbar>
 
-		<main class="tm__body_wrapper" :class="isHomePage() ? 'is__homepage' : ''">
+		<main class="tm__body_wrapper" :class="isHomePage ? 'is__homepage' : ''">
 			<div class="container">
-				<div class="row" v-if="! isHomePage()">
+				<div class="row" v-if="! isHomePage">
 					<div class="col">
 						<breadcrumb/>
 					</div>
@@ -166,21 +166,22 @@
       isTokenTxs () {
         return this.$route.fullPath.startsWith('/tokentxs')
       },
+      isHomePage () {
+        let name = this.$route.name
+        return name ? name.indexOf(['index']) >= 0 : false
+      },
     },
     mounted () {
       let self = this
 
       self.$store.dispatch('user/getCachedUser')
 
-      if (self.isHomePage()) {
+      if (self.isHomePage) {
         self.getStats()
       }
     },
     methods: {
-      isHomePage () {
-        let name = this.$route.name
-        return name ? name.indexOf(['index']) >= 0 : false
-      },
+
       async onLogout () {
         let self = this
 
