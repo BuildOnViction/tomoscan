@@ -56,7 +56,7 @@ let AccountRepository = {
 
   async addAccountPending (hash) {
     hash = hash.toLowerCase()
-    
+
     return await Account.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
   },
