@@ -1,16 +1,11 @@
 import Tx from '../models/Tx'
 import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
-import web3 from 'web3'
 import Account from '../models/Account'
-import TokenTx from '../models/TokenTx'
-import { unformatAddress } from '../helpers/utils'
 import Token from '../models/Token'
 import TokenRepository from './TokenRepository'
 import Block from '../models/Block'
 import TokenTxRepository from './TokenTxRepository'
-import Follow from '../models/Follow'
-import EmailService from '../services/Email'
 import Log from '../models/Log'
 
 let TxRepository = {
@@ -62,10 +57,12 @@ let TxRepository = {
       }
 
       if (tx.from !== null) {
+        tx.from = tx.from.toLowerCase()
         tx.from_model = await
           AccountRepository.addAccountPending(tx.from)
       }
       if (tx.to !== null) {
+        tx.to = tx.to.toLowerCase()
         tx.to_model = await
           AccountRepository.addAccountPending(tx.to)
       }
@@ -132,7 +129,8 @@ let TxRepository = {
     // Add account and token if not exist in db.
     let token = await Token.findOne({hash: log.address.toLowerCase()})
     if (!token) {
-      let account = await AccountRepository.updateAccount(log.address.toLowerCase())
+      let account = await AccountRepository.updateAccount(
+        log.address.toLowerCase())
       await TokenRepository.updateToken(account.hash)
     }
 
