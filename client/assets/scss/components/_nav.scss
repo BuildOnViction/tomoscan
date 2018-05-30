@@ -6,22 +6,33 @@
   }
 
   .nav-item {
+    &.active .nav-link,
     &.show .nav-link {
       color: $color-primary;
     }
   }
 
-  .nav-link {
-    &.nav-link:hover,
-    &.active.active {
+  .nav-item .nav-link {
+    font-size: 15px;
+    color: $color-text;
+
+    &:hover,
+    &.active {
       color: $color-primary;
     }
 
     &.dropdown-toggle:after {
+      content: '\f107';
       border: none;
       display: inline-block;
       vertical-align: 0;
       @extend %fa-icon;
+    }
+  }
+
+  .tomo-nav__login {
+    .nav-link {
+      color: #000;
     }
   }
 
@@ -41,15 +52,12 @@
       border-bottom: 1px solid #e6e6e6;
 
       &.show .nav-link:after {
-        transform: rotate(90deg);
+        transform: rotate(180deg);
       }
     }
 
-    .nav-link {
-      font-size: 15px;
-
+    .nav-item .nav-link {
       &.dropdown-toggle:after {
-        content: '\f105';
         height: 40px;
         width: 40px;
         line-height: 40px;
@@ -61,27 +69,73 @@
     }
   }
 
-  /* Landscape phones and portrait tablets */
-  // @media (min-width: 767px) {
-  //   padding: 0px;
-  //   min-height: 94px;
+  @include media-breakpoint-up(lg) {
+    min-height: 50px;
+    padding: 0;
 
-  //   .nav-item {
-  //     > a {
-  //       padding: 33px 20px !important;
+    &__wrapper {
+      min-height: 50px;
+    }
 
-  //       &.active {
-  //         border-bottom: 4px solid $blue
-  //       }
-  //     }
+    .nav-item .nav-link {
+      position: relative;
+      min-height: 50px;
+      line-height: 50px;
+      padding-left: 20px;
+      padding-right: 20px;
 
-  //     &.active {
-  //       border-bottom: 4px solid $blue
-  //     }
-  //   }
+      &:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: $color-primary;
+        transition: transform .5s cubic-bezier(.8, 0, .2, 1);
+        transform: scale3d(0, 1, 1);
+        transform-origin: 100% 50%;
+      }
 
-  //   .tomo-nav__wrapper {
-  //     min-height: 94px;
-  //   }
-  // }
+      &.dropdown-toggle:after {
+        display: inline-block;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      &.active:before {
+        transform: scale3d(1, 1, 1);
+        transform-origin: 0% 50%;
+      }
+    }
+
+    .nav-item.active .nav-link:before,
+    .nav-item:hover .nav-link:before {
+      transform: scale3d(1, 1, 1);
+      transform-origin: 0% 50%;
+    }
+
+    .tomo-nav__login .nav-item .nav-link:before {
+      display: none;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    min-height: 90px;
+
+    &__wrapper {
+      min-height: 90px;
+    }
+
+    .nav-item .nav-link {
+      font-size: 18px;
+      min-height: 90px;
+      line-height: 90px;
+      margin: 0 20px;
+    }
+
+    .tomo-nav__login .nav-item .nav-link {
+      margin: 0;
+    }
+  }
 }
