@@ -36,33 +36,33 @@ let watch = async () => {
         }
         await setting.save()
       }
+    }
 
-      let crawls = await Crawl.find({crawl: false}).limit(100)
-      if (crawls.length) {
-        for (let j = 0; j < crawls.length; j++) {
-          let crawl = crawls[j]
-          switch (crawl.type) {
-            case 'block':
-              await BlockRepository.addBlockByNumber(crawl.data)
-              break
-            case 'tx':
-              await TxRepository.getTxPending(crawl.data)
-              await TxRepository.getTxReceipt(crawl.data)
-              break
-            case 'address':
-              await AccountRepository.updateAccount(crawl.data)
-              break
-            case 'token':
-              await TokenRepository.updateToken(crawl.data)
-              break
-          }
+    let crawls = await Crawl.find({crawl: false}).limit(100)
+    if (crawls.length) {
+      for (let j = 0; j < crawls.length; j++) {
+        let crawl = crawls[j]
+        switch (crawl.type) {
+          case 'block':
+            await BlockRepository.addBlockByNumber(crawl.data)
+            break
+          case 'tx':
+            await TxRepository.getTxPending(crawl.data)
+            await TxRepository.getTxReceipt(crawl.data)
+            break
+          case 'address':
+            await AccountRepository.updateAccount(crawl.data)
+            break
+          case 'token':
+            await TokenRepository.updateToken(crawl.data)
+            break
+        }
 
-          crawl.crawl = true
-          crawl.save()
+        crawl.crawl = true
+        crawl.save()
 
-          if (process.env.APP_ENV === 'dev') {
-            console.log('--- Crawl data: ' + JSON.stringify(crawl))
-          }
+        if (process.env.APP_ENV === 'dev') {
+          console.log('--- Crawl data: ' + JSON.stringify(crawl))
         }
       }
     }
