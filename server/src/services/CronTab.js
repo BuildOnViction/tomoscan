@@ -48,7 +48,7 @@ let CronTab = {
     let txs = []
 
     // Get blocks transaction for crawl.
-    let _txs = await Tx.find({status: false}).limit(25)
+    let _txs = await Tx.find({status: false}).limit(50)
 
     for (let i = 0; i < _txs.length; i++) {
       let tx = _txs[i]
@@ -128,7 +128,7 @@ let CronTab = {
     try {
       // For blocks detail.
       let blockJob = new cron.CronJob({
-        cronTime: '0 */5 * * * *', // 2 minutes.
+        cronTime: '0 */2 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('START blockJob --- ' + sDate.toISOString())

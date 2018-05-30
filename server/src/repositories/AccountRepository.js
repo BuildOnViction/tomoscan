@@ -25,7 +25,7 @@ let AccountRepository = {
     }
 
     let txCountTo = await Tx.find({to: hash}).count()
-    let txCountFrom = await web3.eth.getTransactionCount(hash)
+    let txCountFrom = 0//await web3.eth.getTransactionCount(hash)
     let txCount = txCountTo + txCountFrom
     if (_account.transactionCount !== txCount) {
       _account.transactionCount = txCount
@@ -56,7 +56,7 @@ let AccountRepository = {
 
   async addAccountPending (hash) {
     hash = hash.toLowerCase()
-    
+
     return await Account.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
   },
