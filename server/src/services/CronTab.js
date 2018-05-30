@@ -128,7 +128,7 @@ let CronTab = {
     try {
       // For blocks detail.
       let blockJob = new cron.CronJob({
-        cronTime: '0 */2 * * * *', // 2 minutes.
+        cronTime: '0 */1 * * * *', // 2 minutes.
         onTick: async () => {
           let sDate = new Date()
           console.log('START blockJob --- ' + sDate.toISOString())
