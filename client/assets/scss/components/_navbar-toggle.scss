@@ -1,0 +1,48 @@
+.tomo-nav__toggle {
+  width: 50px;
+  border: none;
+  padding: 0;
+
+  svg {
+    display: inline-block;
+    vertical-align: 0;
+    width: 50px;
+    height: 60px;
+    cursor: pointer;
+    transform: translate3d(0, 0, 0);
+  }
+
+  path {
+    -webkit-transition: stroke-dashoffset .5s cubic-bezier(.25, -.25, .75, 1.25), stroke-dasharray .5s cubic-bezier(.25, -.25, .75, 1.25);
+    -moz-transition: stroke-dashoffset .5s cubic-bezier(.25, -.25, .75, 1.25), stroke-dasharray .5s cubic-bezier(.25, -.25, .75, 1.25);
+    -ms-transition: stroke-dashoffset .5s cubic-bezier(.25, -.25, .75, 1.25), stroke-dasharray .5s cubic-bezier(.25, -.25, .75, 1.25);
+    -o-transition: stroke-dashoffset .5s cubic-bezier(.25, -.25, .75, 1.25), stroke-dasharray .5s cubic-bezier(.25, -.25, .75, 1.25);
+    transition: stroke-dashoffset .5s cubic-bezier(.25, -.25, .75, 1.25), stroke-dasharray .5s cubic-bezier(.25, -.25, .75, 1.25);
+    fill: none;
+    stroke-width: 40px;
+    stroke-linecap: round;
+    stroke-dashoffset: 0;
+    stroke: #666;
+
+    &#top,
+    &#bottom {
+      stroke-dasharray: 240px 950px;
+    }
+
+    &#middle {
+      stroke-dasharray: 240px 240px;
+    }
+  }
+
+  &[aria-expanded="true"] path {
+    &#top,
+		&#bottom {
+			stroke-dashoffset: -650px;
+		}
+
+		&#middle {
+			stroke-dashoffset: -115px;
+			stroke-dasharray: 1px 220px;
+		}
+  }
+}

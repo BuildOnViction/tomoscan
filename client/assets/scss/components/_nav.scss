@@ -1,0 +1,141 @@
+
+.tomo-nav {
+
+  &__logo {
+    max-width: 138px;
+  }
+
+  .nav-item {
+    &.active .nav-link,
+    &.show .nav-link {
+      color: $color-primary;
+    }
+  }
+
+  .nav-item .nav-link {
+    font-size: 15px;
+    color: $color-text;
+
+    &:hover,
+    &.active {
+      color: $color-primary;
+    }
+
+    &.dropdown-toggle:after {
+      content: '\f107';
+      border: none;
+      display: inline-block;
+      vertical-align: 0;
+      @extend %fa-icon;
+    }
+  }
+
+  .tomo-nav__login {
+    .nav-link {
+      color: #000;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
+    #nav_collapse {
+      position: absolute !important;
+      top: 100%;
+      left: 0;
+      z-index: 1001;
+      width: 100%;
+      background-color: #f1f1f1;
+      box-shadow:8px 8px 40px 0 rgba(0,0,0,0.1);
+    }
+
+    .nav-item {
+      padding-left: 20px;
+      border-bottom: 1px solid #e6e6e6;
+
+      &.show .nav-link:after {
+        transform: rotate(180deg);
+      }
+    }
+
+    .nav-item .nav-link {
+      &.dropdown-toggle:after {
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        margin-top: -10px;
+        float: right;
+        transition: all .5s ease;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    min-height: 50px;
+    padding: 0;
+
+    &__wrapper {
+      min-height: 50px;
+    }
+
+    .nav-item .nav-link {
+      position: relative;
+      min-height: 50px;
+      line-height: 50px;
+      padding-left: 20px;
+      padding-right: 20px;
+
+      &:before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 4px;
+        background-color: $color-primary;
+        transition: transform .5s cubic-bezier(.8, 0, .2, 1);
+        transform: scale3d(0, 1, 1);
+        transform-origin: 100% 50%;
+      }
+
+      &.dropdown-toggle:after {
+        display: inline-block;
+        font-size: 12px;
+        margin-left: 10px;
+      }
+
+      &.active:before {
+        transform: scale3d(1, 1, 1);
+        transform-origin: 0% 50%;
+      }
+    }
+
+    .nav-item.active .nav-link:before,
+    .nav-item:hover .nav-link:before {
+      transform: scale3d(1, 1, 1);
+      transform-origin: 0% 50%;
+    }
+
+    .tomo-nav__login .nav-item .nav-link:before {
+      display: none;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    min-height: 90px;
+
+    &__wrapper {
+      min-height: 90px;
+    }
+
+    .nav-item .nav-link {
+      font-size: 18px;
+      min-height: 90px;
+      line-height: 90px;
+      margin: 0 20px;
+    }
+
+    .tomo-nav__login .nav-item .nav-link {
+      margin: 0;
+    }
+  }
+}

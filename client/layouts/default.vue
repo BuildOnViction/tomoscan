@@ -1,11 +1,17 @@
 <template>
 	<section>
-		<b-navbar toggleable="md" variant="white" class="tm__nav">
-			<div class="container tm__nav_wrapper">
-				<b-navbar-toggle target="nav_collapse"></b-navbar-toggle>
+		<b-navbar toggleable="lg" variant="white" class="tomo-nav">
+			<div class="container container--wide tomo-nav__wrapper">
 				<b-navbar-brand :to="{name: 'index'}">
-					<img src="~/assets/img/logo.png" alt="TOMO Explorer" class="tm__logo">
+					<img src="~/assets/img/logo.png" alt="TOMO Explorer" class="tomo-nav__logo">
 				</b-navbar-brand>
+				<b-navbar-toggle class="tomo-nav__toggle" target="nav_collapse">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
+						<path d="M300,220 C300,220 520,220 540,220 C740,220 640,540 520,420 C440,340 300,200 300,200" id="top"></path>
+						<path d="M300,320 L540,320" id="middle"></path>
+						<path d="M300,210 C300,210 520,210 540,210 C740,210 640,530 520,410 C440,330 300,190 300,190" id="bottom" transform="translate(480, 320) scale(1, -1) translate(-480, -318) "></path>
+					</svg>
+				</b-navbar-toggle>
 
 				<b-collapse is-nav id="nav_collapse">
 					<b-navbar-nav class="mx-auto">
@@ -24,7 +30,7 @@
 							<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
 						</b-nav-item-dropdown>
 					</b-navbar-nav>
-					<b-navbar-nav>
+					<b-navbar-nav class="tomo-nav__login">
 						<!--<div class="form-inline" v-if="! isHomePage()">-->
 						<!--<input type="search" v-model="search" class="form-control form-control-sm" placeholder="Search Address / TX / Block" @keyup.enter="onGotoRoute"/>-->
 						<!--<b-button variant="primary" size="sm" class="my-2 my-sm-0" @click="onGotoRoute"><i class="fa fa-search"></i></b-button>-->
@@ -69,7 +75,7 @@
 								</div>
 								<input type="text" v-model="search" class="form-control" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
 							</div>
-							<div class="d-flex justify-content-center">
+							<div><!-- class="d-flex justify-content-center"-->
 								<div class="stat__box">
 									<nuxt-link :to="{name: 'blocks'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
@@ -222,62 +228,3 @@
   }
 </script>
 
-<style type="text/scss" lang="scss">
-	.tm__body_wrapper.is__homepage {
-		background: url('~/assets/img/bg-image.png')
-	}
-
-	footer {
-		margin-bottom: 50px;
-	}
-
-	.jumbotron {
-		padding: 15rem 2rem;
-	}
-
-	.stat__box {
-		padding: 0 70px;
-		display: inline-block;
-
-		a {
-			color: #868f9b;
-
-			&:hover {
-				color: #34a1ff;
-			}
-		}
-	}
-
-	.search__form {
-		margin-bottom: 60px;
-
-		.input-group-prepend {
-			.btn {
-				height: 60px;
-				width: 60px;
-				border-radius: 50%;
-				box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.18);
-				margin-right: 25px;
-			}
-		}
-
-		.form-control {
-			box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-			border-radius: 100px !important;
-			padding: 0.375rem 40px;
-			border: none !important;
-
-			&::placeholder {
-				color: rgb(167, 167, 167) !important;
-			}
-		}
-
-		&.mini {
-			margin-bottom: 0px !important;
-
-			.form-control {
-				max-width: 200px;
-			}
-		}
-	}
-</style>

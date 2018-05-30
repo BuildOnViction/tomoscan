@@ -1,0 +1,29 @@
+.tabs {
+  .nav-tabs {
+    border: none;
+    margin-bottom: 40px;
+
+    .nav-item {
+      .nav-link {
+        border-color: transparent transparent #dadbdd;
+        border-bottom-width: 4px;
+        border-top-width: 0px;
+        border-left-width: 0px;
+        border-right-width: 0px;
+        padding: 15px 40px;
+        color: $text-muted;
+
+        &.active {
+          border-bottom-color: $blue;
+          color: $blue;
+        }
+      }
+
+      &:first-child {
+        .nav-link {
+          padding-left: 0px;
+        }
+      }
+    }
+  }
+}

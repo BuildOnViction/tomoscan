@@ -1,0 +1,14 @@
+.container {
+  transition: all .5s cubic-bezier(.55, 0, .1, 1);
+}
+
+.container.container--wide {
+
+  @include media-breakpoint-up(lg) {
+    max-width: 95%;
+  }
+
+  @include media-breakpoint-up(xl) {
+    max-width: 90%;
+  }
+}
