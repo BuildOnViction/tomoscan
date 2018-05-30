@@ -8,7 +8,7 @@ import Contract from '../models/Contract'
 
 let AccountRepository = {
   async updateAccount (hash) {
-    if (!hash) {
+    if (!hash || hash === 'new contract') {
       return false
     }
 
