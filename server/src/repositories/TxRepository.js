@@ -130,9 +130,9 @@ let TxRepository = {
     }
 
     // Add account and token if not exist in db.
-    let token = await Token.findOne({hash: log.address})
+    let token = await Token.findOne({hash: log.address.toLowerCase()})
     if (!token) {
-      let account = await AccountRepository.updateAccount(log.address)
+      let account = await AccountRepository.updateAccount(log.address.toLowerCase())
       await TokenRepository.updateToken(account.hash)
     }
 

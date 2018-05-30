@@ -30,7 +30,7 @@ let TokenTxRepository = {
     delete _log['_id']
 
     let tokenTx = await TokenTx.findOneAndUpdate(
-      {transactionHash: _log.transactionHash, from: _log.from, to: _log.to},
+      {transactionHash: _log.transactionHash.toLowerCase(), from: _log.from, to: _log.to},
       _log,
       {upsert: true, new: true})
 

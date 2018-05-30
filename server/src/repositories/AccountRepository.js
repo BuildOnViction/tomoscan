@@ -12,6 +12,7 @@ let AccountRepository = {
       return false
     }
 
+    hash = hash.toLowerCase()
     let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
     _account = _account ? _account : {}
 
@@ -54,6 +55,8 @@ let AccountRepository = {
   },
 
   async addAccountPending (hash) {
+    hash = hash.toLowerCase()
+    
     return await Account.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
   },
