@@ -5,33 +5,83 @@
     max-width: 138px;
   }
 
-  @include media-breakpoint-down(lg) {
+  .nav-item {
+    &.show .nav-link {
+      color: $color-primary;
+    }
+  }
+
+  .nav-link {
+    &.nav-link:hover,
+    &.active.active {
+      color: $color-primary;
+    }
+
+    &.dropdown-toggle:after {
+      border: none;
+      display: inline-block;
+      vertical-align: 0;
+      @extend %fa-icon;
+    }
+  }
+
+  @include media-breakpoint-down(md) {
     #nav_collapse {
-      display: block;
+      position: absolute !important;
+      top: 100%;
+      left: 0;
+      z-index: 1001;
+      width: 100%;
+      background-color: #f1f1f1;
+      box-shadow:8px 8px 40px 0 rgba(0,0,0,0.1);
+    }
+
+    .nav-item {
+      padding-left: 20px;
+      border-bottom: 1px solid #e6e6e6;
+
+      &.show .nav-link:after {
+        transform: rotate(90deg);
+      }
+    }
+
+    .nav-link {
+      font-size: 15px;
+
+      &.dropdown-toggle:after {
+        content: '\f105';
+        height: 40px;
+        width: 40px;
+        line-height: 40px;
+        text-align: center;
+        margin-top: -10px;
+        float: right;
+        transition: all .5s ease;
+      }
     }
   }
 
   /* Landscape phones and portrait tablets */
-  @media (min-width: 767px) {
-    padding: 0px;
-    min-height: 94px;
+  // @media (min-width: 767px) {
+  //   padding: 0px;
+  //   min-height: 94px;
 
-    .nav-item {
-      > a {
-        padding: 33px 20px !important;
+  //   .nav-item {
+  //     > a {
+  //       padding: 33px 20px !important;
 
-        &.active {
-          border-bottom: 4px solid $blue
-        }
-      }
+  //       &.active {
+  //         border-bottom: 4px solid $blue
+  //       }
+  //     }
 
-      &.active {
-        border-bottom: 4px solid $blue
-      }
-    }
+  //     &.active {
+  //       border-bottom: 4px solid $blue
+  //     }
+  //   }
 
-    .tomo-nav__wrapper {
-      min-height: 94px;
-    }
-  }
+  //   .tomo-nav__wrapper {
+  //     min-height: 94px;
+  //   }
+  // }
 }

@@ -1,4 +1,5 @@
 a {
+  @extend %transit;
   &:hover {
     text-decoration: none;
   }

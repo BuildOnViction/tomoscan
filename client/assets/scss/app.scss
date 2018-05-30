@@ -37,6 +37,8 @@ If your tooling is more complex you can split it up like:
   tools.typography
   etc.
 */
+@import 'tools/mixins';
+@import 'tools/placeholder';
 
 /*
 GENERIC
@@ -53,12 +55,6 @@ ELEMENTS
 styling for bare HTML elements (like H1, A, etc.).
 moThese come with default styling from the browser so we can redefine them here.
 */
-@import '../../node_modules/bootstrap/scss/dropdown';
-@import '../../node_modules/bootstrap/scss/forms';
-@import '../../node_modules/bootstrap/scss/nav';
-@import '../../node_modules/bootstrap/scss/navbar';
-@import '../../node_modules/bootstrap/scss/card';
-@import '../../node_modules/bootstrap/scss/tooltip';
 @import 'elements/body';
 @import 'elements/button';
 @import 'elements/links';
@@ -73,6 +69,7 @@ This is the first layer of classes and should be agnostically named
   Eg. list-inline, ui-list, etc.
 */
 @import '../../node_modules/bootstrap/scss/grid';
+@import '../../node_modules/bootstrap/scss/transitions';
 @import 'objects/typo';
 
 /*
@@ -81,12 +78,19 @@ COMPONENTS
 Specific UI components.
 This is where majority of our work takes place and our UI components are often composed of Objects and Components
 */
+@import '../../node_modules/bootstrap/scss/dropdown';
+@import '../../node_modules/bootstrap/scss/forms';
+@import '../../node_modules/bootstrap/scss/nav';
+@import '../../node_modules/bootstrap/scss/navbar';
+@import '../../node_modules/bootstrap/scss/card';
+@import '../../node_modules/bootstrap/scss/tooltip';
 @import 'components/breadcrumb';
-@import 'components/container';
 @import 'components/card';
+@import 'components/container';
+@import 'components/dropdown';
 @import 'components/hightlightjs';
-@import 'components/navbar-toggle';
 @import 'components/nav';
+@import 'components/navbar-toggle';
 
 /*
 TRUMPS
