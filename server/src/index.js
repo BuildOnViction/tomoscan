@@ -76,8 +76,8 @@ server.listen(app.get('port'), async () => {
     console.log('Start ws for web3.')
     Web3Connector.connect(io)
 
-    console.log('Start cronjob.')
-    CronTab.start()
+//    console.log('Start cronjob.')
+//    CronTab.start()
 
     console.log('Express server listening on port ' + app.get('port'))
   }

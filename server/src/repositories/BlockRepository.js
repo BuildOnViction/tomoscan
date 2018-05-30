@@ -2,12 +2,13 @@ import Block from '../models/Block'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import { getSigner, toAddress } from '../helpers/utils'
-import TxRepository from './TxRepository'
 import AccountRepository from './AccountRepository'
 import Account from '../models/Account'
 import Follow from '../models/Follow'
 import EmailService from '../services/Email'
 import User from '../models/User'
+import Crawl from '../models/Crawl'
+import CrawlRepository from './CrawlRepository'
 
 let BlockRepository = {
   addBlockByNumber: async (number) => {
@@ -38,6 +39,19 @@ let BlockRepository = {
     // Update address signer.
     await Account.findOneAndUpdate({hash: signer}, {hash: signer})
 
+    // Insert crawl for signer.
+    await CrawlRepository.add('address', signer)
+
+    // Insert crawl for address.
+    Crawl.findOneAndUpdate({
+      type: 'address',
+      data: signer,
+    }, {
+      type: 'address',
+      data: signer,
+      crawl: false,
+    })
+
     delete _block['_id']
 
     block = await Block.findOneAndUpdate({number: _block.number}, _block,
@@ -50,6 +64,16 @@ let BlockRepository = {
       for (let i = 0; i < txs.length; i++) {
         let tx = txs[i]
 
+        // Insert crawl for tx.
+        Crawl.findOneAndUpdate({
+          type: 'tx',
+          data: tx.hash,
+        }, {
+          type: 'tx',
+          data: tx.hash,
+          crawl: false,
+        }, {upsert: true, new: true})
+
         if (tx.hash) {
           if (block) {
             tx.block = block
@@ -57,10 +81,16 @@ let BlockRepository = {
           tx.status = false
           if (tx && tx.hash) {
             if (tx.from !== null) {
+              tx.from = tx.from.toLowerCase()
               tx.from_model = await AccountRepository.addAccountPending(tx.from)
+              // Insert crawl for address.
+              await CrawlRepository.add('address', tx.from)
             }
             if (tx.to !== null) {
+              tx.to = tx.to.toLowerCase()
               tx.to_model = await AccountRepository.addAccountPending(tx.to)
+              // Insert crawl for address.
+              await CrawlRepository.add('address', tx.to)
             }
 
             delete tx['_id']

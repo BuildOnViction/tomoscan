@@ -46,7 +46,7 @@ export const trimWord = (word) => word.
 
 export const getSigner = (block) => {
   let signer = null
-  if (block) {
+  if (block && block.number > 0) {
     var sealers = block.extraData
     if (sealers.length <= 130)
       return undefined

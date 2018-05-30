@@ -54,6 +54,29 @@ let AccountRepository = {
     return account
   },
 
+  async updateAccountFromDB (hash, value = 0) {
+    let account = await Account.findOneAndUpdate(
+      {hash: hash}, {hash: hash})
+
+    let balance = account.balanceNumber
+    balance = balance + value
+    account.balance = balance.toString()
+    account.balanceNumber = balance
+
+    let code = await web3.eth.getCode(hash)
+    if (account.code !== code) {
+      account.code = code
+
+      let isToken = await TokenRepository.checkIsToken(code)
+      if (isToken) {
+        // Insert token pending.
+        let token = await Token.findOneAndUpdate({hash: hash},
+          {hash: hash, status: false}, {upsert: true, new: true})
+      }
+      account.isToken = isToken
+    }
+  },
+
   async addAccountPending (hash) {
     hash = hash.toLowerCase()
 
