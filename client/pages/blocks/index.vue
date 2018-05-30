@@ -10,8 +10,8 @@
 			</template>
 
 			<template slot="timestamp" slot-scope="props">
-				<span :id="'timestamp__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'timestamp__' + index">
+				<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'timestamp__' + props.index">
 					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 				</b-tooltip>
 			</template>

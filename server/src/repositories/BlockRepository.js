@@ -2,12 +2,13 @@ import Block from '../models/Block'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import { getSigner, toAddress } from '../helpers/utils'
-import TxRepository from './TxRepository'
 import AccountRepository from './AccountRepository'
 import Account from '../models/Account'
 import Follow from '../models/Follow'
 import EmailService from '../services/Email'
 import User from '../models/User'
+import Crawl from '../models/Crawl'
+import CrawlRepository from './CrawlRepository'
 
 let BlockRepository = {
   addBlockByNumber: async (number) => {
@@ -38,6 +39,9 @@ let BlockRepository = {
     // Update address signer.
     await Account.findOneAndUpdate({hash: signer}, {hash: signer})
 
+    // Insert crawl for signer.
+    await CrawlRepository.add('address', signer)
+
     delete _block['_id']
 
     block = await Block.findOneAndUpdate({number: _block.number}, _block,
@@ -45,7 +49,7 @@ let BlockRepository = {
 
     // Sync txs.
     let tx_count = Tx.find({blockNumber: block.number}).count()
-    if (tx_count != block.e_tx) {
+    if (tx_count !== block.e_tx) {
       // Insert transaction before.
       for (let i = 0; i < txs.length; i++) {
         let tx = txs[i]
@@ -57,16 +61,25 @@ let BlockRepository = {
           tx.status = false
           if (tx && tx.hash) {
             if (tx.from !== null) {
+              tx.from = tx.from.toLowerCase()
               tx.from_model = await AccountRepository.addAccountPending(tx.from)
+              // Insert crawl for address.
+              await CrawlRepository.add('address', tx.from)
             }
             if (tx.to !== null) {
+              tx.to = tx.to.toLowerCase()
               tx.to_model = await AccountRepository.addAccountPending(tx.to)
+              // Insert crawl for address.
+              await CrawlRepository.add('address', tx.to)
             }
 
             delete tx['_id']
 
             tx = await Tx.findOneAndUpdate({hash: tx.hash}, tx,
               {upsert: true, new: true})
+
+            // Insert crawl for tx.
+            await CrawlRepository.add('tx', tx.hash)
 
             // Send email to follower.
             let followers = await Follow.find({

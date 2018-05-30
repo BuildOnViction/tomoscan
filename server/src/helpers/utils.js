@@ -46,7 +46,7 @@ export const trimWord = (word) => word.
 
 export const getSigner = (block) => {
   let signer = null
-  if (block) {
+  if (block && block.number > 0) {
     var sealers = block.extraData
     if (sealers.length <= 130)
       return undefined
@@ -83,7 +83,7 @@ export const toAddress = (text, length) => {
 }
 
 export const unformatAddress = (address) => address.replace(
-  '0x000000000000000000000000', '0x')
+  '0x000000000000000000000000', '0x').toLowerCase()
 
 export const formatAddress = (address) => address.replace('0x',
   '0x000000000000000000000000')

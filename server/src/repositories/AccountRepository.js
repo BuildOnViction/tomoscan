@@ -8,10 +8,11 @@ import Contract from '../models/Contract'
 
 let AccountRepository = {
   async updateAccount (hash) {
-    if (!hash) {
+    if (!hash || hash === 'new contract') {
       return false
     }
 
+    hash = hash.toLowerCase()
     let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
     _account = _account ? _account : {}
 
@@ -24,7 +25,7 @@ let AccountRepository = {
     }
 
     let txCountTo = await Tx.find({to: hash}).count()
-    let txCountFrom = await web3.eth.getTransactionCount(hash)
+    let txCountFrom = 0//await web3.eth.getTransactionCount(hash)
     let txCount = txCountTo + txCountFrom
     if (_account.transactionCount !== txCount) {
       _account.transactionCount = txCount
@@ -54,6 +55,8 @@ let AccountRepository = {
   },
 
   async addAccountPending (hash) {
+    hash = hash.toLowerCase()
+
     return await Account.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
   },

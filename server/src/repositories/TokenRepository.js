@@ -3,6 +3,7 @@ import Token from '../models/Token'
 import Account from '../models/Account'
 import { formatAscIIJSON, trimWord } from '../helpers/utils'
 import TokenTx from '../models/TokenTx'
+import CrawlRepository from './CrawlRepository'
 
 let TokenRepository = {
   getTokenFuncs: () => ({
@@ -27,6 +28,8 @@ let TokenRepository = {
   },
 
   addTokenPending: async (hash) => {
+    await CrawlRepository.add('token', hash)
+
     return await Token.findOneAndUpdate({hash: hash},
       {hash: hash, status: false}, {upsert: true, new: true})
   },

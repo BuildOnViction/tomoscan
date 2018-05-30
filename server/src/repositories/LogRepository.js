@@ -22,7 +22,7 @@ let LogRepository = {
 
   async formatItem (log) {
     let block = await Block.findOne({number: log.blockNumber})
-    let tx = await Tx.findOne({hash: log.transactionHash})
+    let tx = await Tx.findOne({hash: log.transactionHash.toLowerCase()})
 
     log.block = block
     log.tx = tx
