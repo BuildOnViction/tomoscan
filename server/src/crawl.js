@@ -79,6 +79,13 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
       watch()
     }
     catch (e) {
+      if (process.env.APP_ENV === 'prod') {
+        var slack = require('slack-notify')(process.env.SLACK_WEBHOOK_URL)
+        slack.send({
+          channel: '#tm_explorer',
+          text: e,
+        })
+      }
       console.log(e)
     }
   }
