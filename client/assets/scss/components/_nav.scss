@@ -1,0 +1,31 @@
+
+.tm__nav {
+  .tm__logo {
+    width: 138px;
+    height: 47px;
+  }
+
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 767px) {
+    padding: 0px;
+    min-height: 94px;
+
+    .nav-item {
+      > a {
+        padding: 33px 20px !important;
+
+        &.active {
+          border-bottom: 4px solid $blue
+        }
+      }
+
+      &.active {
+        border-bottom: 4px solid $blue
+      }
+    }
+
+    .tm__nav_wrapper {
+      min-height: 94px;
+    }
+  }
+}

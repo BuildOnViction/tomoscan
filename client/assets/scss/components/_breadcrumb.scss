@@ -1,0 +1,17 @@
+.breadcrumb {
+  padding: 0px;
+  background-color: $body-bg;
+
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 768px) {
+    margin-bottom: 60px;
+  }
+}
+
+.breadcrumb-item {
+  &:last-child {
+    a {
+      color: $text-muted
+    }
+  }
+}

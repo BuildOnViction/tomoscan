@@ -1,0 +1,65 @@
+.text-xs {
+  font-size: .75rem;
+}
+
+.text-sm {
+  font-size: .875rem;
+}
+
+.text-base {
+  font-size: 1rem;
+}
+
+.text-lg {
+  font-size: 1.125rem;
+}
+
+.text-xl {
+  font-size: 1.25rem;
+}
+
+.text-2xl {
+   font-size: 1.5rem;
+}
+
+.text-3xl {
+  font-size: 1.875rem;
+}
+
+.text-4xl {
+font-size: 2.25rem;
+}
+
+.text-5xl {
+font-size: 3rem;
+}
+
+.bg__none {
+  background: transparent !important;
+}
+
+.address__tag {
+  display: inline-block;
+  width: 132px;
+  white-space: nowrap;
+  overflow: hidden !important;
+  text-overflow: ellipsis;
+  vertical-align: bottom;
+}
+
+.tm__total {
+  /* Landscape phones and portrait tablets */
+  @media (min-width: 768px) {
+    font-size: 20px;
+    color: $black;
+    margin-bottom: 40px;
+  }
+}
+
+/* Landscape phones and portrait tablets */
+@media (min-width: 768px) {
+  .tm__body_wrapper {
+    margin-top: 80px;
+    margin-bottom: 80px;
+  }
+}

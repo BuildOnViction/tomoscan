@@ -1,369 +1,89 @@
-@import "bootstrap";
+/*--------------------------------------------------------------
+>>> TABLE OF CONTENTS:
+----------------------------------------------------------------
+# Settings
+# Tools
+# Generic
+# Elements
+# Objects
+# Components
+# Trumps
+--------------------------------------------------------------*/
+
+/*
+SETTINGS
+store all variables, config switches, etc.
+Split up into logical sections, the smaller and simpler the better.
+used with preprocessors and contain font, colors definitions, etc
+================================================
+*/
+@import '../../node_modules/bootstrap/scss/functions';
+@import '../../node_modules/bootstrap/scss/variables';
+@import '../../node_modules/bootstrap/scss/mixins';
+@import '../../node_modules/bootstrap/scss/utilities';
+
+@import "settings/fonts";
+@import "settings/global";
 @import "../fonts/icon-tomo/style.css";
 
-.text-xs {
-  font-size: .75rem;
-}
-
-.text-sm {
-  font-size: .875rem;
-}
-
-.text-base {
-  font-size: 1rem;
-}
-
-.text-lg {
-  font-size: 1.125rem;
-}
-
-.text-xl {
-  font-size: 1.25rem;
-}
-
-.text-2xl {
-  font-size: 1.5rem;
-}
-
-.text-3xl {
-  font-size: 1.875rem;
-}
-
-.text-4xl {
-  font-size: 2.25rem;
-}
-
-.text-5xl {
-  font-size: 3rem;
-}
-
-.bg__none {
-  background: transparent !important;
-}
-
-a {
-  &:hover {
-    text-decoration: none;
-  }
-}
-
-// BEGIN Navbar
-.tm__nav {
-  .tm__logo {
-    width: 138px;
-    height: 47px;
-  }
-
-  /* Landscape phones and portrait tablets */
-  @media (min-width: 767px) {
-    padding: 0px;
-    min-height: 94px;
-
-    .nav-item {
-      > a {
-        padding: 33px 20px !important;
-
-        &.active {
-          border-bottom: 4px solid $blue
-        }
-      }
-
-      &.active {
-        border-bottom: 4px solid $blue
-      }
-    }
-
-    .tm__nav_wrapper {
-      min-height: 94px;
-    }
-  }
-}
-
-// END Navbar
-
-// BEGIN body wrapper
-main {
-  margin: 0px;
-}
-
-// END body wrapper
-
-.address__tag {
-  display: inline-block;
-  width: 132px;
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-main, footer {
-  margin-top: 35px;
-}
-
-.container {
-  transition: all .5s cubic-bezier(.55, 0, .1, 1);
-}
-
-.page-enter-active, .page-leave-active {
-  transition: opacity .5s
-}
-
-.page-enter, .page-leave-active {
-  opacity: 0
-}
-
-.bounce-enter-active {
-  animation: bounce-in .8s;
-}
-
-.bounce-leave-active {
-  animation: bounce-out .5s;
-}
-
-@keyframes bounce-in {
-  0% {
-    transform: scale(0)
-  }
-  50% {
-    transform: scale(1.5)
-  }
-  100% {
-    transform: scale(1)
-  }
-}
-
-@keyframes bounce-out {
-  0% {
-    transform: scale(1)
-  }
-  50% {
-    transform: scale(1.5)
-  }
-  100% {
-    transform: scale(0)
-  }
-}
-
-.tm__total {
-  /* Landscape phones and portrait tablets */
-  @media (min-width: 768px) {
-    font-size: 20px;
-    color: $black;
-    margin-bottom: 40px;
-  }
-}
-
-// BEGIN Hjs
-.hljs__code {
-  width: 100%;
-  display: block;
-  background: #f8f8f8;
-  max-height: 330px;
-  overflow: scroll;
-  font-size: 12px;
-  border: 1px solid $border-color;
-  border-radius: $border-radius;
-
-  .hljs {
-    overflow-x: auto;
-    position: relative;
-    padding: 1em;
-    margin-bottom: 1em;
-  }
-}
-
-// END Hjs
-
-// BEGIN table
-.b-table {
-  thead, tfoot {
-    th {
-      font-weight: 400;
-    }
-  }
-}
-
-.tm__no_border {
-  td, th {
-    border: none;
-  }
-
-  td {
-    padding: 20px;
-  }
-
-  tr {
-    td:first-child {
-      padding-left: 0px;
-      color: $text-muted;
-    }
-  }
-}
-
-.tm__icon {
-  height: 80px;
-  width: 80px;
-}
-
-.tm__block_header {
-  margin-bottom: 20px;
-}
-
-.tm__table_items {
-  margin-left: -30px;
-  margin-right: -30px;
-}
-
-.tm__table {
-  display: table;
-  width: 100%;
-
-  .tm__table_heading {
-    padding: 0px 0px 16px;
-    text-align: center;
-  }
-
-  .tm__table_head {
-  }
-
-  .tm__table_body {
-    margin-right: 15px;
-    margin-left: 15px;
-  }
-
-  .tm__table_row {
-    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-    margin-bottom: 20px;
-
-    .tm__table_cell {
-      text-align: center;
-      overflow: auto;
-
-      &:first-child {
-        border-bottom-left-radius: 10px;
-        border-top-left-radius: 10px;
-        overflow: visible;
-      }
-
-      &:last-child {
-        border-bottom-right-radius: 10px;
-        border-top-right-radius: 10px;
-      }
-    }
-  }
-
-  .tm__double {
-    min-height: 108px !important;
-  }
-
-  .tm__table_cell {
-    text-align: center;
-    padding-top: 30px;
-    padding-bottom: 30px;
-    background: $white;
-    line-height: 28px;
-
-    i {
-      font-size: 20px;
-      line-height: 28px;
-
-      &.tm-icon-contract {
-        display: block;
-        float: left;
-      }
-    }
-  }
-
-  &.table__no_shadow {
-    .tm__table_row {
-      margin-bottom: 0px !important;
-
-      &:last-child {
-        border-bottom: none;
-      }
-    }
-
-    .tm__table_cell {
-      border-radius: 0px !important;
-      background: transparent;
-    }
-  }
-}
-
-// END table
-
-// BEGIN page-item
-.page-item {
-  margin-right: 20px;
-  span, a {
-    border-radius: 50% !important;
-    min-width: 38px;
-    text-align: center;
-    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-    border: 0px;
-  }
-}
-
-// END page-item
-
-// BEGIN tab
-.tabs {
-  .nav-tabs {
-    border: none;
-    margin-bottom: 40px;
-
-    .nav-item {
-      .nav-link {
-        border-color: transparent transparent #dadbdd;
-        border-bottom-width: 4px;
-        border-top-width: 0px;
-        border-left-width: 0px;
-        border-right-width: 0px;
-        padding: 15px 40px;
-        color: $text-muted;
-
-        &.active {
-          border-bottom-color: $blue;
-          color: $blue;
-        }
-      }
-
-      &:first-child {
-        .nav-link {
-          padding-left: 0px;
-        }
-      }
-    }
-  }
-}
-
-// END tab
-
-.card {
-  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-  border: none;
-  border-radius: 10px;
-
-  .card-body {
-    padding: 40px;
-  }
-}
-
-h3 {
-  font-size: 24px;
-  font-weight: 400;
-}
-
-.font-14 {
-  font-size: 14px !important;
-  line-height: 18px !important;
-}
-
-/* Landscape phones and portrait tablets */
-@media (min-width: 768px) {
-  .tm__body_wrapper {
-    margin-top: 80px;
-    margin-bottom: 80px;
-  }
-}
+/*
+TOOLS
+================================================
+store all programic Sass functionality.
+If your tooling is simplistic enough, you can do something like:
+  tools.mixins
+If your tooling is more complex you can split it up like:
+  tools.grid
+  tools.typography
+  etc.
+*/
+
+/*
+GENERIC
+================================================
+reset and/or normalize styles, box-sizing definition, etc.
+This is the first layer which generates actual CSS.
+*/
+@import '../../node_modules/bootstrap/scss/print';
+@import '../../node_modules/bootstrap/scss/reboot';
+
+/*
+ELEMENTS
+================================================
+styling for bare HTML elements (like H1, A, etc.).
+moThese come with default styling from the browser so we can redefine them here.
+*/
+@import '../../node_modules/bootstrap/scss/dropdown';
+@import '../../node_modules/bootstrap/scss/forms';
+@import '../../node_modules/bootstrap/scss/nav';
+@import '../../node_modules/bootstrap/scss/navbar';
+@import '../../node_modules/bootstrap/scss/card';
+@import '../../node_modules/bootstrap/scss/tooltip';
+@import 'elements/html';
+@import 'elements/links';
+
+/*
+OBJECTS
+================================================
+"formless", in other words invisible to the user, no cosmetics
+  Eg. wrappers, grid systems, etc.
+This is the first layer of classes and should be agnostically named
+  Eg. list-inline, ui-list, etc.
+*/
+@import '../../node_modules/bootstrap/scss/grid';
+@import 'objects/typo';
+
+/*
+COMPONENTS
+================================================
+Specific UI components.
+This is where majority of our work takes place and our UI components are often composed of Objects and Components
+*/
+@import 'components/nav';
+
+/*
+TRUMPS
+================================================
+utilities and helper classes with ability to override anything which goes before in the triangle, eg. hide helper class
+*/
+@import 'trumps/custom';
