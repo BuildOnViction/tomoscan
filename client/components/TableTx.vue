@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
+		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
 			:fields="fields"
