@@ -34,10 +34,6 @@ font-size: 2.25rem;
 font-size: 3rem;
 }
 
-.bg__none {
-  background: transparent !important;
-}
-
 .address__tag {
   display: inline-block;
   width: 132px;
@@ -56,24 +52,8 @@ font-size: 3rem;
   }
 }
 
-/* Landscape phones and portrait tablets */
-@media (min-width: 768px) {
-  .tm__body_wrapper {
-    margin-top: 80px;
-    margin-bottom: 80px;
-  }
-}
-
-.tm__body_wrapper.is__homepage {
-  background: url('~/assets/img/bg-image.png')
-}
-
-footer {
-  margin-bottom: 50px;
-}
-
-.jumbotron {
-  padding: 15rem 2rem;
+.tomo-body-wrapper.is__homepage {
+  background: url('~/assets/img/bg-image.png');
 }
 
 .stat__box {
@@ -83,39 +63,6 @@ footer {
   a {
     &:hover {
       color: #34a1ff;
-    }
-  }
-}
-
-.search__form {
-  margin-bottom: 60px;
-
-  .input-group-prepend {
-    .btn {
-      height: 60px;
-      width: 60px;
-      border-radius: 50%;
-      box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.18);
-      margin-right: 25px;
-    }
-  }
-
-  .form-control {
-    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-    border-radius: 100px !important;
-    padding: 0.375rem 40px;
-    border: none !important;
-
-    &::placeholder {
-      color: rgb(167, 167, 167) !important;
-    }
-  }
-
-  &.mini {
-    margin-bottom: 0px !important;
-
-    .form-control {
-      max-width: 200px;
     }
   }
 }

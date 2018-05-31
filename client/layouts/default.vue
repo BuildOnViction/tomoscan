@@ -50,14 +50,14 @@
 			</div>
 		</b-navbar>
 
-		<main class="tm__body_wrapper" :class="isHomePage ? 'is__homepage' : ''">
-			<div class="container">
+		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
+			<div class="container container--wide">
 				<div class="row" v-if="! isHomePage">
 					<div class="col">
 						<breadcrumb/>
 					</div>
 					<div class="col">
-						<div class="input-group search__form mini d-flex justify-content-end">
+						<div class="input-group search-form search-form--mini d-flex justify-content-end">
 							<div class="input-group-prepend">
 								<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
 							</div>
@@ -65,15 +65,13 @@
 						</div>
 					</div>
 				</div>
-				<div class="jumbotron bg__none" v-else>
-					<b-row>
-						<b-col sm="3"></b-col>
-						<b-col sm="6">
-							<div class="input-group search__form">
+				<b-row v-else>
+						<b-col lg="8" xl="6" class="offset-lg-2 offset-xl-3">
+							<div class="input-group search-form">
 								<div class="input-group-prepend">
-									<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
+									<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="tm-search"></i></button>
 								</div>
-								<input type="text" v-model="search" class="form-control" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
+								<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
 							</div>
 							<div><!-- class="d-flex justify-content-center"-->
 								<div class="stat__box">
@@ -102,9 +100,7 @@
 								</div>
 							</div>
 						</b-col>
-						<b-col sm="3"></b-col>
 					</b-row>
-				</div>
 				<nuxt/>
 			</div>
 		</main>

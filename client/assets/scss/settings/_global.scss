@@ -5,5 +5,7 @@ $global-font-size: 18px;
 
 /* Colors
    ========================================================================== */
+$color-body-bg: #f8f8fa;
 $color-primary: #34a1ff;
+$color-primary-hover: darker($color-primary);
 $color-text: #868f9b;
