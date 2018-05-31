@@ -1,6 +1,7 @@
 import Web3Util from '../helpers/web3'
 import BlockRepository from '../repositories/BlockRepository'
 import TxRepository from '../repositories/TxRepository'
+import Block from '../models/Block'
 
 let Web3Connector = {
   connect: async (io) => {
@@ -11,8 +12,12 @@ let Web3Connector = {
         web3WS.eth.subscribe('newBlockHeaders').
           on('data', async (_block) => {
             if (_block) {
+              let block = await Block.findOne(
+                {number: _block.number})
               // Insert new block into db.
-              let block = await BlockRepository.addBlockByNumber(_block.number)
+              if (!block) {
+                block = await BlockRepository.addBlockByNumber(_block.number)
+              }
 
 //              socket.emit('new__block', block)
             }
