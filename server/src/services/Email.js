@@ -36,7 +36,7 @@ class EmailService {
     else {
       subject = 'TOMO sent at ' + address
     }
-    
+
     return this.send('follow', user.email, subject, {
       type: type,
       name: user.email,

@@ -96,7 +96,7 @@ let BlockRepository = {
                     // isSent email template.
                     email.followAlert(user, tx, follow.address, 'sent')
                   }
-                  if (follow.address === tx.to) {
+                  else if (follow.address === tx.to) {
                     // isReceive email template.
                     email.followAlert(user, tx, follow.address, 'received')
                   }
