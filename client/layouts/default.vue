@@ -105,19 +105,41 @@
 			</div>
 		</main>
 
-		<footer>
+		<footer class="tomo-footer">
 			<div class="container container--wide">
 				<div class="row">
-					<div class="col">Tomoscan 2018 - Running Tomochain</div>
-					<div class="col text-right">
-						<ul class="list-inline">
-							<li>
-								<a href="https://github.com/tomochain/tomo-explorer" target="_blank">
-									<img src="~/assets/img/icon-git.png" alt="TOMO Explorer github">
+					<b-col md="6" class="tomo-footer__copyright">
+						<p>Tomoscan 2018 - Running Tomochain</p>
+					</b-col>
+					<b-col md="6" class="text-md-right">
+						<ul class="list-inline tomo-footer__social">
+							<li class="list-inline-item">
+								<a href="https://t.me/tomochain" target="_blank">
+									<i class="fa fa-telegram"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://www.facebook.com/tomochainofficial" target="_blank">
+									<i class="fa fa-facebook"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://twitter.com/TomoChainANN" target="_blank">
+									<i class="fa fa-twitter"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://github.com/tomochain/" target="_blank">
+									<i class="fa fa-github"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://www.reddit.com/r/Tomochain/" target="_blank">
+									<i class="fa fa-reddit"></i>
 								</a>
 							</li>
 						</ul>
-					</div>
+					</b-col>
 				</div>
 			</div>
 		</footer>
