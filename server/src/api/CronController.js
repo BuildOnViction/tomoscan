@@ -78,17 +78,4 @@ CronController.get('/cron/tokens', async (req, res) => {
   }
 })
 
-CronController.get('/cron/test', async (req, res) => {
-  try {
-    let email = new EmailService()
-    let resp = await email.newUserRegister()
-
-    return res.json({status: resp})
-  }
-  catch (e) {
-    console.log(e)
-    throw e
-  }
-})
-
 export default CronController
