@@ -93,11 +93,11 @@ let BlockRepository = {
                 let follow = followers[i]
                 let user = await User.findOne({_id: follow.user})
                 if (user) {
-                  if (follow.address === tx.from) {
+                  if (follow.notifySent && follow.address === tx.from) {
                     // isSent email template.
                     email.followAlert(user, tx, follow.address, 'sent')
                   }
-                  else if (follow.address === tx.to) {
+                  else if (follow.notifyReceive && follow.address === tx.to) {
                     // isReceive email template.
                     email.followAlert(user, tx, follow.address, 'received')
                   }
