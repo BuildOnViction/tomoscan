@@ -1,0 +1,5 @@
+.tomo-stat-wrap {
+  @include media-breakpoint-up(md) {
+    justify-content: space-between;
+  }
+}

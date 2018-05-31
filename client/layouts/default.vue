@@ -66,33 +66,33 @@
 					</div>
 				</div>
 				<b-row v-else>
-						<b-col lg="8" xl="6" class="offset-lg-2 offset-xl-3">
+						<b-col lg="8" class="offset-lg-2 offset-xxl-3 col-xxl-6">
 							<div class="input-group search-form">
 								<div class="input-group-prepend">
 									<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="tm-search"></i></button>
 								</div>
 								<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
 							</div>
-							<div><!-- class="d-flex justify-content-center"-->
-								<div class="stat__box">
+							<div class="tomo-stat-wrap d-md-flex">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
 										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'accounts'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
 										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Wallets</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'tokens'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
 										<span v-else>{{ formatNumber(stats.totalToken) }}&nbsp;Tokens</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'contracts'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
 										<span v-else>{{ formatNumber(stats.totalSmartContract) }}&nbsp;Contracts</span>
