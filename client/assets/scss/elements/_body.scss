@@ -1,10 +1,6 @@
 body {
     font-family: $global-font;
-    font-size: 15px;
+    font-size: 14px;
     color: $color-text;
     background-color: $color-body-bg;
-
-    @include media-breakpoint-up(xl) {
-        font-size: 18px;
-    }
 }
