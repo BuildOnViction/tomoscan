@@ -1,4 +1,6 @@
 .tomo-body-wrapper {
+  margin-top: 50px;
+
   &--home {
     display: flex;
     flex-direction: column;
@@ -7,11 +9,11 @@
     height: calc(100vh - 80px - 104px);
 
     @include media-breakpoint-up(md) {
-      height: calc(100vh - 90px - 53px);
+      height: calc(100vh - 60px - 53px);
     }
 
     @include media-breakpoint-up(lg) {
-      height: calc(100vh - 90px - 83px);
+      height: calc(100vh - 60px - 83px);
     }
   }
 }

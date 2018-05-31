@@ -53,17 +53,17 @@
 		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
 			<div class="container container--wide">
 				<div class="row" v-if="! isHomePage">
-					<div class="col">
+					<b-col md="6">
 						<breadcrumb/>
-					</div>
-					<div class="col">
+					</b-col>
+					<b-col md="6">
 						<div class="input-group search-form search-form--mini d-flex justify-content-end">
 							<div class="input-group-prepend">
 								<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
 							</div>
 							<input type="text" v-model="search" class="form-control" placeholder="Search" @keyup.enter="onGotoRoute">
 						</div>
-					</div>
+					</b-col>
 				</div>
 				<b-row v-else>
 						<b-col lg="8" class="offset-lg-2 offset-xxl-3 col-xxl-6">

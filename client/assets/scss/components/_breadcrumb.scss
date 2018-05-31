@@ -1,17 +1,21 @@
-.breadcrumb {
+.breadcrumb.tomo-breadcrumb {
+  background-color: transparent;
   padding: 0px;
-  background-color: $body-bg;
 
-  /* Landscape phones and portrait tablets */
-  @media (min-width: 768px) {
-    margin-bottom: 60px;
-  }
-}
+  .breadcrumb-item {
+    vertical-align: middle;
 
-.breadcrumb-item {
-  &:last-child {
-    a {
-      color: $text-muted
+    &:before {
+      content: '\f105';
+      @extend %fa-icon;
+    }
+
+    &:first-child:before {
+      display: none;
+    }
+
+    &:last-child a {
+      color: $color-primary;
     }
   }
 }
