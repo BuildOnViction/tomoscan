@@ -58,7 +58,6 @@ moThese come with default styling from the browser so we can redefine them here.
 @import 'elements/body';
 @import 'elements/button';
 @import 'elements/links';
-@import 'elements/main';
 
 /*
 OBJECTS
@@ -88,6 +87,7 @@ This is where majority of our work takes place and our UI components are often c
 @import '../../node_modules/bootstrap/scss/pagination';
 @import '../../node_modules/bootstrap/scss/tooltip';
 @import '../../node_modules/bootstrap/scss/type';
+@import 'components/body-wrapper';
 @import 'components/breadcrumb';
 @import 'components/card';
 @import 'components/container';
@@ -95,6 +95,7 @@ This is where majority of our work takes place and our UI components are often c
 @import 'components/hightlightjs';
 @import 'components/nav';
 @import 'components/navbar-toggle';
+@import 'components/search-form';
 @import 'components/tm-pagination';
 @import 'components/tm-table';
 @import 'components/tm-tabs';

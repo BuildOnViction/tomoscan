@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icon-tomo';
-  src:  url('fonts/icon-tomo.eot?laq84w');
-  src:  url('fonts/icon-tomo.eot?laq84w#iefix') format('embedded-opentype'),
-    url('fonts/icon-tomo.ttf?laq84w') format('truetype'),
-    url('fonts/icon-tomo.woff?laq84w') format('woff'),
-    url('fonts/icon-tomo.svg?laq84w#icon-tomo') format('svg');
+  src:  url('fonts/icon-tomo.eot?298xpd');
+  src:  url('fonts/icon-tomo.eot?298xpd#iefix') format('embedded-opentype'),
+    url('fonts/icon-tomo.ttf?298xpd') format('truetype'),
+    url('fonts/icon-tomo.woff?298xpd') format('woff'),
+    url('fonts/icon-tomo.svg?298xpd#icon-tomo') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,6 +24,9 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+.tm-search:before {
+  content: "\e903";
+}
 .tm-arrow-left:before {
   content: "\e900";
 }
