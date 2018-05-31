@@ -71,17 +71,21 @@
   }
 
   @include media-breakpoint-up(lg) {
-    height: 90px;
+    height: 60px;
     padding: 0;
 
+    &__logo {
+      max-width: 103px;
+    }
+
     &__wrapper {
-      height: 90px;
+      height: 60px;
     }
 
     .nav-item .nav-link {
       position: relative;
-      height: 90px;
-      line-height: 90px;
+      height: 60px;
+      line-height: 60px;
       padding: 0 20px;
 
       &:before {

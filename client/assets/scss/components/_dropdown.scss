@@ -21,7 +21,7 @@
 .dropdown-item {
 
   .tomo-nav & {
-    font-size: 15px;
+    font-size: 14px;
     color: $color-text;
 
     &:hover,
@@ -57,10 +57,6 @@
       &:last-child {
         border: none;
       }
-    }
-
-    @include media-breakpoint-up(xl) {
-      font-size: 18px;
     }
   }
 }
