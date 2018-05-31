@@ -33,6 +33,8 @@
     padding: 5px 20px;
     border: none;
 
+    @extend %transit;
+
     &::placeholder {
       color: rgb(167, 167, 167) !important;
     }
@@ -52,10 +54,41 @@
   }
 
   &--mini {
-    margin-bottom: 0px !important;
+    margin-bottom: 30px;
 
-    .form-control {
-      max-width: 200px;
+    @include media-breakpoint-up(sm) {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 0;
+    }
+
+    .btn.search-form__btn {
+      height: 40px;
+      width: 40px;
+
+      i {
+        vertical-align: 1px;
+      }
+
+      @include media-breakpoint-up(sm) {
+        margin-right: 15px;
+      }
+    }
+
+    .form-control.search-form__input {
+      padding: 5px 30px;
+
+      @include media-breakpoint-up(sm) {
+        max-width: 300px;
+      }
+
+      @include media-breakpoint-up(md) {
+        max-width: 215px;
+
+        &:focus {
+          max-width: 400px;
+        }
+      }
     }
   }
 }

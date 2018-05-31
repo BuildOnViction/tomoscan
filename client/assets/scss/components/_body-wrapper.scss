@@ -16,4 +16,14 @@
       height: calc(100vh - 60px - 83px);
     }
   }
+  
+  &__heading {
+    @include media-breakpoint-up(sm) {
+      margin-bottom: 40px;
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin-top: 80px;
+  }
 }

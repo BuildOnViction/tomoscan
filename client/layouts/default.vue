@@ -52,16 +52,16 @@
 
 		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
 			<div class="container container--wide">
-				<div class="row" v-if="! isHomePage">
-					<b-col md="6">
+				<div class="row align-items-center tomo-body-wrapper__heading" v-if="! isHomePage">
+					<b-col sm="5" md="4">
 						<breadcrumb/>
 					</b-col>
-					<b-col md="6">
-						<div class="input-group search-form search-form--mini d-flex justify-content-end">
+					<b-col sm="7" md="8">
+						<div class="input-group search-form search-form--mini">
 							<div class="input-group-prepend">
-								<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
+								<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="fa fa-search"></i></button>
 							</div>
-							<input type="text" v-model="search" class="form-control" placeholder="Search" @keyup.enter="onGotoRoute">
+							<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search" @keyup.enter="onGotoRoute">
 						</div>
 					</b-col>
 				</div>

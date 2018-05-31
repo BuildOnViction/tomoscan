@@ -1,6 +1,7 @@
 .breadcrumb.tomo-breadcrumb {
   background-color: transparent;
   padding: 0px;
+  margin-bottom: 30px;
 
   .breadcrumb-item {
     vertical-align: middle;
@@ -17,5 +18,9 @@
     &:last-child a {
       color: $color-primary;
     }
+  }
+
+  @include media-breakpoint-up(sm) {
+    margin-bottom: 0;
   }
 }
