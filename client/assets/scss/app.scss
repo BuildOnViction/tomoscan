@@ -69,6 +69,7 @@ This is the first layer of classes and should be agnostically named
 */
 @import '../../node_modules/bootstrap/scss/grid';
 @import '../../node_modules/bootstrap/scss/transitions';
+@import 'objects/animations';
 @import 'objects/grid';
 @import 'objects/typo';
 
