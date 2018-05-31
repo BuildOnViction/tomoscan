@@ -73,7 +73,7 @@
 								</div>
 								<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
 							</div>
-							<div class="tomo-stat-wrap d-md-flex">
+							<div class="tomo-stat d-flex">
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
 										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
