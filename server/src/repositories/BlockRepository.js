@@ -83,6 +83,7 @@ let BlockRepository = {
             // Send email to follower.
             let followers = await Follow.find({
               startBlock: {$lte: tx.blockNumber},
+              sendEmail: true,
               $or: [{address: tx.from}, {address: tx.to}],
             })
 
