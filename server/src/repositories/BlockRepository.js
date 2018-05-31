@@ -58,7 +58,6 @@ let BlockRepository = {
           if (block) {
             tx.block = block
           }
-          tx.status = false
           if (tx && tx.hash) {
             if (tx.from !== null) {
               tx.from = tx.from.toLowerCase()

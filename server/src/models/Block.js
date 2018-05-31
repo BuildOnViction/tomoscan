@@ -27,7 +27,6 @@ const schema = new mongoose.Schema({
   timestamps: true,
   toObject: {virtuals: true},
   toJSON: {virtuals: true},
-  versionKey: false,
 })
 
 let Block = mongoose.model('Block', schema)

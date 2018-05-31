@@ -104,7 +104,7 @@ let TxRepository = {
             {upsert: true, new: true})
         }
       }
-      tx.status = true
+      tx.status = receipt.status
 
       delete tx['_id']
 
