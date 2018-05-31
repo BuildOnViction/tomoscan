@@ -106,7 +106,7 @@
 		</main>
 
 		<footer>
-			<div class="container">
+			<div class="container container--wide">
 				<div class="row">
 					<div class="col">Tomoscan 2018 - Running Tomochain</div>
 					<div class="col text-right">
