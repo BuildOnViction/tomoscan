@@ -1,0 +1,7 @@
+.tomo-loading {
+  &:before {
+    content: url('~/assets/img/loading.svg');
+    display: inline-block;
+    vertical-align: middle;
+  }
+}

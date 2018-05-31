@@ -76,25 +76,25 @@
 							<div class="tomo-stat d-flex">
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'accounts'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Wallets</span>
 									</nuxt-link>
 								</div>
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'tokens'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalToken) }}&nbsp;Tokens</span>
 									</nuxt-link>
 								</div>
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'contracts'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalSmartContract) }}&nbsp;Contracts</span>
 									</nuxt-link>
 								</div>
