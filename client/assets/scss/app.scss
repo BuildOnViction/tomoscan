@@ -17,14 +17,14 @@ Split up into logical sections, the smaller and simpler the better.
 used with preprocessors and contain font, colors definitions, etc
 ================================================
 */
+@import "settings/fonts";
+@import "settings/global";
+@import "../fonts/icon-tomo/style.css";
+
 @import '../../node_modules/bootstrap/scss/functions';
 @import '../../node_modules/bootstrap/scss/variables';
 @import '../../node_modules/bootstrap/scss/mixins';
 @import '../../node_modules/bootstrap/scss/utilities';
-
-@import "settings/fonts";
-@import "settings/global";
-@import "../fonts/icon-tomo/style.css";
 
 /*
 TOOLS
@@ -69,6 +69,7 @@ This is the first layer of classes and should be agnostically named
 */
 @import '../../node_modules/bootstrap/scss/grid';
 @import '../../node_modules/bootstrap/scss/transitions';
+@import 'objects/grid';
 @import 'objects/typo';
 
 /*
@@ -96,6 +97,7 @@ This is where majority of our work takes place and our UI components are often c
 @import 'components/nav';
 @import 'components/navbar-toggle';
 @import 'components/search-form';
+@import 'components/stat';
 @import 'components/tm-pagination';
 @import 'components/tm-table';
 @import 'components/tm-tabs';
