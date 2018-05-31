@@ -78,21 +78,11 @@ let TokenRepository = {
     }
   },
 
-  formatItems: async (items) => {
-    for (let i = 0; i < items.length; i++) {
-      let item = items[i]
-      items[i].name = formatAscIIJSON(item.name)
-      items[i].symbol = formatAscIIJSON(item.symbol)
-    }
-
-    return items
-  },
-
   formatItem: async (item) => {
-    let tokenTxsCount = await TokenTx.find({address: item.hash}).count()
-    item.tokenTxsCount = tokenTxsCount
+    item.tokenTxsCount = await TokenTx.find({address: item.hash}).count()
     item.name = formatAscIIJSON(item.name)
     item.symbol = formatAscIIJSON(item.symbol)
+    item.totalSupply = item.totalSupply / Math.pow(10, item.decimals)
 
     return item
   },
