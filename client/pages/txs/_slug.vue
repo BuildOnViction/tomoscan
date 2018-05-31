@@ -15,6 +15,10 @@
 										<td>{{ tx.hash }}</td>
 									</tr>
 									<tr>
+										<td>TxReceipt Status:</td>
+										<td>{{ tx.status ? 'Success' : 'Reject' }}</td>
+									</tr>
+									<tr>
 										<td>Block:</td>
 										<td>
 											<nuxt-link v-if="tx.blockNumber" :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>

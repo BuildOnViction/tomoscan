@@ -50,7 +50,7 @@ TxController.get('/txs', async (req, res) => {
     }
     let address = req.query.address
     if (typeof address !== 'undefined') {
-      params.query = Object.assign(params.query,
+      params.query = Object.assign({}, params.query,
         {$or: [{from: address}, {to: address}, {contractAddress: address}]})
     }
     params.populate = populates
