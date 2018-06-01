@@ -29,7 +29,7 @@
 
 			<template slot="gasUsed" slot-scope="props">
 				<div>{{ formatNumber(props.item.gasUsed) }}</div>
-				<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+				<small>({{ (100 * props.item.gasUsed / props.item.gasLimit).toFixed(2) }} %)</small>
 			</template>
 
 			<template slot="gasLimit" slot-scope="props">{{ formatNumber(props.item.gasLimit) }}</template>
@@ -59,11 +59,11 @@
     }),
     data: () => ({
       fields: {
-        number: {label: 'Number'},
+        number: {label: 'Height'},
         timestamp: {label: 'Age'},
         e_tx: {label: 'txn'},
         miner: {label: 'Miner'},
-        gasUsed: {label: 'GasUsed', tdClass: 'text-right'},
+        gasUsed: {label: 'GasUsed'},
         gasLimit: {label: 'GasLimit'},
       },
       loading: true,
