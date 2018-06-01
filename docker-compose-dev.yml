@@ -23,6 +23,7 @@ services:
     volumes:
      - ./server:/var/www
      - /var/www/node_modules
+
   web:
     build:
       context: .
@@ -35,5 +36,5 @@ services:
     depends_on:
       - server
     volumes:
-      - ./client:/var/www
-      - /var/www/node_modules
+     - ./client:/var/www
+     - /var/www/node_modules

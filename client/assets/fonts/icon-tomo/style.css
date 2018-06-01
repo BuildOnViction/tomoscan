@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icon-tomo';
-  src:  url('fonts/icon-tomo.eot?krt7gd');
-  src:  url('fonts/icon-tomo.eot?krt7gd#iefix') format('embedded-opentype'),
-    url('fonts/icon-tomo.ttf?krt7gd') format('truetype'),
-    url('fonts/icon-tomo.woff?krt7gd') format('woff'),
-    url('fonts/icon-tomo.svg?krt7gd#icon-tomo') format('svg');
+  src:  url('fonts/icon-tomo.eot?t9scvc');
+  src:  url('fonts/icon-tomo.eot?t9scvc#iefix') format('embedded-opentype'),
+    url('fonts/icon-tomo.ttf?t9scvc') format('truetype'),
+    url('fonts/icon-tomo.woff?t9scvc') format('woff'),
+    url('fonts/icon-tomo.svg?t9scvc#icon-tomo') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,17 +24,18 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.tm-cancel:before {
-  content: "\e904";
+.tm-chevrons-left:before {
+  content: "\e905";
 }
-.tm-close:before {
-  content: "\e904";
+.tm-chevrons-right:before {
+  content: "\e906";
 }
-.tm-remove:before {
-  content: "\e904";
+.tm-angle-right:before {
+  content: "\e907";
+  color: #868f9b;
 }
-.tm-dismiss:before {
-  content: "\e904";
+.tm-angle-left:before {
+  content: "\e908";
 }
 .tm-search:before {
   content: "\e903";
@@ -47,4 +48,16 @@
 }
 .tm-icon-contract:before {
   content: "\e902";
+}
+.tm-cancel:before {
+  content: "\e904";
+}
+.tm-close:before {
+  content: "\e904";
+}
+.tm-remove:before {
+  content: "\e904";
+}
+.tm-dismiss:before {
+  content: "\e904";
 }

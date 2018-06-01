@@ -22,6 +22,7 @@
 		</div>
 		<b-pagination
 			align="center"
+      class="tomo-pagination"
 			:total-rows="total"
 			:per-page="perPage"
 			@change="onChangePaginate"
