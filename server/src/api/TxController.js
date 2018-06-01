@@ -5,13 +5,14 @@ import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
 import TokenTx from '../models/TokenTx'
 import TokenTxRepository from '../repositories/TokenTxRepository'
+import Block from '../models/Block'
 
 const TxController = Router()
 
 TxController.get('/txs', async (req, res) => {
   try {
     let block_num = !isNaN(req.query.block) ? req.query.block : null
-    let params = {query: {status: true}, sort: {blockNumber: -1}}
+    let params = {sort: {blockNumber: -1}}
     if (block_num) {
       params.query = {blockNumber: block_num}
       // Get txs by block number.
@@ -50,7 +51,7 @@ TxController.get('/txs', async (req, res) => {
     }
     let address = req.query.address
     if (typeof address !== 'undefined') {
-      params.query = Object.assign(params.query,
+      params.query = Object.assign({}, params.query,
         {$or: [{from: address}, {to: address}, {contractAddress: address}]})
     }
     params.populate = populates
@@ -88,6 +89,9 @@ TxController.get('/txs/:slug', async (req, res) => {
 
     tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
     tx.tokenTxs = tokenTxs
+
+    let latestBlock = await Block.findOne().sort({number: -1})
+    tx.latestBlockNumber = latestBlock.number
 
     return res.json(tx)
   }

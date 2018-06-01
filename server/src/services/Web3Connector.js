@@ -1,6 +1,7 @@
 import Web3Util from '../helpers/web3'
 import BlockRepository from '../repositories/BlockRepository'
-import TxRepository from '../repositories/TxRepository'
+import Block from '../models/Block'
+import cache from 'memory-cache'
 
 let Web3Connector = {
   connect: async (io) => {
@@ -11,7 +12,14 @@ let Web3Connector = {
         web3WS.eth.subscribe('newBlockHeaders').
           on('data', async (_block) => {
             if (_block) {
-              // Insert new block into db.
+              let cacheNumber = cache.get('cacheNumber')
+
+              // Check only add block once.
+              if (cacheNumber && cacheNumber >= parseInt(_block.number)) {
+                return
+              }
+              cache.put('cacheNumber', _block.number)
+
               let block = await BlockRepository.addBlockByNumber(_block.number)
 
 //              socket.emit('new__block', block)

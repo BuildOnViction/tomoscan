@@ -18,6 +18,8 @@
 			<template slot="symbol" slot-scope="props">{{ props.item.symbol }}</template>
 
 			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
+
+			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
 		</table-base>
 
 		<b-pagination
@@ -44,6 +46,7 @@
         symbol: {label: 'Symbol'},
         totalSupply: {label: 'totalSupply', thClass: 'text-center', tdClass: 'text-right'},
         decimals: {label: 'Decimals', thClass: 'text-center', tdClass: 'text-right'},
+        tokenTxsCount: {label: 'TxCount'},
       },
       loading: true,
       pagination: {},

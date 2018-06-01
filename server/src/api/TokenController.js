@@ -11,7 +11,10 @@ TokenController.get('/tokens', async (req, res) => {
       {query: {status: true}, sort: {totalSupply: -1}})
 
     let items = data.items
-    data.items = await TokenRepository.formatItems(items)
+    for (let i = 0; i < data.items.length; i++) {
+      let item = data.items[i]
+      data.items[i] = await TokenRepository.formatItem(item)
+    }
 
     return res.json(data)
   }

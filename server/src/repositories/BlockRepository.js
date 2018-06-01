@@ -58,7 +58,6 @@ let BlockRepository = {
           if (block) {
             tx.block = block
           }
-          tx.status = false
           if (tx && tx.hash) {
             if (tx.from !== null) {
               tx.from = tx.from.toLowerCase()
@@ -84,6 +83,7 @@ let BlockRepository = {
             // Send email to follower.
             let followers = await Follow.find({
               startBlock: {$lte: tx.blockNumber},
+              sendEmail: true,
               $or: [{address: tx.from}, {address: tx.to}],
             })
 
@@ -93,11 +93,11 @@ let BlockRepository = {
                 let follow = followers[i]
                 let user = await User.findOne({_id: follow.user})
                 if (user) {
-                  if (follow.address === tx.from) {
+                  if (follow.notifySent && follow.address === tx.from) {
                     // isSent email template.
                     email.followAlert(user, tx, follow.address, 'sent')
                   }
-                  if (follow.address === tx.to) {
+                  else if (follow.notifyReceive && follow.address === tx.to) {
                     // isReceive email template.
                     email.followAlert(user, tx, follow.address, 'received')
                   }

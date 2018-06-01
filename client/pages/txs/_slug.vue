@@ -15,10 +15,15 @@
 										<td>{{ tx.hash }}</td>
 									</tr>
 									<tr>
+										<td>TxReceipt Status:</td>
+										<td>{{ tx.status ? 'Success' : 'Reject' }}</td>
+									</tr>
+									<tr>
 										<td>Block:</td>
 										<td>
 											<nuxt-link v-if="tx.blockNumber" :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>
 											<span v-else class="text-muted">Pending...</span>
+											<span class="ml-1">({{ tx.latestBlockNumber - tx.blockNumber }} block confirmation)</span>
 										</td>
 									</tr>
 									<tr>

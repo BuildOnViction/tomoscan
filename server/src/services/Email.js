@@ -13,7 +13,6 @@ class EmailService {
     this.transporter = nodemailer.createTransport(sgTransport(options))
     this.templateDir = path.join(__dirname, '../', 'templates')
     this.assetDir = path.join(__dirname, '../', 'assets')
-    console.info('email templates Dir ', this.templateDir)
   }
 
   newUserRegister (user) {
@@ -37,6 +36,7 @@ class EmailService {
     else {
       subject = 'TOMO sent at ' + address
     }
+
     return this.send('follow', user.email, subject, {
       type: type,
       name: user.email,
@@ -50,6 +50,9 @@ class EmailService {
   }
 
   async send (templatePath, to, subject, params) {
+    if (process.env.APP_ENV === 'dev') {
+      console.log(JSON.stringify({templatePath, to, subject, params}))
+    }
     let email = new Email({
       views: {root: this.templateDir},
       preview: false,
