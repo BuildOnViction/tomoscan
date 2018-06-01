@@ -20,9 +20,7 @@ services:
      - mongo
     depends_on:
      - mongo
-    volumes:
-     - ./server:/var/www
-     - /var/www/node_modules
+
   web:
     build:
       context: .
@@ -34,6 +32,3 @@ services:
       - mongo
     depends_on:
       - server
-    volumes:
-      - ./client:/var/www
-      - /var/www/node_modules
