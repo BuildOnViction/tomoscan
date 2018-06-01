@@ -1,0 +1,30 @@
+.tomo-body-wrapper {
+  margin-top: 50px;
+
+  &--home {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0 !important;
+    height: calc(100vh - 80px - 104px);
+
+    @include media-breakpoint-up(md) {
+      height: calc(100vh - 60px - 53px);
+    }
+
+    @include media-breakpoint-up(lg) {
+      height: calc(100vh - 60px - 83px);
+    }
+  }
+  
+  &__heading {
+    @include media-breakpoint-up(sm) {
+      margin-bottom: 40px;
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+    margin-top: 80px;
+  }
+}

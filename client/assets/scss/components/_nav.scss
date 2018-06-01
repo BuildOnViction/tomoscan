@@ -13,7 +13,6 @@
   }
 
   .nav-item .nav-link {
-    font-size: 15px;
     color: $color-text;
 
     &:hover,
@@ -37,6 +36,8 @@
   }
 
   @include media-breakpoint-down(md) {
+    height: 80px;
+
     #nav_collapse {
       position: absolute !important;
       top: 100%;
@@ -70,19 +71,22 @@
   }
 
   @include media-breakpoint-up(lg) {
-    min-height: 50px;
+    height: 60px;
     padding: 0;
 
+    &__logo {
+      max-width: 103px;
+    }
+
     &__wrapper {
-      min-height: 50px;
+      height: 60px;
     }
 
     .nav-item .nav-link {
       position: relative;
-      min-height: 50px;
-      line-height: 50px;
-      padding-left: 20px;
-      padding-right: 20px;
+      height: 60px;
+      line-height: 60px;
+      padding: 0 20px;
 
       &:before {
         content: '';
@@ -121,16 +125,8 @@
   }
 
   @include media-breakpoint-up(xl) {
-    min-height: 90px;
-
-    &__wrapper {
-      min-height: 90px;
-    }
 
     .nav-item .nav-link {
-      font-size: 18px;
-      min-height: 90px;
-      line-height: 90px;
       margin: 0 20px;
     }
 

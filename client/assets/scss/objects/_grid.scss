@@ -1,0 +1,10 @@
+@for $i from 1 through $grid-columns {
+  .col-xxl-#{$i} {
+    @extend %grid-column;
+  }
+  @include media-breakpoint-up(xxl) {
+    .col-xxl-#{$i} {
+      @include make-col($i, $grid-columns);
+    }
+  }
+}

@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
+		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
 			class="tm__table table__no_shadow mb-4 table__event_logs"

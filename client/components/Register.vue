@@ -1,6 +1,7 @@
 <template>
 	<b-modal
 		:id="modalId"
+    class="tomo-modal"
 		ref="modalRegister"
 		@ok="onRegister"
 		@keydown.native.enter="onRegister"
@@ -34,7 +35,7 @@
 				       :class="($v.formPasswordConfirmation.$dirty && $v.formPasswordConfirmation.$invalid) ? 'is-invalid' : ''"
 				       name="password_confirmation" type="password" autocomplete="new-password" class="form-control" required placeholder="Enter your password confirmation">
 				<div class="text-danger" v-if="$v.formPassword.$dirty && ! $v.formPassword.required">Password is required</div>
-				<div class="text-danger" v-if="$v.formPasswordConfirmation.$dirty && ! $v.formPasswordConfirmation.sameAsPassword">Repeat password again</div>
+				<div class="text-danger" v-if="$v.formPasswordConfirmation.$dirty && ! $v.formPasswordConfirmation.sameAsPassword">Those passwords didn't match</div>
 			</div>
 		</form>
 	</b-modal>
