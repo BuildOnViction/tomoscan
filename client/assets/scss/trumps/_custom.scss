@@ -4,6 +4,9 @@
   margin-bottom: 40px;
 }
 
+.text-danger {
+  color: $color-invalid !important;
+}
 
 .address__tag {
   display: inline-block;
