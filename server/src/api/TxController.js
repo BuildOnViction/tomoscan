@@ -5,6 +5,7 @@ import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
 import TokenTx from '../models/TokenTx'
 import TokenTxRepository from '../repositories/TokenTxRepository'
+import Block from '../models/Block'
 
 const TxController = Router()
 
@@ -88,6 +89,9 @@ TxController.get('/txs/:slug', async (req, res) => {
 
     tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
     tx.tokenTxs = tokenTxs
+
+    let latestBlock = await Block.findOne().sort({number: -1})
+    tx.latestBlockNumber = latestBlock.number
 
     return res.json(tx)
   }
