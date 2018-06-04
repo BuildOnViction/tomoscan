@@ -1,13 +1,24 @@
 <template>
-  <div v-if="loading"
+  <div
+    v-if="loading"
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-cubes tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No block found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
-		:fields="fields"
-		:items="items"
-    class="tomo-table--blocks">
+      v-if="items.length > 0"
+      :fields="fields"
+      :items="items"
+      class="tomo-table--blocks">
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
@@ -42,6 +53,7 @@
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -65,12 +77,12 @@
     }),
     data: () => ({
       fields: {
-        number: {label: 'Height', cssClass: 'td-height'},
-        timestamp: {label: 'Age', cssClass: 'td-age'},
-        e_tx: {label: 'txn', cssClass: 'td-txn'},
-        miner: {label: 'Miner', cssClass: 'td-miner'},
-        gasUsed: {label: 'GasUsed', cssClass: 'td-gas-used'},
-        gasLimit: {label: 'GasLimit', cssClass: 'td-gas-limit'},
+        number: {label: 'Height'},
+        timestamp: {label: 'Age'},
+        e_tx: {label: 'txn'},
+        miner: {label: 'Miner'},
+        gasUsed: {label: 'GasUsed'},
+        gasLimit: {label: 'GasLimit'},
       },
       loading: true,
       pagination: {},

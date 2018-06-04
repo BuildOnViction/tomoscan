@@ -1,20 +1,31 @@
 <template>
-	<div v-if="loading"
+	<div
+    v-if="loading"
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} accounts found</p>
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-user-secret tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No account found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} accounts found</p>
 
     <table-base
-    :fields="fields"
-    :items="items"
-    class="tomo-table--accounts">
+      v-if="items.length > 0"
+      :fields="fields"
+      :items="items"
+      class="tomo-table--accounts">
       <template slot="rank" slot-scope="props">{{props.item.rank}}</template>
 
       <template slot="hash" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
           <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
           <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
-          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash, -1) }}</span>
+          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash) }}</span>
         </nuxt-link>
       </template>
 
@@ -23,12 +34,13 @@
         <span class="d-none d-lg-block" v-html="formatUnit(toEther(props.item.balance))"></span>
       </template>
 
-      <template slot="txcount" slot-scope="props">
-        <span>{{ formatNumber(item.transactionCount) }}</span>
+      <template slot="txCount" slot-scope="props">
+        <span>{{ formatNumber(props.item.transactionCount) }}</span>
       </template>
     </table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
