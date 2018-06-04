@@ -21,11 +21,14 @@ const mixin = {
       return [].concat.apply([], query).join('&')
     },
 
-    formatNumber: (number) => {
+    formatNumber: (number, fixed) => {
       let seps = number.toString().split('.')
+      if (fixed > 0) {
+        seps = parseFloat(number).toFixed(fixed).toString().split('.')
+      }
       seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-      return seps.join('.')
+      return seps.join('.') + (fixed > 0 ? '...' : '')
     },
 
     toLongNumberString: (n) => {
@@ -49,7 +52,7 @@ const mixin = {
       return str + str2
     },
 
-    toEther: (wei) => {
+    toEther: (wei, fixed) => {
       if (!wei) {
         return ''
       }
@@ -65,7 +68,7 @@ const mixin = {
         convert = 'tether'
       }
 
-      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert)) +
+      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert), fixed) +
         ' ' + sfx
     },
 
@@ -112,12 +115,12 @@ const mixin = {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     },
 
-    formatLongString: (address, maxLength) => {
-      if (address.length <= maxLength) {
-        return address
+    formatLongString: (str, maxLength) => {
+      if (str.length <= maxLength || maxLength < 1) {
+        return str
       }
-      return address.substring(0, maxLength) + '...';
-    }
+      return str.substring(0, maxLength) + '...';
+    },
   },
 }
 

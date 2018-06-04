@@ -1,31 +1,32 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+	<div v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+		<p class="tomo-total-items">Total {{ formatNumber(total) }} accounts found</p>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
-				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'rank'">{{ item.rank }}</div>
+    <table-base
+    :fields="fields"
+    :items="items"
+    class="tomo-table--accounts">
+      <template slot="rank" slot-scope="props">{{props.item.rank}}</template>
 
-						<div v-else-if="key === 'hash'">
-							<nuxt-link :to="{name: 'address-slug', params: {slug: item.hash}}">{{ item.hash }}</nuxt-link>
-						</div>
+      <template slot="hash" slot-scope="props">
+        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
+          <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
+          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
+          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash, -1) }}</span>
+        </nuxt-link>
+      </template>
 
-						<div v-else-if="key === 'balance'" class="text-right"><span v-html="formatUnit(toEther(item.balance))"></span></div>
+      <template slot="balance" slot-scope="props">
+        <span class="d-lg-none" v-html="formatUnit(toEther(props.item.balance, 5))"></span>
+        <span class="d-none d-lg-block" v-html="formatUnit(toEther(props.item.balance))"></span>
+      </template>
 
-						<div v-else-if="key === 'transactionCount'" class="text-right">{{ formatNumber(item.transactionCount) }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
+      <template slot="txcount" slot-scope="props">
+        <span>{{ formatNumber(item.transactionCount) }}</span>
+      </template>
+    </table-base>
 
 		<b-pagination
 			align="center"
@@ -40,8 +41,12 @@
 <script>
   import axios from '~/plugins/axios'
   import mixin from '~/plugins/mixin'
+  import TableBase from '~/components/TableBase'
 
   export default {
+    components: {
+      TableBase,
+    },
     mixins: [mixin],
     head: () => ({
       title: 'Accounts',

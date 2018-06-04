@@ -61,8 +61,6 @@
     display: grid;
     grid-template-columns: 30% auto;
     grid-gap: 15px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 
     @include media-breakpoint-up(lg) {
       display: inline-block;
@@ -101,6 +99,23 @@
     thead tr,
     tbody tr {
       grid-template-columns: 15% 20% 5% 25% 20% 15%;
+    }
+  }
+}
+
+.tomo-table--accounts {
+
+  @include media-breakpoint-up(lg) {
+    thead tr,
+    tbody tr {
+      grid-template-columns: 10% 40% 40% 10%;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    thead tr,
+    tbody tr {
+      grid-template-columns: 10% 45% 40% 5%;
     }
   }
 }
