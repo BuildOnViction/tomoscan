@@ -21,8 +21,10 @@ let watch = async () => {
     let min_block_crawl = await Setting.findOne({meta_key: 'min_block_crawl'})
     min_block_crawl = min_block_crawl ? min_block_crawl.meta_value : 0
     min_block_crawl = parseInt(min_block_crawl)
-    if (min_block_crawl <= max_block_num) {
-      for (let i = min_block_crawl; i <= min_block_crawl + 20; i++) {
+    if (min_block_crawl < max_block_num) {
+      let next_crawl = min_block_crawl + 20
+      next_crawl = next_crawl < max_block_num ? next_crawl : max_block_num
+      for (let i = min_block_crawl; i <= next_crawl; i++) {
         await CrawlRepository.add('block', i)
 
         let setting = await Setting.findOne({meta_key: 'min_block_crawl'})

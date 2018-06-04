@@ -14,6 +14,8 @@ services:
     ports:
      - "3333:3333"
      - "9229:9229"
+     - "8501:8501"
+     - "8502:8502"
     environment:
      - MONGODB_URI=mongodb://mongo:27017/explorer
     links:
