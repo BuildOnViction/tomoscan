@@ -1,11 +1,13 @@
 <template>
-	<section>
+  <div v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
 		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
 		:fields="fields"
 		:items="items"
-    :class="'tomo-table--block' + (loading ? 'tomo-table--loading' : '')">
+    class="tomo-table--block">
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
