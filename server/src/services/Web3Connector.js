@@ -9,6 +9,10 @@ let Web3Connector = {
       io.on('connection', async (socket) => {
         let web3WS = await Web3Util.getWeb3Socket()
 
+        if (!web3WS) {
+          return false
+        }
+        
         web3WS.eth.subscribe('newBlockHeaders').
           on('data', async (_block) => {
             if (_block) {
