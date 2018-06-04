@@ -1,15 +1,24 @@
 <template>
-	<section>
-		<p v-if="!this.$route.query.block"
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+    
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-exchange tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No transaction found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
       class="tomo-total-items">
-      Total {{ formatNumber(total) }} items found
-    </p>
-		<p v-else
-      class="tomo-total-items">
-      Total {{ formatNumber(total) }} items found
+      Total {{ formatNumber(total) }} transactions found
     </p>
 
 		<table-base
+      v-if="items.length > 0"
 			:fields="fields"
 			:items="items">
 			<template slot="hash" slot-scope="props">
@@ -66,6 +75,7 @@
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
