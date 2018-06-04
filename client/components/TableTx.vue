@@ -1,6 +1,13 @@
 <template>
 	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+		<p v-if="!this.$route.query.block"
+      class="tomo-total-items">
+      Total {{ formatNumber(total) }} items found
+    </p>
+		<p v-else
+      class="tomo-total-items">
+      Total {{ formatNumber(total) }} items found
+    </p>
 
 		<table-base
 			:fields="fields"

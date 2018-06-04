@@ -8,16 +8,6 @@
   color: $color-invalid !important;
 }
 
-.address__tag {
-  display: inline-block;
-  width: 132px;
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-
 .tomo-body-wrapper.is__homepage {
   background: url('~/assets/img/bg-image.png');
 }

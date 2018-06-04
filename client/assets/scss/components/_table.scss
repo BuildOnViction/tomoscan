@@ -1,3 +1,36 @@
 .tomo-table {
   width: 100%;
+
+  thead {
+    display: none;
+  }
+
+  tr {
+    display: block;
+    border-radius: 10px;
+    background-color: #fff;
+    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  td {
+    display: grid;
+    grid-template-columns: 30% auto;
+    grid-gap: 15px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  td:before {
+    content: attr(data-label);
+    display: inline;
+    text-align: right;
+    font-weight: 600;
+    color: #000;
+  }
 }

@@ -23,8 +23,8 @@
 
 			<template slot="miner" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-          <span v-if="props.item.signer">{{ props.item.signer }}</span>
-          <span v-else>{{ props.item.miner }}</span>
+          <span v-if="props.item.signer">{{ formatLongString(props.item.signer) }}</span>
+          <span v-else>{{ formatLongString(props.item.miner) }}</span>
         </nuxt-link>
 			</template>
 
@@ -61,12 +61,12 @@
     }),
     data: () => ({
       fields: {
-        number: {label: 'Height'},
-        timestamp: {label: 'Age'},
-        e_tx: {label: 'txn'},
-        miner: {label: 'Miner'},
-        gasUsed: {label: 'GasUsed'},
-        gasLimit: {label: 'GasLimit'},
+        number: {label: 'Height', cssClass: 'td-height'},
+        timestamp: {label: 'Age', cssClass: 'td-age'},
+        e_tx: {label: 'txn', cssClass: 'td-txn'},
+        miner: {label: 'Miner', cssClass: 'td-miner'},
+        gasUsed: {label: 'GasUsed', cssClass: 'td-gas-used'},
+        gasLimit: {label: 'GasLimit', cssClass: 'td-gas-limit'},
       },
       loading: true,
       pagination: {},

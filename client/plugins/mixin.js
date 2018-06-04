@@ -102,7 +102,7 @@ const mixin = {
       return parseInt(parts[0], radix)
     },
 
-    getParameterByName(name, url) {
+    getParameterByName: (name, url) => {
       if (!url) url = window.location.href;
       name = name.replace(/[\[\]]/g, "\\$&");
       var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
@@ -110,6 +110,13 @@ const mixin = {
       if (!results) return null;
       if (!results[2]) return '';
       return decodeURIComponent(results[2].replace(/\+/g, " "));
+    },
+
+    formatLongString: (address) => {
+      if (address.length <= 16) {
+        return address
+      }
+      return address.substring(0, 15) + '...';
     }
   },
 }
