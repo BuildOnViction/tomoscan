@@ -6,3 +6,8 @@
   content: $icon;
   @extend %fa-icon;
 }
+
+@mixin tm-icon($icon) {
+  content: $icon;
+  @extend %tm-icon;
+}

@@ -1,6 +1,6 @@
 <template>
 	<section>
-		<p class="tm__total">Total {{ formatNumber(total) }} items found</p>
+		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<div class="tm__table">
 			<div class="tm__table_heading">
@@ -25,6 +25,7 @@
 
 		<b-pagination
 			align="center"
+      class="tomo-pagination"
 			:total-rows="total"
 			:per-page="perPage"
 			@change="onChangePaginate"

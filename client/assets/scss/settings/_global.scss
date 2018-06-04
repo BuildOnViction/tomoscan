@@ -1,3 +1,14 @@
+/* Grid breakpoints
+   ========================================================================== */
+$grid-breakpoints: (
+  xs: 0,
+  sm: 576px,
+  md: 768px,
+  lg: 992px,
+  xl: 1200px,
+  xxl: 1440px
+) !default;
+
 /* Fonts
    ========================================================================== */
 $global-font: 'SFProText', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', sans-serif !default;
@@ -5,5 +16,8 @@ $global-font-size: 18px;
 
 /* Colors
    ========================================================================== */
+$color-body-bg: #f8f8fa;
 $color-primary: #34a1ff;
+$color-primary-hover: darker($color-primary);
 $color-text: #868f9b;
+$color-invalid: #fc98a6

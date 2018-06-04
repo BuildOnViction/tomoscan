@@ -50,78 +50,96 @@
 			</div>
 		</b-navbar>
 
-		<main class="tm__body_wrapper" :class="isHomePage ? 'is__homepage' : ''">
-			<div class="container">
-				<div class="row" v-if="! isHomePage">
-					<div class="col">
+		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
+			<div class="container container--wide">
+				<div class="row align-items-center tomo-body-wrapper__heading" v-if="! isHomePage">
+					<b-col sm="5" md="4">
 						<breadcrumb/>
-					</div>
-					<div class="col">
-						<div class="input-group search__form mini d-flex justify-content-end">
+					</b-col>
+					<b-col sm="7" md="8">
+						<div class="input-group search-form search-form--mini">
 							<div class="input-group-prepend">
-								<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
+								<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="fa fa-search"></i></button>
 							</div>
-							<input type="text" v-model="search" class="form-control" placeholder="Search" @keyup.enter="onGotoRoute">
+							<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search" @keyup.enter="onGotoRoute">
 						</div>
-					</div>
+					</b-col>
 				</div>
-				<div class="jumbotron bg__none" v-else>
-					<b-row>
-						<b-col sm="3"></b-col>
-						<b-col sm="6">
-							<div class="input-group search__form">
+				<b-row v-else>
+						<b-col lg="8" class="offset-lg-2 offset-xxl-3 col-xxl-6">
+							<div class="input-group search-form">
 								<div class="input-group-prepend">
-									<button class="btn btn-primary" @click="onGotoRoute"><i class="fa fa-search"></i></button>
+									<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="tm-search"></i></button>
 								</div>
-								<input type="text" v-model="search" class="form-control" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
+								<input type="text" v-model="search" class="form-control search-form__input" placeholder="Search Address / TX / Block..." @keyup.enter="onGotoRoute">
 							</div>
-							<div><!-- class="d-flex justify-content-center"-->
-								<div class="stat__box">
+							<div class="tomo-stat d-flex">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'accounts'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Wallets</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'tokens'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalToken) }}&nbsp;Tokens</span>
 									</nuxt-link>
 								</div>
-								<div class="stat__box">
+								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'contracts'}">
-										<i v-if="! stats" class="fa fa-spinner fa-pulse"></i>
+										<i v-if="! stats" class="tomo-loading"></i>
 										<span v-else>{{ formatNumber(stats.totalSmartContract) }}&nbsp;Contracts</span>
 									</nuxt-link>
 								</div>
 							</div>
 						</b-col>
-						<b-col sm="3"></b-col>
 					</b-row>
-				</div>
 				<nuxt/>
 			</div>
 		</main>
 
-		<footer>
-			<div class="container">
+		<footer class="tomo-footer">
+			<div class="container container--wide">
 				<div class="row">
-					<div class="col">Tomoscan 2018 - Running Tomochain</div>
-					<div class="col text-right">
-						<ul class="list-inline">
-							<li>
-								<a href="https://github.com/tomochain/tomo-explorer" target="_blank">
-									<img src="~/assets/img/icon-git.png" alt="TOMO Explorer github">
+					<b-col md="6" class="tomo-footer__copyright">
+						<p>Tomoscan 2018 - Running Tomochain</p>
+					</b-col>
+					<b-col md="6" class="text-md-right">
+						<ul class="list-inline tomo-footer__social">
+							<li class="list-inline-item">
+								<a href="https://t.me/tomochain" target="_blank">
+									<i class="fa fa-telegram"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://www.facebook.com/tomochainofficial" target="_blank">
+									<i class="fa fa-facebook"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://twitter.com/TomoChainANN" target="_blank">
+									<i class="fa fa-twitter"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://github.com/tomochain/" target="_blank">
+									<i class="fa fa-github"></i>
+								</a>
+							</li>
+							<li class="list-inline-item">
+								<a href="https://www.reddit.com/r/Tomochain/" target="_blank">
+									<i class="fa fa-reddit"></i>
 								</a>
 							</li>
 						</ul>
-					</div>
+					</b-col>
 				</div>
 			</div>
 		</footer>

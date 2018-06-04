@@ -14,8 +14,6 @@ services:
     ports:
      - "3333:3333"
      - "9229:9229"
-     - "8501:8501"
-     - "8502:8502"
     environment:
      - MONGODB_URI=mongodb://mongo:27017/explorer
     links:
@@ -25,6 +23,7 @@ services:
     volumes:
      - ./server:/var/www
      - /var/www/node_modules
+
   web:
     build:
       context: .
@@ -37,5 +36,5 @@ services:
     depends_on:
       - server
     volumes:
-      - ./client:/var/www
-      - /var/www/node_modules
+     - ./client:/var/www
+     - /var/www/node_modules

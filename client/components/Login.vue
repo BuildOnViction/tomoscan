@@ -1,10 +1,11 @@
 <template>
 	<b-modal
 		:id="modalId"
+    class="tomo-modal"
 		ref="modalRegister"
 		@ok="onLogin"
 		@keydown.native.enter="onLogin"
-		title="Register">
+		title="Log in">
 		<div class="alert alert-danger" v-show="errorMessage">
 			{{ errorMessage }}
 		</div>

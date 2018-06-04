@@ -7,6 +7,15 @@
   line-height: 1;
 }
 
+%tm-icon {
+  font-family: 'icon-tomo';
+  font-weight: normal;
+  font-style: normal;
+  display: inline-block;
+  text-decoration: inherit;
+  line-height: 1;
+}
+
 %transit {
   @include transit();
 }

@@ -1,0 +1,19 @@
+.tomo-stat {
+  align-items: center;
+  flex-direction: row;
+  flex-wrap: wrap;
+
+  .tomo-stat__item {
+    flex: 1 0 50%;
+    max-width: 50%;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  @include media-breakpoint-up(md) {
+    .tomo-stat__item {
+      flex: 1 0 25%;
+      max-width: 25%;
+    }
+  }
+}
