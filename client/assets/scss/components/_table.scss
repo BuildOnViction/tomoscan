@@ -3,15 +3,58 @@
 
   thead {
     display: none;
+
+    tr {
+      color: #000;
+    }
+
+    @include media-breakpoint-up(lg) {
+      display: block;
+      margin-bottom: 15px;
+
+      tr {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+        padding: 0 20px;
+      }
+    }
+  
+    @include media-breakpoint-up(xl) {
+      tr {
+        padding: 0 40px;
+      }
+    }
   }
 
-  tr {
-    display: block;
-    border-radius: 10px;
-    background-color: #fff;
-    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
-    padding: 20px;
-    margin-bottom: 20px;
+  tbody {
+
+    tr {
+      display: block;
+      border-radius: 10px;
+      background-color: #fff;
+      box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
+      padding: 20px;
+      margin-bottom: 20px;
+  
+      @include media-breakpoint-up(lg) {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+      }
+
+      @include media-breakpoint-up(xl) {
+        padding: 30px 40px;
+      }
+    }
+
+    @include media-breakpoint-up(sm) {
+      display: grid;
+      grid-template-columns: 50% 50%;
+      grid-column-gap: 15px;
+    }
+
+    @include media-breakpoint-up(lg) {
+      display: block;
+    }
   }
 
   td {
@@ -20,10 +63,10 @@
     grid-gap: 15px;
     text-overflow: ellipsis;
     white-space: nowrap;
-  }
 
-  p {
-    margin: 0;
+    @include media-breakpoint-up(lg) {
+      display: inline-block;
+    }
   }
 
   td:before {
@@ -32,5 +75,32 @@
     text-align: right;
     font-weight: 600;
     color: #000;
+
+    @include media-breakpoint-up(lg) {
+      display: none;
+    }
+  }
+
+  a {
+    color: $color-primary;
+  }
+
+  small {
+    display: inline-block;
+    margin-left: 5px;
+  }
+
+  p {
+    margin: 0;
+  }
+}
+
+.tomo-table--block {
+
+  @include media-breakpoint-up(lg) {
+    thead tr,
+    tbody tr {
+      grid-template-columns: 15% 20% 5% 25% 20% 15%;
+    }
   }
 }

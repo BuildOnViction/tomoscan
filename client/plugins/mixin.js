@@ -112,11 +112,11 @@ const mixin = {
       return decodeURIComponent(results[2].replace(/\+/g, " "));
     },
 
-    formatLongString: (address) => {
-      if (address.length <= 16) {
+    formatLongString: (address, maxLength) => {
+      if (address.length <= maxLength) {
         return address
       }
-      return address.substring(0, 15) + '...';
+      return address.substring(0, maxLength) + '...';
     }
   },
 }

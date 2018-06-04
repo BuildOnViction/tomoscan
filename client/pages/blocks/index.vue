@@ -5,7 +5,7 @@
 		<table-base
 		:fields="fields"
 		:items="items"
-    :class="loading ? 'tomo-table--loading' : ''">
+    :class="'tomo-table--block' + (loading ? 'tomo-table--loading' : '')">
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
@@ -23,8 +23,10 @@
 
 			<template slot="miner" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-          <span v-if="props.item.signer">{{ formatLongString(props.item.signer) }}</span>
-          <span v-else>{{ formatLongString(props.item.miner) }}</span>
+          <span class="d-xl-none" v-if="props.item.signer">{{ formatLongString(props.item.signer, 16) }}</span>
+          <span class="d-xl-none" v-else>{{ formatLongString(props.item.miner, 16) }}</span>
+          <span class="d-none d-xl-block" v-if="props.item.signer">{{ formatLongString(props.item.signer, 20) }}</span>
+          <span class="d-none d-xl-block" v-else>{{ formatLongString(props.item.miner, 20) }}</span>
         </nuxt-link>
 			</template>
 
