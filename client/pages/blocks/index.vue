@@ -4,7 +4,8 @@
 
 		<table-base
 		:fields="fields"
-		:items="items">
+		:items="items"
+    :class="loading ? 'tomo-table--loading' : ''">
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
@@ -16,20 +17,21 @@
 				</b-tooltip>
 			</template>
 
-			<template slot="e_tx" slot-scope="props">{{ props.item.e_tx }}</template>
+			<template slot="e_tx" slot-scope="props">
+        <nuxt-link :to="`/txs?block=${props.item.number}`">{{ props.item.e_tx }}</nuxt-link>
+      </template>
 
 			<template slot="miner" slot-scope="props">
-				<div class="address__tag">
-					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-						<span v-if="props.item.signer">{{ props.item.signer }}</span>
-						<span v-else>{{ props.item.miner }}</span>
-					</nuxt-link>
-				</div>
+        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+          <span v-if="props.item.signer">{{ props.item.signer }}</span>
+          <span v-else>{{ props.item.miner }}</span>
+        </nuxt-link>
 			</template>
 
 			<template slot="gasUsed" slot-scope="props">
-				<div>{{ formatNumber(props.item.gasUsed) }}</div>
+				<p><span>{{ formatNumber(props.item.gasUsed) }}</span>
 				<small>({{ (100 * props.item.gasUsed / props.item.gasLimit).toFixed(2) }} %)</small>
+        </p>
 			</template>
 
 			<template slot="gasLimit" slot-scope="props">{{ formatNumber(props.item.gasLimit) }}</template>
@@ -123,6 +125,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped type="text/scss">
-</style>

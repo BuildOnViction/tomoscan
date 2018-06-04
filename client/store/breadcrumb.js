@@ -1,3 +1,5 @@
+import mixin from '~/plugins/mixin'
+
 class Breadcrumb {
   constructor () {
     this.breadcrumbs = []
@@ -93,7 +95,13 @@ br.register('address-slug', (brs, location) => {
 })
 br.register('txs', (brs) => {
   brs.parent('index')
-  brs.push('Transactions', {name: 'txs'})
+  let block = mixin.methods.getParameterByName('block');
+  if (block) {
+    brs.push('Blocks', {name: 'blocks'})
+    brs.push(`Transaction for Block #${block}`, window.location.pathname + window.location.search);
+  } else {
+    brs.push('Transactions', {name: 'txs'})
+  }
 })
 br.register('txs-pending', (brs) => {
   brs.parent('index')
