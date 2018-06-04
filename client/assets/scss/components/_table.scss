@@ -61,6 +61,7 @@
     display: grid;
     grid-template-columns: 30% auto;
     grid-gap: 15px;
+    word-break: break-all;
 
     @include media-breakpoint-up(lg) {
       display: inline-block;
@@ -116,6 +117,36 @@
     thead tr,
     tbody tr {
       grid-template-columns: 10% 45% 40% 5%;
+    }
+  }
+}
+
+.tomo-table--tokens {
+  td {
+    grid-template-columns: 35% auto;
+
+    @include media-breakpoint-up(sm) {
+      grid-template-columns: 40% auto;
+    }
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 35% 12% 8% 30% 10% 5%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 40% 12% 8% 25% 10% 5%;
+    }
+
+    @include media-breakpoint-up(xxl) {
+      grid-template-columns: 35% 12% 8% 30% 10% 5%;
     }
   }
 }

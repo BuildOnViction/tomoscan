@@ -19,6 +19,7 @@
       :fields="fields"
       :items="items"
       class="tomo-table--accounts">
+      
       <template slot="rank" slot-scope="props">{{props.item.rank}}</template>
 
       <template slot="hash" slot-scope="props">

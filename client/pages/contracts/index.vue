@@ -19,6 +19,7 @@
       :fields="fields"
       :items="items"
       class="tomo-table--contracts">
+
       <template slot="hash" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
           <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>

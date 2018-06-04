@@ -116,7 +116,7 @@ const mixin = {
     },
 
     formatLongString: (str, maxLength) => {
-      if (str.length <= maxLength || maxLength < 1) {
+      if (str.length <= maxLength || maxLength < 1 || !maxLength) {
         return str
       }
       return str.substring(0, maxLength) + '...';

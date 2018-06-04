@@ -19,6 +19,7 @@
       :fields="fields"
       :items="items"
       class="tomo-table--blocks">
+
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>

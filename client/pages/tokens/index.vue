@@ -1,12 +1,32 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-chain-broken tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No token found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} tokens found</p>
 
 		<table-base
+      v-if="items.length > 0"
 			:fields="fields"
-			:items="items">
+			:items="items"
+      class="tomo-table--tokens">
+
 			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
+          <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
+          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
+          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash) }}</span>
+        </nuxt-link>
 			</template>
 
 			<template slot="name" slot-scope="props">
@@ -17,12 +37,13 @@
 
 			<template slot="symbol" slot-scope="props">{{ props.item.symbol }}</template>
 
-			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
+			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply, 10) }} {{ props.item.symbol }}</template>
 
 			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -43,10 +64,10 @@
     data: () => ({
       fields: {
         hash: {label: 'Hash'},
-        name: {label: 'Name', tdClass: 'text-left'},
+        name: {label: 'Name'},
         symbol: {label: 'Symbol'},
-        totalSupply: {label: 'totalSupply', thClass: 'text-center', tdClass: 'text-right'},
-        decimals: {label: 'Decimals', thClass: 'text-center', tdClass: 'text-right'},
+        totalSupply: {label: 'Total Supply'},
+        decimals: {label: 'Decimals'},
         tokenTxsCount: {label: 'TxCount'},
       },
       loading: true,
