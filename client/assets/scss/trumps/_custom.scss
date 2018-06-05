@@ -5,30 +5,20 @@
 }
 
 .text-danger {
-  color: $color-invalid !important;
+  color: $color-danger !important;
 }
 
-.address__tag {
+.text-success {
+  color: $color-success !important
+}
+
+.contract-creation:before {
+  content: '';
   display: inline-block;
-  width: 132px;
-  white-space: nowrap;
-  overflow: hidden !important;
-  text-overflow: ellipsis;
-  vertical-align: bottom;
-}
-
-
-.tomo-body-wrapper.is__homepage {
-  background: url('~/assets/img/bg-image.png');
-}
-
-.stat__box {
-  padding: 0 70px;
-  display: inline-block;
-
-  a {
-    &:hover {
-      color: #34a1ff;
-    }
-  }
+  vertical-align: baseline;
+  height: 11px;
+  width: 11px;
+  border-radius: 100%;
+  margin-right: 5px;
+  background-color: #fc98a6;
 }

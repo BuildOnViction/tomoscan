@@ -16,7 +16,7 @@
       font-size: 0;
       
       span:before {
-        line-height: 42px;
+        line-height: 35px;
         display: inline-block;
         vertical-align: middle;
 
@@ -66,6 +66,13 @@
   @include media-breakpoint-up(sm) {
     .page-item {
       margin-right: 15px;
+
+      &:first-child,
+      &:nth-child(2),
+      &:nth-last-child(2),
+      &:last-child {
+      line-height: 42px;
+    }
 
       .page-link {
         height: 42px;

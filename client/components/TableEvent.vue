@@ -1,13 +1,27 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+<div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-binoculars tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No event found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
-			class="tm__table table__no_shadow mb-4 table__event_logs"
+      v-if="items.length > 0"
 			:fields="fields"
-			:items="items">
+			:items="items"
+      class="tomo-table--events">
 			<template slot="label" slot-scope="props">
-				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}" class="address__tag">{{ props.item.transactionHash }}...</nuxt-link>
+				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}...</nuxt-link>
 				<div>#
 					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 				</div>
@@ -60,6 +74,7 @@
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -85,9 +100,9 @@
     },
     data: () => ({
       fields: {
-        label: {label: 'TxHash|Block|Age', tdClass: 'col-sm-3 text-left', thClass: 'col-sm-3'},
-        method: {label: 'Method', tdClass: 'col-sm-3', thClass: 'col-sm-3'},
-        logs: {label: 'Event Logs', tdClass: 'col-sm-6 text-right', thClass: 'col-sm-6'},
+        label: {label: 'TxHash|Block|Age'},
+        method: {label: 'Method'},
+        logs: {label: 'Event Logs'},
       },
       loading: true,
       pagination: {},
@@ -190,43 +205,3 @@
     },
   }
 </script>
-<style lang="scss" type="text/scss">
-	.event__logs {
-		margin-bottom: 0px;
-
-		li {
-			line-height: 2;
-		}
-	}
-
-	.table__event_logs {
-		.d__cell {
-			vertical-align: top;
-		}
-
-		.tm__table_row {
-			padding-left: 0px;
-			padding-right: 0px;
-			margin-right: 15px;
-			margin-left: 15px;
-			box-shadow: none;
-
-			&:last-child {
-				.tm__table_cell {
-					border-bottom: none !important;
-				}
-			}
-		}
-
-		.tm__table_body {
-			border-radius: 10px;
-			background: #fff;
-			box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
-			margin: 0px;
-		}
-
-		.tm__table_cell {
-			border-bottom: 2px solid rgb(186, 192, 198);
-		}
-	}
-</style>

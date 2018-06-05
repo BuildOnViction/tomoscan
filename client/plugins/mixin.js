@@ -21,11 +21,14 @@ const mixin = {
       return [].concat.apply([], query).join('&')
     },
 
-    formatNumber: (number) => {
+    formatNumber: (number, fixed) => {
       let seps = number.toString().split('.')
+      if (fixed > 0) {
+        seps = parseFloat(number).toFixed(fixed).toString().split('.')
+      }
       seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-      return seps.join('.')
+      return seps.join('.') + (fixed > 0 ? '...' : '')
     },
 
     toLongNumberString: (n) => {
@@ -49,7 +52,7 @@ const mixin = {
       return str + str2
     },
 
-    toEther: (wei) => {
+    toEther: (wei, fixed) => {
       if (!wei) {
         return ''
       }
@@ -65,7 +68,7 @@ const mixin = {
         convert = 'tether'
       }
 
-      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert)) +
+      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert), fixed) +
         ' ' + sfx
     },
 
@@ -100,6 +103,23 @@ const mixin = {
           Math.pow(radix, parts[1].length)
       }
       return parseInt(parts[0], radix)
+    },
+
+    getParameterByName: (name, url) => {
+      if (!url) url = window.location.href;
+      name = name.replace(/[\[\]]/g, "\\$&");
+      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
+          results = regex.exec(url);
+      if (!results) return null;
+      if (!results[2]) return '';
+      return decodeURIComponent(results[2].replace(/\+/g, " "));
+    },
+
+    formatLongString: (str, maxLength) => {
+      if (str.length <= maxLength || maxLength < 1 || !maxLength) {
+        return str
+      }
+      return str.substring(0, maxLength) + '...';
     },
   },
 }

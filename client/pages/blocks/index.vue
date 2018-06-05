@@ -1,10 +1,25 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-cubes tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No block found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
-		:fields="fields"
-		:items="items">
+      v-if="items.length > 0"
+      :fields="fields"
+      :items="items"
+      class="tomo-table--blocks">
+
 			<template slot="number" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
@@ -16,26 +31,30 @@
 				</b-tooltip>
 			</template>
 
-			<template slot="e_tx" slot-scope="props">{{ props.item.e_tx }}</template>
+			<template slot="e_tx" slot-scope="props">
+        <nuxt-link :to="`/txs?block=${props.item.number}`">{{ props.item.e_tx }}</nuxt-link>
+      </template>
 
 			<template slot="miner" slot-scope="props">
-				<div class="address__tag">
-					<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-						<span v-if="props.item.signer">{{ props.item.signer }}</span>
-						<span v-else>{{ props.item.miner }}</span>
-					</nuxt-link>
-				</div>
+        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
+          <span class="d-xl-none" v-if="props.item.signer">{{ formatLongString(props.item.signer, 16) }}</span>
+          <span class="d-xl-none" v-else>{{ formatLongString(props.item.miner, 16) }}</span>
+          <span class="d-none d-xl-block" v-if="props.item.signer">{{ formatLongString(props.item.signer, 20) }}</span>
+          <span class="d-none d-xl-block" v-else>{{ formatLongString(props.item.miner, 20) }}</span>
+        </nuxt-link>
 			</template>
 
 			<template slot="gasUsed" slot-scope="props">
-				<div>{{ formatNumber(props.item.gasUsed) }}</div>
-				<small>({{ formatNumber(100 * props.item.gasUsed / props.item.gasLimit) }} %)</small>
+				<p><span>{{ formatNumber(props.item.gasUsed) }}</span>
+				<small>({{ (100 * props.item.gasUsed / props.item.gasLimit).toFixed(2) }} %)</small>
+        </p>
 			</template>
 
 			<template slot="gasLimit" slot-scope="props">{{ formatNumber(props.item.gasLimit) }}</template>
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -59,11 +78,11 @@
     }),
     data: () => ({
       fields: {
-        number: {label: 'Number'},
+        number: {label: 'Height'},
         timestamp: {label: 'Age'},
         e_tx: {label: 'txn'},
         miner: {label: 'Miner'},
-        gasUsed: {label: 'GasUsed', tdClass: 'text-right'},
+        gasUsed: {label: 'GasUsed'},
         gasLimit: {label: 'GasLimit'},
       },
       loading: true,
@@ -123,6 +142,3 @@
     },
   }
 </script>
-
-<style lang="scss" scoped type="text/scss">
-</style>

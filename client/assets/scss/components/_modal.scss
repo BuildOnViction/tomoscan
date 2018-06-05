@@ -91,7 +91,7 @@
 
     &.is-invalid,
     &.is-invalid:focus {
-      border-color: $color-invalid;
+      border-color: $color-danger;
     }
 
     @include media-breakpoint-up(lg) {

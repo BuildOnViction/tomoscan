@@ -1,17 +1,32 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+	<div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-cube tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No item found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} blocks found</p>
 
 		<table-base
+      v-if="items.length > 0"
 			:fields="fields"
-			:items="items">
+			:items="items"
+      class="tomo-table--tx-by-account">
 			<template slot="block" slot-scope="props">
 				<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.number}}">{{ props.item.number }}</nuxt-link>
 			</template>
 
 			<template slot="timestamp" slot-scope="props">
-				<span :id="'age__' + index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-				<b-tooltip :target="'age__' + index">
+				<span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
+				<b-tooltip :target="'timestamp__' + props.index">
 					{{ $moment(props.item.timestamp).format('MMM-DD-Y hh:mm:ss A') }}
 				</b-tooltip>
 			</template>
@@ -22,6 +37,7 @@
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -47,7 +63,7 @@
         block: {label: 'Block'},
         timestamp: {label: 'Age'},
         e_tx: {label: 'txn'},
-        gasUsed: {label: 'gasUsed'},
+        gasUsed: {label: 'Gas Used'},
       },
       loading: true,
       pagination: {},

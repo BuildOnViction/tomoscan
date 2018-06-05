@@ -35,7 +35,7 @@
 							<tr v-if="address && !address.isContract">
 								<td>Code:</td>
 								<td>
-									<code class="address__tag">
+									<code>
 										<span-loading v-bind:text="address ? address.code : null"></span-loading>
 									</code>
 								</td>
@@ -49,10 +49,10 @@
 							<tr v-if="address && address.contractCreation">
 								<td>Contract Creator:</td>
 								<td>
-									<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
+									<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
 									<span>at txns&nbsp;</span>
 									<span v-if="address.fromTxn">
-										<nuxt-link class="address__tag" :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
+										<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
 									</span>
 								</td>
 							</tr>
