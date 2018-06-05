@@ -7,7 +7,7 @@
 			:fields="fields"
 			:items="items">
 			<template slot="label" slot-scope="props">
-				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}" class="address__tag">{{ props.item.transactionHash }}...</nuxt-link>
+				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}...</nuxt-link>
 				<div>#
 					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 				</div>

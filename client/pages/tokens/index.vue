@@ -22,9 +22,9 @@
       class="tomo-table--tokens">
 
 			<template slot="hash" slot-scope="props">
-				<nuxt-link class="address__tag" :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
-          <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
-          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
+				<nuxt-link :to="{name: 'tokens-slug', params: {slug: props.item.hash}}">
+          <span class="d-sm-none d-md-block d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
+          <span class="d-none d-sm-block d-md-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
           <span class="d-none d-xl-block">{{ formatLongString(props.item.hash) }}</span>
         </nuxt-link>
 			</template>
@@ -39,7 +39,9 @@
 
 			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply, 10) }} {{ props.item.symbol }}</template>
 
-			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
+			<template slot="decimals" slot-scope="props">{{ formatNumber(props.item.decimals) }}</template>
+
+      <template slot="tokenTxsCount" slot-scope="props">{{ formatNumber(props.item.tokenTxsCount) }}</template>
 		</table-base>
 
 		<b-pagination

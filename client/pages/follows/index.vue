@@ -78,7 +78,7 @@
 						</div>
 
 						<div v-if="key === 'address'">
-							<nuxt-link class="address__tag" :to="{name: 'address-slug', params: {slug: item.address}}">{{ item.address }}</nuxt-link>
+							<nuxt-link :to="{name: 'address-slug', params: {slug: item.address}}">{{ item.address }}</nuxt-link>
 						</div>
 
 						<div v-if="key === 'balance'">

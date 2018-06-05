@@ -24,8 +24,8 @@
 
       <template slot="hash" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
-          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
+          <span class="d-sm-none d-md-block d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
+          <span class="d-none d-sm-block d-md-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 32) }}</span>
           <span class="d-none d-xl-block">{{ formatLongString(props.item.hash) }}</span>
         </nuxt-link>
       </template>
