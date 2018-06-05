@@ -26,11 +26,13 @@ let TokenTxRepository = {
     if (block) {
       _log.block = block
     }
+    _log.address = _log.address.toLowerCase()
+    let transactionHash = _log.transactionHash.toLowerCase()
 
     delete _log['_id']
 
     let tokenTx = await TokenTx.findOneAndUpdate(
-      {transactionHash: _log.transactionHash.toLowerCase(), from: _log.from, to: _log.to},
+      {transactionHash: transactionHash, from: _log.from, to: _log.to},
       _log,
       {upsert: true, new: true})
 
