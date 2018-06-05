@@ -48,8 +48,12 @@
 
     @include media-breakpoint-up(sm) {
       display: grid;
-      grid-template-columns: 50% 50%;
+      grid-template-columns: 100%;
       grid-column-gap: 15px;
+    }
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 50% 50%;
     }
 
     @include media-breakpoint-up(lg) {
@@ -60,8 +64,9 @@
   td {
     display: grid;
     grid-template-columns: 30% auto;
-    grid-gap: 15px;
+    grid-column-gap: 15px;
     word-break: break-all;
+    margin-bottom: 5px;
 
     @include media-breakpoint-up(lg) {
       display: inline-block;
@@ -106,16 +111,14 @@
 
 .tomo-table--accounts {
 
-  @include media-breakpoint-up(lg) {
-    thead tr,
-    tbody tr {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
       grid-template-columns: 10% 40% 40% 10%;
     }
-  }
 
-  @include media-breakpoint-up(xl) {
-    thead tr,
-    tbody tr {
+    @include media-breakpoint-up(xl) {
       grid-template-columns: 10% 45% 40% 5%;
     }
   }
@@ -147,6 +150,20 @@
 
     @include media-breakpoint-up(xxl) {
       grid-template-columns: 35% 12% 8% 30% 10% 5%;
+    }
+  }
+}
+
+.tomo-table--transactions {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 15% 10% 15% 12% 4% 18% 15% 11%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 17% 10% 12% 17% 4% 17% 13% 10%;
     }
   }
 }
