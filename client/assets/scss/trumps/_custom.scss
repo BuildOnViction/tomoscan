@@ -4,6 +4,11 @@
   margin-bottom: 40px;
 }
 
+.alert-danger {
+  margin-bottom: 20px;
+}
+
+.alert-danger,
 .text-danger {
   color: $color-danger !important;
 }
