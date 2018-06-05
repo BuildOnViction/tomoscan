@@ -68,12 +68,17 @@
         try {
           let {data} = self.$store.dispatch('user/login', {email, password})
 
-          // Close modal.
-          self.$refs.modalRegister.hide()
-
-          self.resetModal()
+          if (!data) {
+            self.errorMessage = 'Can\'t log in to your account. Please check again.'
+          } else {
+            self.resetModal()
+            self.$refs.modalRegister.hide()
+          }
         }
         catch (e) {
+          if (e.response.status === 401) {
+            self.errorMessage = e.response.data.message
+          }
           if (e.response.status === 422) {
             self.errorMessage = e.response.data.message
           }
