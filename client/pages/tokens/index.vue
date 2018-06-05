@@ -37,7 +37,7 @@
 
 			<template slot="symbol" slot-scope="props">{{ props.item.symbol }}</template>
 
-			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply, 10) }} {{ props.item.symbol }}</template>
+			<template slot="totalSupply" slot-scope="props">{{ formatNumber(props.item.totalSupply) }} {{ props.item.symbol }}</template>
 
 			<template slot="decimals" slot-scope="props">{{ formatNumber(props.item.decimals) }}</template>
 

@@ -75,31 +75,33 @@
 				<div v-if="props.item.to">
           <i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
           <div class="d-none d-sm-inline-block d-md-none">
-            <div v-if="address == props.item.to">{{ formatLongString(props.item.to, 32) }}</div>
+            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 32) }}</span>
             <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
               <span>{{ formatLongString(props.item.to, 32) }}</span>
             </nuxt-link>
           </div>
           <div class="d-sm-none d-md-inline-block d-lg-none d-xl-inline-block d-xxl-none">
-            <div v-if="address == props.item.to">{{ formatLongString(props.item.to, 16) }}</div>
+            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 16) }}</span>
             <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
               <span>{{ formatLongString(props.item.to, 16) }}</span>
             </nuxt-link>
           </div>
           <div class="d-none d-lg-inline-block d-xl-none">
-            <div v-if="address == props.item.to">{{ formatLongString(props.item.to, 10) }}</div>
+            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 10) }}</span>
             <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
               <span>{{ formatLongString(props.item.to, 10) }}</span>
             </nuxt-link>
           </div>
           <div class="d-none d-xxl-inline-block">
-            <div v-if="address == props.item.to">{{ formatLongString(props.item.to, 20) }}</div>
+            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 20) }}</span>
             <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
               <span>{{ formatLongString(props.item.to, 20) }}</span>
             </nuxt-link>
           </div>
         </div>
-        <div class="contract-creation" v-else>
+        <div
+          v-else
+          class="contract-creation">
           <span>Contract Creation</span>
         </div>
 			</template>

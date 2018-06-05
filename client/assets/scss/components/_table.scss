@@ -65,7 +65,7 @@
     display: grid;
     grid-template-columns: 30% auto;
     grid-column-gap: 15px;
-    word-break: break-all;
+    word-break: break-word;
     margin-bottom: 5px;
 
     @include media-breakpoint-up(lg) {
@@ -164,6 +164,20 @@
 
     @include media-breakpoint-up(xl) {
       grid-template-columns: 17% 10% 12% 17% 4% 17% 13% 10%;
+    }
+  }
+}
+
+.tomo-table--token-tx {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 15% 12% 15% 5% 15% 31% 7%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 17% 12% 17% 5% 17% 25% 7%;
     }
   }
 }
