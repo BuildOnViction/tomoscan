@@ -1,28 +1,31 @@
 <template>
 	<section>
-		<div class="card">
-			<div class="card-body">
-				<div class="row tm__block_header">
-					<div class="col-sm-auto">
-						<img src="~/assets/img/icon-block.png" class="tm__icon">
+		<div class="card tomo-card">
+			<div class="tomo-card__header">
+				<img src="~/assets/img/icon-block.png">
+				<h3 class="tomo-card__headline">Block #{{ number }}</h3>
+				<div
+					v-if="block"
+					class="block-breadcrumb">
+					<div class="block-breadcrumb__prev">
+						<i class="tm tm-chevrons-left"></i>
+						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Back</nuxt-link>
 					</div>
-					<div class="col-md-auto align-items-center row">
-						<h3 class="col">Block #{{ number }}</h3>
+					<span class="block-breadcrumb__divider">|</span>
+					<div class="block-breadcrumb__prev">
+						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number + 1}}">Next</nuxt-link>
+						<i class="tm tm-chevrons-right"></i>
+					</div>
 					</div>
 				</div>
-
-				<div v-if="block">
-					<table class="table tm__no_border tm__block_table">
+			<div class="tomo-card__body">
+				<table
+					v-if="block"
+					class="tomo-card__table">
 						<tbody>
 						<tr>
 							<td>Height:</td>
-							<td>
-								<b-button-group size="sm">
-									<b-button variant="primary" :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Prev</b-button>
-									<b-button variant="outline-primary">{{ block.number }}</b-button>
-									<b-button variant="primary" :to="{name: 'blocks-slug', params: {slug: block.number + 1}}">Next</b-button>
-								</b-button-group>
-							</td>
+							<td>{{ block.number }}</td>
 						</tr>
 						<tr v-if="timestamp_moment">
 							<td>TimeStamp:</td>
@@ -80,7 +83,6 @@
 					</table>
 				</div>
 			</div>
-		</div>
 
 		<b-tabs class="mt-5">
 			<b-tab title="Transactions">

@@ -1,9 +1,28 @@
-.card {
+.tomo-card {
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
   border: none;
   border-radius: 10px;
+  padding: 20px;
 
-  .card-body {
-    padding: 40px;
+  &__header {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+
+  &__headline {
+    font-size: 24px;
+    color: #000;
+    margin-top: 10px;
+  }
+
+  &__table {
+
+    tr {
+      display: block;
+    }
+
+    a {
+      color: $color-primary;
+    }
   }
 }
