@@ -99,6 +99,7 @@
 		</div>
 
 		<b-pagination
+      v-model="currentPage"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"

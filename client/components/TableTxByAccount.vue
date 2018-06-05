@@ -38,6 +38,7 @@
 
 		<b-pagination
       v-if="items.length > 0"
+      v-model="currentPage"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
