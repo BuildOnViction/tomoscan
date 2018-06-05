@@ -38,7 +38,7 @@ let watch = async () => {
       }
     }
 
-    let crawls = await Crawl.find({crawl: false}).limit(100)
+    let crawls = await Crawl.find({crawl: false}).limit(10000)
     if (crawls.length) {
       for (let j = 0; j < crawls.length; j++) {
         let crawl = crawls[j]

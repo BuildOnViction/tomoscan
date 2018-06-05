@@ -1,18 +1,35 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+	<div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+
+    <div
+      v-if="items.length == 0"
+      class="tomo-empty">
+        <i class="fa fa-user-secret tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No holder found</p>
+    </div>
+
+		<p
+      v-if="items.length > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
 		<table-base
+      v-if="items.length > 0"
 			:fields="fields"
 			:items="items">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
+          <span>{{ formatLongString(props.item.hash, 16) }}</span>
+        </nuxt-link>
 			</template>
 
 			<template slot="quantity" slot-scope="props">{{ toEther(convertHexToFloat(props.item.quantity, 16)) }}</template>
 		</table-base>
 
 		<b-pagination
+      v-if="items.length > 0"
 			align="center"
       class="tomo-pagination"
 			:total-rows="total"
@@ -37,8 +54,8 @@
       fields: {
         rank: {label: 'Rank'},
         hash: {label: 'Address'},
-        quantity: {label: 'quantity', class: 'text-right'},
-        percentAge: {label: 'Percentage', class: 'text-right'},
+        quantity: {label: 'Quantity'},
+        percentAge: {label: 'Percentage'},
       },
       loading: true,
       pagination: {},

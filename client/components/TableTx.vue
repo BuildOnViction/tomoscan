@@ -150,7 +150,7 @@
         from: {label: 'From'},
         arrow: {label: ''},
         to: {label: 'To'},
-        value: {label: 'Value'},
+        value: {label: 'Value', cssClass: 'pr-lg-4'},
         txFee: {label: 'TxFee'},
       },
       fields_pending: {
