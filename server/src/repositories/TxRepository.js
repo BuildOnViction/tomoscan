@@ -68,12 +68,13 @@ let TxRepository = {
       }
       else {
         if (receipt && typeof receipt.contractAddress !== 'undefined') {
-          tx.contractAddress = receipt.contractAddress
+          let contractAddress = receipt.contractAddress.toLowerCase()
+          tx.contractAddress = contractAddress
           tx.to_model = await
             Account.findOneAndUpdate(
-              {hash: receipt.contractAddress},
+              {hash: contractAddress},
               {
-                hash: receipt.contractAddress,
+                hash: contractAddress,
                 contractCreation: tx.from,
                 isContract: true,
               },
@@ -126,11 +127,12 @@ let TxRepository = {
       return false
     }
 
+    let address = log.address.toLowerCase()
     // Add account and token if not exist in db.
-    let token = await Token.findOne({hash: log.address.toLowerCase()})
+    let token = await Token.findOne({hash: address})
     if (!token) {
       let account = await AccountRepository.updateAccount(
-        log.address.toLowerCase())
+        address)
       await TokenRepository.updateToken(account.hash)
     }
 
