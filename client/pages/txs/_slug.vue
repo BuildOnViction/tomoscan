@@ -3,8 +3,24 @@
     v-if="loading"
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
-		<h3 class="">TXID:
-			<read-more :text="hash" />
+		<h3 class="tomo-headline">
+			<span class="mr-2">TXID:</span>
+			<read-more
+				class="d-sm-none"
+				:text="hash" />
+			<read-more
+					class="d-none d-sm-inline-block d-md-none"
+					:text="hash"
+					:maxChars="20"/>
+			<read-more
+					class="d-none d-md-inline-block d-lg-none"
+					:text="hash"
+					:maxChars="30"/>
+			<read-more
+					class="d-none d-lg-inline-block d-xxl-none"
+					:text="hash"
+					:maxChars="40"/>
+			<span class="d-none d-xxl-inline-block">{{ hash }}</span>
 		</h3>
 
 		<b-row>
