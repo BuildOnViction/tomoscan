@@ -3,6 +3,7 @@
   border-radius: 10px;
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
+  margin-bottom: 50px;
 
   @include media-breakpoint-up(md) {
     padding: 40px;
@@ -70,6 +71,11 @@
 
       tr {
         grid-template-columns: 30% auto;
+      }
+
+      .tomo-readmore {
+        max-width: 90%;
+        vertical-align: top;
       }
     }
 
