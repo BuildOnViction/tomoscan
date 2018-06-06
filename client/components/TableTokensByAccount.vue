@@ -17,16 +17,16 @@
 							<nuxt-link :to="{name: 'tokens-slug', params: {slug: item.token}}">{{ item.tokenObj ? item.tokenObj.name : item.token }}</nuxt-link>
 						</div>
 
-						<div v-if="key === 'quantity'">{{ formatUnit(convertHexToFloat(item.quantity), item.tokenObj.symbol) }}</div>
+						<div v-if="key === 'quantity'">{{ formatUnit(convertHexToFloat(item.quantity, 16), item.tokenObj.symbol) }}</div>
 					</div>
 				</div>
 			</div>
 		</div>
 
 		<b-pagination
-      v-model="currentPage"
+			v-model="currentPage"
 			align="center"
-      class="tomo-pagination"
+			class="tomo-pagination"
 			:total-rows="total"
 			:per-page="perPage"
 			@change="onChangePaginate"
