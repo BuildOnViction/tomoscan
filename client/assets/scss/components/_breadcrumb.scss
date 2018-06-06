@@ -5,6 +5,7 @@
 
   .breadcrumb-item {
     vertical-align: middle;
+    text-overflow: ellipsis;
 
     &:before {
       content: '\f105';

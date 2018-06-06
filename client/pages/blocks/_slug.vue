@@ -3,7 +3,11 @@
 		<div class="card tomo-card">
 			<div class="tomo-card__header">
 				<img src="~/assets/img/icon-block.png">
-				<h3 class="tomo-card__headline">Block #{{ number }}</h3>
+				<h3 class="tomo-card__headline">Block 
+					<read-more
+						:text="number"
+						maxChars="20" />
+				</h3>
 				<div
 					v-if="block"
 					class="block-breadcrumb">
@@ -39,7 +43,16 @@
 							<td>Hash</td>
 							<td>
 								<read-more
+									class="d-sm-none"
 									:text="block.hash" />
+								<read-more
+									class="d-none d-sm-block d-md-none"
+									:text="block.hash"
+									:maxChars="20"/>
+								<read-more
+									class="d-none d-md-block"
+									:text="block.hash"
+									:maxChars="40"/>
 							</td>
 						</tr>
 						<tr>
@@ -47,20 +60,54 @@
 							<td>
 								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.parentHash}}">
 									<read-more
+										 class="d-sm-none"
 										:text="block.parentHash" />
+								<read-more
+									class="d-none d-sm-block d-md-none"
+									:text="block.parentHash"
+									:maxChars="20"/>
+								<read-more
+									class="d-none d-md-block"
+									:text="block.parentHash"
+									:maxChars="40"/>
 								</nuxt-link>
 							</td>
 						</tr>
 						<tr>
 							<td>Mined By</td>
 							<td>
-								<nuxt-link :to="{name: 'address-slug', params: {slug: block.signer}}">
+								<nuxt-link
+									class="d-sm-none"
+									:to="{name: 'address-slug', params: {slug: block.signer}}">
 									<read-more
 										v-if="block.signer"
 										:text="block.signer" />
 									<read-more
 										v-else
 										:text="block.miner" />
+								</nuxt-link>
+								<nuxt-link
+									class="d-none d-sm-block d-md-none"
+									:to="{name: 'address-slug', params: {slug: block.signer}}">
+									<read-more
+										v-if="block.signer"
+										:text="block.signer"
+										:maxChars="20" />
+									<read-more
+										v-else
+										:text="block.miner"
+										:maxChars="20" />
+								</nuxt-link>
+								<nuxt-link
+									class="d-none d-md-block"
+									:to="{name: 'address-slug', params: {slug: block.signer}}">
+									<span
+										v-if="block.signer"
+										:text="block.signer"
+										:maxChars="20">{{ block.signer }}</span>
+									<span
+										v-else
+										:maxChars="20">{{ block.miner }}</span>
 								</nuxt-link>
 							</td>
 						</tr>
@@ -83,13 +130,29 @@
 						<tr>
 							<td>Nonce</td>
 							<td>
-									<read-more :text="block.nonce"/>
+									<read-more
+										class="d-sm-none"
+										:text="block.nonce"/>
+									<read-more
+										class="d-none d-sm-block"
+										:text="block.nonce"
+										:maxChars="20"/>
 							</td>
 						</tr>
 						<tr>
 							<td>Extra Data</td>
 							<td>
-								<read-more :text="block.extraData"/>
+								<read-more
+									class="d-sm-none"
+									:text="block.extraData"/>
+								<read-more
+									class="d-none d-sm-block d-md-none"
+									:text="block.extraData"
+									:maxChars="20"/>
+								<read-more
+									class="d-none d-md-block"
+									:text="block.extraData"
+									:maxChars="40"/>
 							</td>
 						</tr>
 						</tbody>
