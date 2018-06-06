@@ -17,7 +17,7 @@
 							<nuxt-link :to="{name: 'tokens-slug', params: {slug: item.token}}">{{ item.tokenObj ? item.tokenObj.name : item.token }}</nuxt-link>
 						</div>
 
-						<div v-if="key === 'quantity'">{{ formatUnit(convertHexToFloat(item.quantity, 16), item.tokenObj.symbol) }}</div>
+						<div v-if="key === 'quantity'">{{ formatUnit(toEther(convertHexToFloat(item.quantity, 16)), item.tokenObj.symbol) }}</div>
 					</div>
 				</div>
 			</div>
