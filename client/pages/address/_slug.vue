@@ -75,7 +75,7 @@
 			<table-tokens-by-account :address="hash"></table-tokens-by-account>
 		</div>
 
-		<b-tabs class="tm__tabs">
+		<b-tabs class="tomo-tabs">
 			<b-tab title="Transactions">
 				<table-tx :address="hash"></table-tx>
 			</b-tab>

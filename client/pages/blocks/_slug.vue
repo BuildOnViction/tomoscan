@@ -3,12 +3,10 @@
 		<div class="card tomo-card">
 			<div class="tomo-card__header">
 				<img src="~/assets/img/icon-block.png">
-				<h3 class="tomo-card__headline">Block 
-					<read-more
-						class="d-lg-none"
-						:text="number.toString()"
-						:maxChars="20" />
-						<span class="d-none d-lg-inline-block">{{ number }}</span>
+				<h3
+					v-if="block"
+					class="tomo-card__headline">Block
+						<span class="d-none d-lg-inline-block headline__block-number">#{{ block.number }}</span>
 				</h3>
 				<div
 					v-if="block"
@@ -61,19 +59,19 @@
 						<tr>
 							<td>Parent Hash</td>
 							<td>
-								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.parentHash}}">
+								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">
 									<read-more
 										 class="d-sm-none"
 										:text="block.parentHash" />
-								<read-more
-									class="d-none d-sm-block d-md-none"
-									:text="block.parentHash"
-									:maxChars="20"/>
-								<read-more
-									class="d-none d-md-block d-lg-none"
-									:text="block.parentHash"
-									:maxChars="40"/>
-								<span class="d-none d-lg-block">{{ block.parentHash }}</span>
+									<read-more
+										class="d-none d-sm-block d-md-none"
+										:text="block.parentHash"
+										:maxChars="20"/>
+									<read-more
+										class="d-none d-md-block d-lg-none"
+										:text="block.parentHash"
+										:maxChars="40"/>
+									<span class="d-none d-lg-block">{{ block.parentHash }}</span>
 								</nuxt-link>
 							</td>
 						</tr>
@@ -164,7 +162,7 @@
 				</div>
 			</div>
 
-		<b-tabs class="mt-5">
+		<b-tabs class="tomo-tabs">
 			<b-tab title="Transactions">
 				<table-tx :block="number.toString()"></table-tx>
 			</b-tab>

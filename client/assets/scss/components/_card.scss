@@ -32,18 +32,11 @@
     margin-top: 10px;
     margin-bottom: 15px;
 
-    .tomo-readmore {
-      color: $color-text;
-      font-weight: 400;
-      font-size: 18px;
-      line-height: 1.4;
-    }
-
     @include media-breakpoint-up(md) {
       display: inline-block;
       max-width: 60%;
       vertical-align: middle;
-      margin-left: 20px;
+      margin-left: 30px;
     }
   }
 
@@ -94,6 +87,14 @@
 
     @include media-breakpoint-up(xl) {
       width: 80%;
+
+      tr {
+        grid-template-columns: 15% auto;
+      }
+    }
+
+    @include media-breakpoint-up(xxl) {
+      width: 70%;
     }
   }
 }

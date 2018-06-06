@@ -4,7 +4,7 @@
 
 		<b-row>
 			<b-col>
-				<b-tabs>
+				<b-tabs class="tomo-tabs">
 					<b-tab title="Overview">
 						<div class="card">
 							<div class="card-body">
