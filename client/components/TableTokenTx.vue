@@ -100,7 +100,7 @@
       <template slot="value" slot-scope="props">{{ formatUnit(toEther(props.item.value), props.item.symbol) }}</template>
 
 			<template slot="token" slot-scope="props">
-				<nuxt-link v-if="props.item.symbol" :to="{name: 'tokens-slug', params: {slug: props.item.address}}">ERC20 ({{ props.item.symbol }})</nuxt-link>
+				<span v-if="props.item.symbol">ERC20 ({{ props.item.symbol }})</span>
 				<i v-else>ERC20</i>
 			</template>
 		</table-base>
