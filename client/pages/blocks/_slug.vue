@@ -5,8 +5,10 @@
 				<img src="~/assets/img/icon-block.png">
 				<h3 class="tomo-card__headline">Block 
 					<read-more
-						:text="number"
-						maxChars="20" />
+						class="d-lg-none"
+						:text="number.toString()"
+						:maxChars="20" />
+						<span class="d-none d-lg-inline-block">{{ number }}</span>
 				</h3>
 				<div
 					v-if="block"
@@ -50,9 +52,10 @@
 									:text="block.hash"
 									:maxChars="20"/>
 								<read-more
-									class="d-none d-md-block"
+									class="d-none d-md-block d-lg-none"
 									:text="block.hash"
 									:maxChars="40"/>
+								<span class="d-none d-lg-block">{{ block.hash }}</span>
 							</td>
 						</tr>
 						<tr>
@@ -67,9 +70,10 @@
 									:text="block.parentHash"
 									:maxChars="20"/>
 								<read-more
-									class="d-none d-md-block"
+									class="d-none d-md-block d-lg-none"
 									:text="block.parentHash"
 									:maxChars="40"/>
+								<span class="d-none d-lg-block">{{ block.parentHash }}</span>
 								</nuxt-link>
 							</td>
 						</tr>
@@ -162,7 +166,7 @@
 
 		<b-tabs class="mt-5">
 			<b-tab title="Transactions">
-				<table-tx :block="number"></table-tx>
+				<table-tx :block="number.toString()"></table-tx>
 			</b-tab>
 		</b-tabs>
 	</section>

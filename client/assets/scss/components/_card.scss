@@ -73,6 +73,13 @@
       color: $color-primary;
     }
 
+    @include media-breakpoint-up(sm) {
+
+      tr {
+        grid-template-columns: 30% auto;
+      }
+    }
+
     @include media-breakpoint-up(md) {
 
       tr {
@@ -83,6 +90,10 @@
       td:first-child {
         text-align: left;
       }
+    }
+
+    @include media-breakpoint-up(xl) {
+      width: 80%;
     }
   }
 }
