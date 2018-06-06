@@ -3,7 +3,7 @@
 		<ol class="breadcrumb tomo-breadcrumb">
 			<li v-for="item in items" class="breadcrumb-item">
 				<nuxt-link :to="item.location" active-class="active">
-					{{ formatLongString(item.title, 16) }}
+					{{ item.title }}
 				</nuxt-link>
 			</li>
 		</ol>

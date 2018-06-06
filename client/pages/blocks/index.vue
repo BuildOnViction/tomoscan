@@ -68,10 +68,12 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableBase from '~/components/TableBase'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     components: {
       TableBase,
+			ReadMore
     },
     mixins: [mixin],
     head: () => ({
