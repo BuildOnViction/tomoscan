@@ -9,7 +9,7 @@
 					class="block-breadcrumb">
 					<div class="block-breadcrumb__prev">
 						<i class="tm tm-chevrons-left"></i>
-						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Back</nuxt-link>
+						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Prev</nuxt-link>
 					</div>
 					<span class="block-breadcrumb__divider">|</span>
 					<div class="block-breadcrumb__next">
@@ -37,13 +37,17 @@
 						</tr>
 						<tr>
 							<td>Hash</td>
-							<td>{{ formatLongString(block.hash, 12) }}</td>
+							<td>
+								<read-more
+									:text="block.hash" />
+							</td>
 						</tr>
 						<tr>
 							<td>Parent Hash</td>
 							<td>
 								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.parentHash}}">
-									{{ formatLongString(block.parentHash, 12) }}
+									<read-more
+										:text="block.parentHash" />
 								</nuxt-link>
 							</td>
 						</tr>
@@ -51,8 +55,12 @@
 							<td>Mined By</td>
 							<td>
 								<nuxt-link :to="{name: 'address-slug', params: {slug: block.signer}}">
-									<span v-if="block.signer">{{ formatLongString(block.signer, 12) }}</span>
-									<span v-else>{{ formatLongString(block.miner, 12) }}</span>
+									<read-more
+										v-if="block.signer"
+										:text="block.signer" />
+									<read-more
+										v-else
+										:text="block.miner" />
 								</nuxt-link>
 							</td>
 						</tr>
@@ -74,11 +82,15 @@
 						</tr>
 						<tr>
 							<td>Nonce</td>
-							<td>{{ formatLongString(block.nonce, 12) }}</td>
+							<td>
+									<read-more :text="block.nonce"/>
+							</td>
 						</tr>
 						<tr>
 							<td>Extra Data</td>
-							<td>{{ formatLongString(block.extraData, 12) }}</td>
+							<td>
+								<read-more :text="block.extraData"/>
+							</td>
 						</tr>
 						</tbody>
 					</table>
@@ -94,11 +106,15 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
-  import TableTx from '~/components/TableTx'
+	import TableTx from '~/components/TableTx'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     mixins: [mixin],
-    components: {TableTx},
+		components: {
+			TableTx,
+			ReadMore
+		},
     head () {
       return {
         title: 'Block ' + this.$route.params.slug + ' Info',
@@ -130,21 +146,3 @@
     },
   }
 </script>
-<style lang="scss" type="text/scss">
-	.tm__block_table {
-		overflow: auto;
-		width: 100%;
-		display: block;
-
-		td {
-			padding-top: 20px;
-			padding-bottom: 20px;
-		}
-
-		tr {
-			td:first-child {
-				color: #868f9b;
-			}
-		}
-	}
-</style>

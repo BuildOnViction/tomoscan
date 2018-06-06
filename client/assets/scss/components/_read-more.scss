@@ -1,0 +1,11 @@
+.tomo-readmore {
+  margin-bottom: 0;
+
+  &__toggle {
+    display: inline-block;
+    vertical-align: 1px;
+    a {
+      color: currentColor;
+    }
+  }
+}
