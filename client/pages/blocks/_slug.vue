@@ -37,7 +37,7 @@
 						</tr>
 						<tr>
 							<td>Transactions</td>
-							<td>{{ block.e_tx }}&nbsp;transactions</td>
+							<td>{{ block.e_tx }} transactions</td>
 						</tr>
 						<tr>
 							<td>Hash</td>

@@ -1,0 +1,14 @@
+.event-logs {
+
+  &__topic {
+    display: block;
+  }
+
+  .event-logs__data {
+    margin-bottom: 10px;
+
+    &.tomo-readmore--is-open {
+      width: 80%;
+    }
+  }
+}

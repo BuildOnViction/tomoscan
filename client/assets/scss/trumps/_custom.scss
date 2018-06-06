@@ -17,6 +17,14 @@
   color: $color-success !important
 }
 
+.text-purple {
+  color: $color-purple !important;
+}
+
+.text-black {
+  color: $black !important;
+}
+
 .contract-creation:before {
   content: '';
   display: inline-block;

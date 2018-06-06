@@ -2,11 +2,18 @@
   display: inline-block;
   margin-bottom: 0;
 
-  &__toggle {
+  .tomo-readmore__toggle {
     display: inline-block;
     vertical-align: 1px;
+
     a {
       color: currentColor;
     }
+  }
+
+  &--is-open {
+    display: inline-block;
+    vertical-align: top;
+    width: 90%;
   }
 }

@@ -72,11 +72,6 @@
       tr {
         grid-template-columns: 30% auto;
       }
-
-      .tomo-readmore--is-open {
-        max-width: 90%;
-        vertical-align: top;
-      }
     }
 
     @include media-breakpoint-up(md) {
@@ -102,5 +97,12 @@
     @include media-breakpoint-up(xxl) {
       width: 70%;
     }
+  }
+}
+
+.tomo-card--transaction {
+
+  .tomo-card__table tr {
+    grid-template-columns: 38% auto;
   }
 }
