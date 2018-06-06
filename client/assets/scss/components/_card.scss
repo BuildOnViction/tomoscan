@@ -1,7 +1,7 @@
 .tomo-card {
-  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, 0.07);
   border: none;
   border-radius: 10px;
+  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
 
   &__header {
@@ -13,12 +13,28 @@
     font-size: 24px;
     color: #000;
     margin-top: 10px;
+    margin-bottom: 15px;
   }
 
   &__table {
 
     tr {
-      display: block;
+      display: grid;
+      grid-template-columns: 40% auto;
+      grid-gap: 15px;
+      margin-bottom: 15px;
+    }
+
+    td {
+      word-break: break-word;
+
+      &:first-child {
+        text-align: right;
+      }
+
+      &:last-child {
+        color: $color-text-2;
+      }
     }
 
     a {

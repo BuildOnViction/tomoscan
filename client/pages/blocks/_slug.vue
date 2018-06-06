@@ -12,7 +12,7 @@
 						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Back</nuxt-link>
 					</div>
 					<span class="block-breadcrumb__divider">|</span>
-					<div class="block-breadcrumb__prev">
+					<div class="block-breadcrumb__next">
 						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number + 1}}">Next</nuxt-link>
 						<i class="tm tm-chevrons-right"></i>
 					</div>
@@ -24,60 +24,61 @@
 					class="tomo-card__table">
 						<tbody>
 						<tr>
-							<td>Height:</td>
+							<td>Height</td>
 							<td>{{ block.number }}</td>
 						</tr>
 						<tr v-if="timestamp_moment">
-							<td>TimeStamp:</td>
-							<td>{{ timestamp_moment }}</td>
+							<td>TimeStamp</td>
+							<td v-html="timestamp_moment"></td>
 						</tr>
 						<tr>
-							<td>Transactions:</td>
+							<td>Transactions</td>
 							<td>{{ block.e_tx }}&nbsp;transactions</td>
 						</tr>
 						<tr>
 							<td>Hash</td>
-							<td>{{ block.hash }}</td>
+							<td>{{ formatLongString(block.hash, 12) }}</td>
 						</tr>
 						<tr>
-							<td>Parent Hash:</td>
+							<td>Parent Hash</td>
 							<td>
-								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.parentHash}}">{{ block.parentHash }}
+								<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.parentHash}}">
+									{{ formatLongString(block.parentHash, 12) }}
 								</nuxt-link>
 							</td>
 						</tr>
 						<tr>
-							<td>Mined By:</td>
+							<td>Mined By</td>
 							<td>
 								<nuxt-link :to="{name: 'address-slug', params: {slug: block.signer}}">
-									<span v-if="block.signer">{{ block.signer }}</span>
-									<span v-else>{{ block.miner }}</span>
+									<span v-if="block.signer">{{ formatLongString(block.signer, 12) }}</span>
+									<span v-else>{{ formatLongString(block.miner, 12) }}</span>
 								</nuxt-link>
 							</td>
 						</tr>
 						<tr>
-							<td>Difficulty:</td>
+							<td>Difficulty</td>
 							<td>{{ formatNumber(block.difficulty) }}</td>
 						</tr>
 						<tr>
-							<td>Total Difficulty:</td>
+							<td>Total Difficulty</td>
 							<td>{{ formatNumber(block.totalDifficulty) }}</td>
 						</tr>
 						<tr>
-							<td>Gas Used:</td>
+							<td>Gas Used</td>
 							<td>{{ formatNumber(block.gasUsed) }}</td>
 						</tr>
 						<tr>
-							<td>Gas Limit:</td>
+							<td>Gas Limit</td>
 							<td>{{ formatNumber(block.gasLimit) }}</td>
 						</tr>
 						<tr>
-							<td>Nonce:</td>
-							<td>{{ block.nonce }}</td>
+							<td>Nonce</td>
+							<td>{{ formatLongString(block.nonce, 12) }}</td>
 						</tr>
 						<tr>
-							<td>Extra Data:</td>
-							<td>{{ block.extraData }}</td>
+							<td>Extra Data</td>
+							<td>{{ formatLongString(block.extraData, 12) }}</td>
 						</tr>
 						</tbody>
 					</table>
@@ -125,7 +126,7 @@
 
       this.block = data
       let moment = self.$moment(data.timestamp)
-      this.timestamp_moment = moment.fromNow() + ' (' + moment.format('MMM-DD-Y hh:mm:ss A') + ' +UTC)'
+      this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('MMM-DD-Y hh:mm:ss A')} +UTC)</small>`
     },
   }
 </script>
