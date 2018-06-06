@@ -63,12 +63,14 @@ const mixin = {
       let wei_number = new BigNumber(wei)
       let sfx = ''
       let convert = 'ether'
+      let divided = 1000000000000000000
       if (wei_number.gte(1000000000000000000000000000000)) {
         sfx = '<strong>T</strong>'
-        convert = 'tether'
+        divided = 1000000000000000000000000000000
       }
 
-      return mixin.methods.formatNumber(web3.utils.fromWei(wei, convert), fixed) +
+      return mixin.methods.formatNumber(
+        wei_number.dividedBy(divided).toString(), fixed) +
         ' ' + sfx
     },
 
@@ -102,24 +104,25 @@ const mixin = {
         return parseInt(parts[0], radix) + parseInt(parts[1], radix) /
           Math.pow(radix, parts[1].length)
       }
+
       return parseInt(parts[0], radix)
     },
 
     getParameterByName: (name, url) => {
-      if (!url) url = window.location.href;
-      name = name.replace(/[\[\]]/g, "\\$&");
-      var regex = new RegExp("[?&]" + name + "(=([^&#]*)|&|#|$)"),
-          results = regex.exec(url);
-      if (!results) return null;
-      if (!results[2]) return '';
-      return decodeURIComponent(results[2].replace(/\+/g, " "));
+      if (!url) url = window.location.href
+      name = name.replace(/[\[\]]/g, '\\$&')
+      var regex = new RegExp('[?&]' + name + '(=([^&#]*)|&|#|$)'),
+        results = regex.exec(url)
+      if (!results) return null
+      if (!results[2]) return ''
+      return decodeURIComponent(results[2].replace(/\+/g, ' '))
     },
 
     formatLongString: (str, maxLength) => {
       if (str.length <= maxLength || maxLength < 1 || !maxLength) {
         return str
       }
-      return str.substring(0, maxLength) + '...';
+      return str.substring(0, maxLength) + '...'
     },
   },
 }
