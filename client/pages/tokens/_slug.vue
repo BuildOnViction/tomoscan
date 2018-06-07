@@ -22,7 +22,7 @@
 								<td>
 									Total Supply:
 								</td>
-								<td class="text-right">{{ formatUnit(toEther(token.totalSupply), symbol) }}</td>
+								<td class="text-right">{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
 							</tr>
 							<tr>
 								<td>
