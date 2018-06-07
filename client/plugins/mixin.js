@@ -60,6 +60,9 @@ const mixin = {
         wei = wei.toString()
       }
 
+      // Set bignumber config.
+      BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
+      
       let wei_number = new BigNumber(wei)
       let sfx = ''
       let convert = 'ether'
