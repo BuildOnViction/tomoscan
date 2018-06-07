@@ -23,11 +23,9 @@
       <template slot="rank" slot-scope="props">{{props.item.rank}}</template>
 
       <template slot="hash" slot-scope="props">
-        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <span class="d-sm-none d-md-block d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
-          <span class="d-none d-sm-block d-md-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 32) }}</span>
-          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash) }}</span>
-        </nuxt-link>
+        <nuxt-link
+           class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
       </template>
 
       <template slot="balance" slot-scope="props">

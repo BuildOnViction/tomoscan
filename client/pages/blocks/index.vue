@@ -36,9 +36,9 @@
       </template>
 
 			<template slot="miner" slot-scope="props">
-        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-          <span class="text-truncate">{{ props.item.signer }}</span>
-        </nuxt-link>
+        <nuxt-link
+          class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>
 			</template>
 
 			<template slot="gasUsed" slot-scope="props">

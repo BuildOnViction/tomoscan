@@ -21,11 +21,9 @@
       class="tomo-table--contracts">
 
       <template slot="hash" slot-scope="props">
-        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <span class="d-lg-none d-xl-none">{{ formatLongString(props.item.hash, 16) }}</span>
-          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 30) }}</span>
-          <span class="d-none d-xl-block">{{ formatLongString(props.item.hash, -1) }}</span>
-        </nuxt-link>
+        <nuxt-link
+          class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
       </template>
 
       <template slot="contractName" slot-scope="props">{{ props.item.contractName }}</template>
