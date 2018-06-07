@@ -203,6 +203,11 @@
     display: block;
     margin-bottom: 20px;
 
+    &:before {
+      display: block;
+      text-align: left;
+    }
+
     &:last-child {
       border-bottom: 1px solid $color-text;
       margin-bottom: 0;
@@ -212,5 +217,43 @@
 
   tr:last-child td:last-child {
     border-bottom: none;
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    tbody {
+      display: block;
+
+      tr {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+
+    thead tr {
+      padding: 0 40px;
+    }
+
+    thead tr,
+    tbody tr {
+      grid-template-columns: 40% 20% 40%;
+    }
+
+    td:before {
+      display: none;
+    }
+
+    td {
+      border-bottom: 1px solid $color-text;
+      margin-bottom: 0;
+      padding-bottom: 20px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
   }
 }

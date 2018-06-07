@@ -1,14 +1,18 @@
 .event-logs {
 
+  &__item {
+    margin-bottom: 10px;
+  }
+
   &__topic {
     display: block;
   }
 
-  .event-logs__data {
+  &__data {
     margin-bottom: 10px;
+  }
 
-    &.tomo-readmore--is-open {
-      width: 80%;
-    }
+  .tomo-readmore--is-open {
+    width: 80%;
   }
 }

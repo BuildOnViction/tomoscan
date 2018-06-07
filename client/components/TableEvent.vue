@@ -23,21 +23,23 @@
 
 			<template slot="label" slot-scope="props">
 				<read-more
-          class="d-md-none"
+          class="d-sm-none"
           :text="props.item.transactionHash"
           :maxChars="20" />
         <read-more
-          class="d-none d-md-block d-lg-none"
+          class="d-none d-sm-block d-md-none d-xxl-block"
           :text="props.item.transactionHash"
           :maxChars="40"/>
-        <span class="d-none d-lg-block">{{ props.item.transactionHash }}</span>
-        <br>
-        <span>
+        <span class="d-none d-md-block d-lg-none">{{ props.item.transactionHash }}</span>
+        <read-more
+          class="d-none d-lg-block d-xxl-none"
+          :text="props.item.transactionHash"
+          :maxChars="30" />
+        <span class="d-block">
           <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">
             # {{ props.item.blockNumber }}
           </nuxt-link>
         </span>
-        <br>
         <div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
 			</template>
 
@@ -61,26 +63,27 @@
           <span class="text-danger"> to</span>
           <span class="text-black">, </span>
           <span class="text-purple">uint256</span>
-          <span class="text-danger"> value</span>)
+          <span class="text-danger"> value</span>
+          <span class="text-black">) </span>
         </div>
         <b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
           <div v-if="isTransferEvent(props.item.topics[0])">
             <ul
               class="list-unstyled event-logs"
               v-if="props.item.transfer">
-              <li class="event-logs__data">
+              <li class="event-logs__item">
                 <span class="d-block"><i class="text-muted">address</i> from</span>
                 <nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.from)}}">
                   {{ unformatAddress(props.item.transfer.from) }}
                 </nuxt-link>
               </li>
-              <li class="event-logs__data">
+              <li class="event-logs__item">
                 <span class="d-block"><i class="text-muted">address</i> to</span>
                 <nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">
                   {{ unformatAddress(props.item.transfer.to) }}
                 </nuxt-link>
               </li>
-              <li class="event-logs__data">
+              <li class="event-logs__item">
                 <span class="d-block"><i class="text-muted">unit256</i> value</span>
                 <span class="d-block">{{ convertHexToInt(props.item.transfer.value) }}</span>
               </li>
@@ -88,22 +91,44 @@
           </div>
         </b-collapse>
         <ul class="list-unstyled event-logs">
-          <li v-for="(topic, i) in props.item.topics">
+          <li
+            v-for="(topic, i) in props.item.topics"
+            class="event-logs__item">
             <span :class="'event-logs__topic ' + (i === 0 ? 'text-muted': '')">
               [topic {{ i }}]
               <read-more
                 class="d-sm-none"
                 :text="topic" />
+              <read-more
+                class="d-none d-sm-inline-block d-md-none d-xxl-inline-block"
+                :text="topic"
+                :maxChars="40" />
+              <span class="d-none d-md-inline-block d-lg-none">{{ topic }}</span>
+              <read-more
+                class="d-none d-md-none d-lg-inline-block d-xxl-none"
+                :text="topic"
+                :maxChars="30" />
             </span>
           </li>
         </ul>
         <ul class="list-unstyled event-logs">
-          <li v-for="data in props.item.datas">
+          <li
+            v-for="data in props.item.datas"
+            class="event-logs__item">
             <i class="tm-arrow-right text-success mr-2"></i>
             <read-more
               class="event-logs__data d-sm-none"
               :text="data"
               :maxChars="18" />
+            <read-more
+              class="event-logs__data d-none d-sm-inline-block d-md-none d-xxl-inline-block"
+              :text="data"
+              :maxChars="40" />
+            <span class="event-logs__data d-none d-md-inline-block d-lg-none">{{ data }}</span>
+            <read-more
+              class="event-logs__data d-none d-lg-inline-block d-xxl-none"
+              :text="data"
+              :maxChars="30" />
           </li>
         </ul>
 			</template>
