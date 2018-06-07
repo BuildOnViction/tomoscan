@@ -10,7 +10,9 @@
 	</div>
 </template>
 <script>
+  import mixin from '~/plugins/mixin'
   export default {
+    mixins: [mixin],
     computed: {
       items () {
         return this.$store.state.breadcrumb.items

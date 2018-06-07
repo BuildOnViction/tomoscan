@@ -1,40 +1,92 @@
 <template>
-	<section>
-		<h3 class="mb-4">TXID: {{ hash }}</h3>
+	<div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+		<h3 class="tomo-headline">
+			<span class="mr-2">TXID:</span>
+			<read-more
+				class="d-sm-none"
+				:text="hash" />
+			<read-more
+					class="d-none d-sm-inline-block d-md-none"
+					:text="hash"
+					:maxChars="20"/>
+			<read-more
+					class="d-none d-md-inline-block d-lg-none"
+					:text="hash"
+					:maxChars="30"/>
+			<read-more
+					class="d-none d-lg-inline-block d-xxl-none"
+					:text="hash"
+					:maxChars="40"/>
+			<span class="d-none d-xxl-inline-block">{{ hash }}</span>
+		</h3>
 
 		<b-row>
 			<b-col>
-				<b-tabs>
+				<b-tabs class="tomo-tabs">
 					<b-tab title="Overview">
-						<div class="card">
-							<div class="card-body">
-								<table v-if="tx" class="tm__no_border table">
+						<div class="card tomo-card tomo-card--transaction">
+							<div class="tomo-card__body">
+								<table v-if="tx" class="tomo-card__table">
 									<tbody>
 									<tr>
-										<td>TxHash:</td>
-										<td>{{ tx.hash }}</td>
-									</tr>
-									<tr>
-										<td>TxReceipt Status:</td>
-										<td>{{ tx.status ? 'Success' : 'Reject' }}</td>
-									</tr>
-									<tr>
-										<td>Block:</td>
+										<td>TxHash</td>
 										<td>
-											<nuxt-link v-if="tx.blockNumber" :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>
-											<span v-else class="text-muted">Pending...</span>
-											<span class="ml-1">({{ tx.latestBlockNumber - tx.blockNumber }} block confirmation)</span>
+											<read-more
+												class="d-sm-none"
+												:text="tx.hash" />
+											<read-more
+												class="d-none d-sm-block d-md-none"
+												:text="tx.hash"
+												:maxChars="20"/>
+											<read-more
+												class="d-none d-md-block d-lg-none"
+												:text="tx.hash"
+												:maxChars="40"/>
+											<span class="d-none d-lg-block">{{ tx.hash }}</span>
 										</td>
 									</tr>
 									<tr>
-										<td>TimeStamp:</td>
-										<td>{{ tx.timestamp_moment }}</td>
+										<td>TxReceipt Status</td>
+										<td>{{ tx.status ? 'Success' : 'Reject' }}</td>
 									</tr>
 									<tr>
-										<td>From:</td>
+										<td>Block</td>
+										<td>
+											<nuxt-link
+												v-if="tx.blockNumber"
+												class="mr-1"
+												:to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}">{{ tx.blockNumber }}</nuxt-link>
+											<span
+												v-else
+												class="text-muted mr-1">Pending...</span>
+											<span>({{ tx.latestBlockNumber - tx.blockNumber }} block confirmation)</span>
+										</td>
+									</tr>
+									<tr>
+										<td>Time Stamp</td>
+										<td v-html="tx.timestamp_moment"></td>
+									</tr>
+									<tr>
+										<td>From</td>
 										<td>
 											<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
-											<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">{{ tx.from }}</nuxt-link>
+											<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">
+												<read-more
+													class="d-sm-none"
+													:text="tx.from" />
+												<read-more
+													class="d-none d-sm-block d-md-none"
+													:text="tx.from"
+													:maxChars="20"/>
+												<read-more
+													class="d-none d-md-block d-lg-none"
+													:text="tx.from"
+													:maxChars="40"/>
+												<span class="d-none d-lg-block">{{ tx.from }}</span>
+											</nuxt-link>
 										</td>
 									</tr>
 									<tr>
@@ -42,7 +94,20 @@
 										<td>
 											<div v-if="tx.to">
 												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
-												<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">{{ tx.to_model.hash }}</nuxt-link>
+												<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">
+													<read-more
+														class="d-sm-none"
+														:text="tx.to_model.hash" />
+													<read-more
+														class="d-none d-sm-inline-block d-md-none"
+														:text="tx.to_model.hash"
+														:maxChars="20"/>
+													<read-more
+														class="d-none d-md-inline-block d-lg-none"
+														:text="tx.to_model.hash"
+														:maxChars="40"/>
+												<span class="d-none d-lg-inline-block">{{ tx.to_model.hash }}</span>
+												</nuxt-link>
 											</div>
 											<div v-else>
 												<span>[Contract&nbsp;</span>
@@ -52,23 +117,23 @@
 										</td>
 									</tr>
 									<tr>
-										<td>Value:</td>
+										<td>Value</td>
 										<td>{{ formatUnit(toEther(tx.value)) }}</td>
 									</tr>
 									<tr>
-										<td>Gas Used By Txn:</td>
+										<td>Gas Used By Txn</td>
 										<td>{{ tx.gasUsed }}</td>
 									</tr>
 									<tr>
-										<td>Gas Price:</td>
+										<td>Gas Price</td>
 										<td>{{ formatUnit(toEther(tx.gasPrice)) }}({{ toGwei(tx.gasPrice) }} Gwei)</td>
 									</tr>
 									<tr>
-										<td>Actual Tx Cost/Fee:</td>
+										<td>Actual Tx Cost/Fee</td>
 										<td>{{ formatUnit(toEther(tx.gasPrice * tx.gas)) }}</td>
 									</tr>
 									<tr v-if="tx.tokenTxs.length">
-										<td>Token Transfer:</td>
+										<td>Token Transfer</td>
 										<td>
 											<ul>
 												<li v-for="tokenTx, index in tx.tokenTxs">
@@ -85,11 +150,21 @@
 										</td>
 									</tr>
 									<tr>
-										<td>Input Data:</td>
+										<td>Input Data</td>
 										<td>
-											<figure class="highlight">
-												<code>{{ tx.input }}</code>
-											</figure>
+											<span class="text-danger">
+												<read-more
+													class="d-sm-none"
+													:text="tx.input"/>
+												<read-more
+													class="d-none d-sm-block d-md-none"
+													:text="tx.input"
+													:maxChars="20"/>
+												<read-more
+													class="d-none d-md-block"
+													:text="tx.input"
+													:maxChars="40"/>
+											</span>
 										</td>
 									</tr>
 									</tbody>
@@ -108,11 +183,13 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableEvent from '~/components/TableEvent'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     mixins: [mixin],
     components: {
       TableEvent,
+			ReadMore
     },
     head () {
       return {
@@ -124,14 +201,16 @@
         hash: null,
         tx: null,
         itemsLength: 0,
+      	loading: true,
       }
     },
     created () {
       this.hash = this.$route.params.slug
     },
     async mounted () {
-      let self = this
-
+			let self = this
+			self.loading = true
+			
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'txs-slug', to: {name: 'txs-slug', params: {slug: self.hash}}})
 
@@ -139,7 +218,9 @@
 
       this.tx = data
       let moment = self.$moment(data.timestamp)
-      this.tx.timestamp_moment = moment.fromNow() + ' (' + moment.format('MMM-DD-Y hh:mm:ss A') + ')'
+			this.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('MMM-DD-Y hh:mm:ss A')} +UTC)</small>`
+			
+      self.loading = false
     },
   }
 </script>

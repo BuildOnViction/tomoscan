@@ -53,10 +53,10 @@
 		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
 			<div class="container container--wide">
 				<div class="row align-items-center tomo-body-wrapper__heading" v-if="! isHomePage">
-					<b-col sm="5" md="4">
+					<b-col sm="5">
 						<breadcrumb/>
 					</b-col>
-					<b-col sm="7" md="8">
+					<b-col sm="7">
 						<div class="input-group search-form search-form--mini">
 							<div class="input-group-prepend">
 								<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="fa fa-search"></i></button>

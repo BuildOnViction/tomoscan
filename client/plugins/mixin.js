@@ -120,13 +120,6 @@ const mixin = {
       if (!results[2]) return ''
       return decodeURIComponent(results[2].replace(/\+/g, ' '))
     },
-
-    formatLongString: (str, maxLength) => {
-      if (str.length <= maxLength || maxLength < 1 || !maxLength) {
-        return str
-      }
-      return str.substring(0, maxLength) + '...'
-    },
   },
 }
 

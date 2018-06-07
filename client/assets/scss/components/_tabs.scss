@@ -1,16 +1,23 @@
-.tabs {
+.tomo-tabs {
+  margin-top: 30px;
+
+  @include media-breakpoint-up(md) {
+    margin-top: 50px;
+  }
+
   .nav-tabs {
     border: none;
     margin-bottom: 40px;
 
     .nav-item {
       .nav-link {
+        background-color: transparent;
         border-color: transparent transparent #dadbdd;
         border-bottom-width: 4px;
         border-top-width: 0px;
         border-left-width: 0px;
         border-right-width: 0px;
-        padding: 15px 40px;
+        padding: 15px 40px !important;
         color: $text-muted;
 
         &.active {

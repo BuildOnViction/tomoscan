@@ -62,7 +62,7 @@
 
 		<b-row>
 			<b-col>
-				<b-tabs>
+				<b-tabs class="tomo-tabs">
 					<b-tab title="Token Transfers">
 						<table-token-tx :token="hash"></table-token-tx>
 					</b-tab>

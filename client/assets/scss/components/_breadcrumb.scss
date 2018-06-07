@@ -5,6 +5,7 @@
 
   .breadcrumb-item {
     vertical-align: middle;
+    text-overflow: ellipsis;
 
     &:before {
       content: '\f105';
@@ -17,6 +18,10 @@
 
     &:last-child a {
       color: $color-primary;
+    }
+
+    + .breadcrumb-item:before {
+      padding-right: 5px;
     }
   }
 

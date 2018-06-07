@@ -21,7 +21,9 @@
 			:items="items">
 			<template slot="hash" slot-scope="props">
 				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <span>{{ formatLongString(props.item.hash, 16) }}</span>
+          <read-more
+            :text="props.item.hash"
+            :maxChars="16" />
         </nuxt-link>
 			</template>
 
@@ -42,10 +44,12 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableBase from '~/components/TableBase'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     components: {
       TableBase,
+			ReadMore
     },
     mixins: [mixin],
     props: {

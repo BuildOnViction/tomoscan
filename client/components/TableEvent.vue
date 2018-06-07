@@ -20,56 +20,117 @@
 			:fields="fields"
 			:items="items"
       class="tomo-table--events">
+
 			<template slot="label" slot-scope="props">
-				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.transactionHash}}">{{ props.item.transactionHash }}...</nuxt-link>
-				<div>#
-					<nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
-				</div>
-				<div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
+				<read-more
+          class="d-sm-none"
+          :text="props.item.transactionHash"
+          :maxChars="20" />
+        <read-more
+          class="d-none d-sm-block d-md-none d-xxl-block"
+          :text="props.item.transactionHash"
+          :maxChars="40"/>
+        <span class="d-none d-md-block d-lg-none">{{ props.item.transactionHash }}</span>
+        <read-more
+          class="d-none d-lg-block d-xxl-none"
+          :text="props.item.transactionHash"
+          :maxChars="30" />
+        <span class="d-block">
+          <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">
+            # {{ props.item.blockNumber }}
+          </nuxt-link>
+        </span>
+        <div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
 			</template>
 
 			<template slot="method" slot-scope="props">
-				<div class="d-block" v-html="props.item.methodName"></div>
-				<div class="d-block">[{{ props.item.methodCode }}]</div>
+        <div class="d-block" v-html="props.item.methodName"></div>
+        <div class="d-block">[{{ props.item.methodCode }}]</div>
 			</template>
 
 			<template slot="logs" slot-scope="props">
-				<div v-if="isTransferEvent(props.item.topics[0])">
-					<b-link v-b-toggle="'collapse' + props.index">Transfer</b-link>
-					(index_topic_1 <span class="text-primary">address</span>&nbsp;<span class="text-danger">from</span>, index_topic_2 <span class="text-primary">address</span>&nbsp;<span class="text-danger">to</span>, <span class="text-primary">uint256</span>&nbsp;<span class="text-danger">value</span>)
-				</div>
-				<b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
-					<div v-if="isTransferEvent(props.item.topics[0])" class="event__logs">
-						<ul class="list-unstyled" v-if="props.item.transfer">
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">address</i> from</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.from)}}">{{ unformatAddress(props.item.transfer.from) }}</nuxt-link>
-								</p>
-							</li>
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">address</i> to</span>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">{{ unformatAddress(props.item.transfer.to) }}</nuxt-link>
-								</p>
-							</li>
-							<li>
-								<p>
-									<span class="d-block"><i class="text-muted">unit256</i> value</span>
-									<span class="d-block">{{ convertHexToInt(props.item.transfer.value) }}</span>
-								</p>
-							</li>
-						</ul>
-					</div>
-				</b-collapse>
-				<ul class="list-unstyled event__logs">
-					<li v-for="(topic, i) in props.item.topics" class="text-truncate">
-						<div :class="i === 0 ? 'text-muted': ''">[topic {{ i }}] {{ topic }}</div>
-					</li>
-				</ul>
-				<ul class="list-unstyled event__logs">
-					<li v-for="data in props.item.datas"><i class="font-14 tm-arrow-right mr-1"></i>{{ data }}</li>
-				</ul>
+        <div
+          v-if="isTransferEvent(props.item.topics[0])"
+          class="transfer-event">
+          <b-link
+            class="transfer-event__name"
+            v-b-toggle="'collapse' + props.index">Transfer</b-link>
+          <span class="text-black"> (index_topic_1</span>
+          <span class="text-purple"> address</span>
+          <span class="text-danger"> from</span>
+          <span class="text-black">, index_topic_2</span>
+          <span class="text-purple"> address</span>
+          <span class="text-danger"> to</span>
+          <span class="text-black">, </span>
+          <span class="text-purple">uint256</span>
+          <span class="text-danger"> value</span>
+          <span class="text-black">) </span>
+        </div>
+        <b-collapse :id="'collapse' + props.index" class="mt-2 mb-2">
+          <div v-if="isTransferEvent(props.item.topics[0])">
+            <ul
+              class="list-unstyled event-logs"
+              v-if="props.item.transfer">
+              <li class="event-logs__item">
+                <span class="d-block"><i class="text-muted">address</i> from</span>
+                <nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.from)}}">
+                  {{ unformatAddress(props.item.transfer.from) }}
+                </nuxt-link>
+              </li>
+              <li class="event-logs__item">
+                <span class="d-block"><i class="text-muted">address</i> to</span>
+                <nuxt-link :to="{name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">
+                  {{ unformatAddress(props.item.transfer.to) }}
+                </nuxt-link>
+              </li>
+              <li class="event-logs__item">
+                <span class="d-block"><i class="text-muted">unit256</i> value</span>
+                <span class="d-block">{{ convertHexToInt(props.item.transfer.value) }}</span>
+              </li>
+            </ul>
+          </div>
+        </b-collapse>
+        <ul class="list-unstyled event-logs">
+          <li
+            v-for="(topic, i) in props.item.topics"
+            class="event-logs__item">
+            <span :class="'event-logs__topic ' + (i === 0 ? 'text-muted': '')">
+              [topic {{ i }}]
+              <read-more
+                class="d-sm-none"
+                :text="topic" />
+              <read-more
+                class="d-none d-sm-inline-block d-md-none d-xxl-inline-block"
+                :text="topic"
+                :maxChars="40" />
+              <span class="d-none d-md-inline-block d-lg-none">{{ topic }}</span>
+              <read-more
+                class="d-none d-md-none d-lg-inline-block d-xxl-none"
+                :text="topic"
+                :maxChars="30" />
+            </span>
+          </li>
+        </ul>
+        <ul class="list-unstyled event-logs">
+          <li
+            v-for="data in props.item.datas"
+            class="event-logs__item">
+            <i class="tm-arrow-right text-success mr-2"></i>
+            <read-more
+              class="event-logs__data d-sm-none"
+              :text="data"
+              :maxChars="18" />
+            <read-more
+              class="event-logs__data d-none d-sm-inline-block d-md-none d-xxl-inline-block"
+              :text="data"
+              :maxChars="40" />
+            <span class="event-logs__data d-none d-md-inline-block d-lg-none">{{ data }}</span>
+            <read-more
+              class="event-logs__data d-none d-lg-inline-block d-xxl-none"
+              :text="data"
+              :maxChars="30" />
+          </li>
+        </ul>
 			</template>
 		</table-base>
 
@@ -88,10 +149,12 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableBase from '~/components/TableBase'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     components: {
       TableBase,
+			ReadMore
     },
     mixins: [mixin],
     props: {
