@@ -97,6 +97,27 @@
   p {
     margin: 0;
   }
+
+  .text-truncate {
+    display: inline-block;
+    max-width: 9rem;
+
+    @include media-breakpoint-only(sm) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      max-width: 10rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(xxl) {
+      max-width: 15rem;
+    }
+  }
 }
 
 .tomo-table--blocks {
@@ -104,7 +125,28 @@
   @include media-breakpoint-up(lg) {
     thead tr,
     tbody tr {
-      grid-template-columns: 15% 20% 5% 25% 20% 15%;
+      grid-template-columns: 12% 18% 5% 30% 20% 15%;
+    }
+
+    .text-truncate {
+      max-width: 12rem;
+    }
+  }
+
+  @include media-breakpoint-up(xl) {
+    .text-truncate {
+      max-width: 15rem;
+    }
+  }
+
+  @include media-breakpoint-up(xxl) {
+    thead tr,
+    tbody tr {
+      grid-template-columns: 12% 14% 5% 34% 20% 15%;
+    }
+
+    .text-truncate {
+      max-width: 100%;
     }
   }
 }
@@ -125,6 +167,7 @@
 }
 
 .tomo-table--tokens {
+
   td {
     grid-template-columns: 35% auto;
 
@@ -141,15 +184,26 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 35% 12% 8% 30% 10% 5%;
+      grid-template-columns: 25% 22% 8% 30% 10% 5%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 40% 12% 8% 25% 10% 5%;
+      grid-template-columns: 30% 20% 10% 25% 10% 5%;
     }
 
     @include media-breakpoint-up(xxl) {
-      grid-template-columns: 35% 12% 8% 30% 10% 5%;
+      grid-template-columns: 35% 15% 8% 27% 10% 5%;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(xl) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(xxl) {
+      max-width: 100%;
     }
   }
 }

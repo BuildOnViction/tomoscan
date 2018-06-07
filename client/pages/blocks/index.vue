@@ -37,10 +37,7 @@
 
 			<template slot="miner" slot-scope="props">
         <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-          <span class="d-xl-none" v-if="props.item.signer">{{ formatLongString(props.item.signer, 16) }}</span>
-          <span class="d-xl-none" v-else>{{ formatLongString(props.item.miner, 16) }}</span>
-          <span class="d-none d-xl-block" v-if="props.item.signer">{{ formatLongString(props.item.signer, 20) }}</span>
-          <span class="d-none d-xl-block" v-else>{{ formatLongString(props.item.miner, 20) }}</span>
+          <span class="text-truncate">{{ props.item.signer }}</span>
         </nuxt-link>
 			</template>
 
