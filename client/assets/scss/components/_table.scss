@@ -364,3 +364,23 @@
     }
   }
 }
+
+.tomo-table--holders {
+  td {
+    grid-template-columns: 40% auto;
+  }
+
+  thead tr,
+  tbody tr {
+    
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 10% 40% 40% 10%;
+    }
+  }
+
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
+    }
+  }
+}

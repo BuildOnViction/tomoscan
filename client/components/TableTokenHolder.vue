@@ -13,18 +13,17 @@
 
 		<p
       v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+      class="tomo-total-items">Total {{ formatNumber(total) }} holders found</p>
 
 		<table-base
       v-if="items.length > 0"
 			:fields="fields"
-			:items="items">
+			:items="items"
+      class="tomo-table--holders">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <read-more
-            :text="props.item.hash"
-            :maxChars="16" />
-        </nuxt-link>
+				<nuxt-link
+          class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 
 			<template slot="quantity" slot-scope="props">{{ toEther(convertHexToFloat(props.item.quantity, 16)) }}</template>
