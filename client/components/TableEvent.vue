@@ -36,7 +36,7 @@
           :text="props.item.transactionHash"
           :maxChars="30" />
         <span class="d-block">
-          <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}"># {{ props.item.blockNumber }}</nuxt-link>
+          <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">#{{ props.item.blockNumber }}</nuxt-link>
         </span>
         <div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
 			</template>

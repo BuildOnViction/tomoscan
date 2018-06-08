@@ -121,3 +121,23 @@
     }
   }
 }
+
+.tomo-card--transaction .tomo-card__table {
+
+  tr {
+    @include media-breakpoint-only(xs) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(sm) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(md) {
+      max-width: 100%;
+    }
+  }
+}

@@ -72,42 +72,20 @@
 									<tr>
 										<td>From</td>
 										<td>
-											<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
-											<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">
-												<read-more
-													class="d-sm-none"
-													:text="tx.from" />
-												<read-more
-													class="d-none d-sm-block d-md-none"
-													:text="tx.from"
-													:maxChars="20"/>
-												<read-more
-													class="d-none d-md-block d-lg-none"
-													:text="tx.from"
-													:maxChars="40"/>
-												<span class="d-none d-lg-block">{{ tx.from }}</span>
-											</nuxt-link>
+											<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract mr-2"></i>
+											<nuxt-link
+												:to="{name: 'address-slug', params: {slug: tx.from}}"
+												class="text-truncate">{{ tx.from }}</nuxt-link>
 										</td>
 									</tr>
 									<tr>
-										<td>To:</td>
+										<td>To</td>
 										<td>
 											<div v-if="tx.to">
-												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
-												<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">
-													<read-more
-														class="d-sm-none"
-														:text="tx.to_model.hash" />
-													<read-more
-														class="d-none d-sm-inline-block d-md-none"
-														:text="tx.to_model.hash"
-														:maxChars="20"/>
-													<read-more
-														class="d-none d-md-inline-block d-lg-none"
-														:text="tx.to_model.hash"
-														:maxChars="40"/>
-												<span class="d-none d-lg-inline-block">{{ tx.to_model.hash }}</span>
-												</nuxt-link>
+												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-2"></i>
+												<nuxt-link
+													:to="{name: 'address-slug', params: {slug: tx.from}}"
+													class="text-truncate">{{ tx.to_model.hash }}</nuxt-link>
 											</div>
 											<div v-else>
 												<span>[Contract&nbsp;</span>
