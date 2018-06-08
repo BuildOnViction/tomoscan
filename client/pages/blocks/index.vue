@@ -4,18 +4,18 @@
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-cubes tomo-empty__icon"></i>
         <p class="tomo-empty__description">No block found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('block', 'blocks', total) }} found</p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
       :fields="fields"
       :items="items"
       class="tomo-table--blocks">
@@ -51,7 +51,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

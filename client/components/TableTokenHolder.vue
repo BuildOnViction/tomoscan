@@ -5,18 +5,18 @@
 	<section v-else>
 
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-user-secret tomo-empty__icon"></i>
         <p class="tomo-empty__description">No holder found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} holders found</p>
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('holder', 'holders', total) }} found</p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
 			:fields="fields"
 			:items="items"
       class="tomo-table--holders">
@@ -30,7 +30,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

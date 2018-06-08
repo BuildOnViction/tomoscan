@@ -5,20 +5,20 @@
 	<section v-else>
     
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-exchange tomo-empty__icon"></i>
         <p class="tomo-empty__description">No transaction found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
+      v-if="total > 0"
       class="tomo-total-items">
-      Total {{ formatNumber(total) }} transactions found
+      Total {{ _nFormatNumber('transaction', 'transactions', total) }} found
     </p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
 			:fields="fields"
 			:items="items"
       class="tomo-table--transactions">
@@ -85,7 +85,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

@@ -121,7 +121,7 @@ const mixin = {
       return decodeURIComponent(results[2].replace(/\+/g, ' '))
     },
 
-    ngettext: (single, plural, number) => {
+    _nFormatNumber: (single, plural, number) => {
       let str = mixin.methods.formatNumber(number) + ' '
       str += number > 1 ? plural : single
       return str

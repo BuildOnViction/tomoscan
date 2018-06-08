@@ -5,18 +5,18 @@
 	<section v-else>
 
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-binoculars tomo-empty__icon"></i>
         <p class="tomo-empty__description">No event found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('item', 'items', total) }} found</p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
 			:fields="fields"
 			:items="items"
       class="tomo-table--events">
@@ -36,9 +36,7 @@
           :text="props.item.transactionHash"
           :maxChars="30" />
         <span class="d-block">
-          <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">
-            # {{ props.item.blockNumber }}
-          </nuxt-link>
+          <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}"># {{ props.item.blockNumber }}</nuxt-link>
         </span>
         <div v-if="props.item.block">{{ $moment(props.item.block.timestamp).fromNow() }}</div>
 			</template>
@@ -135,7 +133,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"
