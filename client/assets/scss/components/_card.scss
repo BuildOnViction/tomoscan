@@ -4,6 +4,7 @@
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
   margin-bottom: 50px;
+  
 
   @include media-breakpoint-up(md) {
     padding: 40px;
@@ -13,6 +14,10 @@
     text-align: center;
     position: relative;
     margin-bottom: 20px;
+
+    ul {
+      text-align: left;
+    }
 
     @include media-breakpoint-up(md) {
       text-align: left;
@@ -30,7 +35,7 @@
     font-size: 24px;
     font-weight: 500;
     color: #000;
-    word-break: break-all;
+    word-break: break-word;
     margin-top: 10px;
     margin-bottom: 15px;
 
@@ -38,7 +43,10 @@
       display: inline-block;
       max-width: 60%;
       vertical-align: middle;
-      margin-left: 30px;
+
+      &:before {
+        margin-left: 30px;
+      }
     }
   }
 
@@ -121,6 +129,10 @@
       width: 70%;
     }
   }
+
+  .form-group {
+    margin-bottom: 30px;
+  }
 }
 
 .tomo-card--transaction .tomo-card__table {
@@ -172,5 +184,12 @@
         grid-template-columns: 100%;
       }
     }
+  }
+}
+
+.tomo-card--verify {
+
+  .text-danger {
+    margin-top: 10px;
   }
 }
