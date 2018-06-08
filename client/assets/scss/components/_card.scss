@@ -53,6 +53,11 @@
   &__table {
     width: 100%;
 
+    thead tr {
+      grid-template-columns: 100%;
+      color: $black;
+    }
+
     tr {
       display: grid;
       grid-template-columns: 40% auto;
@@ -191,5 +196,29 @@
 
   .text-danger {
     margin-top: 10px;
+  }
+}
+
+.tomo-card--token {
+  .tomo-card__table tr {
+    grid-gap: 0 15px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dddddd;
+
+    @include media-breakpoint-up(sm) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  .tomo-card__table td:first-child {
+    text-align: left;
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(sm) {
+      max-width: 12rem;
+    }
   }
 }
