@@ -66,6 +66,7 @@
     grid-template-columns: 30% auto;
     grid-column-gap: 15px;
     word-break: break-word;
+    hyphens: auto;
     margin-bottom: 5px;
 
     @include media-breakpoint-up(lg) {
@@ -205,15 +206,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 25% 22% 8% 30% 10% 5%;
+      grid-template-columns: 23% 20% 12% 30% 10% 5%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 30% 20% 10% 25% 10% 5%;
+      grid-template-columns: 28% 20% 12% 25% 10% 5%;
     }
 
     @include media-breakpoint-up(xxl) {
-      grid-template-columns: 35% 15% 8% 27% 10% 5%;
+      grid-template-columns: 33% 14% 11% 27% 10% 5%;
     }
   }
 
