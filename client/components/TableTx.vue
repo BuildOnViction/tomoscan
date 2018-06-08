@@ -45,7 +45,7 @@
 			<template slot="from" slot-scope="props">
 				<i
           v-if="props.item.from_model && props.item.from_model.isContract"
-          class="tm tm-icon-contract mr-1" />
+          class="tm tm-icon-contract mr-1 mr-md-2" />
         <span
           v-if="address == props.item.from"
           class="text-truncate">{{ props.item.from }}</span>

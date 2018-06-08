@@ -16,6 +16,7 @@
 
     @include media-breakpoint-up(md) {
       text-align: left;
+      margin-bottom: 40px;
 
       .block-breadcrumb {
         position: absolute;
@@ -116,7 +117,7 @@
       }
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       width: 70%;
     }
   }
@@ -138,6 +139,38 @@
 
     @include media-breakpoint-up(md) {
       max-width: 100%;
+    }
+  }
+}
+
+.tomo-card--address {
+
+  .tomo-card__headline {
+    @include media-breakpoint-up(xl) {
+      max-width: 100%;
+    }
+
+    &--is-contract .tomo-readmore {
+      color: $color-text;
+    }
+  }
+
+  .tomo-card__body {
+    @include media-breakpoint-up(lg) {
+      display: grid;
+      grid-template-columns: 70% 30%;
+      align-items: center;
+    }
+  }
+
+  .tomo-card__table tr {
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 30% auto;
+
+      &.is-contract-message {
+        grid-template-columns: 100%;
+      }
     }
   }
 }

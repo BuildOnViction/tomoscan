@@ -23,9 +23,14 @@
       <template slot="rank" slot-scope="props">{{props.item.rank}}</template>
 
       <template slot="hash" slot-scope="props">
-        <nuxt-link
-           class="text-truncate"
-          :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+        <div>
+          <i
+            v-if="props.item.isContract"
+            class="tm tm-icon-contract mr-1 mr-md-2" />
+          <nuxt-link
+            class="text-truncate"
+            :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+        </div>
       </template>
 
       <template slot="balance" slot-scope="props">

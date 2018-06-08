@@ -4,8 +4,9 @@
   margin-bottom: 30px;
 
   .breadcrumb-item {
-    padding-right: .5rem;
     vertical-align: middle;
+    word-break: break-all;
+    padding-right: .5rem;
 
     &:before {
       content: '\f105';
@@ -29,7 +30,7 @@
     }
 
     + .breadcrumb-item:before {
-      padding-right: 5px;
+      padding-right: 8px;
     }
   }
 

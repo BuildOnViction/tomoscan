@@ -17,10 +17,10 @@
 					:text="hash"
 					:maxChars="30"/>
 			<read-more
-					class="d-none d-lg-inline-block d-xxl-none"
+					class="d-none d-lg-inline-block d-2xl-none"
 					:text="hash"
 					:maxChars="40"/>
-			<span class="d-none d-xxl-inline-block">{{ hash }}</span>
+			<span class="d-none d-2xl-inline-block">{{ hash }}</span>
 		</h3>
 
 		<b-row>

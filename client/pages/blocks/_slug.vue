@@ -20,8 +20,8 @@
 						<nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number + 1}}">Next</nuxt-link>
 						<i class="tm tm-chevrons-right"></i>
 					</div>
-					</div>
 				</div>
+			</div>
 			<div class="tomo-card__body">
 				<table
 					v-if="block"

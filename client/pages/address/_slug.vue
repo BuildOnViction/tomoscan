@@ -1,72 +1,83 @@
 <template>
 	<section>
-		<div class="card tm__tx_info">
-			<div class="card-body">
-				<div class="row tm__block_header">
-					<div class="col-sm-auto">
-						<img src="~/assets/img/icon-tx.png" class="tm__icon">
-					</div>
-					<div class="col-md-auto align-items-center row">
-						<h3 class="col">{{ hash }}</h3>
-					</div>
-				</div>
-				<div class="row tm__table_items">
-					<div class="col-md-9">
-						<table class="table tm__no_border">
-							<tbody>
-							<tr>
-								<td>TOMO Balance:</td>
-								<td>
-									<span-loading v-bind:text="address ? formatUnit(toEther(address.balance)) : null"></span-loading>
-								</td>
-							</tr>
-							<tr>
-								<td>TOMO USD Value:</td>
-								<td>
-									$&nbsp;<span-loading v-bind:text="address ? formatNumber(usdPrice * toEtherNumber(address.balance)) : null"></span-loading>
-								</td>
-							</tr>
-							<tr>
-								<td>No Of Transactions:</td>
-								<td>
-									<span-loading v-bind:text="address ? formatNumber(address.transactionCount) : null"></span-loading>&nbsp;txns
-								</td>
-							</tr>
-							<tr v-if="address && !address.isContract">
-								<td>Code:</td>
-								<td>
-									<code>
-										<span-loading v-bind:text="address ? address.code : null"></span-loading>
-									</code>
-								</td>
-							</tr>
-							<tr v-if="address && address.token">
-								<td>Token Contract:</td>
-								<td>
-									<nuxt-link class="pull-right text-right" :to="{name: 'tokens-slug', params: {slug: address.token.hash}}">{{ address.token.name }}({{ address.token.symbol }})</nuxt-link>
-								</td>
-							</tr>
-							<tr v-if="address && address.contractCreation">
-								<td>Contract Creator:</td>
-								<td>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
-									<span>at txns&nbsp;</span>
-									<span v-if="address.fromTxn">
-										<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
-									</span>
-								</td>
-							</tr>
-							</tbody>
-						</table>
-
-						<div class="col-sm-auto" v-if="address && address.isContract && ! address.contract">Are you The Contract Creator?
-							<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
-							your Contract Source Code Today!
-						</div>
-					</div>
-					<div class="col-md-3 text-center">
-						<vue-qrcode class="img-fluid" :value="currentUrl" :options="{size: 250}"></vue-qrcode>
-					</div>
+		<div class="card tomo-card tomo-card--address">
+			<div class="tomo-card__header">
+				<img src="~/assets/img/icon-tx.png">
+				<h3	:class="'tomo-card__headline' + (address && address.isContract ? ' tomo-card__headline--is-contract' : '')">
+					<span-loading :text="address && address.isContract ? 'Contract: ' : ''" />
+					<read-more
+						class="d-sm-none"
+						:text="hash" />
+					<read-more
+						class="d-none d-sm-inline-block d-lg-none"
+						:text="hash"
+						:maxChars="20" />
+					<read-more
+						class="d-none d-lg-inline-block d-xl-none"
+						:text="hash"
+						:maxChars="30" />
+					<span class="d-none d-xl-inline-block">{{ hash }}</span>
+				</h3>
+			</div>
+			<div class="tomo-card__body">
+				<table class="tomo-card__table">
+					<tbody>
+						<tr>
+							<td>TOMO Balance</td>
+							<td>
+								<span-loading :text="address ? formatUnit(toEther(address.balance)) : null" />
+							</td>
+						</tr>
+						<tr>
+							<td>TOMO USD Value</td>
+							<td>
+								<span-loading :text="address ? formatNumber(usdPrice * toEtherNumber(address.balance)) : null" />
+							</td>
+						</tr>
+						<tr>
+							<td>No Of Transactions</td>
+							<td>
+								<span-loading :text="address ? formatNumber(address.transactionCount) : null" /> txns
+							</td>
+						</tr>
+						<tr v-if="address && !address.isContract">
+							<td>Code</td>
+							<td>
+								<span-loading
+									class="text-danger"
+									:text="address ? address.code : null" />
+							</td>
+						</tr>
+						<tr v-if="address && address.token">
+							<td>Token Contract</td>
+							<td>
+								<nuxt-link class="pull-right text-right" :to="{name: 'tokens-slug', params: {slug: address.token.hash}}">{{ address.token.name }}({{ address.token.symbol }})</nuxt-link>
+							</td>
+						</tr>
+						<tr v-if="address && address.contractCreation">
+							<td>Contract Creator</td>
+							<td>
+								<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
+								<span>at txns&nbsp;</span>
+								<span v-if="address.fromTxn">
+									<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
+								</span>
+							</td>
+						</tr>
+						<tr
+							v-if="address && address.isContract && ! address.contract"
+							class="is-contract-message">
+							<td>
+								<div>Are you the contract creator?
+									<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
+									your contract source code Today!
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+				<div class="text-center text-lg-right tomo-qrcode">
+					<vue-qrcode class="img-fluid" :value="currentUrl" :options="{size: 250}"></vue-qrcode>
 				</div>
 			</div>
 		</div>
@@ -139,6 +150,7 @@
   import TableTokensByAccount from '~/components/TableTokensByAccount'
   import TableTxByAccount from '~/components/TableTxByAccount'
   import TableEvent from '~/components/TableEvent'
+  import ReadMore from '~/components/ReadMore'
   import SpanLoading from '~/components/SpanLoading'
   import VueQrcode from '@xkeshi/vue-qrcode'
 
@@ -149,6 +161,7 @@
       TableTokensByAccount,
       TableTxByAccount,
       TableEvent,
+      ReadMore,
       SpanLoading,
       VueQrcode,
     },

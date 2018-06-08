@@ -66,7 +66,7 @@
 					</b-col>
 				</div>
 				<b-row v-else>
-						<b-col lg="8" class="offset-lg-2 offset-xxl-3 col-xxl-6">
+						<b-col lg="8" class="offset-lg-2 offset-2xl-3 col-2xl-6">
 							<div class="input-group search-form">
 								<div class="input-group-prepend">
 									<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="tm-search"></i></button>
