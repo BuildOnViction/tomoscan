@@ -10,26 +10,29 @@
     margin-bottom: 40px;
 
     .nav-item {
-      .nav-link {
-        background-color: transparent;
-        border-color: transparent transparent #dadbdd;
-        border-bottom-width: 4px;
-        border-top-width: 0px;
-        border-left-width: 0px;
-        border-right-width: 0px;
-        padding: 15px 40px !important;
-        color: $text-muted;
-
-        &.active {
-          border-bottom-color: $blue;
-          color: $blue;
-        }
-      }
-
       &:first-child {
         .nav-link {
           padding-left: 0px;
         }
+      }
+    }
+
+    .nav-link {
+      background-color: transparent;
+      border-color: transparent transparent #dadbdd;
+      border-bottom-width: 4px;
+      border-top-width: 0px;
+      border-left-width: 0px;
+      border-right-width: 0px;
+      color: $text-muted;
+
+      &.active {
+        border-bottom-color: $color-primary;
+        color: $color-primary;
+      }
+
+      @include media-breakpoint-up(md) {
+        padding: 15px 40px !important;
       }
     }
   }
