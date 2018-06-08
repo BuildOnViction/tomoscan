@@ -1,29 +1,39 @@
 <template>
-	<section>
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
+    <div
+      v-if="total == 0"
+      class="tomo-empty">
+        <i class="fa fa-exchange tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No token found</p>
+    </div>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
-				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'hash'">
-							<nuxt-link :to="{name: 'tokens-slug', params: {slug: item.token}}">{{ item.tokenObj ? item.tokenObj.name : item.token }}</nuxt-link>
-						</div>
+		<p
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('token', 'tokens', total) }} found</p>
+    
+    <table-base
+      v-if="total > 0"
+			:fields="fields"
+			:items="items"
+      class="tomo-table--tokens-by-account">
 
-						<div v-if="key === 'quantity'">{{ formatUnit(toEther(convertHexToFloat(item.quantity, 16)), item.tokenObj.symbol) }}</div>
-					</div>
-				</div>
-			</div>
-		</div>
+			<template slot="hash" slot-scope="props">
+				<nuxt-link
+          :class="props.item.tokenObj ? '' : 'text-truncate'"
+          :to="{name: 'tokens-slug', params: {slug: props.item.token}}">{{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+			</template>
+
+      <template slot="quantity" slot-scope="props">
+        {{ formatUnit(toEther(convertHexToFloat(props.item.quantity, 16)), props.item.tokenObj ? props.item.tokenObj.symbol : '') }}
+      </template>
+
+    </table-base>
 
 		<b-pagination
+      v-if="total > 0"
 			v-model="currentPage"
 			align="center"
 			class="tomo-pagination"
@@ -35,9 +45,13 @@
 </template>
 <script>
   import mixin from '~/plugins/mixin'
+  import TableBase from '~/components/TableBase'
 
   export default {
     mixins: [mixin],
+    components: {
+      TableBase
+    },
     props: {
       address: {type: String, default: null},
     },

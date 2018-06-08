@@ -4,6 +4,7 @@
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
   margin-bottom: 50px;
+  
 
   @include media-breakpoint-up(md) {
     padding: 40px;
@@ -14,8 +15,13 @@
     position: relative;
     margin-bottom: 20px;
 
+    ul {
+      text-align: left;
+    }
+
     @include media-breakpoint-up(md) {
       text-align: left;
+      margin-bottom: 40px;
 
       .block-breadcrumb {
         position: absolute;
@@ -29,7 +35,7 @@
     font-size: 24px;
     font-weight: 500;
     color: #000;
-    word-break: break-all;
+    word-break: break-word;
     margin-top: 10px;
     margin-bottom: 15px;
 
@@ -37,12 +43,20 @@
       display: inline-block;
       max-width: 60%;
       vertical-align: middle;
-      margin-left: 30px;
+
+      &:before {
+        margin-left: 30px;
+      }
     }
   }
 
   &__table {
     width: 100%;
+
+    thead tr {
+      grid-template-columns: 100%;
+      color: $black;
+    }
 
     tr {
       display: grid;
@@ -65,6 +79,28 @@
 
     a {
       color: $color-primary;
+    }
+
+    i {
+      line-height: 1.5em;
+      vertical-align: top;
+    }
+
+    .list-unstyled {
+      a, span {
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
+
+    .text-truncate {
+      display: inline-block;
+      vertical-align: bottom;
+      max-width: 9rem;
+
+      @include media-breakpoint-up(lg) {
+        max-width: 100%;
+      }
     }
 
     @include media-breakpoint-up(sm) {
@@ -94,15 +130,95 @@
       }
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       width: 70%;
+    }
+  }
+
+  .form-group {
+    margin-bottom: 30px;
+  }
+}
+
+.tomo-card--transaction .tomo-card__table {
+
+  tr {
+    @include media-breakpoint-only(xs) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(sm) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(md) {
+      max-width: 100%;
     }
   }
 }
 
-.tomo-card--transaction {
+.tomo-card--address {
+
+  .tomo-card__headline {
+    @include media-breakpoint-up(xl) {
+      max-width: 100%;
+    }
+
+    &--is-contract .tomo-readmore {
+      color: $color-text;
+    }
+  }
+
+  .tomo-card__body {
+    @include media-breakpoint-up(lg) {
+      display: grid;
+      grid-template-columns: 70% 30%;
+      align-items: center;
+    }
+  }
 
   .tomo-card__table tr {
-    grid-template-columns: 38% auto;
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 30% auto;
+
+      &.is-contract-message {
+        grid-template-columns: 100%;
+      }
+    }
+  }
+}
+
+.tomo-card--verify {
+
+  .text-danger {
+    margin-top: 10px;
+  }
+}
+
+.tomo-card--token {
+  .tomo-card__table tr {
+    grid-gap: 0 15px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #dddddd;
+
+    @include media-breakpoint-up(sm) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  .tomo-card__table td:first-child {
+    text-align: left;
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(sm) {
+      max-width: 12rem;
+    }
   }
 }

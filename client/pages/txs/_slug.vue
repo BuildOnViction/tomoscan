@@ -17,10 +17,10 @@
 					:text="hash"
 					:maxChars="30"/>
 			<read-more
-					class="d-none d-lg-inline-block d-xxl-none"
+					class="d-none d-lg-inline-block d-2xl-none"
 					:text="hash"
 					:maxChars="40"/>
-			<span class="d-none d-xxl-inline-block">{{ hash }}</span>
+			<span class="d-none d-2xl-inline-block">{{ hash }}</span>
 		</h3>
 
 		<b-row>
@@ -72,42 +72,20 @@
 									<tr>
 										<td>From</td>
 										<td>
-											<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
-											<nuxt-link :to="{name: 'address-slug', params: {slug: tx.from}}">
-												<read-more
-													class="d-sm-none"
-													:text="tx.from" />
-												<read-more
-													class="d-none d-sm-block d-md-none"
-													:text="tx.from"
-													:maxChars="20"/>
-												<read-more
-													class="d-none d-md-block d-lg-none"
-													:text="tx.from"
-													:maxChars="40"/>
-												<span class="d-none d-lg-block">{{ tx.from }}</span>
-											</nuxt-link>
+											<i v-if="tx.from_model && tx.from_model.isContract" class="tm tm-icon-contract mr-2"></i>
+											<nuxt-link
+												:to="{name: 'address-slug', params: {slug: tx.from}}"
+												class="text-truncate">{{ tx.from }}</nuxt-link>
 										</td>
 									</tr>
 									<tr>
-										<td>To:</td>
+										<td>To</td>
 										<td>
 											<div v-if="tx.to">
-												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
-												<nuxt-link :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">
-													<read-more
-														class="d-sm-none"
-														:text="tx.to_model.hash" />
-													<read-more
-														class="d-none d-sm-inline-block d-md-none"
-														:text="tx.to_model.hash"
-														:maxChars="20"/>
-													<read-more
-														class="d-none d-md-inline-block d-lg-none"
-														:text="tx.to_model.hash"
-														:maxChars="40"/>
-												<span class="d-none d-lg-inline-block">{{ tx.to_model.hash }}</span>
-												</nuxt-link>
+												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-2"></i>
+												<nuxt-link
+													:to="{name: 'address-slug', params: {slug: tx.from}}"
+													class="text-truncate">{{ tx.to_model.hash }}</nuxt-link>
 											</div>
 											<div v-else>
 												<span>[Contract&nbsp;</span>
@@ -135,16 +113,22 @@
 									<tr v-if="tx.tokenTxs.length">
 										<td>Token Transfer</td>
 										<td>
-											<ul>
-												<li v-for="tokenTx, index in tx.tokenTxs">
+											<ul class="list-unstyled">
+												<li
+													v-for="tokenTx, index in tx.tokenTxs"
+													class="mb-3">
 													<span>{{ toEther(tokenTx.value) }}</span>
 													<nuxt-link :to="{name: 'tokens-slug', params: {slug: tokenTx.address}}">
-														<span v-if="tokenTx.symbol" v-html="'ERC20 (' + tokenTx.symbol + ')'"></span>
+														<span v-if="tokenTx.symbol" v-html="'&nbsp;ERC20 (' + tokenTx.symbol + ')'"></span>
 													</nuxt-link>
 													<span>&nbsp;from&nbsp;</span>
-													<nuxt-link :to="{name: 'address-slug', params: {slug: tokenTx.from}}">{{ tokenTx.from }}</nuxt-link>
-													<span><i class="fa fa-arrow-right ml-1 mr-1 text-success"></i></span>
-													<nuxt-link :to="{name: 'address-slug', params: {slug: tokenTx.to}}">{{ tokenTx.to }}</nuxt-link>
+													<nuxt-link
+														:to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+														class="text-truncate">{{ tokenTx.from }}</nuxt-link>
+													<i class="fa fa-arrow-right ml-1 mr-2 text-success"></i>
+													<nuxt-link
+														:to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+														class="text-truncate">{{ tokenTx.to }}</nuxt-link>
 												</li>
 											</ul>
 										</td>

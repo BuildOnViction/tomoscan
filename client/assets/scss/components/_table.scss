@@ -66,10 +66,12 @@
     grid-template-columns: 30% auto;
     grid-column-gap: 15px;
     word-break: break-word;
+    hyphens: auto;
     margin-bottom: 5px;
 
     @include media-breakpoint-up(lg) {
       display: inline-block;
+      margin-bottom: 0;
     }
   }
 
@@ -114,7 +116,7 @@
       max-width: 12rem;
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 15rem;
     }
   }
@@ -135,7 +137,7 @@
       grid-template-columns: 12% 18% 5% 30% 20% 15%;
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       grid-template-columns: 12% 14% 5% 34% 20% 15%;
     }
   }
@@ -150,7 +152,7 @@
       max-width: 15rem;
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 100%;
     }
   }
@@ -171,6 +173,7 @@
   }
 
   .text-truncate {
+    max-width: 8.75rem;
 
     @include media-breakpoint-up(lg) {
       max-width: 15rem;
@@ -180,7 +183,7 @@
       max-width: 18rem;
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 100%;
     }
   }
@@ -204,15 +207,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 25% 22% 8% 30% 10% 5%;
+      grid-template-columns: 23% 20% 12% 30% 10% 5%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 30% 20% 10% 25% 10% 5%;
+      grid-template-columns: 28% 20% 12% 25% 10% 5%;
     }
 
-    @include media-breakpoint-up(xxl) {
-      grid-template-columns: 35% 15% 8% 27% 10% 5%;
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 33% 14% 11% 27% 10% 5%;
     }
   }
 
@@ -222,7 +225,7 @@
       max-width: 15rem;
     }
 
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 100%;
     }
   }
@@ -237,7 +240,11 @@
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 17% 10% 12% 17% 4% 17% 13% 10%;
+      grid-template-columns: 17% 10% 12% 16% 4% 17% 14% 10%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 17% 10% 10% 16% 4% 17% 15% 11%;
     }
   }
 
@@ -252,8 +259,12 @@
       max-width: 9rem;
     }
     
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 11rem;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      max-width: 14rem;
     }
   }
 }
@@ -283,7 +294,7 @@
       max-width: 9rem;
     }
     
-    @include media-breakpoint-up(xxl) {
+    @include media-breakpoint-up(2xl) {
       max-width: 11rem;
     }
   }
@@ -361,6 +372,34 @@
 
     tr:last-child td {
       border-bottom: none;
+    }
+  }
+}
+
+.tomo-table--holders {
+  td {
+    grid-template-columns: 40% auto;
+  }
+
+  thead tr,
+  tbody tr {
+    
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 10% 40% 40% 10%;
+    }
+  }
+
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
+    }
+  }
+}
+
+.tomo-table--tokens-by-account {
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
     }
   }
 }

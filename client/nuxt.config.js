@@ -51,9 +51,6 @@ module.exports = {
     color: '#34a1ff',
     height: '2px',
   },
-  /*
-  ** Add axios globally
-  */
   build: {
 //    extractCSS: true,
 //    cssSourceMap: true,

@@ -5,33 +5,32 @@
 	<section v-else>
 
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-user-secret tomo-empty__icon"></i>
         <p class="tomo-empty__description">No holder found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('holder', 'holders', total) }} found</p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
 			:fields="fields"
-			:items="items">
+			:items="items"
+      class="tomo-table--holders">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'address-slug', params: {slug: props.item.hash}}">
-          <read-more
-            :text="props.item.hash"
-            :maxChars="16" />
-        </nuxt-link>
+				<nuxt-link
+          class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 
 			<template slot="quantity" slot-scope="props">{{ toEther(convertHexToFloat(props.item.quantity, 16)) }}</template>
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"
