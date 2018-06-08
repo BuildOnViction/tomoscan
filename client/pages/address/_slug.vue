@@ -71,16 +71,17 @@
 			</div>
 		</div>
 
-		<div v-if="address && address.hashTokens">
-			<table-tokens-by-account :address="hash"></table-tokens-by-account>
-		</div>
-
 		<b-tabs class="tomo-tabs">
 			<b-tab title="Transactions">
 				<table-tx :address="hash"></table-tx>
 			</b-tab>
 			<b-tab title="Mined Blocks">
 				<table-tx-by-account></table-tx-by-account>
+			</b-tab>
+			<b-tab
+				v-if="address && address.hashTokens"
+				title="Token Holding">
+				<table-tokens-by-account :address="hash"></table-tokens-by-account>
 			</b-tab>
 			<b-tab v-if="address && address.isContract" title="Code">
 				<section v-if="smartContract">

@@ -120,6 +120,12 @@ const mixin = {
       if (!results[2]) return ''
       return decodeURIComponent(results[2].replace(/\+/g, ' '))
     },
+
+    ngettext: (single, plural, number) => {
+      let str = mixin.methods.formatNumber(number) + ' '
+      str += number > 1 ? plural : single
+      return str
+    }
   },
 }
 
