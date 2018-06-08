@@ -67,6 +67,28 @@
       color: $color-primary;
     }
 
+    i {
+      line-height: 1.5em;
+      vertical-align: top;
+    }
+
+    .list-unstyled {
+      a, span {
+        display: inline-block;
+        vertical-align: bottom;
+      }
+    }
+
+    .text-truncate {
+      display: inline-block;
+      vertical-align: bottom;
+      max-width: 9rem;
+
+      @include media-breakpoint-up(lg) {
+        max-width: 100%;
+      }
+    }
+
     @include media-breakpoint-up(sm) {
 
       tr {
@@ -97,12 +119,5 @@
     @include media-breakpoint-up(xxl) {
       width: 70%;
     }
-  }
-}
-
-.tomo-card--transaction {
-
-  .tomo-card__table tr {
-    grid-template-columns: 38% auto;
   }
 }

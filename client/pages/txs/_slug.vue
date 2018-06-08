@@ -135,16 +135,22 @@
 									<tr v-if="tx.tokenTxs.length">
 										<td>Token Transfer</td>
 										<td>
-											<ul>
-												<li v-for="tokenTx, index in tx.tokenTxs">
+											<ul class="list-unstyled">
+												<li
+													v-for="tokenTx, index in tx.tokenTxs"
+													class="mb-3">
 													<span>{{ toEther(tokenTx.value) }}</span>
 													<nuxt-link :to="{name: 'tokens-slug', params: {slug: tokenTx.address}}">
-														<span v-if="tokenTx.symbol" v-html="'ERC20 (' + tokenTx.symbol + ')'"></span>
+														<span v-if="tokenTx.symbol" v-html="'&nbsp;ERC20 (' + tokenTx.symbol + ')'"></span>
 													</nuxt-link>
 													<span>&nbsp;from&nbsp;</span>
-													<nuxt-link :to="{name: 'address-slug', params: {slug: tokenTx.from}}">{{ tokenTx.from }}</nuxt-link>
-													<span><i class="fa fa-arrow-right ml-1 mr-1 text-success"></i></span>
-													<nuxt-link :to="{name: 'address-slug', params: {slug: tokenTx.to}}">{{ tokenTx.to }}</nuxt-link>
+													<nuxt-link
+														:to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+														class="text-truncate">{{ tokenTx.from }}</nuxt-link>
+													<i class="fa fa-arrow-right ml-1 mr-2 text-success"></i>
+													<nuxt-link
+														:to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+														class="text-truncate">{{ tokenTx.to }}</nuxt-link>
 												</li>
 											</ul>
 										</td>
