@@ -179,7 +179,7 @@
         return this.$route.fullPath.startsWith('/txs')
       },
       isAccounts () {
-        return this.$route.fullPath.startsWith('/accounts')
+        return this.$route.fullPath.startsWith('/accounts') || this.$route.fullPath.startsWith('/address')
       },
       isContracts () {
         return this.$route.fullPath.startsWith('/contracts')
