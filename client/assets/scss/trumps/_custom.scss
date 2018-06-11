@@ -40,3 +40,12 @@
     margin-right: 15px;
   }
 }
+
+.follow-button {
+  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .18);
+
+  &:focus,
+  &:hover {
+    box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .3) !important;
+  }
+}

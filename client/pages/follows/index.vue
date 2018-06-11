@@ -6,7 +6,9 @@
       v-else
       class="tomo-body-wrapper tomo-body-wrapper--follow">
       <div class="mb-4">
-        <b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-2"></i>Add New Address</b-btn>
+        <b-btn
+          class="follow-button"
+          v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-2"></i>Add New Address</b-btn>
         <b-modal
           class="tomo-modal tomo-modal--follow"
           ref="modalNewAddress"
