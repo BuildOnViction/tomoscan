@@ -1,5 +1,8 @@
 <template>
-	<section>
+	<div
+			v-if="loading"
+			:class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
 		<div class="card tomo-card">
 			<div class="tomo-card__header">
 				<img src="~/assets/img/icon-block.png">
@@ -189,7 +192,8 @@
       return {
         number: null,
         block: null,
-        timestamp_moment: null,
+				timestamp_moment: null,
+				loading: true
       }
     },
     created () {
@@ -200,14 +204,19 @@
     },
     async mounted () {
       let self = this
+			
+			self.loading = true
+			
       // Init breadcrumbs data.
-      this.$store.commit('breadcrumb/setItems', {name: 'blocks-slug', to: {name: 'blocks-slug', params: {slug: self.number}}})
+			this.$store.commit('breadcrumb/setItems', {name: 'blocks-slug', to: {name: 'blocks-slug', params: {slug: self.number}}})
 
       let {data} = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
 
       this.block = data
       let moment = self.$moment(data.timestamp)
-      this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('MMM-DD-Y hh:mm:ss A')} +UTC)</small>`
+			this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('MMM-DD-Y hh:mm:ss A')} +UTC)</small>`
+			
+			self.loading = false
     },
   }
 </script>

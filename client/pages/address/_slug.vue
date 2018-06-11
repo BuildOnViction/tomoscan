@@ -1,10 +1,13 @@
 <template>
-	<section>
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
 		<div class="card tomo-card tomo-card--address">
 			<div class="tomo-card__header">
 				<img src="~/assets/img/icon-tx.png">
 				<h3	:class="'tomo-card__headline' + (address && address.isContract ? ' tomo-card__headline--is-contract' : '')">
-					<span-loading :text="address && address.isContract ? 'Contract: ' : ''" />
+					<span v-if="address && address.isContract">Contract:</span>
 					<read-more
 						class="d-sm-none"
 						:text="hash" />
@@ -25,27 +28,36 @@
 						<tr>
 							<td>TOMO Balance</td>
 							<td>
-								<span-loading :text="address ? formatUnit(toEther(address.balance)) : null" />
+								<span>{{ formatUnit(toEther(address.balance)) }}</span>
 							</td>
 						</tr>
 						<tr>
 							<td>TOMO USD Value</td>
 							<td>
-								<span-loading :text="address ? formatNumber(usdPrice * toEtherNumber(address.balance)) : null" />
+								<span>{{ formatNumber(usdPrice * toEtherNumber(address.balance)) }}</span>
 							</td>
 						</tr>
 						<tr>
 							<td>No Of Transactions</td>
 							<td>
-								<span-loading :text="address ? formatNumber(address.transactionCount) : null" /> txns
+								<span>{{ formatNumber(address.transactionCount) }}</span> txns
 							</td>
 						</tr>
 						<tr v-if="address && !address.isContract">
 							<td>Code</td>
 							<td>
-								<span-loading
-									class="text-danger"
-									:text="address ? address.code : null" />
+								<read-more
+									class="d-sm-none"
+									:text="address.code" />
+								<read-more
+									class="d-none d-sm-inline-block d-lg-none"
+									:text="address.code"
+									:maxChars="20" />
+								<read-more
+									class="d-none d-lg-inline-block d-xl-none"
+									:text="address.code"
+									:maxChars="30" />
+								<span class="d-none d-xl-inline-block">{{ address.code }}</span>
 							</td>
 						</tr>
 						<tr v-if="address && address.token">
@@ -135,7 +147,8 @@
 				<b-form-group label="Smart Contract Code">
 					<textarea
 						disabled
-						cols="30" rows="10" class="form-control">{{ address.code }}</textarea>
+						v-model="address.code"
+						cols="30" rows="10" class="form-control"></textarea>
 				</b-form-group>
 			</b-tab>
 			<b-tab :title="'Events (' + itemsLength + ')'">
@@ -151,7 +164,6 @@
   import TableTxByAccount from '~/components/TableTxByAccount'
   import TableEvent from '~/components/TableEvent'
   import ReadMore from '~/components/ReadMore'
-  import SpanLoading from '~/components/SpanLoading'
   import VueQrcode from '@xkeshi/vue-qrcode'
 
   export default {
@@ -162,7 +174,6 @@
       TableTxByAccount,
       TableEvent,
       ReadMore,
-      SpanLoading,
       VueQrcode,
     },
     head () {
@@ -181,6 +192,7 @@
       currentUrl: '',
       smartContract: null,
       itemsLength: 0,
+      loading: true
     }),
     created () {
       let hash = this.$route.params.slug
@@ -202,11 +214,15 @@
     },
     methods: {
       async getAccountFromApi () {
-        let self = this
+				let self = this
+				
+        self.loading = true
 
         let {data} = await this.$axios.get('/api/accounts/' + self.hash)
         self.address = data
-        self.smartContract = data.contract
+				self.smartContract = data.contract
+				
+        self.loading = false
       },
       async getUSDPrice () {
         let self = this
