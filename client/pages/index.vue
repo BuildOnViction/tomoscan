@@ -9,13 +9,9 @@
   import socket from '~/plugins/socket.io'
   import _ from 'lodash'
   import web3 from 'web3'
-  import SpanLoading from '~/components/SpanLoading'
 
   export default {
     mixins: [mixin],
-    components: {
-      SpanLoading,
-    },
     head () {
       return {
         title: 'TOMO Explorer',

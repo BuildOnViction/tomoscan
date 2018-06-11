@@ -1,5 +1,8 @@
 <template>
-	<section>
+	<div
+			v-if="loading"
+			:class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
 		<div class="card tomo-card tomo-card--verify">
       <div class="tomo-card__header">
         <h3 class="tomo-card__headline">Verify and Publish your Solidity Source Code</h3>
@@ -98,6 +101,7 @@
         formCode: '',
         errors: [],
         loadingForm: false,
+				loading: true
       }
     },
     validations: {
@@ -120,6 +124,8 @@
     mounted () {
       let self = this
 
+      self.loading = true
+
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'contracts-verify', to: {name: 'contracts-verify'}})
 
@@ -129,6 +135,8 @@
       }
 
       self.getVersions()
+
+      self.loading = false
     },
     methods: {
       async getVersions () {

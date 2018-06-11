@@ -1,5 +1,8 @@
 <template>
-	<section>
+	<div
+			v-if="loading"
+			:class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	<section v-else>
 		<div class="card tomo-card tomo-card--token">
 			<div class="tomo-card__header">
 				<h2 class="tomo-card__headline" v-html="tokenName"></h2>&nbsp;
@@ -93,14 +96,17 @@
         hash: null,
         token: null,
         tokenName: null,
-        symbol: null,
+				symbol: null,
+				loading: true
       }
     },
     created () {
       this.hash = this.$route.params.slug
     },
     async mounted () {
-      let self = this
+			let self = this
+			
+			 self.loading = true
 
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'tokens-slug', to: {name: 'tokens-slug', params: {slug: self.hash}}})
@@ -108,7 +114,9 @@
       let {data} = await self.$axios.get('/api/tokens/' + self.hash)
       self.token = data
       self.tokenName = data.name
-      self.symbol = data.symbol
+			self.symbol = data.symbol
+			
+			 self.loading = false
     },
   }
 </script>
