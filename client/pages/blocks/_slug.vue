@@ -3,9 +3,8 @@
 			v-if="loading"
 			:class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
-		<div class="card tomo-card">
+		<div class="card tomo-card tomo-card--block">
 			<div class="tomo-card__header">
-				<img src="~/assets/img/icon-block.png">
 				<h3
 					v-if="block"
 					class="tomo-card__headline">Block

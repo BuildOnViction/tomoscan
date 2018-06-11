@@ -5,7 +5,6 @@
 	<section v-else>
 		<div class="card tomo-card tomo-card--address">
 			<div class="tomo-card__header">
-				<img src="~/assets/img/icon-tx.png">
 				<h3	:class="'tomo-card__headline' + (address && address.isContract ? ' tomo-card__headline--is-contract' : '')">
 					<span v-if="address && address.isContract">Contract:</span>
 					<read-more
