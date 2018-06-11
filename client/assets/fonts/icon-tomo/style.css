@@ -1,10 +1,10 @@
 @font-face {
   font-family: 'icon-tomo';
-  src:  url('fonts/icon-tomo.eot?t9scvc');
-  src:  url('fonts/icon-tomo.eot?t9scvc#iefix') format('embedded-opentype'),
-    url('fonts/icon-tomo.ttf?t9scvc') format('truetype'),
-    url('fonts/icon-tomo.woff?t9scvc') format('woff'),
-    url('fonts/icon-tomo.svg?t9scvc#icon-tomo') format('svg');
+  src:  url('fonts/icon-tomo.eot?vtktip');
+  src:  url('fonts/icon-tomo.eot?vtktip#iefix') format('embedded-opentype'),
+    url('fonts/icon-tomo.ttf?vtktip') format('truetype'),
+    url('fonts/icon-tomo.woff?vtktip') format('woff'),
+    url('fonts/icon-tomo.svg?vtktip#icon-tomo') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -24,11 +24,11 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.tm-chevrons-left:before {
-  content: "\e905";
+.tm-list:before {
+  content: "\e909";
 }
-.tm-chevrons-right:before {
-  content: "\e906";
+.tm-logout:before {
+  content: "\e90a";
 }
 .tm-angle-right:before {
   content: "\e907";
@@ -48,6 +48,12 @@
 }
 .tm-icon-contract:before {
   content: "\e902";
+}
+.tm-chevrons-left:before {
+  content: "\e905";
+}
+.tm-chevrons-right:before {
+  content: "\e906";
 }
 .tm-cancel:before {
   content: "\e904";

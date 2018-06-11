@@ -1,4 +1,3 @@
-
 .tomo-nav {
 
   &__logo {
@@ -30,6 +29,7 @@
   }
 
   .tomo-nav__login {
+
     .nav-link {
       color: #000;
     }
@@ -119,8 +119,22 @@
       transform-origin: 0% 50%;
     }
 
-    .tomo-nav__login .nav-item .nav-link:before {
-      display: none;
+    .tomo-nav__login {
+
+      .dropdown-menu,
+      .dropdown-item {
+        color: $white;
+        background-color: $color-primary;
+      }
+
+      i[class^="tm-"] {
+        font-size: 16px;
+        vertical-align: middle;
+      }
+
+      .nav-item .nav-link:before {
+        display: none;
+      }
     }
   }
 
