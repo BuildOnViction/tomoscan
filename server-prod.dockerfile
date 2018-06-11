@@ -14,7 +14,6 @@ RUN \
 RUN npm i npm@latest -g
 RUN npm install -g dotenv node-gyp pm2
 COPY server/package.json /var/www/package.json
-COPY server/package-lock.json /var/www/package-lock.json
 RUN npm install
 
 COPY server/.env.example /var/www/.env
