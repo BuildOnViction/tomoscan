@@ -1,5 +1,6 @@
 .tomo-table {
   width: 100%;
+  margin-bottom: 50px;
 
   thead {
     display: none;
@@ -25,7 +26,7 @@
   
     @include media-breakpoint-up(xl) {
       tr {
-        padding: 0 40px;
+        padding: 0 30px;
       }
     }
   }
@@ -107,6 +108,7 @@
 
   .text-truncate {
     display: inline-block;
+    vertical-align: middle;
     max-width: 9rem;
 
     @include media-breakpoint-only(sm) {
@@ -128,8 +130,9 @@
 
   i[class*="tm-icon-"] {
     line-height: 1.5;
+    font-size: 17px;
     display: inline-block;
-    vertical-align: top;
+    vertical-align: middle;
   }
 }
 

@@ -37,7 +37,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="total > 0"
+      v-if="total > 0 && total > perPage"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

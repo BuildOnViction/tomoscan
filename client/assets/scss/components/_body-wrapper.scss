@@ -27,4 +27,11 @@
   @include media-breakpoint-up(lg) {
     margin-top: 80px;
   }
+
+  &--follow {
+    display: flex;
+    flex-direction: column;
+    margin-top: 0;
+    height: calc(100vh - 80px - 104px);
+  }
 }
