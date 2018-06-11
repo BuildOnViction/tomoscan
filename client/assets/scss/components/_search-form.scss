@@ -1,6 +1,10 @@
 .search-form {
   margin-bottom: 60px;
 
+  .input-group-prepend {
+    z-index: 0;
+  }
+
   .btn.search-form__btn {
     height: 48px;
     width: 48px;
@@ -32,6 +36,7 @@
     border-bottom-right-radius: 100px;
     padding: 5px 20px;
     border: none;
+    z-index: 1;
 
     @extend %transit;
 
@@ -73,6 +78,10 @@
       @include media-breakpoint-up(sm) {
         margin-right: 15px;
       }
+
+      @include media-breakpoint-up(xl) {
+        margin-right: 40px;
+      }
     }
 
     .form-control.search-form__input {
@@ -83,9 +92,11 @@
       }
 
       @include media-breakpoint-up(md) {
-        max-width: 215px;
+        text-align: center;
+        max-width: 175px;
 
         &:focus {
+          text-align: left;
           max-width: 400px;
         }
       }
