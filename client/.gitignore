@@ -34,3 +34,4 @@ Thumbs.db
 .*.sw*
 .nuxt/
 node_modules/
+package-lock.json
