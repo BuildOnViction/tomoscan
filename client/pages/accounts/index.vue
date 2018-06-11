@@ -26,7 +26,7 @@
         <div>
           <i
             v-if="props.item.isContract"
-            class="tm tm-icon-contract mr-1 mr-md-2" />
+            class="tm tm-icon-contract mr-1 mr-lg-2" />
           <nuxt-link
             class="text-truncate"
             :to="{name: 'address-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
@@ -44,7 +44,7 @@
     </table-base>
 
 		<b-pagination
-      v-if="total > 0"
+      v-if="total > 0 && total > perPage"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

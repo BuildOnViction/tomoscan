@@ -2,9 +2,13 @@
   <div
     v-if="loading"
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
-	  <section v-else>
+	  <section
+      v-else
+      class="tomo-body-wrapper tomo-body-wrapper--follow">
       <div class="mb-4">
-        <b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-2"></i>Add New Address</b-btn>
+        <b-btn
+          class="follow-button"
+          v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-2"></i>Add New Address</b-btn>
         <b-modal
           class="tomo-modal tomo-modal--follow"
           ref="modalNewAddress"
@@ -93,7 +97,7 @@
       </template>
 
       <template slot="notification" slot-scope="props">
-        <ul class="list-unstyled">
+        <ul class="list-unstyled mb-0">
           <li class="mr-1 mb-2" v-if="props.item.sendEmail"><i class="fa fa-envelope-o mr-2"></i>Email Notification</li>
           <li class="mr-1" v-else>Disabled</li>
           <li class="mr-1 mb-2" v-if="props.item.notifyReceive"><i class="tm-arrow-right text-success mr-2"></i>Notify Receive</li>
@@ -108,7 +112,7 @@
     </table-base>
 
 		<b-pagination
-      v-if="total > 0"
+      v-if="total > 0 && total > perPage"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

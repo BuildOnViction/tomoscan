@@ -41,7 +41,7 @@
 			</template>
 
 			<template slot="from" slot-scope="props">
-        <i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
+        <i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract mr-1 mr-lg-2"></i>
           <span
             v-if="address == props.item.from"
             class="text-truncate">{{ props.item.from }}</span>
@@ -57,7 +57,7 @@
 
 			<template slot="to" slot-scope="props">
 				<div>
-					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
+					<i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1 mr-lg-2"></i>
           <span
             v-if="address == props.item.to"
             class="text-truncate">{{ props.item.to }}</span>
@@ -77,7 +77,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="total > 0"
+      v-if="total > 0 && total > perPage"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"
