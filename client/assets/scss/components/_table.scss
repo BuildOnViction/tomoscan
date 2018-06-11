@@ -403,3 +403,33 @@
     }
   }
 }
+
+.tomo-table--follow {
+  
+  thead tr,
+  tbody tr {
+    
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 30% 30% 30% 10%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 31% 33% 30% 6%; 
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(lg) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 16rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 100%;
+    }
+  }
+}
