@@ -12,7 +12,7 @@ const schema = new mongoose.Schema({
         // Minimum 6 characters at least 1 Alphabet and 1 Number:
         return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(v)
       },
-      message: 'Minimum 6 characters at least 1 alphabet and 1 Number',
+      message: 'Minimum 6 characters at least 1 alphabet and 1 number',
     },
   },
 }, {

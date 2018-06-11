@@ -123,3 +123,17 @@
     content: url('~/assets/img/register.svg');
   }
 }
+
+.tomo-modal--follow {
+
+  .control-label {
+    display: block;
+  }
+  
+  @include media-breakpoint-up(md) {
+
+    .modal-dialog {
+      max-width: 600px;
+    }
+  }
+}

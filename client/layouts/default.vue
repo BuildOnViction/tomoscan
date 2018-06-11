@@ -42,8 +42,8 @@
 							<template slot="button-content">
 								<em>{{ user.email }}</em>
 							</template>
-							<b-dropdown-item :to="{name: 'follows'}">Follow List</b-dropdown-item>
-							<b-dropdown-item @click="onLogout">Logout</b-dropdown-item>
+							<b-dropdown-item :to="{name: 'follows'}"><i class="tm-list mr-3"/>Follow List</b-dropdown-item>
+							<b-dropdown-item @click="onLogout"><i class="tm-logout mr-3"/>Logout</b-dropdown-item>
 						</b-nav-item-dropdown>
 					</b-navbar-nav>
 				</b-collapse>

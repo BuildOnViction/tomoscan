@@ -1,104 +1,114 @@
 <template>
-	<section>
-		<div class="mb-4">
-			<b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-1"></i>Add New Address</b-btn>
-			<b-modal
-				ref="modalNewAddress"
-				@keydown.native.enter="onAddNewFollowAddress"
-				@hide="resetForm"
-				id="modalAddFollow"
-				title="Add a New Address to your Follow List">
+  <div
+    v-if="loading"
+    :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
+	  <section v-else>
+      <div class="mb-4">
+        <b-btn v-b-modal.modalAddFollow><i class="fa fa-plus-square mr-2"></i>Add New Address</b-btn>
+        <b-modal
+          class="tomo-modal tomo-modal--follow"
+          ref="modalNewAddress"
+          @keydown.native.enter="onAddNewFollowAddress"
+          @hide="resetForm"
+          id="modalAddFollow"
+          title="Add a new address to your follow list">
 
-				<div class="alert alert-danger" v-show="errorMessage">
-					{{ errorMessage }}
-				</div>
+          <div class="alert alert-danger" v-show="errorMessage">
+            {{ errorMessage }}
+          </div>
 
-				<div class="form-group">
-					<label class="control-label">Address:</label>
-					<input
-						v-model="formAddress"
-						@input="$v.formAddress.$touch()"
-						:class="($v.formAddress.$dirty && $v.formAddress.$invalid) ? 'is-invalid' : ''"
-						type="text" class="form-control" name="address">
-					<div class="text-danger" v-if="$v.formAddress.$dirty && ! $v.formAddress.required">Address is required</div>
-					<div class="text-danger text-block" v-if="$v.formAddress.$dirty && ! $v.formAddress.isEthAddress">Address not eth address format</div>
-				</div>
-				<div class="form-group">
-					<label class="control-label">Description (Optional):</label>
-					<input type="text" class="form-control" v-model="formName">
-				</div>
-				<p>You can monitor and receive an alert when an address on your follow list receives an incoming TOMO Transaction.</p>
-				<div class="form-group">
-					<label class="control-label">Please select your notification method below:</label>
-					<div class="form-check form-check-inline">
-						<input
-							v-model="formSendEmail"
-							id="emailNotify" name="sendEmail" :value="true" type="radio" class="form-check-input">
-						<label for="emailNotify" class="form-check-label">Email Notification</label>
-					</div>
+          <div class="form-group">
+            <label class="control-label">Address:</label>
+            <input
+              v-model="formAddress"
+              @input="$v.formAddress.$touch()"
+              :class="($v.formAddress.$dirty && $v.formAddress.$invalid) ? 'is-invalid' : ''"
+              type="text" class="form-control" name="address">
+            <div class="text-danger" v-if="$v.formAddress.$dirty && ! $v.formAddress.required">Address is required</div>
+            <div class="text-danger text-block" v-if="$v.formAddress.$dirty && ! $v.formAddress.isEthAddress">Address not eth address format</div>
+          </div>
+          <div class="form-group">
+            <label class="control-label">Description (Optional):</label>
+            <input type="text" class="form-control" v-model="formName">
+          </div>
+          <p>You can monitor and receive an alert when an address on your follow list receives an incoming TOMO Transaction.</p>
+          <div class="form-group">
+            <div class="tomo-toggle">
+              <input
+                v-model="formSendEmail"
+                id="emailNotify" name="sendEmail" :value="true" type="checkbox" class="tomo-toggle__checkbox">
+              <label for="emailNotify" class="tomo-toggle__btn"></label>
+              <span class="tomo-toggle__label"><i class="fa fa-envelope-o mr-2"></i>Email Notification</span>
+            </div>
+            <div class="tomo-toggle" v-if="formSendEmail">
+              <input id="notifyReceive" type="checkbox" v-model="formNotifyReceive" value="1" class="tomo-toggle__checkbox">
+              <label for="notifyReceive" class="tomo-toggle__btn"></label>
+              <span class="tomo-toggle__label"><i class="tm-arrow-left text-danger mr-2"></i>Notify me on Incoming (Receive) Txns Only</span>
+            </div>
+            <div class="tomo-toggle" v-if="formSendEmail">
+              <input id="notifySent" type="checkbox" v-model="formNotifySent" value="1" class="tomo-toggle__checkbox">
+              <label for="notifySent" class="tomo-toggle__btn"></label>
+              <span class="tomo-toggle__label"><i class="tm-arrow-right text-success mr-2"></i>Notify me on Outgoing (Sent) Txns Only</span>
+            </div>
+          </div>
+          <div slot="modal-footer" class="w-100">
+            <button type="submit" class="btn btn-primary float-right" @click="onAddNewFollowAddress">Submit</button>
+            <button type="button" class="btn btn-secondary float-right mr-1" @click="$refs.modalNewAddress.hide()">Cancel</button>
+            <button v-if="currentNotify" type="button" class="btn btn-danger float-left mr-1" @click="onUnfollow"><i class="fa fa-trash mr-1"></i>Delete</button>
+          </div>
+        </b-modal>
+      </div>
 
-					<div class="form-check form-check-inline">
-						<input id="noNotify" name="sendEmail" v-model="formSendEmail" :value="false" type="radio" class="form-check-input">
-						<label for="noNotify" class="form-check-label">No Notification</label>
-					</div>
-				</div>
-				<div class="form-group" v-if="formSendEmail">
-					<div class="form-check form-check-inline">
-						<input id="notifyReceive" type="checkbox" v-model="formNotifyReceive" value="1" class="form-check-input">
-						<label for="notifyReceive">Notify on Incoming (Receive) Txns Only</label>
-					</div>
-					<div class="form-check form-check-inline">
-						<input id="notifySent" type="checkbox" v-model="formNotifySent" value="1" class="form-check-input">
-						<label for="notifySent">Notify on Outgoing (Sent) Txns Only</label>
-					</div>
-				</div>
-				<div slot="modal-footer" class="w-100">
-					<button type="submit" class="btn btn-primary float-right" @click="onAddNewFollowAddress">Submit</button>
-					<button type="button" class="btn btn-secondary float-right mr-1" @click="$refs.modalNewAddress.hide()">Cancel</button>
-					<button v-if="currentNotify" type="button" class="btn btn-danger float-left mr-1" @click="onUnfollow"><i class="fa fa-trash mr-1"></i>Delete</button>
-				</div>
-			</b-modal>
-		</div>
+    <div
+      v-if="total == 0"
+      class="tomo-empty">
+        <i class="fa fa-chain-broken tomo-empty__icon"></i>
+        <p class="tomo-empty__description">No address found</p>
+    </div>
 
-		<p class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+		<p
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
 
-		<div class="tm__table">
-			<div class="tm__table_heading">
-				<div class="row">
-					<div class="col" v-for="field in fields">
-						{{ field.label }}
-					</div>
-				</div>
-			</div>
-			<div class="tm__table_body">
-				<div class="row tm__table_row" v-for="(item, index) in items">
-					<div class="col tm__table_cell" v-for="(field, key) in fields">
-						<div v-if="key === 'action'">
-							<button class="btn btn-sm btn-link" @click="onEditNotify(item)"><i class="fa fa-pencil mr-1"></i>Edit</button>
-						</div>
+    <table-base
+      v-if="total > 0"
+      :fields="fields"
+      :items="items"
+      class="tomo-table--follow">
 
-						<div v-if="key === 'address'">
-							<nuxt-link :to="{name: 'address-slug', params: {slug: item.address}}">{{ item.address }}</nuxt-link>
-						</div>
+      <template slot="address" slot-scope="props">
+        <div>
+          <i
+            v-if="props.item.isContract"
+            class="tm tm-icon-contract mr-1 mr-md-2" />
+          <nuxt-link
+            class="text-truncate"
+            :to="{name: 'address-slug', params: {slug: props.item.address}}">{{ props.item.address }}</nuxt-link>
+        </div>
+      </template>
 
-						<div v-if="key === 'balance'">
-							<ul>
-								<li>{{ formatUnit(toEther(item.addressObj.balance)) }}</li>
-							</ul>
-						</div>
+      <template slot="balance" slot-scope="props">
+        <span class="d-lg-none" v-html="formatUnit(toEther(props.item.addressObj.balance, 5))"></span>
+        <span class="d-none d-lg-block" v-html="formatUnit(toEther(props.item.addressObj.balance))"></span>
+      </template>
 
-						<div v-if="key === 'notification'">
-							<span class="mr-1" v-if="item.sendEmail">Email Notification,</span>
-							<span class="mr-1" v-else>Disabled</span>
-							<span class="mr-1" v-if="item.notifyReceive">Notify Receive,</span>
-							<span class="mr-1" v-if="item.notifySent">Notify Sent,</span>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
+      <template slot="notification" slot-scope="props">
+        <ul class="list-unstyled">
+          <li class="mr-1 mb-2" v-if="props.item.sendEmail"><i class="fa fa-envelope-o mr-2"></i>Email Notification</li>
+          <li class="mr-1" v-else>Disabled</li>
+          <li class="mr-1 mb-2" v-if="props.item.notifyReceive"><i class="tm-arrow-right text-success mr-2"></i>Notify Receive</li>
+          <li class="mr-1 mb-2" v-if="props.item.notifySent"><i class="tm-arrow-left text-danger mr-2"></i>Notify Sent</li>
+        </ul>
+      </template>
+
+      <template slot="action" slot-scope="props">
+        <button class="btn btn-sm btn-link p-0 text-left" @click="onEditNotify(props.item)"><i class="fa fa-pencil mr-2"></i>Edit</button>
+			</template>
+
+    </table-base>
 
 		<b-pagination
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"
@@ -113,18 +123,22 @@
   import mixin from '~/plugins/mixin'
   import { validationMixin, withParams } from 'vuelidate'
   import { required, email } from 'vuelidate/lib/validators'
+  import TableBase from '~/components/TableBase'
 
   export const isEthAddress = withParams({type: 'isEthAddress'}, value => /^(0x)?[0-9a-zA-Z]{40}$/.test(value))
 
   export default {
+    components: {
+      TableBase,
+    },
     mixins: [mixin, validationMixin],
     data () {
       return {
         fields: {
-          action: {label: 'Action'},
           address: {label: 'Address'},
-          balance: {label: 'Balance', sortable: false},
+          balance: {label: 'Balance' },
           notification: {label: 'Notification'},
+          action: {label: 'Action'},
         },
         loading: true,
         pagination: {},

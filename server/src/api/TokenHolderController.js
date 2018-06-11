@@ -48,7 +48,6 @@ TokenHolderController.get('/token-holders', async (req, res) => {
         for (let i = 0; i < length; i++) {
           for (let j = 0; j < tokens.length; j++) {
             if (items[i]['token'] == tokens[j]['hash']) {
-              console.log(tokens)
               items[i]['tokenObj'] = tokens[j]
             }
           }
