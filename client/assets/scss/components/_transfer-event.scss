@@ -1,0 +1,18 @@
+.transfer-event {
+  margin-bottom: 10px;
+  word-break: break-word;
+
+  &__name:before {
+    content: '\e907';
+    font-size: 8px;
+    margin-right: 5px;
+    vertical-align: middle;
+
+    @extend %tm-icon;
+    @extend %transit;
+  }
+
+  &__name[aria-expanded="true"]:before {
+    transform: rotate(90deg);
+  }
+}

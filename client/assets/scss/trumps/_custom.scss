@@ -4,12 +4,25 @@
   margin-bottom: 40px;
 }
 
+.alert-danger {
+  margin-bottom: 20px;
+}
+
+.alert-danger,
 .text-danger {
   color: $color-danger !important;
 }
 
 .text-success {
   color: $color-success !important
+}
+
+.text-purple {
+  color: $color-purple !important;
+}
+
+.text-black {
+  color: $black !important;
 }
 
 .contract-creation:before {

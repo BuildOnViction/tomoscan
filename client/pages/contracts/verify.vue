@@ -1,21 +1,24 @@
 <template>
 	<section>
-		<div class="card">
-			<div class="card-body">
-				<h5 class="card-title">Verify and Publish your Solidity Source Code</h5>
-				<p>Step 1: Enter your Contract Source Code below.</p>
-				<p>Step 2: If the Bytecode generated matches the existing Creation Address Bytecode, the contract is then Verified.</p>
-				<p>Step 3: Contract Source Code is published online and publicably verifiable by anyone</p>
-				<hr>
+		<div class="card tomo-card tomo-card--verify">
+      <div class="tomo-card__header">
+        <h3 class="tomo-card__headline">Verify and Publish your Solidity Source Code</h3>
+        <ul class="list-unstyled">
+          <li class="mb-2">Step 1: Enter your Contract Source Code below.</li>
+          <li class="mb-2">Step 2: If the Bytecode generated matches the existing Creation Address Bytecode, the contract is then Verified.</li>
+          <li class="mb-2">Step 3: Contract Source Code is published online and publicably verifiable by anyone</li>
+        </ul>
+      </div>
+			<div class="tomo-card__body">
 
 				<div class="alert alert-danger" v-if="errors.length">
 					<p v-for="error in errors">{{ error }}</p>
 				</div>
 
 				<div class="row">
-					<div class="col-sm-3">
+					<div class="col-sm-6 col-lg-3">
 						<div class="form-group">
-							<label for="contractAddress">Contract Address:</label>
+							<label for="contractAddress">Contract Address</label>
 							<input
 								v-model="formContractAddress"
 								@input="$v.formContractAddress.$touch()"
@@ -24,9 +27,9 @@
 							<div class="text-danger" v-if="$v.formContractAddress.$dirty && ! $v.formContractAddress.required">Contract Address is required</div>
 						</div>
 					</div>
-					<div class="col-sm-3">
+					<div class="col-sm-6 col-lg-3">
 						<div class="form-group">
-							<label for="contractName">Contract Name:</label>
+							<label for="contractName">Contract Name</label>
 							<input
 								v-model="formContractName"
 								@input="$v.formContractName.$touch()"
@@ -35,9 +38,9 @@
 							<div class="text-danger" v-if="$v.formContractName.$dirty && ! $v.formContractName.required">Contract Name is required</div>
 						</div>
 					</div>
-					<div class="col-sm-4">
+					<div class="col-sm-8 col-lg-4">
 						<div class="form-group">
-							<label for="compiler">Compiler:</label>
+							<label for="compiler">Compiler</label>
 							<b-form-select
 								v-model="formCompiler"
 								:options="compilers"
@@ -46,9 +49,9 @@
 							<div class="text-danger" v-if="$v.formCompiler.$dirty && ! $v.formCompiler.required">Compiler is required</div>
 						</div>
 					</div>
-					<div class="col-sm-2">
+					<div class="col-sm-4 col-lg-2">
 						<div class="form-group">
-							<label for="optimization">Optimization:</label>
+							<label for="optimization">Optimization</label>
 							<select
 								v-model="formOptimization"
 								@input="$v.formOptimization.$touch()"

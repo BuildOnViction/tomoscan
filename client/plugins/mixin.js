@@ -121,12 +121,11 @@ const mixin = {
       return decodeURIComponent(results[2].replace(/\+/g, ' '))
     },
 
-    formatLongString: (str, maxLength) => {
-      if (str.length <= maxLength || maxLength < 1 || !maxLength) {
-        return str
-      }
-      return str.substring(0, maxLength) + '...'
-    },
+    _nFormatNumber: (single, plural, number) => {
+      let str = mixin.methods.formatNumber(number) + ' '
+      str += number > 1 ? plural : single
+      return str
+    }
   },
 }
 
