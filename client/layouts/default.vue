@@ -38,10 +38,10 @@
 
 						<b-nav-item v-b-modal="'loginModal'" v-if="!user">Login</b-nav-item>
 						<b-nav-item v-b-modal="'registerModal'" v-if="!user">Register</b-nav-item>
-						<b-nav-item-dropdown right >
-							<!-- <template slot="button-content">
+						<b-nav-item-dropdown right v-if="user">
+							<template slot="button-content">
 								<em>{{ user.email }}</em>
-							</template> -->
+							</template>
 							<b-dropdown-item :to="{name: 'follows'}"><i class="tm-list mr-3"/>Follow List</b-dropdown-item>
 							<b-dropdown-item @click="onLogout"><i class="tm-logout mr-3"/>Logout</b-dropdown-item>
 						</b-nav-item-dropdown>
