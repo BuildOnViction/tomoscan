@@ -231,9 +231,3 @@
     },
   }
 </script>
-
-<style type="text/scss" lang="scss">
-	.tm__tx_info {
-		margin-bottom: 90px;
-	}
-</style>
