@@ -1,0 +1,45 @@
+.block-breadcrumb {
+
+  &__prev,
+  &__next,
+  &__divider {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &__prev,
+  &__next {
+    &:hover,
+    &:hover a {
+      color: $color-primary;
+    }
+  }
+
+  i.tm {
+    font-size: 20px;
+    vertical-align: middle;
+
+    @extend %transit;
+  }
+
+  a {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  &__prev {
+    margin-right: 20px;
+
+    i.tm {
+      margin-right: 10px;
+    }
+  }
+
+  &__next {
+    margin-left: 20px;
+
+    i.tm {
+      margin-left: 10px;
+    }
+  }
+}

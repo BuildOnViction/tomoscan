@@ -5,30 +5,27 @@
 	<section v-else>
     
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-exchange tomo-empty__icon"></i>
         <p class="tomo-empty__description">No transaction found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
+      v-if="total > 0"
       class="tomo-total-items">
-      Total {{ formatNumber(total) }} transactions found
+      Total {{ _nFormatNumber('transaction', 'transactions', total) }} found
     </p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
 			:fields="fields"
 			:items="items"
       class="tomo-table--transactions">
 			<template slot="hash" slot-scope="props">
-				<nuxt-link :to="{name: 'txs-slug', params: {slug: props.item.hash}}">
-          <span class="d-sm-none d-md-block d-lg-none d-xl-block d-xxl-none">{{ formatLongString(props.item.hash, 16) }}</span>
-          <span class="d-none d-lg-block d-xl-none">{{ formatLongString(props.item.hash, 10) }}</span>
-          <span class="d-none d-sm-block d-md-none d-lg-none">{{ formatLongString(props.item.hash, 32) }}</span>
-          <span class="d-none d-xxl-block">{{ formatLongString(props.item.hash, 20) }}</span>
-        </nuxt-link>
+				<nuxt-link 
+          class="text-truncate"
+          :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
 			</template>
 
 			<template slot="block" slot-scope="props">
@@ -46,25 +43,16 @@
 			<template slot="gas" slot-scope="props">{{ formatNumber(props.item.gas) }}</template>
 
 			<template slot="from" slot-scope="props">
-				<div>
-					<i v-if="props.item.from_model && props.item.from_model.isContract" class="tm tm-icon-contract mr-1"></i>
-          <div class="d-none d-sm-inline-block d-md-none">
-						<span v-if="address == props.item.from">{{ formatLongString(props.item.from, 32) }}</span>
-						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ formatLongString(props.item.from, 32) }}</nuxt-link>
-					</div>
-					<div class="d-sm-none d-md-inline-block d-lg-none d-xl-inline-block d-xxl-none">
-						<span v-if="address == props.item.from">{{ formatLongString(props.item.from, 16) }}</span>
-						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ formatLongString(props.item.from, 16) }}</nuxt-link>
-					</div>
-          <div class="d-none d-lg-inline-block d-xl-none">
-						<span v-if="address == props.item.from">{{ formatLongString(props.item.from, 10) }}</span>
-						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ formatLongString(props.item.from, 10) }}</nuxt-link>
-					</div>
-          <div class="d-none d-xxl-inline-block">
-						<span v-if="address == props.item.from">{{ formatLongString(props.item.from, 20) }}</span>
-						<nuxt-link v-else :to="{name: 'address-slug', params: {slug: props.item.from}}">{{ formatLongString(props.item.from, 20) }}</nuxt-link>
-					</div>
-				</div>
+				<i
+          v-if="props.item.from_model && props.item.from_model.isContract"
+          class="tm tm-icon-contract mr-1 mr-md-2" />
+        <span
+          v-if="address == props.item.from"
+          class="text-truncate">{{ props.item.from }}</span>
+        <nuxt-link
+          v-else
+          :to="{name: 'address-slug', params: {slug: props.item.from}}"
+          class="text-truncate">{{ props.item.from }}</nuxt-link>
 			</template>
 
 			<template slot="arrow" slot-scope="props">
@@ -73,31 +61,16 @@
 
 			<template slot="to" slot-scope="props">
 				<div v-if="props.item.to">
-          <i v-if="props.item.to_model && props.item.to_model.isContract" class="tm tm-icon-contract mr-1"></i>
-          <div class="d-none d-sm-inline-block d-md-none">
-            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 32) }}</span>
-            <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-              <span>{{ formatLongString(props.item.to, 32) }}</span>
-            </nuxt-link>
-          </div>
-          <div class="d-sm-none d-md-inline-block d-lg-none d-xl-inline-block d-xxl-none">
-            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 16) }}</span>
-            <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-              <span>{{ formatLongString(props.item.to, 16) }}</span>
-            </nuxt-link>
-          </div>
-          <div class="d-none d-lg-inline-block d-xl-none">
-            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 10) }}</span>
-            <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-              <span>{{ formatLongString(props.item.to, 10) }}</span>
-            </nuxt-link>
-          </div>
-          <div class="d-none d-xxl-inline-block">
-            <span v-if="address == props.item.to">{{ formatLongString(props.item.to, 20) }}</span>
-            <nuxt-link v-else :to="{name: 'address-slug', params:{slug: props.item.to}}">
-              <span>{{ formatLongString(props.item.to, 20) }}</span>
-            </nuxt-link>
-          </div>
+          <i
+            v-if="props.item.to_model && props.item.to_model.isContract"
+            class="tm tm-icon-contract mr-1" />
+          <span
+            v-if="address == props.item.to"
+            class="text-truncate">{{ props.item.to }}</span>
+          <nuxt-link
+            v-else
+            :to="{name: 'address-slug', params:{slug: props.item.to}}"
+            class="text-truncate">{{ props.item.to }}</nuxt-link>
         </div>
         <div
           v-else
@@ -112,7 +85,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"

@@ -66,10 +66,12 @@
     grid-template-columns: 30% auto;
     grid-column-gap: 15px;
     word-break: break-word;
+    hyphens: auto;
     margin-bottom: 5px;
 
     @include media-breakpoint-up(lg) {
       display: inline-block;
+      margin-bottom: 0;
     }
   }
 
@@ -97,14 +99,61 @@
   p {
     margin: 0;
   }
+
+  .text-truncate {
+    display: inline-block;
+    max-width: 9rem;
+
+    @include media-breakpoint-only(sm) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(lg) {
+      max-width: 10rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 15rem;
+    }
+  }
+
+  i[class*="tm-icon-"] {
+    line-height: 1.5;
+    display: inline-block;
+    vertical-align: top;
+  }
 }
 
 .tomo-table--blocks {
 
-  @include media-breakpoint-up(lg) {
-    thead tr,
-    tbody tr {
-      grid-template-columns: 15% 20% 5% 25% 20% 15%;
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 12% 18% 5% 30% 20% 15%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 12% 14% 5% 34% 20% 15%;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(lg) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 100%;
     }
   }
 }
@@ -119,12 +168,29 @@
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 10% 45% 40% 5%;
+      grid-template-columns: 10% 40% 42% 8%;
+    }
+  }
+
+  .text-truncate {
+    max-width: 8.75rem;
+
+    @include media-breakpoint-up(lg) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 18rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 100%;
     }
   }
 }
 
 .tomo-table--tokens {
+
   td {
     grid-template-columns: 35% auto;
 
@@ -141,15 +207,26 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 35% 12% 8% 30% 10% 5%;
+      grid-template-columns: 23% 20% 12% 30% 10% 5%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 40% 12% 8% 25% 10% 5%;
+      grid-template-columns: 28% 20% 12% 25% 10% 5%;
     }
 
-    @include media-breakpoint-up(xxl) {
-      grid-template-columns: 35% 12% 8% 30% 10% 5%;
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 33% 14% 11% 27% 10% 5%;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(xl) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 100%;
     }
   }
 }
@@ -159,16 +236,41 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 15% 10% 15% 12% 4% 18% 15% 11%;
+      grid-template-columns: 15% 10% 15% 14% 4% 16% 15% 11%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 17% 10% 12% 17% 4% 17% 13% 10%;
+      grid-template-columns: 17% 10% 12% 16% 4% 17% 14% 10%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 17% 10% 10% 16% 4% 17% 15% 11%;
+    }
+  }
+
+  .text-truncate {
+    max-width: 8.75rem;
+    
+    @include media-breakpoint-up(lg) {
+      max-width: 7rem;
+    }
+    
+    @include media-breakpoint-up(xl) {
+      max-width: 9rem;
+    }
+    
+    @include media-breakpoint-up(2xl) {
+      max-width: 11rem;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      max-width: 14rem;
     }
   }
 }
 
 .tomo-table--token-tx {
+
   thead tr,
   tbody tr {
 
@@ -177,7 +279,127 @@
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 17% 12% 17% 5% 17% 25% 7%;
+      grid-template-columns: 16% 12% 16% 5% 16% 25% 10%;
+    }
+  }
+
+  .text-truncate {
+    max-width: 8.75rem;
+    
+    @include media-breakpoint-up(lg) {
+      max-width: 7rem;
+    }
+    
+    @include media-breakpoint-up(xl) {
+      max-width: 9rem;
+    }
+    
+    @include media-breakpoint-up(2xl) {
+      max-width: 11rem;
+    }
+  }
+}
+
+.tomo-table--events {
+
+  tbody tr {
+    padding: 40px 20px 0;
+    margin-bottom: 0;
+
+    &:first-child {
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
+    }
+
+    &:last-child {
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
+    }
+  }
+
+  td {
+    display: block;
+    margin-bottom: 20px;
+
+    &:before {
+      display: block;
+      text-align: left;
+    }
+
+    &:last-child {
+      border-bottom: 1px solid $color-text;
+      margin-bottom: 0;
+      padding-bottom: 20px;
+    }
+  }
+
+  tr:last-child td:last-child {
+    border-bottom: none;
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    tbody {
+      display: block;
+
+      tr {
+        padding-left: 40px;
+        padding-right: 40px;
+      }
+    }
+  }
+
+  @include media-breakpoint-up(lg) {
+
+    thead tr {
+      padding: 0 40px;
+    }
+
+    thead tr,
+    tbody tr {
+      grid-template-columns: 40% 20% 40%;
+    }
+
+    td:before {
+      display: none;
+    }
+
+    td {
+      border-bottom: 1px solid $color-text;
+      margin-bottom: 0;
+      padding-bottom: 20px;
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+  }
+}
+
+.tomo-table--holders {
+  td {
+    grid-template-columns: 40% auto;
+  }
+
+  thead tr,
+  tbody tr {
+    
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 10% 40% 40% 10%;
+    }
+  }
+
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
+    }
+  }
+}
+
+.tomo-table--tokens-by-account {
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
     }
   }
 }

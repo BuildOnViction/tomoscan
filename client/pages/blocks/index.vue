@@ -4,18 +4,18 @@
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
 	<section v-else>
     <div
-      v-if="items.length == 0"
+      v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-cubes tomo-empty__icon"></i>
         <p class="tomo-empty__description">No block found</p>
     </div>
 
 		<p
-      v-if="items.length > 0"
-      class="tomo-total-items">Total {{ formatNumber(total) }} items found</p>
+      v-if="total > 0"
+      class="tomo-total-items">Total {{ _nFormatNumber('block', 'blocks', total) }} found</p>
 
 		<table-base
-      v-if="items.length > 0"
+      v-if="total > 0"
       :fields="fields"
       :items="items"
       class="tomo-table--blocks">
@@ -36,12 +36,9 @@
       </template>
 
 			<template slot="miner" slot-scope="props">
-        <nuxt-link :to="{name: 'address-slug', params: {slug: props.item.signer}}">
-          <span class="d-xl-none" v-if="props.item.signer">{{ formatLongString(props.item.signer, 16) }}</span>
-          <span class="d-xl-none" v-else>{{ formatLongString(props.item.miner, 16) }}</span>
-          <span class="d-none d-xl-block" v-if="props.item.signer">{{ formatLongString(props.item.signer, 20) }}</span>
-          <span class="d-none d-xl-block" v-else>{{ formatLongString(props.item.miner, 20) }}</span>
-        </nuxt-link>
+        <nuxt-link
+          class="text-truncate"
+          :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>
 			</template>
 
 			<template slot="gasUsed" slot-scope="props">
@@ -54,7 +51,7 @@
 		</table-base>
 
 		<b-pagination
-      v-if="items.length > 0"
+      v-if="total > 0"
       v-model="currentPage"
 			align="center"
       class="tomo-pagination"
@@ -68,10 +65,12 @@
 <script>
   import mixin from '~/plugins/mixin'
   import TableBase from '~/components/TableBase'
+	import ReadMore from '~/components/ReadMore'
 
   export default {
     components: {
       TableBase,
+			ReadMore
     },
     mixins: [mixin],
     head: () => ({

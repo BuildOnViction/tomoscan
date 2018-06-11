@@ -58,6 +58,7 @@ moThese come with default styling from the browser so we can redefine them here.
 @import 'elements/body';
 @import 'elements/button';
 @import 'elements/links';
+@import 'elements/small';
 
 /*
 OBJECTS
@@ -91,23 +92,28 @@ This is where majority of our work takes place and our UI components are often c
 @import '../../node_modules/bootstrap/scss/pagination';
 @import '../../node_modules/bootstrap/scss/tooltip';
 @import '../../node_modules/bootstrap/scss/type';
+@import 'components/block-breadcrumb';
 @import 'components/body-wrapper';
 @import 'components/breadcrumb';
 @import 'components/card';
 @import 'components/container';
 @import 'components/dropdown';
 @import 'components/empty';
+@import 'components/event-logs';
 @import 'components/footer';
+@import 'components/headline';
 @import 'components/hightlightjs';
 @import 'components/loading';
 @import 'components/modal';
 @import 'components/nav';
 @import 'components/navbar-toggle';
 @import 'components/pagination';
+@import 'components/read-more';
 @import 'components/search-form';
 @import 'components/stat';
 @import 'components/table';
-@import 'components/tm-tabs';
+@import 'components/tabs';
+@import 'components/transfer-event';
 
 /*
 TRUMPS

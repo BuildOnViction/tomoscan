@@ -1,59 +1,57 @@
 <template>
 	<section>
-		<b-row class="mb-4">
-			<b-col>
-				<h2>ERC20-TOKEN</h2>
-				<p class="lead" v-html="tokenName"></p>
-			</b-col>
-		</b-row>
-
-		<div class="card mb-5">
-			<div class="card-body">
-				<b-row v-if="token">
-					<b-col>
-						<table class="tm__no_border table">
+		<div class="card tomo-card tomo-card--token">
+			<div class="tomo-card__header">
+				<h2 class="tomo-card__headline" v-html="tokenName"></h2>&nbsp;
+				<h6 class="mb-0">{{ symbol }}</h6>
+			</div>
+			<div class="tomo-card__body">
+				<b-row>
+					<b-col md="6">
+						<table
+							v-if="token"
+							class="tomo-card__table">
 							<thead>
-							<tr>
-								<th colspan="2">TokenTracker Summary</th>
-							</tr>
+								<tr>
+									<th>Summary</th>
+								</tr>
 							</thead>
 							<tbody>
-							<tr>
-								<td>
-									Total Supply:
-								</td>
-								<td class="text-right">{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
-							</tr>
-							<tr>
-								<td>
-									No Of Transfers:
-								</td>
-								<td class="text-right">{{ formatNumber(token.tokenTxsCount) }}</td>
-							</tr>
+								<tr>
+									<td>Total Supply</td>
+									<td>{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
+								</tr>
+								<tr>
+									<td>Transfers</td>
+									<td>{{ formatNumber(token.tokenTxsCount) }}</td>
+								</tr>
 							</tbody>
 						</table>
 					</b-col>
-					<b-col>
-						<table class="tm__no_border table">
-							<thead>
-							<tr>
-								<th colspan="2" class="text-right">Reputation</th>
-							</tr>
-							</thead>
-							<tbody>
-							<tr>
-								<td>
-									ERC20 Contract:
-								</td>
-								<td>
-									<nuxt-link :to="{name: 'address-slug', params: {slug: token.hash}}">{{ token.hash }}</nuxt-link>
-								</td>
-							</tr>
-							<tr>
-								<td>Decimal:</td>
-								<td>{{ token.decimals }}</td>
-							</tr>
-							</tbody>
+					<b-col md="6">
+						<table
+							v-if="token"
+							class="tomo-card__table">
+								<thead>
+									<tr>
+										<td></td>
+										<th class="text-md-right">Reputation</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td>Contract</td>
+										<td>
+											<nuxt-link
+												class="text-truncate"
+												:to="{name: 'address-slug', params: {slug: token.hash}}">{{ token.hash }}</nuxt-link>
+										</td>
+									</tr>
+									<tr>
+										<td>Decimal</td>
+										<td>{{ token.decimals }}</td>
+									</tr>
+								</tbody>
 						</table>
 					</b-col>
 				</b-row>
@@ -62,7 +60,7 @@
 
 		<b-row>
 			<b-col>
-				<b-tabs>
+				<b-tabs class="tomo-tabs">
 					<b-tab title="Token Transfers">
 						<table-token-tx :token="hash"></table-token-tx>
 					</b-tab>

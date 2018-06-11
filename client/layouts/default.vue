@@ -53,10 +53,10 @@
 		<main class="tomo-body-wrapper" :class="isHomePage ? 'tomo-body-wrapper--home' : ''">
 			<div class="container container--wide">
 				<div class="row align-items-center tomo-body-wrapper__heading" v-if="! isHomePage">
-					<b-col sm="5" md="4">
+					<b-col sm="5">
 						<breadcrumb/>
 					</b-col>
-					<b-col sm="7" md="8">
+					<b-col sm="7">
 						<div class="input-group search-form search-form--mini">
 							<div class="input-group-prepend">
 								<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="fa fa-search"></i></button>
@@ -66,7 +66,7 @@
 					</b-col>
 				</div>
 				<b-row v-else>
-						<b-col lg="8" class="offset-lg-2 offset-xxl-3 col-xxl-6">
+						<b-col lg="8" class="offset-lg-2 offset-2xl-3 col-2xl-6">
 							<div class="input-group search-form">
 								<div class="input-group-prepend">
 									<button class="btn btn-primary search-form__btn" @click="onGotoRoute"><i class="tm-search"></i></button>
@@ -179,7 +179,7 @@
         return this.$route.fullPath.startsWith('/txs')
       },
       isAccounts () {
-        return this.$route.fullPath.startsWith('/accounts')
+        return this.$route.fullPath.startsWith('/accounts') || this.$route.fullPath.startsWith('/address')
       },
       isContracts () {
         return this.$route.fullPath.startsWith('/contracts')
