@@ -207,6 +207,8 @@
 
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'address-slug', to: {name: 'address-slug', params: {slug: self.hash}}})
+				
+      self.loading = true
 
       self.getAccountFromApi()
       self.getUSDPrice()
@@ -214,8 +216,6 @@
     methods: {
       async getAccountFromApi () {
 				let self = this
-				
-        self.loading = true
 
         let {data} = await this.$axios.get('/api/accounts/' + self.hash)
         self.address = data

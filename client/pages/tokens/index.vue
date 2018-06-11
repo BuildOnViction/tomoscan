@@ -80,6 +80,7 @@
       pages: 1,
     }),
     mounted () {
+
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'tokens', to: {name: 'tokens'}})
 
@@ -92,14 +93,14 @@
         self.perPage = parseInt(query.limit)
       }
 
+      // Show loading.
+      self.loading = true
+
       this.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
         let self = this
-
-        // Show loading.
-        self.loading = true
 
         let params = {
           page: self.currentPage,
