@@ -30,12 +30,12 @@
     }
 
     &:nth-child(2) span:before {
-      font-size: 14px;
+      font-size: 10px;
       content: '\e908';
     }
 
     &:nth-last-child(2) span:before {
-      font-size: 14px;
+      font-size: 10px;
       content: '\e907';
     }
 
@@ -71,23 +71,19 @@
       &:nth-child(2),
       &:nth-last-child(2),
       &:last-child {
-      line-height: 42px;
+      line-height: 30px;
     }
 
       .page-link {
-        height: 42px;
-        width: 42px;
-        line-height: 42px;
+        height: 30px;
+        width: 30px;
+        line-height: 30px;
       }
     }
   }
 
   @include media-breakpoint-up(md) {
     margin-bottom: 50px;
-
-    .page-item {
-      margin-right: 25px;
-    }
   }
 
   @include media-breakpoint-up(lg) {

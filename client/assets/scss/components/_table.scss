@@ -4,6 +4,10 @@
   thead {
     display: none;
 
+    th {
+      font-weight: 400;
+    }
+
     tr {
       color: #000;
     }
@@ -33,7 +37,7 @@
       border-radius: 10px;
       background-color: #fff;
       box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
-      padding: 20px;
+      padding: 20px 20px 15px;
       margin-bottom: 20px;
   
       @include media-breakpoint-up(lg) {
@@ -42,7 +46,8 @@
       }
 
       @include media-breakpoint-up(xl) {
-        padding: 30px 40px;
+        padding-left: 30px;
+        padding-right: 30px;
       }
     }
 
