@@ -4,3 +4,7 @@
 .page-enter, .page-leave-active {
   opacity: 0
 }
+
+.page-leave-active.page-leave-to {
+  height: calc(100vh - 80px - 104px);
+}
