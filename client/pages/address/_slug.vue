@@ -69,7 +69,7 @@
 							<td>Contract Creator</td>
 							<td>
 								<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
-								<span>at txns&nbsp;</span>
+								<span>&nbsp;at txns&nbsp;</span>
 								<span v-if="address.fromTxn">
 									<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
 								</span>
