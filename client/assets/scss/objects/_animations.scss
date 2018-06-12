@@ -6,5 +6,9 @@
 }
 
 .page-leave-active.page-leave-to {
-  height: calc(100vh - 80px - 104px);
+  height: 100vh;
+
+  .tomo-body-wrapper--home & {
+    height: auto;
+  }
 }
