@@ -16,7 +16,6 @@
 				<b-collapse is-nav id="nav_collapse">
 					<b-navbar-nav class="mx-auto">
 						<b-nav-item :to="{name: 'index'}" :exact="true">Home</b-nav-item>
-						<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
 						<b-nav-item-dropdown text="Transactions" :class="(isTxs) ? 'active' : ''">
 							<b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
 							<!--<b-dropdown-item :to="{name: 'txs-pending'}">Transactions Pending</b-dropdown-item>-->
@@ -29,6 +28,7 @@
 							<b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
 							<b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
 						</b-nav-item-dropdown>
+						<b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
 					</b-navbar-nav>
 					<b-navbar-nav class="tomo-nav__login">
 						<!--<div class="form-inline" v-if="! isHomePage()">-->
@@ -75,15 +75,9 @@
 							</div>
 							<div class="tomo-stat d-flex">
 								<div class="tomo-stat__item">
-									<nuxt-link :to="{name: 'blocks'}">
-										<i v-if="! stats" class="tomo-loading"></i>
-										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
-									</nuxt-link>
-								</div>
-								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'accounts'}">
 										<i v-if="! stats" class="tomo-loading"></i>
-										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Wallets</span>
+										<span v-else>{{ formatNumber(stats.totalAddress) }}&nbsp;Accounts</span>
 									</nuxt-link>
 								</div>
 								<div class="tomo-stat__item">
@@ -98,6 +92,12 @@
 										<span v-else>{{ formatNumber(stats.totalSmartContract) }}&nbsp;Contracts</span>
 									</nuxt-link>
 								</div>
+								<div class="tomo-stat__item">
+									<nuxt-link :to="{name: 'blocks'}">
+										<i v-if="! stats" class="tomo-loading"></i>
+										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
+									</nuxt-link>
+								</div>
 							</div>
 						</b-col>
 					</b-row>
@@ -109,7 +109,9 @@
 			<div class="container container--wide">
 				<div class="row">
 					<b-col md="6" class="tomo-footer__copyright">
-						<p>Tomoscan 2018 - Running Tomochain</p>
+						<p>Tomoscan 2018 - Running Tomochain
+							<code class="text-muted copyright__code">tomo/v1.8.4-unstable-ee4379f0/linux-amd64/go1.9.4</code>
+						</p>
 					</b-col>
 					<b-col md="6" class="text-md-right">
 						<ul class="list-inline tomo-footer__social">

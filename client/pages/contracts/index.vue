@@ -7,7 +7,7 @@
       v-if="total == 0"
       class="tomo-empty">
         <i class="fa fa-file-text-o tomo-empty__icon"></i>
-        <p class="tomo-empty__description">No contract found</p>
+        <p class="tomo-empty__description">No verified contract found</p>
     </div>
 
     <p
