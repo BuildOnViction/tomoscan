@@ -3,7 +3,7 @@
 		<b-navbar toggleable="lg" variant="white" class="tomo-nav">
 			<div class="container container--wide tomo-nav__wrapper">
 				<b-navbar-brand :to="{name: 'index'}">
-					<img src="~/assets/img/logo.png" alt="TOMO Explorer" class="tomo-nav__logo">
+					<img src="~/assets/img/logo.svg" alt="TOMO Explorer" class="tomo-nav__logo">
 				</b-navbar-brand>
 				<b-navbar-toggle class="tomo-nav__toggle" target="nav_collapse">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 600">
