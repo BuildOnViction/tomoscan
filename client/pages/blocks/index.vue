@@ -107,14 +107,14 @@
         self.perPage = parseInt(query.limit)
       }
 
-      // Show loading.
-      self.loading = true
-
       this.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
         let self = this
+
+        // Show loading.
+        self.loading = true
 
         let params = {
           page: self.currentPage,

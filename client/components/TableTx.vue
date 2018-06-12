@@ -164,14 +164,14 @@
         self.blockNumber = query.block
       }
 
-      // Show loading.
-      self.loading = true
-
       this.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
         let self = this
+
+        // Show loading.
+        self.loading = true
 
         let params = {
           page: self.currentPage,

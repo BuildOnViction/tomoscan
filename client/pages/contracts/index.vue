@@ -89,14 +89,14 @@
       // Init breadcrumbs data.
       self.$store.commit('breadcrumb/setItems', {name: 'contracts', to: {name: 'contracts'}})
 
-      // Show loading.
-      self.loading = true
-
       self.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
         let self = this
+
+        // Show loading.
+        self.loading = true
 
         let params = {
           page: self.currentPage,

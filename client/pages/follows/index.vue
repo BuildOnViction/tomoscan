@@ -173,9 +173,6 @@
       let self = this
       let query = self.$route.query
 
-      // Show loading.
-      self.loading = true
-
       if (query.page) {
         self.currentPage = parseInt(query.page)
       }
@@ -188,6 +185,9 @@
     methods: {
       async getDataFromApi () {
         let self = this
+
+        // Show loading.
+        self.loading = true
 
         let params = {
           page: self.currentPage,
