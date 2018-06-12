@@ -4,3 +4,11 @@
 .page-enter, .page-leave-active {
   opacity: 0
 }
+
+.page-leave-active.page-leave-to {
+  height: 100vh;
+
+  .tomo-body-wrapper--home & {
+    height: auto;
+  }
+}
