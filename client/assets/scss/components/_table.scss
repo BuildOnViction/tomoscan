@@ -240,6 +240,11 @@
 }
 
 .tomo-table--transactions {
+
+  i.tx-failed {
+    vertical-align: middle;
+  }
+  
   thead tr,
   tbody tr {
 

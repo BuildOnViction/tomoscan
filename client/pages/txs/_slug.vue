@@ -50,7 +50,9 @@
 									</tr>
 									<tr>
 										<td>TxReceipt Status</td>
-										<td>{{ tx.status ? 'Success' : 'Reject' }}</td>
+										<td>
+											<span :class="tx.status ? 'text-success' : 'text-danger'">{{ tx.status ? 'Success' : 'Fail' }}</span>
+										</td>
 									</tr>
 									<tr>
 										<td>Block</td>
@@ -104,7 +106,7 @@
 									</tr>
 									<tr>
 										<td>Gas Price</td>
-										<td>{{ formatUnit(toEther(tx.gasPrice)) }}({{ toGwei(tx.gasPrice) }} Gwei)</td>
+										<td>{{ formatUnit(toEther(tx.gasPrice)) }} ({{ toGwei(tx.gasPrice) }} Gwei)</td>
 									</tr>
 									<tr>
 										<td>Actual Tx Cost/Fee</td>

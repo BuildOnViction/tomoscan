@@ -1,6 +1,5 @@
 import Web3Util from '../helpers/web3'
 import BlockRepository from '../repositories/BlockRepository'
-import Block from '../models/Block'
 import cache from 'memory-cache'
 
 let Web3Connector = {

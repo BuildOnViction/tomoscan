@@ -7,7 +7,6 @@ import Account from '../models/Account'
 import Follow from '../models/Follow'
 import EmailService from '../services/Email'
 import User from '../models/User'
-import Crawl from '../models/Crawl'
 import CrawlRepository from './CrawlRepository'
 
 let BlockRepository = {

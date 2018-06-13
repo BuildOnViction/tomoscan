@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import _ from 'lodash'
 import async from 'async'
-import Setting from '../models/Setting'
 import Block from '../models/Block'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
@@ -30,7 +29,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         {number: {$in: block_numbers}})
       remain_numbers = _.xor(block_numbers, exists_numbers)
     }
-
+console.log(remain_numbers)
     // Insert blocks remain.
     async.each(remain_numbers, async (number, next) => {
       if (number) {
