@@ -58,6 +58,7 @@
     },
     props: {
       token: {type: String, default: null},
+      page: {default: null},
     },
     data: () => ({
       fields: {
@@ -110,6 +111,10 @@
         self.currentPage = data.currentPage
         self.pages = data.pages
         self.perPage = data.perPage
+        
+        if (self.page) {
+          self.page.blocksCount = self.total
+        }
 
         // Hide loading.
         self.loading = false
