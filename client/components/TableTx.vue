@@ -25,7 +25,9 @@
 			<template slot="hash" slot-scope="props">
 				<nuxt-link 
           class="text-truncate"
-          :to="{name: 'txs-slug', params: {slug: props.item.hash}}">{{ props.item.hash }}</nuxt-link>
+          :to="{name: 'txs-slug', params: {slug: props.item.hash}}">
+          <i v-if="!props.item.status" class="fa fa-exclamation mr-1 text-danger tx-failed"></i>
+          {{ props.item.hash }}</nuxt-link>
 			</template>
 
 			<template slot="block" slot-scope="props">
@@ -192,16 +194,26 @@
 
         let query = this.serializeQuery(params)
         let {data} = await this.$axios.get('/api/txs' + '?' + query)
-        self.items = data.items
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
+        
+        data.items.forEach(async (item, index, array) => {
+          if (typeof item.status === 'undefined') {
+            let status = await self.$axios.get(`/api/txs/status/${item.hash}`)
+            item.status = status.data
+          }
 
-        // Format data.
-        self.items = self.formatData(self.items)
+          if (index + 1 == array.length) {
+            self.items = array
 
-        // Hide loading.
-        self.loading = false
+            // Format data.
+            self.items = self.formatData(self.items)
+
+            // Hide loading.
+            self.loading = false
+          }
+        })
 
         return data
       },

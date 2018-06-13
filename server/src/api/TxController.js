@@ -101,4 +101,17 @@ TxController.get('/txs/:slug', async (req, res) => {
   }
 })
 
+TxController.get('/txs/status/:hash', async (req, res) => {
+  try {
+    let hash = req.params.hash
+    hash = hash ? hash.toLowerCase() : hash
+    let tx = await TxRepository.getTxReceipt(hash)
+
+    return res.json(tx.status)
+  } catch (e) {
+    console.log(e)
+    return res.status(404).send()
+  }
+})
+
 export default TxController

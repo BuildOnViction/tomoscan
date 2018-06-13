@@ -6,7 +6,7 @@
 		<div class="card tomo-card tomo-card--address">
 			<div class="tomo-card__header">
 				<h3	:class="'tomo-card__headline' + (address && address.isContract ? ' tomo-card__headline--is-contract' : '')">
-					<span v-if="address && address.isContract">Contract:</span>
+					<span v-if="address && address.isContract">Contract: </span>
 					<read-more
 						class="d-sm-none"
 						:text="hash" />
@@ -69,7 +69,7 @@
 							<td>Contract Creator</td>
 							<td>
 								<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
-								<span>at txns&nbsp;</span>
+								<span>&nbsp;at txns&nbsp;</span>
 								<span v-if="address.fromTxn">
 									<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
 								</span>
@@ -81,7 +81,7 @@
 							<td>
 								<div>Are you the contract creator?
 									<nuxt-link :to="{name: 'contracts-verify', query: {address: hash}}">Verify And Publish</nuxt-link>
-									your contract source code Today!
+									your contract source code today!
 								</div>
 							</td>
 						</tr>

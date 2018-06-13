@@ -109,7 +109,7 @@
 			<div class="container container--wide">
 				<div class="row">
 					<b-col md="6" class="tomo-footer__copyright">
-						<p>Tomoscan 2018 - Running Tomochain
+						<p>Tomoscan 2018 - Running on Tomochain
 							<code class="text-muted copyright__code">tomo/v1.8.4-unstable-ee4379f0/linux-amd64/go1.9.4</code>
 						</p>
 					</b-col>
