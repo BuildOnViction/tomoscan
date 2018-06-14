@@ -86,7 +86,7 @@
 											<div v-if="tx.to">
 												<i v-if="tx.to_model && tx.to_model.isContract" class="tm tm-icon-contract mr-2"></i>
 												<nuxt-link
-													:to="{name: 'address-slug', params: {slug: tx.from}}"
+													:to="{name: 'address-slug', params: {slug: tx.to}}"
 													class="text-truncate">{{ tx.to_model.hash }}</nuxt-link>
 											</div>
 											<div v-else>
