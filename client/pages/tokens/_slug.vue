@@ -64,11 +64,11 @@
 		<b-row>
 			<b-col>
 				<b-tabs class="tomo-tabs">
-					<b-tab title="Token Transfers">
-						<table-token-tx :token="hash"></table-token-tx>
+					<b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
+						<table-token-tx :token="hash" :page="this"></table-token-tx>
 					</b-tab>
-					<b-tab title="Token Holders">
-						<table-token-holder :address="hash"></table-token-holder>
+					<b-tab :title="'Token Holders (' + holdersCount + ')'">
+						<table-token-holder :address="hash" :page="this"></table-token-holder>
 					</b-tab>
 				</b-tabs>
 			</b-col>
@@ -97,7 +97,9 @@
         token: null,
         tokenName: null,
 				symbol: null,
-				loading: true
+				loading: true,
+				tokenTxsCount: 0,
+				holdersCount: 0,
       }
     },
     created () {

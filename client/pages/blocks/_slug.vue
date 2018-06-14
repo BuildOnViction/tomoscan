@@ -165,8 +165,9 @@
 			</div>
 
 		<b-tabs class="tomo-tabs">
-			<b-tab title="Transactions">
-				<table-tx :block="number.toString()"></table-tx>
+			<b-tab
+				:title="'Transactions (' + txsCount + ')'">
+				<table-tx :block="number.toString()"  :page="this"></table-tx>
 			</b-tab>
 		</b-tabs>
 	</section>
@@ -192,7 +193,8 @@
         number: null,
         block: null,
 				timestamp_moment: null,
-				loading: true
+				loading: true,
+				txsCount: 0
       }
     },
     created () {

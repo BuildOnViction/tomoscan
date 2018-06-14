@@ -104,7 +104,7 @@
 			</b-tab>
 			<b-tab
 				v-if="address && address.hashTokens"
-				:title="'Token Holding (' + holdersCount + ')'">
+				:title="'Token Holding (' + tokensCount + ')'">
 				<table-tokens-by-account :address="hash" :page="this"></table-tokens-by-account>
 			</b-tab>
 			<b-tab v-if="address && address.isContract" title="Code">
@@ -196,6 +196,7 @@
 			txsCount: 0,
 			blocksCount: 0,
       eventsCount: 0,
+      tokensCount: 0,
       loading: true
     }),
     created () {
