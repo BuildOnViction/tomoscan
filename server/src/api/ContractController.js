@@ -49,7 +49,7 @@ ContractController.post('/contracts', async (req, res, next) => {
     // Check exists and return.
     let exist = await Contract.findOne({hash: contractAddress})
     if (exist) {
-      return res.json(exist)
+      return res.json({errors: ['This contract is validated']})
     }
 
     const originalCode = await AccountRepository.getCode(contractAddress)
@@ -63,15 +63,29 @@ ContractController.post('/contracts', async (req, res, next) => {
           return res.sendStatus(500)
         }
         const output = snapshot.compile(sourceCode, optimization)
+
+        if(_.isEmpty(output.contracts)) {
+          return res.json({errors: ['Unable to Verify Contract source code']})
+        }
         // Check name valid.
         if (typeof output.contracts[':' + contractName] === 'undefined') {
           return res.json({errors: ['Contract Name invalid!']})
         }
+
+        let contracts = [];
+        
+        Object.keys(output.contracts).forEach(contract => {
+          contracts.push(contract.substr(1, contract.length - 1))
+        })
+
         let runtimeBytecode = '0x' +
           output.contracts[':' + contractName].runtimeBytecode
         if (md5(runtimeBytecode.slice(0, -100)) !==
           md5(originalCode.slice(0, -100))) {
-          return res.json({errors: ['Bytecode runtime invalid!']})
+          return res.json({errors: [
+            `Contract names found: ${contracts.join(', ')}`,
+            'Bytecode runtime invalid!'
+          ]})
         }
 
         let contract = await ContractRepository.insertOrUpdate(contractName,

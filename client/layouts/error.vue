@@ -1,14 +1,11 @@
 <template>
-	<section class="container text-center">
+	<section class="container text-center error-container">
 		<h1 class="title text-danger">
 			{{ error.statusCode }}
 		</h1>
 		<h2 class="info">
 			{{ error.message }}
 		</h2>
-		<nuxt-link class="button" to="/" v-if="error.statusCode === 404">
-			Homepage
-		</nuxt-link>
 	</section>
 </template>
 <script>
@@ -16,20 +13,3 @@
     props: ['error'],
   }
 </script>
-
-<style scoped>
-	.title {
-		margin-top: 15px;
-		font-size: 5em;
-	}
-
-	.info {
-		font-weight: 300;
-		color: #9aabb1;
-		margin: 0;
-	}
-
-	.button {
-		margin-top: 50px;
-	}
-</style>

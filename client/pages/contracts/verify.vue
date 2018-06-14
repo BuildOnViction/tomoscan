@@ -18,106 +18,106 @@
 					<p v-for="error in errors">{{ error }}</p>
 				</div>
 
-				<div class="row">
-					<div class="col-sm-6 col-lg-3">
-						<div class="form-group">
-							<label for="contractAddress">Contract Address</label>
-							<input
-								v-model="formContractAddress"
-								@input="$v.formContractAddress.$touch()"
-								:class="($v.formContractAddress.$dirty && $v.formContractAddress.$invalid) ? 'is-invalid' : ''"
-								type="text" class="form-control" id="contractAddress" placeholder="Contract Address">
-							<div class="text-danger" v-if="$v.formContractAddress.$dirty && ! $v.formContractAddress.required">Contract Address is required</div>
-						</div>
-					</div>
-					<div class="col-sm-6 col-lg-3">
-						<div class="form-group">
-							<label for="contractName">Contract Name</label>
-							<input
-								v-model="formContractName"
-								@input="$v.formContractName.$touch()"
-								:class="($v.formContractName.$dirty && $v.formContractName.$invalid) ? 'is-invalid' : ''"
-								type="text" class="form-control" id="contractName" placeholder="Contract Name">
-							<div class="text-danger" v-if="$v.formContractName.$dirty && ! $v.formContractName.required">Contract Name is required</div>
-						</div>
-					</div>
-					<div class="col-sm-8 col-lg-4">
-						<div class="form-group">
-							<label for="compiler">Compiler</label>
-							<b-form-select
-								v-model="formCompiler"
-								:options="compilers"
-								@input="$v.formCompiler.$touch()"
-								:class="($v.formCompiler.$dirty && $v.formCompiler.$invalid) ? 'is-invalid' : ''"></b-form-select>
-							<div class="text-danger" v-if="$v.formCompiler.$dirty && ! $v.formCompiler.required">Compiler is required</div>
-						</div>
-					</div>
-					<div class="col-sm-4 col-lg-2">
-						<div class="form-group">
-							<label for="optimization">Optimization</label>
-							<select
-								v-model="formOptimization"
-								@input="$v.formOptimization.$touch()"
-								:class="($v.formOptimization.$dirty && $v.formOptimization.$invalid) ? 'is-invalid' : ''"
-								id="optimization" class="form-control">
-								<option value="1">Yes</option>
-								<option value="0">No</option>
-							</select>
-							<div class="text-danger" v-if="$v.formOptimization.$dirty && ! $v.formOptimization.required">Optimization is required</div>
-						</div>
-					</div>
-				</div>
+				<form
+          novalidate
+          :class="loadingForm ? 'tomo-loading tomo-loading--form' : ''"
+          @submit.prevent="validate()">
+          <div class="row">
+					  <div class="col-sm-6 col-lg-3">
+              <div class="form-group">
+                <label for="contractAddress">Contract Address *</label>
+                <input
+                  v-model="contractAddress"
+                  :class="getValidationClass('contractAddress')"
+                  type="text" class="form-control" id="contractAddress" placeholder="Contract Address">
+                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.contractAddress.required">Contract Address is required</div>
+              </div>
+            </div>
+            <div class="col-sm-6 col-lg-3">
+              <div class="form-group">
+                <label for="contractName">Contract Name *</label>
+                <input
+                  v-model="contractName"
+                  :class="getValidationClass('contractName')"
+                  type="text" class="form-control" id="contractName" placeholder="Contract Name">
+                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.contractName.required">Contract Name is required</div>
+              </div>
+            </div>
+            <div class="col-sm-8 col-lg-4">
+              <div class="form-group">
+                <label for="compiler">Compiler *</label>
+                <b-form-select
+                  v-model="compiler"
+                  :options="compilers"
+                  :class="getValidationClass('compiler')"></b-form-select>
+                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.compiler.required">Compiler is required</div>
+              </div>
+            </div>
+					  <div class="col-sm-4 col-lg-2">
+              <div class="form-group">
+                <label for="optimization">Optimization *</label>
+                <select
+                  v-model="optimization"
+                  :class="getValidationClass('optimization')"
+                  id="optimization" class="form-control">
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
+                </select>
+                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.optimization.required">Optimization is required</div>
+              </div>
+					  </div>
+			  	</div>
 
-				<div class="form-group">
-					<label for="solidityCode">Enter the Solidity Contract Code below</label>
-					<textarea
-						@input="$v.formCode.$touch()"
-						v-model="formCode"
-						:class="($v.formCode.$dirty && $v.formCode.$invalid) ? 'is-invalid' : ''"
-						id="solidityCode" cols="30" rows="10" class="form-control"></textarea>
-					<div class="text-danger" v-if="$v.formCode.$dirty && ! $v.formCode.required">Solidity Code is required</div>
-				</div>
+          <div class="form-group">
+            <label for="solidityCode">Enter the Solidity Contract Code below *</label>
+            <textarea
+              v-model="solidityCode"
+              :class="getValidationClass('solidityCode')"
+              id="solidityCode" cols="30" rows="10" class="form-control"></textarea>
+            <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.solidityCode.required">Solidity Code is required</div>
+          </div>
 
-				<div class="form-group">
-					<button type="button" class="btn btn-primary mr-1" @click="onSubmitVerifyContract" :disabled="$v.$invalid || loadingForm"><i class="fa fa-spinner fa-pulse mr-1" v-if="loadingForm"></i>Submit</button>
-				</div>
+          <div class="form-group">
+            <button type="submit" class="btn btn-primary mr-1" :disabled="loadingForm"><i class="fa fa-cog fa-spin mr-2" v-if="loadingForm"></i>Submit</button>
+          </div>
+        </form>
 			</div>
 		</div>
 	</section>
 </template>
 <script>
   import { validationMixin } from 'vuelidate'
-  import { required, minLength } from 'vuelidate/lib/validators'
+  import { required } from 'vuelidate/lib/validators'
 
   export default {
     mixins: [validationMixin],
     data () {
       return {
         compilers: [],
-        formContractAddress: '',
-        formContractName: '',
-        formCompiler: '',
-        formOptimization: '',
-        formCode: '',
+        contractAddress: '',
+        contractName: '',
+        compiler: '',
+        optimization: 1,
+        solidityCode: '',
         errors: [],
         loadingForm: false,
 				loading: true
       }
     },
     validations: {
-      formContractAddress: {
+      contractAddress: {
         required,
       },
-      formContractName: {
+      contractName: {
         required,
       },
-      formCompiler: {
+      compiler: {
         required,
       },
-      formOptimization: {
+      optimization: {
         required,
       },
-      formCode: {
+      solidityCode: {
         required,
       },
     },
@@ -131,7 +131,7 @@
 
       let address = self.$route.query.address
       if (address) {
-        self.formContractAddress = address
+        self.contractAddress = address
       }
 
       self.getVersions()
@@ -139,23 +139,36 @@
       self.loading = false
     },
     methods: {
+      getValidationClass (fieldName) {
+          const field = this.$v[fieldName]
+
+          if (field) {
+            return field.$error ? 'is-invalid' : ''
+          }
+      },
+      validate () {
+        this.$v.$touch()
+
+        if (!this.$v.$invalid) {
+            this.submitVerifyContract()
+        }
+      },
       async getVersions () {
         let self = this
         let {data} = await self.$axios.get('/api/contracts/soljsons')
 
         self.compilers = data.map((version, i) => ({value: i, text: version}))
+        self.compilers.unshift({value: '', text: '[Please select]'})
       },
 
-      async onSubmitVerifyContract () {
+      async submitVerifyContract () {
         let self = this
-        if (self.$v.$invalid) {
-          return
-        }
+        
         let body = {
-          contractAddress: self.formContractAddress,
-          contractName: self.formContractName,
-          sourceCode: self.formCode,
-          version: self.formCompiler,
+          contractAddress: self.contractAddress,
+          contractName: self.contractName,
+          sourceCode: self.solidityCode,
+          version: self.compiler,
         }
 
         self.errors = []
@@ -163,20 +176,10 @@
         let {data} = await self.$axios.post('/api/contracts', body)
         if (data.errors) {
           self.errors = data.errors
+        } else {
+           return self.$router.push({name: 'address-slug', params: {slug: data.hash}})
         }
         self.loadingForm = false
-
-        return self.$router.go({name: 'address-slug', params: {slug: data.hash}})
-      },
-
-      onResetForm () {
-        let self = this
-
-        self.formContractAddress = ''
-        self.formContractName = ''
-        self.formCompiler = ''
-        self.formOptimization = ''
-        self.formCode = ''
       },
     },
   }
