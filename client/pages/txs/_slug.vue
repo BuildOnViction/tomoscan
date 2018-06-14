@@ -158,7 +158,9 @@
 							</div>
 						</div>
 					</b-tab>
-					<b-tab :title="'Events (' + itemsLength + ')'">
+					<b-tab
+						v-if="eventsCount > 0"
+						:title="'Events (' + eventsCount + ')'">
 						<table-event :tx="hash" :page="this"></table-event>
 					</b-tab>
 				</b-tabs>
@@ -186,7 +188,7 @@
       return {
         hash: null,
         tx: null,
-        itemsLength: 0,
+        eventsCount: 0,
       	loading: true,
       }
     },

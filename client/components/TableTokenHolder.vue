@@ -53,6 +53,7 @@
     mixins: [mixin],
     props: {
       address: {type: String, default: null},
+      page: {default: null},
     },
     data: () => ({
       fields: {
@@ -106,6 +107,10 @@
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
+        
+        if (self.page) {
+          self.page.holdersCount = self.total
+        }
 
         // Hide loading.
         self.loading = false

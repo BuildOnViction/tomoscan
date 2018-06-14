@@ -94,16 +94,18 @@
 		</div>
 
 		<b-tabs class="tomo-tabs">
-			<b-tab title="Transactions">
-				<table-tx :address="hash"></table-tx>
+			<b-tab
+				:title="'Transactions (' + txsCount + ')'">
+				<table-tx :address="hash" :page="this"></table-tx>
 			</b-tab>
-			<b-tab title="Mined Blocks">
-				<table-tx-by-account></table-tx-by-account>
+			<b-tab
+				:title="'Mined Blocks (' + blocksCount + ')'">
+				<table-tx-by-account :page="this"></table-tx-by-account>
 			</b-tab>
 			<b-tab
 				v-if="address && address.hashTokens"
-				title="Token Holding">
-				<table-tokens-by-account :address="hash"></table-tokens-by-account>
+				:title="'Token Holding (' + tokensCount + ')'">
+				<table-tokens-by-account :address="hash" :page="this"></table-tokens-by-account>
 			</b-tab>
 			<b-tab v-if="address && address.isContract" title="Code">
 				<section v-if="smartContract">
@@ -150,7 +152,8 @@
 						cols="30" rows="10" class="form-control"></textarea>
 				</b-form-group>
 			</b-tab>
-			<b-tab :title="'Events (' + itemsLength + ')'">
+			<b-tab
+				:title="'Events (' + eventsCount + ')'">
 				<table-event :address="hash" :page="this"></table-event>
 			</b-tab>
 		</b-tabs>
@@ -189,8 +192,11 @@
       hash: null,
       address: null,
       currentUrl: '',
-      smartContract: null,
-      itemsLength: 0,
+			smartContract: null,
+			txsCount: 0,
+			blocksCount: 0,
+      eventsCount: 0,
+      tokensCount: 0,
       loading: true
     }),
     created () {

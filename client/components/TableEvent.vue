@@ -231,7 +231,7 @@
 
         // Hide loading.
         self.loading = false
-        self.page.itemsLength = self.total
+        self.page.eventsCount = self.total
 
         return data
       },

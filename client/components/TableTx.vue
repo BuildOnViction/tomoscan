@@ -116,6 +116,7 @@
       address: {type: String, default: null},
       type: {type: String},
       block: String,
+      page: {default: null}
     },
     data: () => ({
       fields: {},
@@ -197,6 +198,14 @@
         self.total = data.total
         self.currentPage = data.currentPage
         self.pages = data.pages
+
+        if (data.items.length == 0) {
+            self.loading = false
+        }
+
+        if (self.page) {
+          self.page.txsCount = self.total
+        }
         
         data.items.forEach(async (item, index, array) => {
           if (typeof item.status === 'undefined') {
@@ -204,7 +213,7 @@
             item.status = status.data
           }
 
-          if (index + 1 == array.length) {
+          if (index == array.length - 1) {
             self.items = array
 
             // Format data.
