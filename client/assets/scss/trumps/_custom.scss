@@ -49,3 +49,16 @@
     box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .3) !important;
   }
 }
+
+.code {
+  font-family: monospace, monospace;
+  font-size: 1em;
+}
+
+.tooltip .arrow {
+  opacity: .8;
+}
+
+.tooltip-inner {
+  background-color: rgba(0, 0, 0, .8);
+}

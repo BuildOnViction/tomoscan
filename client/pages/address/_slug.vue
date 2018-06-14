@@ -145,11 +145,11 @@
 					</b-form-group>
 				</section>
 
-				<b-form-group label="Smart Contract Code">
+				<b-form-group label="Contract Creation Code">
 					<textarea
 						disabled
 						v-model="address.code"
-						cols="30" rows="10" class="form-control"></textarea>
+						cols="30" rows="10" class="form-control code"></textarea>
 				</b-form-group>
 			</b-tab>
 			<b-tab
