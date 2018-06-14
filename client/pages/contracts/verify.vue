@@ -166,7 +166,7 @@
         }
         self.loadingForm = false
 
-        return self.$router.go({name: 'address-slug', params: {slug: data.hash}})
+        // return self.$router.go({name: 'address-slug', params: {slug: data.hash}})
       },
 
       onResetForm () {
