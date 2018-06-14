@@ -169,6 +169,7 @@
           contractName: self.contractName,
           sourceCode: self.solidityCode,
           version: self.compiler,
+          optimization: self.optimization,
         }
 
         self.errors = []
