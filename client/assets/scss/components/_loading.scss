@@ -35,3 +35,29 @@
     height: calc(100vh - 60px - 160px - 83px);
   }
 }
+
+.tomo-loading--form {
+  position: relative;
+
+  &:before {
+    content: url('~/assets/img/tomo-loading.svg');
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    opacity: .5;
+    height: 40px;
+    width: 40px;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+  }
+
+  &:after {
+    content: '';
+    background-color: rgba(255, 255, 255, .5);
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+  }
+}

@@ -79,3 +79,7 @@
     height: calc(100vh - 320px);
   }
 }
+
+.form-control:focus {
+  box-shadow: none !important;
+}

@@ -49,7 +49,7 @@ ContractController.post('/contracts', async (req, res, next) => {
     // Check exists and return.
     let exist = await Contract.findOne({hash: contractAddress})
     if (exist) {
-      return res.json(exist)
+      return res.json({errors: ['This contract is validated']})
     }
 
     const originalCode = await AccountRepository.getCode(contractAddress)
