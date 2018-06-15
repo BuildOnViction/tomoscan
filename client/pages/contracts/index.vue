@@ -12,7 +12,7 @@
 
     <p
       v-if="total > 0"
-      class="tomo-total-items">Total {{ _nFormatNumber('contract', 'contracts', total) }} found</p>
+      class="tomo-total-items">Total {{ _nFormatNumber('verified contract', 'verified contracts', total) }} found</p>
 
     <table-base
       v-if="total > 0"
@@ -40,8 +40,8 @@
         <span>{{ formatNumber(props.item.txCount) }}</span>
       </template>
 
-      <template slot="dateVerified" slot-scope="props">
-        <span>{{ props.item.createdAt }}</span>
+      <template slot="createdAt" slot-scope="props">
+        <span>{{ $moment(props.item.createdAt).format('M-DD-Y') }}</span>
       </template>
     </table-base>
 
@@ -73,7 +73,7 @@
           compiler: {label: 'Compiler'},
           balance: {label: 'Balance'},
           txCount: {label: 'txCount'},
-          createdAt: {label: 'DateVerified'},
+          createdAt: {label: 'Date Verified'},
         },
         loading: true,
         pagination: {},

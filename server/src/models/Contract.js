@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const Schema = mongoose.Schema
 
 const schema = new mongoose.Schema({
   hash: {type: String},
@@ -14,6 +13,7 @@ const schema = new mongoose.Schema({
   balance: String,
   balanceNumber: Number,
   optimization: Boolean,
+  txCount: Number
 }, {
   timestamps: true,
   versionKey: false,

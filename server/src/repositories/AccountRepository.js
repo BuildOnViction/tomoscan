@@ -25,7 +25,7 @@ let AccountRepository = {
     }
 
     let txCountTo = await Tx.find({to: hash}).count()
-    let txCountFrom = 0//await web3.eth.getTransactionCount(hash)
+    let txCountFrom = await web3.eth.getTransactionCount(hash)
     let txCount = txCountTo + txCountFrom
     if (_account.transactionCount !== txCount) {
       _account.transactionCount = txCount
@@ -43,7 +43,7 @@ let AccountRepository = {
       _account.isToken = isToken
     }
 
-    _account.isContract = (_account.code !== '0x') ? true : false
+    _account.isContract = (_account.code !== '0x')
     _account.status = true
 
     delete _account['_id']

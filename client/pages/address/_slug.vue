@@ -37,7 +37,7 @@
 							</td>
 						</tr>
 						<tr>
-							<td>No Of Transactions</td>
+							<td>Transactions</td>
 							<td>
 								<span>{{ formatNumber(address.transactionCount) }}</span> txns
 							</td>

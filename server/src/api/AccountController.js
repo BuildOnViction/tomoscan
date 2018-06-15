@@ -1,6 +1,5 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import Account from '../models/Account'
 import AccountRepository from '../repositories/AccountRepository'
 
 const AccountController = Router()
@@ -9,16 +8,6 @@ AccountController.get('/accounts', async (req, res) => {
   try {
     let data = await paginate(req, 'Account',
       {query: {status: true}, sort: {balanceNumber: -1}})
-
-    // Append percent to response.
-//    let all_balances = await Account.aggregate(
-//      [{$group: {_id: null, total: {$sum: '$balance'}}}])
-//    let total = all_balances[0].total
-//
-//    data.items.forEach((item, index) => {
-//      data.items[index].percent = (item.balanceNumber * 100) / total
-//    })
-//    data.total_balance = total
 
     // Format rank.
     let items = data.items
@@ -38,8 +27,7 @@ AccountController.get('/accounts', async (req, res) => {
 
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
-    let hash = req.params.slug
-    hash = hash.toLowerCase()
+    let hash = req.params.slug.toLowerCase()
     let account = await AccountRepository.updateAccount(hash)
     account = await AccountRepository.formatItem(account)
 
@@ -53,8 +41,7 @@ AccountController.get('/accounts/:slug', async (req, res) => {
 
 AccountController.get('/accounts/:slug/mined', async (req, res) => {
   try {
-    let hash = req.params.slug
-    hash = hash.toLowerCase()
+    let hash = req.params.slug.toLowerCase()
     let params = {}
     if (hash) {
       params.query = {signer: hash}

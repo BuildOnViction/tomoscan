@@ -14,7 +14,7 @@ const ContractController = Router()
 ContractController.get('/contracts', async (req, res, next) => {
   try {
     let data = await paginate(req, 'Contract',
-      {query: {}})
+      {query: {}, sort: {createdAt: -1}})
 
     return res.json(data)
   }
