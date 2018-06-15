@@ -109,22 +109,21 @@
 			</b-tab>
 			<b-tab v-if="address && address.isContract" title="Code">
 				<section v-if="smartContract">
-					<h5 class="mb-3"><i class="fa fa-check-circle-o text-success mr-1"></i>Contract Source Code Verified</h5>
+					<h5 class="mb-3"><i class="fa fa-check-circle-o text-success mr-2"></i>Contract Source Code Verified</h5>
 					<b-row class="mb-3">
 						<b-col md="6">
-							<b-table class="tm__table"
+							<b-table class="tomo-table tomo-table--verified-contract"
 							         :items="[
 											{key: 'Contract Name', value: smartContract.contractName},
 											{key: 'Compiler Version', value: smartContract.compiler},
-										]"
-							         thead-class="d-none"></b-table>
+										]" thead-class="d-none"></b-table>
 						</b-col>
 
 						<b-col md="6">
-							<b-table class="tm__table"
+							<b-table class="tomo-table tomo-table--verified-contract"
 							         :items="[
-											{key: 'Verified At', value: smartContract.updatedAt},
-											{key: 'Optimization Enabled:', value: smartContract.optimization},
+											{key: 'Verified At', value: $moment(smartContract.createdAt).format('M-DD-Y')},
+											{key: 'Optimization Enabled:', value: smartContract.optimization ? 'Yes' : 'No'},
 										]"
 							         thead-class="d-none"></b-table>
 						</b-col>
