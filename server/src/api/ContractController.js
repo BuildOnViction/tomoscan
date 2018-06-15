@@ -49,7 +49,7 @@ ContractController.post('/contracts', async (req, res, next) => {
     // Check exists and return.
     let exist = await Contract.findOne({hash: contractAddress})
     if (exist) {
-      // return res.json({errors: ['This contract is validated']})
+      return res.json({errors: ['This contract is validated']})
     }
 
     const originalCode = await AccountRepository.getCode(contractAddress)
@@ -80,11 +80,13 @@ ContractController.post('/contracts', async (req, res, next) => {
 
         let runtimeBytecode = '0x' +
           output.contracts[':' + contractName].runtimeBytecode
+
         if (md5(runtimeBytecode.slice(0, -100)) !==
           md5(originalCode.slice(0, -100))) {
           return res.json({errors: [
             `Contract names found: ${contracts.join(', ')}`,
-            'Bytecode runtime invalid!'
+            'Bytecode runtime invalid!',
+            `Tips: Try to ${req.body.optimization ? 'disable' : 'enable'} the 'Optimization' option`
           ]})
         }
 
