@@ -74,7 +74,7 @@ let watch = async () => {
     }
   } catch(e) {
     console.trace(e)
-    throw e
+    console.log(e)
   }
 }
 
@@ -97,6 +97,7 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
         })
       }
       console.trace(e)
+      console.log(e)
     }
   }
 })

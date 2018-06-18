@@ -20,7 +20,8 @@ ContractController.get('/contracts', async (req, res, next) => {
   }
   catch (e) {
     console.trace(e)
-    return null
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -32,7 +33,8 @@ ContractController.get('/contracts/soljsons', async (req, res, next) => {
   }
   catch (e) {
     console.trace(e)
-    return res.sendStatus(500)
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -97,7 +99,8 @@ ContractController.post('/contracts', async (req, res, next) => {
   }
   catch (e) {
     console.trace(e)
-    return res.sendStatus(403)
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -161,7 +164,8 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
   }
   catch (e) {
     console.trace(e)
-    return res.sendStatus(500)
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
