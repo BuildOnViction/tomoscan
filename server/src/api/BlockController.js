@@ -63,8 +63,8 @@ console.log(remain_numbers)
     })
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return nil
   }
 })
 
@@ -88,7 +88,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     return res.json(block)
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })

@@ -28,8 +28,8 @@ FollowController.get('/follows', authService.authenticate(),
       return res.json(data)
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return nul
     }
   })
 
@@ -48,8 +48,8 @@ FollowController.post('/follows', authService.authenticate(),
       return res.json(follow)
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return null
     }
   })
 
@@ -76,8 +76,8 @@ FollowController.post('/follows/:id', authService.authenticate(),
       return res.json(follow)
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return null
     }
   })
 
@@ -97,8 +97,8 @@ FollowController.delete('/follows/:id', authService.authenticate(),
       return res.json(follow)
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return null
     }
   })
 

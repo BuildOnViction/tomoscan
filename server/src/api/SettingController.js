@@ -10,9 +10,10 @@ SettingController.get('/setting', async (req, res, next) => {
   try {
     // Get total blocks in db.
     let totalBlock = await Block.find().count()
-    let totalAddress = await Account.find().count()
-    let totalToken = await Token.find().count()
-    let totalSmartContract = await Account.find({isContract: true}).count()
+    let totalAddress = await Account.find({status: true}).count()
+    let totalToken = await Token.find({status: true}).count()
+    let totalSmartContract = await Account.find(
+      {status: true, isContract: true}).count()
     let lastBlock = await Block.findOne().sort({number: -1})
 
     return res.json(
@@ -22,8 +23,8 @@ SettingController.get('/setting', async (req, res, next) => {
       })
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 
@@ -35,8 +36,8 @@ SettingController.get('/setting/usd', async (req, res, next) => {
     return res.json(data)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 
