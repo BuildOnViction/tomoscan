@@ -109,9 +109,9 @@
 			</b-tab>
 			<b-tab v-if="address && address.isContract" title="Code">
 				<section v-if="smartContract">
-					<h5 class="mb-3"><i class="fa fa-check-circle-o text-success mr-2"></i>Contract Source Code Verified</h5>
+					<h5 class="mb-4"><i class="fa fa-check-circle-o text-success mr-2"></i>Contract Source Code Verified</h5>
 					<b-row class="mb-3">
-						<b-col md="6">
+						<b-col sm="6">
 							<b-table class="tomo-table tomo-table--verified-contract"
 							         :items="[
 											{key: 'Contract Name', value: smartContract.contractName},
@@ -119,11 +119,11 @@
 										]" thead-class="d-none"></b-table>
 						</b-col>
 
-						<b-col md="6">
+						<b-col sm="6">
 							<b-table class="tomo-table tomo-table--verified-contract"
 							         :items="[
 											{key: 'Verified At', value: $moment(smartContract.createdAt).format('M-DD-Y')},
-											{key: 'Optimization Enabled:', value: smartContract.optimization ? 'Yes' : 'No'},
+											{key: 'Optimization Enabled', value: smartContract.optimization ? 'Yes' : 'No'},
 										]"
 							         thead-class="d-none"></b-table>
 						</b-col>
@@ -131,6 +131,15 @@
 
 					<b-form-group>
 						<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
+						 <!-- <brace
+							:fontsize="'22px'"
+							:theme="'monokai'"
+							:mode="'javascript'"
+							:codefolding="'markbegin'"
+							:softwrap="'free'"
+							:selectionstyle="'text'"
+							:highlightline="true">
+						</brace> -->
 						<pre v-highlightjs="smartContract.sourceCode" class="hljs__code">
 										<code class="javascript"></code>
 									</pre>
@@ -165,9 +174,10 @@
   import TableTxByAccount from '~/components/TableTxByAccount'
   import TableEvent from '~/components/TableEvent'
   import ReadMore from '~/components/ReadMore'
-  import VueQrcode from '@xkeshi/vue-qrcode'
+	import VueQrcode from '@xkeshi/vue-qrcode'
+	// import Brace from 'vue-bulma-brace'
 
-  export default {
+export default {
     mixins: [mixin],
     components: {
       TableTx,
@@ -175,7 +185,8 @@
       TableTxByAccount,
       TableEvent,
       ReadMore,
-      VueQrcode,
+			VueQrcode,
+			// Brace
     },
     head () {
       return {
@@ -196,7 +207,7 @@
 			blocksCount: 0,
       eventsCount: 0,
       tokensCount: 0,
-      loading: true
+			loading: true
     }),
     created () {
       let hash = this.$route.params.slug
@@ -232,7 +243,7 @@
         let self = this
 
         self.$store.dispatch('app/getUSDPrice')
-      },
+			}
     },
   }
 </script>
