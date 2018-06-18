@@ -3,6 +3,7 @@ import Block from '../models/Block'
 import Account from '../models/Account'
 import Token from '../models/Token'
 import axios from 'axios'
+import Contract from '../models/Contract'
 
 const SettingController = Router()
 
@@ -12,8 +13,7 @@ SettingController.get('/setting', async (req, res, next) => {
     let totalBlock = await Block.find().count()
     let totalAddress = await Account.find({status: true}).count()
     let totalToken = await Token.find({status: true}).count()
-    let totalSmartContract = await Account.find(
-      {status: true, isContract: true}).count()
+    let totalSmartContract = await Contract.find().count()
     let lastBlock = await Block.findOne().sort({number: -1})
 
     return res.json(
