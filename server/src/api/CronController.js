@@ -13,7 +13,8 @@ CronController.get('/cron/blocks', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -26,7 +27,8 @@ CronController.get('/cron/blocks/:slug', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -38,7 +40,8 @@ CronController.get('/cron/txs', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -50,7 +53,8 @@ CronController.get('/cron/txs/pending', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -62,7 +66,8 @@ CronController.get('/cron/accounts', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -74,7 +79,8 @@ CronController.get('/cron/tokens', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    throw e
+    console.log(e)
+    return res.status(500).send()
   }
 })
 

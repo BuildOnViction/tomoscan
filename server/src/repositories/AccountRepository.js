@@ -117,7 +117,8 @@ let AccountRepository = {
       return code
     } catch(e) {
       console.trace(e)
-      throw e
+      console.log(e)
+      return null
     }
   },
 }

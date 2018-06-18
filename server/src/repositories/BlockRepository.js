@@ -114,6 +114,7 @@ let BlockRepository = {
     }
     catch (e) {
       console.trace(e)
+      console.log(e)
       return null
     }
   },

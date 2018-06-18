@@ -32,7 +32,8 @@ AccountController.get('/accounts', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    return null
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -47,7 +48,8 @@ AccountController.get('/accounts/:slug', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    return null
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
@@ -66,7 +68,8 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
   }
   catch (e) {
     console.trace(e)
-    return null
+    console.log(e)
+    return res.status(500).send()
   }
 })
 
