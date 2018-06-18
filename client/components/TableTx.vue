@@ -31,7 +31,7 @@
 			</template>
 
 			<template slot="block" slot-scope="props">
-				<nuxt-link v-if="props.item.block" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
+				<nuxt-link v-if="props.item.blockNumber" :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">{{ props.item.blockNumber }}</nuxt-link>
 				<span v-else class="text-muted">Pending...</span>
 			</template>
 
