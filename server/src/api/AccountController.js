@@ -31,8 +31,8 @@ AccountController.get('/accounts', async (req, res) => {
     return res.json(data)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 
@@ -46,8 +46,8 @@ AccountController.get('/accounts/:slug', async (req, res) => {
     return res.json(account)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 
@@ -65,8 +65,8 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
     return res.json(data)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 

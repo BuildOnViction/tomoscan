@@ -22,8 +22,8 @@ SettingController.get('/setting', async (req, res, next) => {
       })
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 
@@ -35,8 +35,8 @@ SettingController.get('/setting/usd', async (req, res, next) => {
     return res.json(data)
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 

@@ -12,7 +12,7 @@ CronController.get('/cron/blocks', async (req, res) => {
     return res.json({blocks: blocks})
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
@@ -25,7 +25,7 @@ CronController.get('/cron/blocks/:slug', async (req, res) => {
     return res.json(result)
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
@@ -37,7 +37,7 @@ CronController.get('/cron/txs', async (req, res) => {
     return res.json({txs: txs})
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
@@ -49,7 +49,7 @@ CronController.get('/cron/txs/pending', async (req, res) => {
     return res.json({txs: txs})
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
@@ -61,7 +61,7 @@ CronController.get('/cron/accounts', async (req, res) => {
     return res.json({accounts: accounts})
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
@@ -73,7 +73,7 @@ CronController.get('/cron/tokens', async (req, res) => {
     return res.json({tokens: tokens})
   }
   catch (e) {
-    console.log(e)
+    console.trace(e)
     throw e
   }
 })
