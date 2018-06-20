@@ -28,12 +28,14 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/vuelidate',
     '~/plugins/bootstrap-vue',
+    '~/plugins/clipboards',
     { src: '~/plugins/vue-codemirror', ssr: false }
   ],
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/moment',
     '@nuxtjs/font-awesome',
+    '@nuxtjs/toast',
     [
       'nuxt-imagemin', {
       optipng: {optimizationLevel: 5},
@@ -75,5 +77,9 @@ module.exports = {
     webpack: {
       poll: true
     }
+  },
+  toast: {
+    position: 'bottom-center',
+    duration: 2000
   }
 }

@@ -132,16 +132,30 @@
 
 					<b-form-group>
 						<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
-						.form
+						<div class="code-actions">
+							<button class="btn btn-sm mr-2 code-actions__copy"
+								v-clipboard="smartContract.sourceCode"
+								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+							<button class="btn btn-sm code-actions__toggle"
+								id="btn-source-code" data-mode="light"
+								@click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+						</div>
 						 <no-ssr placeholder="Codemirror Loading...">
 							<codemirror ref="tomoCmSourceCode"
-								:value="smartContract.sourceCode"
-								@gutterClick="onGutterClick" />
+								:value="smartContract.sourceCode" />
 						 </no-ssr>
 					</b-form-group>
 
 					<b-form-group>
 						<label>Contract ABI<i class="fa fa-cogs ml-1"></i></label>
+						<div class="code-actions">
+							<button class="btn btn-sm mr-2 code-actions__copy"
+								v-clipboard="smartContract.sourceCode"
+								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+							<button class="btn btn-sm code-actions__toggle"
+								id="btn-abi-code" data-mode="light"
+								@click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+						</div>
 						 <no-ssr placeholder="Codemirror Loading...">
 							<codemirror ref="tomoCmAbiCode"
 								:value="smartContract.abiCode"
@@ -151,6 +165,14 @@
 				</section>
 
 				<b-form-group label="Contract Creation Code">
+						<div class="code-actions">
+							<button class="btn btn-sm mr-2 code-actions__copy"
+								v-clipboard="smartContract.sourceCode"
+								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+							<button class="btn btn-sm code-actions__toggle"
+								id="btn-code" data-mode="light"
+								@click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+						</div>
 					<no-ssr placeholder="Codemirror Loading...">
 					<codemirror ref="tomoCmCode"
 								:value="address.code"
@@ -255,6 +277,30 @@ export default {
 							}
 						}
 				})
+			},
+			copyCode () {
+				document.execCommand('copy')
+				this.$toast.show('Source code copied to clipboard')
+			},
+			toggleMode (e) {
+				let id = e.target.id
+				let mode = e.target.getAttribute('data-mode')
+				let theme = mode == 'light' ? 'base16-dark' : 'eclipse'
+
+				if (id == 'btn-source-code') {
+					this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
+				}
+
+				if (id == 'btn-abi-code') {
+					this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
+				}
+
+				if (id == 'btn-code') {
+					this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
+				}
+
+				mode = 'light' ? 'dark' : 'light'
+				e.target.setAttribute('data-mode', mode)
 			}
     },
   }
