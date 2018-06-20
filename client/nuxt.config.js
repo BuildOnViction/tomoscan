@@ -28,7 +28,7 @@ module.exports = {
     '~/plugins/axios',
     '~/plugins/vuelidate',
     '~/plugins/bootstrap-vue',
-    '~/plugins/vue-highlightjs',
+    { src: '~/plugins/vue-codemirror', ssr: false }
   ],
   modules: [
     '@nuxtjs/axios',

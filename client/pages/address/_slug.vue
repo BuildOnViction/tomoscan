@@ -107,7 +107,8 @@
 				:title="'Token Holding (' + tokensCount + ')'">
 				<table-tokens-by-account :address="hash" :page="this"></table-tokens-by-account>
 			</b-tab>
-			<b-tab v-if="address && address.isContract" title="Code">
+			<b-tab v-if="address && address.isContract" title="Code"
+				@click="refreshCodemirror">
 				<section v-if="smartContract">
 					<h5 class="mb-4"><i class="fa fa-check-circle-o text-success mr-2"></i>Contract Source Code Verified</h5>
 					<b-row class="mb-3">
@@ -131,33 +132,28 @@
 
 					<b-form-group>
 						<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
-						 <!-- <brace
-							:fontsize="'22px'"
-							:theme="'monokai'"
-							:mode="'javascript'"
-							:codefolding="'markbegin'"
-							:softwrap="'free'"
-							:selectionstyle="'text'"
-							:highlightline="true">
-						</brace> -->
-						<pre v-highlightjs="smartContract.sourceCode" class="hljs__code">
-										<code class="javascript"></code>
-									</pre>
+						 <no-ssr placeholder="Codemirror Loading...">
+							<codemirror ref="tomoCmSourceCode"
+								:value="smartContract.sourceCode" />
+						 </no-ssr>
 					</b-form-group>
 
 					<b-form-group>
 						<label>Contract ABI<i class="fa fa-cogs ml-1"></i></label>
-						<code class="hljs__code" v-highlightjs="smartContract.abiCode">
-							<code class="json"></code>
-						</code>
+						 <no-ssr placeholder="Codemirror Loading...">
+							<codemirror ref="tomoCmAbiCode"
+								:value="smartContract.abiCode"
+								:options="{mode:'application/ld+json',styleActiveLine:false}" />
+						 </no-ssr>
 					</b-form-group>
 				</section>
 
 				<b-form-group label="Contract Creation Code">
-					<textarea
-						disabled
-						v-model="address.code"
-						cols="30" rows="10" class="form-control code"></textarea>
+					<no-ssr placeholder="Codemirror Loading...">
+					<codemirror ref="tomoCmCode"
+								:value="address.code"
+								:options="{mode:'application/ld+json',styleActiveLine:false}" />
+					</no-ssr>
 				</b-form-group>
 			</b-tab>
 			<b-tab
@@ -168,14 +164,13 @@
 	</section>
 </template>
 <script>
-  import mixin from '~/plugins/mixin'
-  import TableTx from '~/components/TableTx'
-  import TableTokensByAccount from '~/components/TableTokensByAccount'
-  import TableTxByAccount from '~/components/TableTxByAccount'
-  import TableEvent from '~/components/TableEvent'
-  import ReadMore from '~/components/ReadMore'
-	import VueQrcode from '@xkeshi/vue-qrcode'
-	// import Brace from 'vue-bulma-brace'
+import mixin from '~/plugins/mixin'
+import TableTx from '~/components/TableTx'
+import TableTokensByAccount from '~/components/TableTokensByAccount'
+import TableTxByAccount from '~/components/TableTxByAccount'
+import TableEvent from '~/components/TableEvent'
+import ReadMore from '~/components/ReadMore'
+import VueQrcode from '@xkeshi/vue-qrcode'
 
 export default {
     mixins: [mixin],
@@ -185,8 +180,7 @@ export default {
       TableTxByAccount,
       TableEvent,
       ReadMore,
-			VueQrcode,
-			// Brace
+			VueQrcode
     },
     head () {
       return {
@@ -197,6 +191,13 @@ export default {
       usdPrice () {
         return this.$store.state.app.usdPrice
       },
+			codemirror() {
+				return [
+					this.$refs.tomoCmSourceCode.codemirror,
+					this.$refs.tomoCmAbiCode.codemirror,
+					this.$refs.tomoCmCode.codemirror
+				]
+			}
     },
     data: () => ({
       hash: null,
@@ -226,7 +227,7 @@ export default {
 
       self.getAccountFromApi()
       self.getUSDPrice()
-    },
+		},
     methods: {
       async getAccountFromApi () {
 				let self = this
@@ -243,6 +244,15 @@ export default {
         let self = this
 
         self.$store.dispatch('app/getUSDPrice')
+			},
+			refreshCodemirror () {
+					this.$nextTick(() => {
+						for (const $ref in this.$refs) {
+							if (this.$refs[$ref].hasOwnProperty('codemirror')) {
+								this.$refs[$ref].codemirror.refresh()
+							}
+						}
+				})
 			}
     },
   }
