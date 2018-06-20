@@ -132,9 +132,11 @@
 
 					<b-form-group>
 						<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
+						.form
 						 <no-ssr placeholder="Codemirror Loading...">
 							<codemirror ref="tomoCmSourceCode"
-								:value="smartContract.sourceCode" />
+								:value="smartContract.sourceCode"
+								@gutterClick="onGutterClick" />
 						 </no-ssr>
 					</b-form-group>
 

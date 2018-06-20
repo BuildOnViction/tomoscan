@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import VueCodemirror from 'vue-codemirror'
+import VueCodeMirror from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
 import 'codemirror/theme/eclipse.css'
 
@@ -37,7 +37,7 @@ import 'codemirror/addon/fold/indent-fold.js'
 import 'codemirror/addon/fold/markdown-fold.js'
 import 'codemirror/addon/fold/xml-fold.js'
 
-Vue.use(VueCodemirror, {
+Vue.use(VueCodeMirror, {
   options: {
     readOnly: true,
     tabSize: 4,
