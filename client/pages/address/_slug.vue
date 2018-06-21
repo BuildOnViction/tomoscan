@@ -132,12 +132,12 @@
 
 					<b-form-group>
 						<label>Contract Source Code<i class="fa fa-code ml-1"></i></label>
-						<div class="code-actions">
+						<div class="code-actions" id="code-actions--source">
 							<button class="btn btn-sm mr-2 code-actions__copy"
 								v-clipboard="smartContract.sourceCode"
 								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
 							<button class="btn btn-sm code-actions__toggle"
-								id="btn-source-code" data-mode="light"
+								data-mode="light"
 								@click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
 						</div>
 						 <no-ssr placeholder="Codemirror Loading...">
@@ -148,9 +148,9 @@
 
 					<b-form-group>
 						<label>Contract ABI<i class="fa fa-cogs ml-1"></i></label>
-						<div class="code-actions">
+						<div class="code-actions" id="code-actions--abi">
 							<button class="btn btn-sm mr-2 code-actions__copy"
-								v-clipboard="smartContract.sourceCode"
+								v-clipboard="smartContract.abiCode"
 								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
 							<button class="btn btn-sm code-actions__toggle"
 								id="btn-abi-code" data-mode="light"
@@ -164,10 +164,11 @@
 					</b-form-group>
 				</section>
 
-				<b-form-group label="Contract Creation Code">
-						<div class="code-actions">
+				<b-form-group>
+						<label>Contract Creation Code</label>
+						<div class="code-actions" id="code-actions--creation">
 							<button class="btn btn-sm mr-2 code-actions__copy"
-								v-clipboard="smartContract.sourceCode"
+								v-clipboard="address.code"
 								@success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
 							<button class="btn btn-sm code-actions__toggle"
 								id="btn-code" data-mode="light"
@@ -278,28 +279,43 @@ export default {
 						}
 				})
 			},
-			copyCode () {
-				document.execCommand('copy')
-				this.$toast.show('Source code copied to clipboard')
+			copyCode (e) {
+				let id = e.trigger.parentNode.id
+				let msg = ''
+				
+				if (id == 'code-actions--source') {
+					msg = 'Source code copied to clipboard'
+				}
+
+				if (id == 'code-actions--abi') {
+					msg = 'ABI code copied to clipboard'
+				}
+
+				if (id == 'code-actions--creation') {
+					msg = 'Contract creation code copied to clipboard'
+				}
+
+				this.$toast.show(msg)
 			},
 			toggleMode (e) {
-				let id = e.target.id
+				let id = e.target.parentNode.id
 				let mode = e.target.getAttribute('data-mode')
 				let theme = mode == 'light' ? 'base16-dark' : 'eclipse'
 
-				if (id == 'btn-source-code') {
+				if (id == 'code-actions--source') {
 					this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
 				}
 
-				if (id == 'btn-abi-code') {
+				if (id == 'code-actions--abi') {
 					this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
 				}
 
-				if (id == 'btn-code') {
+				if (id == 'code-actions--creation') {
 					this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
 				}
 
-				mode = 'light' ? 'dark' : 'light'
+				e.target.innerHTML = (mode == 'light') ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
+				mode = (mode == 'light') ? 'dark' : 'light'
 				e.target.setAttribute('data-mode', mode)
 			}
     },
