@@ -95,7 +95,7 @@
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
 										<i v-if="! stats" class="tomo-loading"></i>
-										<span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
+										<span v-else>{{ formatNumber(stats.lastBlock.number) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
 							</div>
