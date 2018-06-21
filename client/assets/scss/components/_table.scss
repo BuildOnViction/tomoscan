@@ -43,6 +43,7 @@
   
       @include media-breakpoint-up(lg) {
         display: grid;
+        align-items: center;
         grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
       }
 
