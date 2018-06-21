@@ -8,7 +8,6 @@ export const paginate = async (
   let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
   perPage = Math.min(25, perPage)
   let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-  page = page > 2000 ? 2000 : page
 
   params.query = params.hasOwnProperty('query') ? params.query : {}
   params.sort = params.hasOwnProperty('sort') ? params.sort : {}
@@ -18,7 +17,7 @@ export const paginate = async (
   let count = await mongoose.model(model_name).find(params.query).count()
   let total = params.total ? params.total : count
   let pages = Math.ceil(total / perPage)
-  pages = Math.min(2000, pages)
+
   let builder = mongoose.model(model_name).
     find(params.query).
     sort(params.sort)
