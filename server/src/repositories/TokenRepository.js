@@ -73,8 +73,9 @@ let TokenRepository = {
       return token
     }
     catch (e) {
+      console.trace(e)
       console.log(e)
-      throw e
+      return null
     }
   },
 

@@ -18,8 +18,9 @@ TokenController.get('/tokens', async (req, res) => {
     return res.json(data)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -36,8 +37,9 @@ TokenController.get('/tokens/:slug', async (req, res) => {
     res.json(token)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 

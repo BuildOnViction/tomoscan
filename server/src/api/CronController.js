@@ -12,8 +12,9 @@ CronController.get('/cron/blocks', async (req, res) => {
     return res.json({blocks: blocks})
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -25,8 +26,9 @@ CronController.get('/cron/blocks/:slug', async (req, res) => {
     return res.json(result)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -37,8 +39,9 @@ CronController.get('/cron/txs', async (req, res) => {
     return res.json({txs: txs})
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -49,8 +52,9 @@ CronController.get('/cron/txs/pending', async (req, res) => {
     return res.json({txs: txs})
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -61,8 +65,9 @@ CronController.get('/cron/accounts', async (req, res) => {
     return res.json({accounts: accounts})
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -73,8 +78,9 @@ CronController.get('/cron/tokens', async (req, res) => {
     return res.json({tokens: tokens})
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 

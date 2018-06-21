@@ -8,50 +8,55 @@ import Contract from '../models/Contract'
 
 let AccountRepository = {
   async updateAccount (hash) {
-    if (!hash || hash === 'new contract') {
-      return false
-    }
-
-    hash = hash.toLowerCase()
-    let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
-    _account = _account ? _account : {}
-
-    let web3 = await Web3Util.getWeb3()
-
-    let balance = await web3.eth.getBalance(hash)
-    if (_account.balance !== balance) {
-      _account.balance = balance
-      _account.balanceNumber = balance
-    }
-
-    let txCountTo = await Tx.find({to: hash}).count()
-    let txCountFrom = await web3.eth.getTransactionCount(hash)
-    let txCount = txCountTo + txCountFrom
-    if (_account.transactionCount !== txCount) {
-      _account.transactionCount = txCount
-    }
-
-    let code = await web3.eth.getCode(hash)
-    if (_account.code !== code) {
-      _account.code = code
-
-      let isToken = await TokenRepository.checkIsToken(code)
-      if (isToken) {
-        // Insert token pending.
-        TokenRepository.addTokenPending(hash)
+      try{
+      if (!hash || hash === 'new contract') {
+        return false
       }
-      _account.isToken = isToken
+
+      hash = hash.toLowerCase()
+      let _account = await Account.findOne({hash: hash, nonce: {$exists: true}})
+      _account = _account ? _account : {}
+
+      let web3 = await Web3Util.getWeb3()
+
+      let balance = await web3.eth.getBalance(hash)
+      if (_account.balance !== balance) {
+        _account.balance = balance
+        _account.balanceNumber = balance
+      }
+
+      let txCountTo = await Tx.find({to: hash}).count()
+      let txCountFrom = await web3.eth.getTransactionCount(hash)
+      let txCount = txCountTo + txCountFrom
+      if (_account.transactionCount !== txCount) {
+        _account.transactionCount = txCount
+      }
+
+      let code = await web3.eth.getCode(hash)
+      if (_account.code !== code) {
+        _account.code = code
+
+        let isToken = await TokenRepository.checkIsToken(code)
+        if (isToken) {
+          // Insert token pending.
+          TokenRepository.addTokenPending(hash)
+        }
+        _account.isToken = isToken
+      }
+
+      _account.isContract = (_account.code !== '0x')
+      _account.status = true
+
+      delete _account['_id']
+
+      let account = await Account.findOneAndUpdate({hash: hash}, _account,
+        {upsert: true, new: true}).lean()
+
+      return account
+    } catch(e) {
+      console.trace(e)
+      throw e
     }
-
-    _account.isContract = (_account.code !== '0x')
-    _account.status = true
-
-    delete _account['_id']
-
-    let account = await Account.findOneAndUpdate({hash: hash}, _account,
-      {upsert: true, new: true}).lean()
-
-    return account
   },
 
   async addAccountPending (hash) {
@@ -95,20 +100,25 @@ let AccountRepository = {
   },
 
   async getCode (hash) {
-    if (!hash)
+    try {
+      if (!hash)
       return
 
-    let code = ''
-    let account = await Account.findOne({hash: hash})
-    if (!account) {
-      let web3 = await Web3Util.getWeb3()
-      code = await web3.eth.getCode(hash)
-    }
-    else {
-      code = account.code
-    }
+      let code = ''
+      let account = await Account.findOne({hash: hash})
+      if (!account) {
+        let web3 = await Web3Util.getWeb3()
+        code = await web3.eth.getCode(hash)
+      }
+      else {
+        code = account.code
+      }
 
-    return code
+      return code
+    } catch(e) {
+      console.trace(e)
+      throw e
+    }
   },
 }
 

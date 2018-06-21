@@ -31,8 +31,8 @@ let TxRepository = {
         {upsert: true, new: true})
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return null
     }
   },
 
@@ -41,16 +41,13 @@ let TxRepository = {
       if (!hash) {
         return false
       }
-      let tx = await
-        Tx.findOne({hash: hash})
-      let web3 = await
-        Web3Util.getWeb3()
+      let tx = await Tx.findOne({hash: hash})
+      let web3 = await Web3Util.getWeb3()
       if (!tx) {
         tx = {}
         tx.hash = hash
       }
-      let receipt = await
-        web3.eth.getTransactionReceipt(hash)
+      let receipt = await web3.eth.getTransactionReceipt(hash)
 
       if (!receipt) {
         return false
@@ -58,27 +55,24 @@ let TxRepository = {
 
       if (tx.from !== null) {
         tx.from = tx.from.toLowerCase()
-        tx.from_model = await
-          AccountRepository.addAccountPending(tx.from)
+        tx.from_model = await AccountRepository.addAccountPending(tx.from)
       }
       if (tx.to !== null) {
         tx.to = tx.to.toLowerCase()
-        tx.to_model = await
-          AccountRepository.addAccountPending(tx.to)
+        tx.to_model = await AccountRepository.addAccountPending(tx.to)
       }
       else {
         if (receipt && typeof receipt.contractAddress !== 'undefined') {
           let contractAddress = receipt.contractAddress.toLowerCase()
           tx.contractAddress = contractAddress
-          tx.to_model = await
-            Account.findOneAndUpdate(
-              {hash: contractAddress},
-              {
-                hash: contractAddress,
-                contractCreation: tx.from,
-                isContract: true,
-              },
-              {upsert: true, new: true})
+          tx.to_model = await Account.findOneAndUpdate(
+            {hash: contractAddress},
+            {
+              hash: contractAddress,
+              contractCreation: tx.from,
+              isContract: true,
+            },
+            {upsert: true, new: true})
         }
       }
 
@@ -87,8 +81,7 @@ let TxRepository = {
       if (receipt.blockNumber) {
         tx.blockNumber = receipt.blockNumber
         // Find block.
-        let block = await
-          Block.findOne({number: receipt.blockNumber})
+        let block = await Block.findOne({number: receipt.blockNumber})
         if (block) {
           tx.block = block
         }
@@ -109,15 +102,14 @@ let TxRepository = {
 
       delete tx['_id']
 
-      tx = await
-        Tx.findOneAndUpdate({hash: hash}, tx,
-          {upsert: true, new: true})
+      tx = await Tx.findOneAndUpdate({hash: hash}, tx,
+        {upsert: true, new: true})
 
       return tx
     }
     catch (e) {
-      console.log(e)
-      throw e
+      console.trace(e)
+      return null
     }
   },
 

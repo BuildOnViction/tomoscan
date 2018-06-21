@@ -3,6 +3,7 @@ import Block from '../models/Block'
 import Account from '../models/Account'
 import Token from '../models/Token'
 import axios from 'axios'
+import Contract from '../models/Contract'
 
 const SettingController = Router()
 
@@ -10,9 +11,9 @@ SettingController.get('/setting', async (req, res, next) => {
   try {
     // Get total blocks in db.
     let totalBlock = await Block.find().count()
-    let totalAddress = await Account.find().count()
-    let totalToken = await Token.find().count()
-    let totalSmartContract = await Account.find({isContract: true}).count()
+    let totalAddress = await Account.find({status: true}).count()
+    let totalToken = await Token.find({status: true}).count()
+    let totalSmartContract = await Contract.find().count()
     let lastBlock = await Block.findOne().sort({number: -1})
 
     return res.json(
@@ -22,8 +23,9 @@ SettingController.get('/setting', async (req, res, next) => {
       })
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -35,8 +37,9 @@ SettingController.get('/setting/usd', async (req, res, next) => {
     return res.json(data)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 

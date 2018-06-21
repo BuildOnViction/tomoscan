@@ -20,28 +20,32 @@ AccountController.get('/accounts', async (req, res) => {
     return res.json(data)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
 AccountController.get('/accounts/:slug', async (req, res) => {
   try {
-    let hash = req.params.slug.toLowerCase()
+    let hash = req.params.slug
+    hash = hash.toLowerCase()
     let account = await AccountRepository.updateAccount(hash)
     account = await AccountRepository.formatItem(account)
 
     return res.json(account)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
 AccountController.get('/accounts/:slug/mined', async (req, res) => {
   try {
-    let hash = req.params.slug.toLowerCase()
+    let hash = req.params.slug
+    hash = hash.toLowerCase()
     let params = {}
     if (hash) {
       params.query = {signer: hash}
@@ -52,8 +56,9 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
     return res.json(data)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 

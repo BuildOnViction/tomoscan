@@ -82,8 +82,8 @@ server.listen(app.get('port'), async () => {
     console.log('Express server listening on port ' + app.get('port'))
   }
   catch (e) {
-    console.log(e)
-    throw e
+    console.trace(e)
+    return null
   }
 })
 

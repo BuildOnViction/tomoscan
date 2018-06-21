@@ -15,61 +15,66 @@ dotenv.load()
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let watch = async () => {
-  while (true) {
-    let crawls = await Crawl.find({crawl: false}).limit(100)
-    if (crawls.length) {
-      for (let j = 0; j < crawls.length; j++) {
-        let crawl = crawls[j]
-        switch (crawl.type) {
-          case 'block':
-            await BlockRepository.addBlockByNumber(crawl.data)
-            break
-          case 'tx':
-            await TxRepository.getTxPending(crawl.data)
-            await TxRepository.getTxReceipt(crawl.data)
-            break
-          case 'address':
-            await AccountRepository.updateAccount(crawl.data)
-            break
-          case 'token':
-            await TokenRepository.updateToken(crawl.data)
-            break
-        }
+  try {
+    while (true) {
+      let crawls = await Crawl.find({crawl: false}).limit(100)
+      if (crawls.length) {
+        for (let j = 0; j < crawls.length; j++) {
+          let crawl = crawls[j]
+          switch (crawl.type) {
+            case 'block':
+              await BlockRepository.addBlockByNumber(crawl.data)
+              break
+            case 'tx':
+              await TxRepository.getTxPending(crawl.data)
+              await TxRepository.getTxReceipt(crawl.data)
+              break
+            case 'address':
+              await AccountRepository.updateAccount(crawl.data)
+              break
+            case 'token':
+              await TokenRepository.updateToken(crawl.data)
+              break
+          }
 
-        crawl.crawl = true
-        crawl.save()
+          crawl.crawl = true
+          crawl.save()
 
-        if (process.env.APP_ENV === 'dev') {
-          console.log('--- Crawl data: ' + JSON.stringify(crawl))
+          if (process.env.APP_ENV === 'dev') {
+            console.log('--- Crawl data: ' + JSON.stringify(crawl))
+          }
         }
       }
-    }
 
-    let web3 = await Web3Util.getWeb3()
-    let max_block_num = await web3.eth.getBlockNumber()
-    let min_block_crawl = await Setting.findOne({meta_key: 'min_block_crawl'})
-    min_block_crawl = min_block_crawl ? min_block_crawl.meta_value : 0
-    min_block_crawl = parseInt(min_block_crawl)
-    if (min_block_crawl < max_block_num) {
-      let next_crawl = min_block_crawl + 20
-      next_crawl = next_crawl < max_block_num ? next_crawl : max_block_num
-      for (let i = min_block_crawl; i <= next_crawl; i++) {
-        await CrawlRepository.add('block', i)
+      let web3 = await Web3Util.getWeb3()
+      let max_block_num = await web3.eth.getBlockNumber()
+      let min_block_crawl = await Setting.findOne({meta_key: 'min_block_crawl'})
+      min_block_crawl = min_block_crawl ? min_block_crawl.meta_value : 0
+      min_block_crawl = parseInt(min_block_crawl)
+      if (min_block_crawl < max_block_num) {
+        let next_crawl = min_block_crawl + 20
+        next_crawl = next_crawl < max_block_num ? next_crawl : max_block_num
+        for (let i = min_block_crawl; i <= next_crawl; i++) {
+          await CrawlRepository.add('block', i)
 
-        let setting = await Setting.findOne({meta_key: 'min_block_crawl'})
-        if (!setting) {
-          setting = new Setting
-          setting.meta_key = 'min_block_crawl'
-          setting.meta_value = 0
+          let setting = await Setting.findOne({meta_key: 'min_block_crawl'})
+          if (!setting) {
+            setting = new Setting
+            setting.meta_key = 'min_block_crawl'
+            setting.meta_value = 0
+          }
+          if (i >= parseInt(setting.meta_value)) {
+            setting.meta_value = i
+          }
+          await setting.save()
         }
-        if (i >= parseInt(setting.meta_value)) {
-          setting.meta_value = i
-        }
-        await setting.save()
       }
-    }
 
-    await sleep(500)
+      await sleep(500)
+    }
+  } catch(e) {
+    console.trace(e)
+    console.log(e)
   }
 }
 
@@ -91,6 +96,7 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
           text: e,
         })
       }
+      console.trace(e)
       console.log(e)
     }
   }

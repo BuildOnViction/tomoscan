@@ -63,8 +63,9 @@ BlockController.get('/blocks', async (req, res, next) => {
     })
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
@@ -88,8 +89,9 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     return res.json(block)
   }
   catch (e) {
+    console.trace(e)
     console.log(e)
-    throw e
+    return res.status(500).send()
   }
 })
 
