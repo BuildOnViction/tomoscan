@@ -48,13 +48,13 @@
       color: $color-text;
       background-color: $white;
       height: 30px;
-      width: 30px;
+      min-width: 30px;
       line-height: 30px;
-      border-radius: 50%;
+      border-radius: 30px;
       text-align: center;
       box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
       border: 0px;
-      padding: 0;
+      padding: 0 5px;
 
       &:hover {
         color: $white;

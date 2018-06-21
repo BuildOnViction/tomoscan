@@ -1,7 +1,8 @@
 import axios from 'axios'
+import Web3Util from '../helpers/web3'
+import Tx from '../models/Tx'
 import Contract from '../models/Contract'
 import ContractEvent from '../models/ContractEvent'
-import _ from 'lodash'
 
 let ContractRepository = {
   async getVersions () {
@@ -15,6 +16,12 @@ let ContractRepository = {
   async insertOrUpdate (
     contractName, contractAddress, releaseVersion, sourceCode, optimization,
     ouput) {
+
+    let web3 = await Web3Util.getWeb3()
+    let txCountTo = await Tx.find({to: contractAddress}).count()
+    let txCountFrom = await web3.eth.getTransactionCount(contractAddress)
+    let txCount = txCountTo + txCountFrom
+
     let update = {
       hash: contractAddress,
       contractName: contractName,
@@ -25,6 +32,7 @@ let ContractRepository = {
       opcodes: ouput.contracts[':' + contractName].opcodes,
       bytecode: ouput.contracts[':' + contractName].bytecode,
       optimization: optimization,
+      txCount: txCount
     }
 
     return await Contract.findOneAndUpdate({hash: contractAddress},

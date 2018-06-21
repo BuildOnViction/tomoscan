@@ -14,7 +14,7 @@ const ContractController = Router()
 ContractController.get('/contracts', async (req, res, next) => {
   try {
     let data = await paginate(req, 'Contract',
-      {query: {}})
+      {query: {}, sort: {createdAt: -1}})
 
     return res.json(data)
   }
@@ -82,11 +82,13 @@ ContractController.post('/contracts', async (req, res, next) => {
 
         let runtimeBytecode = '0x' +
           output.contracts[':' + contractName].runtimeBytecode
+
         if (md5(runtimeBytecode.slice(0, -100)) !==
           md5(originalCode.slice(0, -100))) {
           return res.json({errors: [
             `Contract names found: ${contracts.join(', ')}`,
-            'Bytecode runtime invalid!'
+            'Bytecode runtime invalid!',
+            `Tips: Try to ${req.body.optimization ? 'disable' : 'enable'} the 'Optimization' option`
           ]})
         }
 

@@ -1,0 +1,21 @@
+.code-actions {
+  margin-bottom: 15px;
+
+  .btn {
+    background-color: #dddddd;
+  }
+
+  .btn:focus {
+    outline: none;
+    box-shadow: none;
+  }
+
+  + .vue-codemirror {
+    clear: both;
+  }
+
+  @include media-breakpoint-up(sm) {
+    margin-top: -10px;
+    float: right;
+  }
+}

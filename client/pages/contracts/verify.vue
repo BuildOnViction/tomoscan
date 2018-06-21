@@ -14,9 +14,9 @@
       </div>
 			<div class="tomo-card__body">
 
-				<div class="alert alert-danger" v-if="errors.length">
-					<p v-for="error in errors">{{ error }}</p>
-				</div>
+				<ul class="alert alert-danger" v-if="errors.length">
+					<li v-for="error in errors">{{ error }}</li>
+				</ul>
 
 				<form
           novalidate
@@ -97,7 +97,7 @@
         contractAddress: '',
         contractName: '',
         compiler: '',
-        optimization: 1,
+        optimization: 0,
         solidityCode: '',
         errors: [],
         loadingForm: false,
@@ -169,6 +169,7 @@
           contractName: self.contractName,
           sourceCode: self.solidityCode,
           version: self.compiler,
+          optimization: self.optimization,
         }
 
         self.errors = []

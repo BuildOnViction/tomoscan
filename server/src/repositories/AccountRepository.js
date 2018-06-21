@@ -8,7 +8,7 @@ import Contract from '../models/Contract'
 
 let AccountRepository = {
   async updateAccount (hash) {
-    try {
+      try{
       if (!hash || hash === 'new contract') {
         return false
       }
@@ -26,7 +26,7 @@ let AccountRepository = {
       }
 
       let txCountTo = await Tx.find({to: hash}).count()
-      let txCountFrom = 0//await web3.eth.getTransactionCount(hash)
+      let txCountFrom = await web3.eth.getTransactionCount(hash)
       let txCount = txCountTo + txCountFrom
       if (_account.transactionCount !== txCount) {
         _account.transactionCount = txCount
@@ -44,7 +44,7 @@ let AccountRepository = {
         _account.isToken = isToken
       }
 
-      _account.isContract = (_account.code !== '0x') ? true : false
+      _account.isContract = (_account.code !== '0x')
       _account.status = true
 
       delete _account['_id']
@@ -102,7 +102,7 @@ let AccountRepository = {
   async getCode (hash) {
     try {
       if (!hash)
-        return
+      return
 
       let code = ''
       let account = await Account.findOne({hash: hash})
@@ -117,8 +117,7 @@ let AccountRepository = {
       return code
     } catch(e) {
       console.trace(e)
-      console.log(e)
-      return null
+      throw e
     }
   },
 }

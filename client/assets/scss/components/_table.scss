@@ -446,3 +446,59 @@
     }
   }
 }
+
+.tomo-table--verified-contract {
+  margin-bottom: 20px;
+  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
+
+  td {
+    display: block;
+
+    &:first-child {
+      color: black;
+    }
+  }
+
+  tbody {
+    display: block;
+    border-radius: 10px;
+    padding-left: 30px;
+    padding-right: 30px;
+    background-color: #fff;
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 100%;
+    }
+  }
+
+  tbody tr {
+    box-shadow: none;
+    margin-bottom: 0;
+    border-radius: 0;
+    border-bottom: 1px solid #dddddd;
+    padding-left: 0;
+    padding-right: 0;
+
+    &:last-child {
+      border: none;
+    }
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 40% auto;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 30% auto;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      grid-template-columns: 20% auto;
+    }
+  }
+
+  @include media-breakpoint-up(sm) {
+
+    border-collapse: collapse;
+    border-radius: 10px;
+  }
+}
