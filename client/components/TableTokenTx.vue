@@ -123,13 +123,7 @@
       let self = this
       // Init from router.
       let query = self.$route.query
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
-
+      
       if (query.address) {
         self.address = query.address
       }
@@ -147,8 +141,6 @@
           page: self.currentPage,
           limit: self.perPage,
         }
-
-        this.$router.replace({query: params})
 
         if (self.token) {
           params.token = self.token

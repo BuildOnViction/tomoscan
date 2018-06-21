@@ -76,16 +76,6 @@
       pages: 1,
     }),
     async mounted () {
-      let self = this
-      // Init from router.
-      let query = self.$route.query
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
-
       this.getDataFromApi()
     },
     methods: {
@@ -99,8 +89,6 @@
           page: self.currentPage,
           limit: self.perPage,
         }
-
-        this.$router.replace({query: params})
 
         let hash = this.$route.params.slug
 

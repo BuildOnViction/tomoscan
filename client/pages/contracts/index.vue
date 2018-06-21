@@ -103,8 +103,6 @@
           limit: self.perPage,
         }
 
-        this.$router.replace({query: params})
-
         if (self.address) {
           params.address = self.address
         }

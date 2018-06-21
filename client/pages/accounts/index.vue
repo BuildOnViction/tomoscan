@@ -88,16 +88,6 @@
       // Init breadcrumbs data.
       this.$store.commit('breadcrumb/setItems', {name: 'accounts', to: {name: 'accounts'}})
 
-      // Get query data.
-      let query = self.$route.query
-
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
-
       await self.getDataFromApi()
     },
     methods: {
@@ -111,7 +101,6 @@
           page: self.currentPage,
           limit: self.perPage,
         }
-        this.$router.replace({query: params})
 
         let query = this.serializeQuery(params)
         let {data} = await this.$axios.get('/api/accounts' + '?' + query)
