@@ -72,7 +72,7 @@
           contractName: {label: 'ContractName'},
           compiler: {label: 'Compiler'},
           balance: {label: 'Balance'},
-          txCount: {label: 'txCount'},
+          txCount: {label: 'TxCount'},
           createdAt: {label: 'Date Verified'},
         },
         loading: true,

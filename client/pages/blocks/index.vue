@@ -36,7 +36,9 @@
       </template>
 
 			<template slot="miner" slot-scope="props">
+        <span v-if="props.item.signer == 'new contract'">{{ props.item.signer }}</span>
         <nuxt-link
+          v-else
           class="text-truncate"
           :to="{name: 'address-slug', params: {slug: props.item.signer}}">{{ props.item.signer }}</nuxt-link>
 			</template>
