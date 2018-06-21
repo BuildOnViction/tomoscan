@@ -203,6 +203,7 @@
       self.$store.dispatch('user/getCachedUser')
 
       if (self.isHomePage) {
+				console.log('a')
         self.getStats()
       }
     },

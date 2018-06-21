@@ -67,13 +67,13 @@ export const toAddress = (text, length) => {
 
   var end = '…'
 
-  if (text == undefined)
-    return 'new contract'
-  if (text === null)
-    return 'new contract'
+  if (text == undefined || text === null) {
+    return '0x0000000000000000000000000000000000000000'
+  }
 
-  if (length >= String(text).length)
+  if (length >= String(text).length) {
     end = ''
+  }
 
   var prefix = ''
   if (String(text).substring(0, 2) != '0x')
