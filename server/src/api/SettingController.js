@@ -18,8 +18,7 @@ SettingController.get('/setting', async (req, res, next) => {
 
     return res.json(
       {
-        lastBlock,
-        stats: {totalBlock, totalAddress, totalToken, totalSmartContract},
+        stats: {totalBlock, totalAddress, totalToken, totalSmartContract, lastBlock},
       })
   }
   catch (e) {
