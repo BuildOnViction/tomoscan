@@ -21,14 +21,11 @@ const mixin = {
       return [].concat.apply([], query).join('&')
     },
 
-    formatNumber: (number, fixed) => {
+    formatNumber: (number) => {
       let seps = number.toString().split('.')
-      if (fixed > 0) {
-        seps = parseFloat(number).toFixed(fixed).toString().split('.')
-      }
       seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
-      return seps.join('.') + (fixed > 0 ? '...' : '')
+      return seps.join('.')
     },
 
     toLongNumberString: (n) => {
@@ -52,10 +49,11 @@ const mixin = {
       return str + str2
     },
 
-    toEther: (wei, fixed) => {
-      if (!wei) {
-        return ''
+    toEther: (wei) => {
+      if (isNaN(wei)) {
+        return '0'
       }
+
       if (typeof(wei) !== 'string') {
         wei = wei.toString()
       }
@@ -65,16 +63,15 @@ const mixin = {
       
       let wei_number = new BigNumber(wei)
       let sfx = ''
-      let convert = 'ether'
-      let divided = 1000000000000000000
-      if (wei_number.gte(1000000000000000000000000000000)) {
+      let divided = 10 ** 18
+      if (wei_number.gte(10 ** 30)) {
         sfx = '<strong>T</strong>'
-        divided = 1000000000000000000000000000000
+        divided = 10 ** 30
       }
 
-      return mixin.methods.formatNumber(
-        wei_number.dividedBy(divided).toString(), fixed) +
-        ' ' + sfx
+      wei_number = wei_number.dividedBy(divided).toString()
+
+      return mixin.methods.formatNumber(wei_number) + ' ' + sfx
     },
 
     toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
