@@ -263,7 +263,7 @@ export default {
         self.address = data
 				self.smartContract = data.contract
 				
-        self.loading = false
+				self.loading = false
       },
       async getUSDPrice () {
         let self = this

@@ -20,6 +20,8 @@ import'codemirror/addon/scroll/simplescrollbars.css'
 
 // highlightSelectionMatches
 import'codemirror/addon/search/match-highlighter.js'
+import'codemirror/addon/search/matchesonscrollbar.css'
+import'codemirror/addon/search/matchesonscrollbar.js'
 
 // keyMap
 import'codemirror/addon/edit/matchbrackets.js'
