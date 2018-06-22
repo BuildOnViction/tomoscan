@@ -119,8 +119,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
     let contractEvents = abiObject.filter((item) => item.type === 'event')
 
     let web3 = await Web3Util.getWeb3()
-    let web3Contract = new web3.eth.Contract(abiObject,
-      contract.hash)
+    let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
     let pastEvents = await ContractEvent.find(
       {address: hash}).
@@ -165,6 +164,50 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
     return res.json(events)
   }
   catch (e) {
+    console.trace(e)
+    console.log(e)
+    return res.status(500).send()
+  }
+})
+
+ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
+  try {
+    let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
+    let contract = await Contract.findOne({hash: hash})
+
+    if (!contract) {
+      return res.status(404).send()
+    }
+
+    let abiObject = JSON.parse(contract.abiCode)
+    let contractFunctions = abiObject.filter((item) => 
+      (item.type === 'function') &&
+      (item.stateMutability !== 'nonpayable') &&
+      (item.stateMutability !== 'payable'))
+
+    let web3 = await Web3Util.getWeb3()
+    let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+    let results = []
+
+    if (contractFunctions.length) {
+      for (let i = 0; i < contractFunctions.length; i++) {
+        let func = contractFunctions[i]
+        
+        if (func.constant && !func.inputs.length) {
+          var funcNameToCall = 'web3Contract.methods.' + func.name + '()'
+          funcNameToCall += '.call()'
+
+          let rs = await eval(funcNameToCall)
+          func.result = rs
+        }
+
+        results.push(func)
+      }
+    }
+
+    return res.json(results)
+  } catch (e) {
     console.trace(e)
     console.log(e)
     return res.status(500).send()
