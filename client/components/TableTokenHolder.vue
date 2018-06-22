@@ -71,16 +71,6 @@
       pages: 1,
     }),
     async mounted () {
-      let self = this
-      // Init from router.
-      let query = self.$route.query
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
-
       this.getDataFromApi()
     },
     methods: {
@@ -89,13 +79,6 @@
 
         // Show loading.
         self.loading = true
-
-        let params = {
-          page: self.currentPage,
-          limit: self.perPage,
-        }
-
-        this.$router.replace({query: params})
 
         if (self.address) {
           params.address = self.address

@@ -154,12 +154,7 @@
 
       // Init from router.
       let query = self.$route.query
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
+
       if (self.block) {
         self.blockNumber = self.block
       }
@@ -167,7 +162,7 @@
         self.blockNumber = query.block
       }
 
-      this.getDataFromApi()
+      self.getDataFromApi()
     },
     methods: {
       async getDataFromApi () {
@@ -186,8 +181,6 @@
         if (self.type) {
           params.type = self.type
         }
-
-        this.$router.replace({query: params})
 
         if (self.address) {
           params.address = self.address

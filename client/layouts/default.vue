@@ -95,7 +95,7 @@
 								<div class="tomo-stat__item">
 									<nuxt-link :to="{name: 'blocks'}">
 										<i v-if="! stats" class="tomo-loading"></i>
-										<span v-else>{{ formatNumber(stats.lastBlock.number) }}&nbsp;Blocks</span>
+										<span v-else>{{ formatNumber(stats.lastBlock.number + 1) }}&nbsp;Blocks</span>
 									</nuxt-link>
 								</div>
 							</div>
@@ -196,7 +196,7 @@
         let name = this.$route.name
         return name ? name.indexOf(['index']) >= 0 : false
       },
-    },
+		},
     mounted () {
       let self = this
 
@@ -206,6 +206,13 @@
         self.getStats()
       }
     },
+		watch: {
+			$route (to, from) {
+				if (this.isHomePage) {
+					this.getStats()
+				}
+			}
+		},
     methods: {
 
       async onLogout () {

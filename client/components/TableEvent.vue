@@ -178,12 +178,7 @@
       let self = this
       // Init from router.
       let query = self.$route.query
-      if (query.page) {
-        self.currentPage = parseInt(query.page)
-      }
-      if (query.limit) {
-        self.perPage = parseInt(query.limit)
-      }
+      
       if (query.block) {
         self.block = query.block
       }
@@ -214,8 +209,6 @@
         if (self.tx) {
           params.tx = self.tx
         }
-
-        this.$router.replace({query: params})
 
         let query = this.serializeQuery(params)
         let {data} = await self.$axios.get('/api/logs?' + query)

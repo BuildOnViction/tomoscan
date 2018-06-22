@@ -9,6 +9,10 @@
       background-color: $color-primary;
     }
 
+    &.disabled:not([role="separator"]) .page-link {
+      background-color: #dddddd;
+    }
+
     &:first-child,
     &:nth-child(2),
     &:nth-last-child(2),
