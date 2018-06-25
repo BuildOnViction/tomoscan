@@ -195,8 +195,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
         let func = contractFunctions[i]
         
         if (func.constant && !func.inputs.length) {
-          var funcNameToCall = 'web3Contract.methods.' + func.name + '()'
-          funcNameToCall += '.call()'
+          var funcNameToCall = 'web3Contract.methods.' + func.name + '().call()'
 
           let rs = await eval(funcNameToCall)
           func.result = rs
@@ -207,6 +206,35 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
     }
 
     return res.json(results)
+  } catch (e) {
+    console.trace(e)
+    console.log(e)
+    return res.status(500).send()
+  }
+})
+
+ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
+  try {
+    let functionName = req.query.functionName
+    let strParams = req.query.strParams
+    let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
+    let contract = await Contract.findOne({hash: hash})
+    
+    if (!contract) {
+      return res.status(404).send()
+    }
+
+    let abiObject = JSON.parse(contract.abiCode)
+    let web3 = await Web3Util.getWeb3()
+    let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+
+    let funcNameToCall = 'web3Contract.methods.' + functionName + '(' + strParams + ').call()'
+
+    let result = await eval(funcNameToCall)
+
+    return res.json(result)
+
   } catch (e) {
     console.trace(e)
     console.log(e)

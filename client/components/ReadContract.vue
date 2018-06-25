@@ -4,7 +4,7 @@
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
   <div
     v-else
-    class="tomo-contract-info">
+    class="card tomo-card tomo-contract-info">
 
     <div
       v-if="data.length == 0"
@@ -50,13 +50,15 @@
               <button
                 class="btn btn-primary"
                 type="button"
-                @click="callFunction(func.name, func.name + '_' + index, 'output_' + func.name + '_' + index, func.outputs[0].type)">Call</button>
+                @click="callFunction(func.name, func.name + '_' + index, 'output_' + func.name + '_' + index, getOuputFieldTypes)">Call</button>
             </div>
             <div
               class="tomo-contract-info__outputs"
               v-if="func.outputs.length">
-              <span>
-                <em>{{ func.outputs[0].type }}</em>
+              <span
+                v-for="(output, idx2) in func.outputs"
+                :key="idx2">
+                <em>{{ output.type }}</em>
                 <span :id="'output_' + func.name + '_' + index"></span>
               </span>
             </div>
@@ -67,7 +69,9 @@
 </template>
 
 <script>
+import mixin from '~/plugins/mixin'
 export default {
+  mixins: [mixin],
   data: () => ({
     loading: true,
     data: null
@@ -80,14 +84,67 @@ export default {
       let self = this
       let hash = self.$route.params.slug
 
-      self.loading = true
+    self.loading = true
 
       let {data} = await this.$axios.get('/api/contracts/' + hash + '/read')
       self.data = data
 
       self.loading = false
     },
-    callFunction (functionName, inputElement, outputElement, outputType) {
+    async callFunction (functionName, inputElement, outputElement) {
+      let hash = this.$route.params.slug
+      let params = {
+        functionName: functionName
+      }
+
+      let strParams = ''
+      let elements = document.querySelectorAll('.' + inputElement)
+      
+      for (let i = 0; i < elements.length; i++) {
+        if (i == 0) {
+          strParams = "'" + this.add0xforAddress(elements[0].value) + "'"
+        } else {
+          strParams = strParams + ",'" + elements[i].value + "'"
+        }
+
+        if (elements[i].value == '') {
+          document.getElementsByClassName(inputElement)[0].focus();
+          alert('Input value cannot be empty');
+          return false;
+        }
+      }
+
+      params.strParams = strParams
+
+      let query = this.serializeQuery(params)
+      let {data} = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
+
+      console.log(data)
+    },
+    add0xforAddress(straddress) {
+      straddress = straddress.trim();
+      if (straddress.startsWith('0x') == false && straddress.length == 40) {
+          straddress = '0x' + straddress;
+      }
+      return straddress;
+    },
+    formatOuputs(output, outputFieldNames) {
+      let answer = ''
+
+      if(outputFieldNames.includes(';')) {
+        let res_2 = outputFieldNames.split(';')
+
+        for(let i = 0; i < output.length; i++) {
+          var tmpArray = res_2[i].toString().split('|')
+          answer = answer + '&nbsp;<font color="green"><i class="fa fa-angle-double-right"></i></font> ';
+          
+          // if(res_2[i] !== null)
+        }
+      } else {
+        answer = answer + "&nbsp;<font color='green'><i class='fa  fa-angle-double-right'></i></font> ";
+      }
+
+      return answer
     }
   }
 }
