@@ -181,6 +181,9 @@
 					</no-ssr>
 				</b-form-group>
 			</b-tab>
+			<b-tab v-if="address && address.isContract && smartContract" title="Read Contract">
+				<read-contract></read-contract>
+			</b-tab>
 			<b-tab
 				:title="'Events (' + eventsCount + ')'">
 				<table-event :address="hash" :page="this"></table-event>
@@ -196,6 +199,7 @@ import TableTxByAccount from '~/components/TableTxByAccount'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
+import ReadContract from '~/components/ReadContract'
 
 export default {
     mixins: [mixin],
@@ -205,7 +209,8 @@ export default {
       TableTxByAccount,
       TableEvent,
       ReadMore,
-			VueQrcode
+			VueQrcode,
+			ReadContract
     },
     head () {
       return {
