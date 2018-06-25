@@ -30,7 +30,7 @@
                   v-model="contractAddress"
                   :class="getValidationClass('contractAddress')"
                   type="text" class="form-control" id="contractAddress" placeholder="Contract Address">
-                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.contractAddress.required">Contract Address is required</div>
+                <div class="text-danger" v-if="$v.contractAddress.$dirty && ! $v.contractAddress.required">Contract Address is required</div>
               </div>
             </div>
             <div class="col-sm-6 col-lg-3">
@@ -50,7 +50,7 @@
                   v-model="compiler"
                   :options="compilers"
                   :class="getValidationClass('compiler')"></b-form-select>
-                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.compiler.required">Compiler is required</div>
+                <div class="text-danger" v-if="$v.compiler.$dirty && ! $v.compiler.required">Compiler is required</div>
               </div>
             </div>
 					  <div class="col-sm-4 col-lg-2">
@@ -63,7 +63,7 @@
                   <option value="1">Yes</option>
                   <option value="0">No</option>
                 </select>
-                <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.optimization.required">Optimization is required</div>
+                <div class="text-danger" v-if="$v.optimization.$dirty && ! $v.optimization.required">Optimization is required</div>
               </div>
 					  </div>
 			  	</div>
@@ -74,7 +74,7 @@
               v-model="solidityCode"
               :class="getValidationClass('solidityCode')"
               id="solidityCode" cols="30" rows="10" class="form-control"></textarea>
-            <div class="text-danger" v-if="$v.contractName.$dirty && ! $v.solidityCode.required">Solidity Code is required</div>
+            <div class="text-danger" v-if="$v.solidityCode.$dirty && ! $v.solidityCode.required">Solidity Code is required</div>
           </div>
 
           <div class="form-group">
