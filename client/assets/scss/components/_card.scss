@@ -68,21 +68,15 @@
     }
 
     tr {
-      display: grid;
-      grid-template-columns: 40% auto;
-      grid-gap: 15px;
+      display: block;
       margin-bottom: 15px;
     }
-
+    
     td {
-      word-break: break-word;
+      display: block;
 
       &:first-child {
-        text-align: right;
-      }
-
-      &:last-child {
-        color: $color-text-2;
+        color: $black;
       }
     }
 
@@ -109,6 +103,10 @@
       max-width: 9rem;
 
       @include media-breakpoint-up(lg) {
+        max-width: 15rem;
+      }
+
+      @include media-breakpoint-up(xl) {
         max-width: 100%;
       }
     }
@@ -116,8 +114,24 @@
     @include media-breakpoint-up(sm) {
 
       tr {
+        display: grid;
         grid-template-columns: 30% auto;
+        grid-gap: 15px;
+        margin-bottom: 15px;
       }
+  
+      td {
+        word-break: break-word;
+  
+        &:first-child {
+          text-align: right;
+        }
+  
+        &:last-child {
+          color: $color-text-2;
+        }
+      }
+  
     }
 
     @include media-breakpoint-up(md) {
@@ -151,12 +165,6 @@
 }
 
 .tomo-card--transaction .tomo-card__table {
-
-  tr {
-    @include media-breakpoint-only(xs) {
-      grid-template-columns: 30% auto;
-    }
-  }
 
   .text-truncate {
 

@@ -68,10 +68,14 @@
 						<tr v-if="address && address.contractCreation">
 							<td>Contract Creator</td>
 							<td>
-								<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
+								<nuxt-link
+									:to="{name: 'address-slug', params: {slug: address.contractCreation}}"
+									class="text-truncate">{{ address.contractCreation }}</nuxt-link>
 								<span>&nbsp;at txns&nbsp;</span>
 								<span v-if="address.fromTxn">
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
+									<nuxt-link
+										:to="{name: 'txs-slug', params: {slug: address.fromTxn}}"
+										class="text-truncate">{{ address.fromTxn }}</nuxt-link>
 								</span>
 							</td>
 						</tr>
