@@ -15,7 +15,7 @@
 
     <div class="tomo-contract-info__title mb-3">
       <span><i class="fa fa-book mr-1"></i>Read Contract Information</span>
-      <a href="#"><i class="fa fa-refresh ml-5 mr-1"></i>Reset</a>
+      <a href="#" @click="resetInput"><i class="fa fa-refresh ml-5 mr-1"></i>Reset</a>
     </div>
 
     <table class="tomo-contract-info__table">
@@ -50,17 +50,17 @@
               <button
                 class="btn btn-primary"
                 type="button"
-                @click="callFunction(func.name, func.name + '_' + index, 'output_' + func.name + '_' + index, getOuputFieldTypes)">Call</button>
+                @click="callFunction(func.name, func.signature, func.name + '_' + index, 'output_' + func.name + '_' + index)">Call</button>
             </div>
             <div
               class="tomo-contract-info__outputs"
               v-if="func.outputs.length">
               <span
                 v-for="(output, idx2) in func.outputs"
-                :key="idx2">
-                <em>{{ output.type }}</em>
-                <span :id="'output_' + func.name + '_' + index"></span>
+                :key="idx2">{{ output.name }}<em class="ml-1">{{ output.type }}</em>
+                {{ (idx2 < func.outputs.length - 1 ) ? ',' : '' }}
               </span>
+              <span :id="'output_' + func.name + '_' + index"></span>
             </div>
           </td>
       </tr>
@@ -91,10 +91,11 @@ export default {
 
       self.loading = false
     },
-    async callFunction (functionName, inputElement, outputElement) {
+    async callFunction (functionName, signature, inputElement, outputElement) {
       let hash = this.$route.params.slug
       let params = {
-        functionName: functionName
+        functionName: functionName,
+        signature: signature
       }
 
       let strParams = ''
@@ -117,9 +118,9 @@ export default {
       params.strParams = strParams
 
       let query = this.serializeQuery(params)
-      let {data} = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
+      let output = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
 
-      console.log(data)
+      document.getElementById(outputElement).innerHTML = `<br><br> [&nbsp;<b>${functionName}</b> method response]<br>${this.formatOuputs(output.data)}<br>`
     },
     add0xforAddress(straddress) {
       straddress = straddress.trim();
@@ -128,23 +129,33 @@ export default {
       }
       return straddress;
     },
-    formatOuputs(output, outputFieldNames) {
-      let answer = ''
+    formatOuputs(output) {
+      let response = ''
 
-      if(outputFieldNames.includes(';')) {
-        let res_2 = outputFieldNames.split(';')
-
-        for(let i = 0; i < output.length; i++) {
-          var tmpArray = res_2[i].toString().split('|')
-          answer = answer + '&nbsp;<font color="green"><i class="fa fa-angle-double-right"></i></font> ';
-          
-          // if(res_2[i] !== null)
+      for (let i = 0; i < output.length; i++) {
+        response += `<i class="fa fa-angle-double-right ${output[i].name=='Error' ? 'text-danger' : 'text-success'}"></i>&nbsp;`
+        response += `<strong>${output[i].name}</strong>&nbsp;<em>${output[i].type}</em> : <span>${this.formatResult(output[i].value, output[i].type)}</span><br>`
+      }
+      return response
+    },
+    formatResult(strResult, resulttype) {
+      if (resulttype.startsWith('uint')) {
+        return this.formatNumber(strResult)
+      } else if (resulttype == 'string') {
+        return strResult
+      } else if (resulttype == 'address') {
+        if (strResult != '0x0000000000000000000000000000000000000000') {
+            return "<a href='/address/" + strResult + "'>" + strResult + "</a>"
+        } else {
+            return strResult
         }
       } else {
-        answer = answer + "&nbsp;<font color='green'><i class='fa  fa-angle-double-right'></i></font> ";
+          return strResult
       }
-
-      return answer
+    },
+    resetInput(e) {
+      e.preventDefault()
+      document.querySelectorAll('.tomo-contract-info__func input').innerHTML = ''
     }
   }
 }

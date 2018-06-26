@@ -226,8 +226,10 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
 })
 
 ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
+  let result = []
   try {
     let functionName = req.query.functionName
+    let signature = req.query.signature
     let strParams = req.query.strParams
     let hash = req.params.slug
     hash = hash ? hash.toLowerCase() : hash
@@ -241,17 +243,55 @@ ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
     let web3 = await Web3Util.getWeb3()
     let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
+    let contractFunctions = abiObject.filter((item) => 
+      (item.type === 'function') &&
+      (item.stateMutability !== 'nonpayable') &&
+      (item.stateMutability !== 'payable') && 
+      (item.name == functionName) &&
+      (item.signature) == signature)
+
     let funcNameToCall = 'web3Contract.methods.' + functionName + '(' + strParams + ').call()'
 
-    let result = await eval(funcNameToCall)
+    let rs = await eval(funcNameToCall)
+    
+    for (let i = 0; i < contractFunctions[0].outputs.length; i++) {
+      let output = contractFunctions[0].outputs[i]
+      let outputRs = output
+      let value = ''
 
-    return res.json(result)
+      if (typeof rs == 'object') {
+        value = _.get(rs, output.name)
 
+        if (value !== 'undefined') {
+          value = _.get(rs, i)
+        }
+      } else {
+        value = rs
+      }
+
+      if(output.type == 'address') {
+        if (value == 0) {
+          value = '0x0000000000000000000000000000000000000000'
+        }
+
+        value = value.toLowerCase()
+      }
+
+      outputRs.value = value
+
+      result.push(outputRs)
+    }
   } catch (e) {
     console.trace(e)
     console.log(e)
-    return res.status(500).send()
+    result.push({
+      name: 'Error',
+      type: 'string',
+      value: e.message
+    })
   }
+
+  return res.json(result)
 })
 
 export default ContractController
