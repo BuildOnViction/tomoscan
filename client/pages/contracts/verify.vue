@@ -157,7 +157,7 @@
         let self = this
         let {data} = await self.$axios.get('/api/contracts/soljsons')
 
-        self.compilers = data.map((version, i) => ({value: i, text: version}))
+        self.compilers = data.map((version, i) => ({value: i, text: version.replace('soljson-', '').replace('.js', '')}))
         self.compilers.unshift({value: '', text: '[Please select]'})
       },
 

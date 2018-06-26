@@ -6,6 +6,8 @@ import AccountRepository from '../repositories/AccountRepository'
 import Contract from '../models/Contract'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
+import Tx from '../models/Tx'
+import Account from '../models/Account'
 import ContractEvent from '../models/ContractEvent'
 import _ from 'lodash'
 
@@ -69,19 +71,29 @@ ContractController.post('/contracts', async (req, res, next) => {
         if(_.isEmpty(output.contracts)) {
           return res.json({errors: ['Unable to Verify Contract source code']})
         }
+
+        let outputContract = output.contracts[contractName]
+
+        if (typeof outputContract == 'undefined') {
+          outputContract = output.contracts[':' + contractName]
+        }
+
         // Check name valid.
-        if (typeof output.contracts[':' + contractName] === 'undefined') {
+        if (typeof outputContract === 'undefined') {
           return res.json({errors: ['Contract Name invalid!']})
         }
 
         let contracts = [];
         
         Object.keys(output.contracts).forEach(contract => {
-          contracts.push(contract.substr(1, contract.length - 1))
+          if (contract.startsWith(':')) {
+            contracts.push(contract.substr(1, contract.length - 1))
+          } else {
+            contracts.push(contract.substr(0, contract.length))
+          }
         })
 
-        let runtimeBytecode = '0x' +
-          output.contracts[':' + contractName].runtimeBytecode
+        let runtimeBytecode = '0x' + outputContract.runtimeBytecode
 
         if (md5(runtimeBytecode.slice(0, -100)) !==
           md5(originalCode.slice(0, -100))) {
