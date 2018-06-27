@@ -76,10 +76,14 @@
     methods: {
       async getDataFromApi () {
         let self = this
+        let params = {
+          page: self.currentPage,
+          limit: self.perPage,
+        }
 
         // Show loading.
         self.loading = true
-
+        
         if (self.address) {
           params.address = self.address
         }

@@ -68,10 +68,14 @@
 						<tr v-if="address && address.contractCreation">
 							<td>Contract Creator</td>
 							<td>
-								<nuxt-link :to="{name: 'address-slug', params: {slug: address.contractCreation}}">{{ address.contractCreation }}</nuxt-link>
+								<nuxt-link
+									:to="{name: 'address-slug', params: {slug: address.contractCreation}}"
+									class="text-truncate">{{ address.contractCreation }}</nuxt-link>
 								<span>&nbsp;at txns&nbsp;</span>
 								<span v-if="address.fromTxn">
-									<nuxt-link :to="{name: 'txs-slug', params: {slug: address.fromTxn}}">{{ address.fromTxn }}</nuxt-link>
+									<nuxt-link
+										:to="{name: 'txs-slug', params: {slug: address.fromTxn}}"
+										class="text-truncate">{{ address.fromTxn }}</nuxt-link>
 								</span>
 							</td>
 						</tr>
@@ -181,6 +185,9 @@
 					</no-ssr>
 				</b-form-group>
 			</b-tab>
+			<b-tab v-if="address && address.isContract && smartContract" title="Read Contract">
+				<read-contract></read-contract>
+			</b-tab>
 			<b-tab
 				:title="'Events (' + eventsCount + ')'">
 				<table-event :address="hash" :page="this"></table-event>
@@ -196,6 +203,7 @@ import TableTxByAccount from '~/components/TableTxByAccount'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
+import ReadContract from '~/components/ReadContract'
 
 export default {
     mixins: [mixin],
@@ -205,7 +213,8 @@ export default {
       TableTxByAccount,
       TableEvent,
       ReadMore,
-			VueQrcode
+			VueQrcode,
+			ReadContract
     },
     head () {
       return {
@@ -263,7 +272,7 @@ export default {
         self.address = data
 				self.smartContract = data.contract
 				
-        self.loading = false
+				self.loading = false
       },
       async getUSDPrice () {
         let self = this
