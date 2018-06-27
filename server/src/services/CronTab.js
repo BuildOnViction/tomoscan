@@ -1,17 +1,17 @@
-//import Web3Util from '../helpers/web3'
-//import Setting from '../models/Setting'
-//import _ from 'lodash'
-//import BlockRepository from '../repositories/BlockRepository'
-//import Tx from '../models/Tx'
-//import TxRepository from '../repositories/TxRepository'
-//import Account from '../models/Account'
-//import TokenRepository from '../repositories/TokenRepository'
-//import Token from '../models/Token'
-//import AccountRepository from '../repositories/AccountRepository'
+// import Web3Util from '../helpers/web3'
+// import Setting from '../models/Setting'
+// import _ from 'lodash'
+// import BlockRepository from '../repositories/BlockRepository'
+// import Tx from '../models/Tx'
+// import TxRepository from '../repositories/TxRepository'
+// import Account from '../models/Account'
+// import TokenRepository from '../repositories/TokenRepository'
+// import Token from '../models/Token'
+// import AccountRepository from '../repositories/AccountRepository'
 //
-//let cron = require('cron')
+// let cron = require('cron')
 //
-//let CronTab = {
+// let CronTab = {
 //  getBlocks: async () => {
 //    let web3 = await
 //      Web3Util.getWeb3()
@@ -224,6 +224,6 @@
 //      throw e
 //    }
 //  },
-//}
+// }
 //
-//export default CronTab
+// export default CronTab

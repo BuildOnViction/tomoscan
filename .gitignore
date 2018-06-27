@@ -3,3 +3,4 @@
 db/dev/*
 db/prod/*
 .*sw*
+.eslintcache
