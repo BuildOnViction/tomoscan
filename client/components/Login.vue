@@ -1,94 +1,127 @@
 <template>
-	<b-modal
-		:id="modalId"
-    class="tomo-modal"
-		ref="modalRegister"
-		@ok="onLogin"
-		@keydown.native.enter="onLogin"
-		title="Log in">
-		<div class="alert alert-danger" v-show="errorMessage">
-			{{ errorMessage }}
-		</div>
-		<form>
-			<div class="form-group">
-				<label class="control-label">Email:</label>
-				<input v-model="formEmail"
-				       @input="$v.formEmail.$touch()"
-				       :class="($v.formEmail.$dirty && $v.formEmail.$invalid) ? 'is-invalid' : ''"
-				       name="email" type="email" autocomplete="email" class="form-control" required placeholder="Enter email">
-				<div class="text-danger" v-if="$v.formEmail.$dirty && ! $v.formEmail.required">Email is required</div>
-				<div class="text-danger text-block" v-if="$v.formEmail.$dirty && ! $v.formEmail.email">Please enter email format</div>
-			</div>
-			<div class="form-group">
-				<label class="control-label">Password:</label>
-				<input v-model="formPassword"
-				       @input="$v.formPassword.$touch()"
-				       :class="($v.formPassword.$dirty && $v.formPassword.$invalid) ? 'is-invalid' : ''"
-				       name="password" type="password" autocomplete="new-password" class="form-control" required placeholder="Enter your password">
-				<div class="text-danger" v-if="$v.formPassword.$dirty && ! $v.formPassword.required">Password is required</div>
-				<div class="text-danger" v-if="$v.formPassword.$dirty && ! $v.formPassword.minLength">Password require min 6 characters</div>
-			</div>
-		</form>
-	</b-modal>
+    <b-modal
+        ref="modalRegister"
+        :id="modalId"
+        class="tomo-modal"
+        title="Log in"
+        @ok="validate"
+        @keydown.native.enter="validate">
+        <div
+            v-show="errorMessage"
+            class="alert alert-danger">
+            {{ errorMessage }}
+        </div>
+        <form
+            novalidate
+            @submit.prevent="validate()">
+            <div class="form-group">
+                <label class="control-label">Email:</label>
+                <input
+                    v-model="formEmail"
+                    :class="getValidationClass('formEmail')"
+                    name="email"
+                    type="email"
+                    autocomplete="email"
+                    class="form-control"
+                    placeholder="Enter email">
+                <div
+                    v-if="$v.formEmail.$dirty && ! $v.formEmail.required"
+                    class="text-danger">Email is required</div>
+                <div
+                    v-if="$v.formEmail.$dirty && ! $v.formEmail.email"
+                    class="text-danger text-block">Please enter email format</div>
+            </div>
+            <div class="form-group">
+                <label class="control-label">Password:</label>
+                <input
+                    v-model="formPassword"
+                    :class="getValidationClass('formPassword')"
+                    name="password"
+                    type="password"
+                    autocomplete="new-password"
+                    class="form-control"
+                    placeholder="Enter your password">
+                <div
+                    v-if="$v.formPassword.$dirty && ! $v.formPassword.required"
+                    class="text-danger">Password is required</div>
+                <div
+                    v-if="$v.formPassword.$dirty && ! $v.formPassword.minLength"
+                    class="text-danger">Password require min 6 characters</div>
+            </div>
+        </form>
+    </b-modal>
 </template>
 <script>
-  import { validationMixin, withParams } from 'vuelidate'
-  import { required, minLength, email } from 'vuelidate/lib/validators'
+import { validationMixin } from 'vuelidate'
+import { required, minLength, email } from 'vuelidate/lib/validators'
 
-  export default {
+export default {
     mixins: [validationMixin],
     props: {
-      modalId: String,
+        modalId: {
+            type: String,
+            default: ''
+        }
     },
     data () {
-      return {
-        formEmail: '',
-        formPassword: '',
-        errorMessage: null,
-      }
+        return {
+            formEmail: '',
+            formPassword: '',
+            errorMessage: null
+        }
     },
     validations: {
-      formEmail: {
-        required, email,
-      },
-      formPassword: {required, minLength: minLength(6)},
+        formEmail: {
+            required, email
+        },
+        formPassword: { required, minLength: minLength(6) }
     },
     methods: {
-      async onLogin (e) {
-        let self = this
-        e.preventDefault()
+        getValidationClass (fieldName) {
+            const field = this.$v[fieldName]
 
-        if (this.$v.$invalid) {
-          return
+            if (field) {
+                return field.$error ? 'is-invalid' : ''
+            }
+        },
+        validate (e) {
+            e.preventDefault()
+
+            this.$v.$touch()
+
+            if (!this.$v.$invalid) {
+                this.login()
+            }
+        },
+        async login () {
+            let self = this
+
+            const email = self.formEmail
+            const password = self.formPassword
+
+            try {
+                let { data } = self.$store.dispatch('user/login', { email, password })
+
+                if (!data) {
+                    self.errorMessage = 'Can\'t log in to your account. Please check again.'
+                } else {
+                    self.resetModal()
+                    self.$refs.modalRegister.hide()
+                }
+            } catch (e) {
+                if (e.response.status === 401) {
+                    self.errorMessage = e.response.data.message
+                }
+                if (e.response.status === 422) {
+                    self.errorMessage = e.response.data.message
+                }
+            }
+        },
+        resetModal () {
+            this.formEmail = ''
+            this.formPassword = ''
+            this.errorMessage = ''
         }
-
-        const email = self.formEmail
-        const password = self.formPassword
-
-        try {
-          let {data} = self.$store.dispatch('user/login', {email, password})
-
-          if (!data) {
-            self.errorMessage = 'Can\'t log in to your account. Please check again.'
-          } else {
-            self.resetModal()
-            self.$refs.modalRegister.hide()
-          }
-        }
-        catch (e) {
-          if (e.response.status === 401) {
-            self.errorMessage = e.response.data.message
-          }
-          if (e.response.status === 422) {
-            self.errorMessage = e.response.data.message
-          }
-        }
-      },
-      resetModal () {
-        this.formEmail = ''
-        this.formPassword = ''
-        this.errorMessage = ''
-      },
-    },
-  }
+    }
+}
 </script>

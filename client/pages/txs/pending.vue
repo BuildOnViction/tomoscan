@@ -1,21 +1,21 @@
 <template>
-	<div>
-		<table-tx :type="'pending'"></table-tx>
-	</div>
+    <div>
+        <table-tx :type="'pending'"/>
+    </div>
 </template>
 
 <script>
-  import TableTx from '~/components/TableTx'
+import TableTx from '~/components/TableTx'
 
-  export default {
+export default {
     components: {
-      TableTx,
+        TableTx
     },
     mounted () {
-      // Init breadcrumbs data.
-      this.$store.commit('breadcrumb/setItems', {name: 'txs-pending', to: {name: 'txs-pending'}})
-    },
-  }
+        // Init breadcrumbs data.
+        this.$store.commit('breadcrumb/setItems', { name: 'txs-pending', to: { name: 'txs-pending' } })
+    }
+}
 </script>
 
 <style scoped>

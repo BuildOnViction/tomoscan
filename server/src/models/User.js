@@ -3,63 +3,62 @@ const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
 
 const schema = new mongoose.Schema({
-  name: String,
-  email: {type: String, unique: true, required: true},
-  password: {
-    type: String,
-    validate: {
-      validator (v) {
-        // Minimum 6 characters at least 1 Alphabet and 1 Number:
-        return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(v)
-      },
-      message: 'Minimum 6 characters at least 1 alphabet and 1 number',
-    },
-  },
+    name: String,
+    email: { type: String, unique: true, required: true },
+    password: {
+        type: String,
+        validate: {
+            validator (v) {
+                // Minimum 6 characters at least 1 Alphabet and 1 Number:
+                return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(v)
+            },
+            message: 'Minimum 6 characters at least 1 alphabet and 1 number'
+        }
+    }
 }, {
-  timestamps: true,
-  versionKey: false,
+    timestamps: true,
+    versionKey: false
 })
 
 schema.pre('save', function (callback) {
-  let user = this
+    let user = this
 
-  if (user.isModified('password')) {
-    user.password = bcrypt.hashSync(user.password, process.env.APP_SECRET)
-  }
+    if (user.isModified('password')) {
+        user.password = bcrypt.hashSync(user.password, process.env.APP_SECRET)
+    }
 
-  callback()
+    callback()
 })
 
 schema.methods.authenticate = async function (password) {
-  let user = this
-  let hash = bcrypt.hashSync(password, process.env.APP_SECRET)
+    let user = this
+    let hash = bcrypt.hashSync(password, process.env.APP_SECRET)
 
-  return user.password == hash
+    return user.password === hash
 }
 
 schema.methods.generateToken = async function (user) {
-  if (!user)
-    return false
-  const payload = {
-    id: user._id,
-    email: user.email,
-  }
+    if (!user) { return false }
+    const payload = {
+        id: user._id,
+        email: user.email
+    }
 
-  const options = {
-    expiresIn: 10080 * 1000,
-  }
+    const options = {
+        expiresIn: 10080 * 1000
+    }
 
-  const token = jwt.sign(payload, process.env.JWT_SECRET, options)
+    const token = jwt.sign(payload, process.env.JWT_SECRET, options)
 
-  return token ? `bearer ${token}` : false
+    return token ? `bearer ${token}` : false
 }
 
 schema.methods.toJSON = function () {
-  let obj = this.toObject()
+    let obj = this.toObject()
 
-  delete obj.password
+    delete obj.password
 
-  return obj
+    return obj
 }
 
 let User = mongoose.model('User', schema)

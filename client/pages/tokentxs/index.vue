@@ -1,28 +1,26 @@
 <template>
-	<section>
-		<table-token-tx></table-token-tx>
-	</section>
+    <section>
+        <table-token-tx/>
+    </section>
 </template>
 
 <script>
-  import TableTokenTx from '~/components/TableTokenTx'
+import TableTokenTx from '~/components/TableTokenTx'
 
-  export default {
+export default {
     components: {
-      TableTokenTx,
+        TableTokenTx
     },
     head () {
-      return {
-        title: 'Token (ERC20) Transfers',
-      }
+        return {
+            title: 'Token (ERC20) Transfers'
+        }
     },
     async mounted () {
-      // Init breadcrumbs data.
-      this.$store.commit('breadcrumb/setItems', {name: 'tokentxs', to: {name: 'tokentxs'}})
-
-      let self = this
-    },
-  }
+        // Init breadcrumbs data.
+        this.$store.commit('breadcrumb/setItems', { name: 'tokentxs', to: { name: 'tokentxs' } })
+    }
+}
 </script>
 
 <style scoped>
