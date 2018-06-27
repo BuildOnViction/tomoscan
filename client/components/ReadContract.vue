@@ -4,7 +4,7 @@
     :class="(loading ? 'tomo-loading tomo-loading--full' : '')"></div>
   <div
     v-else
-    class="card tomo-card tomo-contract-info">
+    class="card tomo-card tomo-card--contract-info">
 
     <div
       v-if="data.length == 0"
@@ -13,20 +13,22 @@
         <p class="tomo-empty__description">Can not read this smart contract</p>
     </div>
 
-    <div class="tomo-contract-info__title mb-3">
-      <span><i class="fa fa-book mr-1"></i>Read Contract Information</span>
-      <a href="#" @click="resetInput"><i class="fa fa-refresh ml-5 mr-1"></i>Reset</a>
+    <div class="tomo-card__header mb-3">
+      <h6 class="d-md-inline-block"><i class="fa fa-book mr-2"></i>Read Contract Information</h6>
+      <a href="#" class="ml-md-5" @click="resetInput"><i class="fa fa-refresh mr-1"></i>Reset</a>
     </div>
 
-    <table class="tomo-contract-info__table">
+    <table class="tomo-card__table tomo-contract-info">
       <tr v-for="(func, index) in data"
           :key="index">
           <td>
-            <span class="tomo-contract-info__func">{{ index + 1 }}. {{ func.name }}&nbsp;</span>
-            <i class="fa fa-long-arrow-right ml-2 mr-2"></i>
+            <span class="tomo-contract-info__func">{{ index + 1 }}. <i class="fa fa-caret-right"></i> {{ func.name }}&nbsp;</span>
+            <i
+              v-if="typeof func.result !== 'undefined' && ! func.inputs.length" 
+              class="fa fa-long-arrow-right ml-2 mr-2"></i>
             <span
-              v-if="func.constant && ! func.inputs.length"
-              class="tomo-contract-info__value">
+              v-if="typeof func.result !== 'undefined' && ! func.inputs.length"
+              class="tomo-contract-info__result">
               <nuxt-link
                 v-if="func.outputs[0].type === 'address'"
                 class="text-truncate"
@@ -35,7 +37,7 @@
               <span v-else>
                 {{ func.result }}
               </span>
-              <em class="ml-1">{{ func.outputs[0].type }}</em>
+              <em class="tomo-contract-info__type">{{ func.outputs[0].type }}</em>
             </span>
             <div
               class="tomo-contract-info__inputs"
@@ -45,7 +47,7 @@
                 :key="idx"
                 :name="input.name"
                 :placeholder="input.name + '(' + input.type + ')'"
-                :class="'mr-2 ' + func.name + '_' + index"
+                :class="'form-control mr-2 ' + func.name + '_' + index"
                 type="text"/>
               <button
                 class="btn btn-primary"
@@ -54,13 +56,16 @@
             </div>
             <div
               class="tomo-contract-info__outputs"
-              v-if="func.outputs.length">
+              v-if="func.outputs.length && typeof func.result == 'undefined'">
               <span
                 v-for="(output, idx2) in func.outputs"
-                :key="idx2">{{ output.name }}<em class="ml-1">{{ output.type }}</em>
+                :key="idx2">
+                <i class="fa fa-angle-double-right"></i>
+                <span class="tomo-contract-info__param-name">{{ output.name }}</span>
+                <em class="tomo-contract-info__type">{{ output.type }}</em>
                 {{ (idx2 < func.outputs.length - 1 ) ? ',' : '' }}
               </span>
-              <span :id="'output_' + func.name + '_' + index"></span>
+              <div class="tomo-contract-info__result" :id="'output_' + func.name + '_' + index"></div>
             </div>
           </td>
       </tr>
@@ -120,7 +125,7 @@ export default {
       let query = this.serializeQuery(params)
       let output = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
 
-      document.getElementById(outputElement).innerHTML = `<br><br> [&nbsp;<b>${functionName}</b> method response]<br>${this.formatOuputs(output.data)}<br>`
+      document.getElementById(outputElement).innerHTML = `<br>[&nbsp;<b>${functionName}</b> method response]<br>${this.formatOuputs(output.data)}<br>`
     },
     add0xforAddress(straddress) {
       straddress = straddress.trim();
@@ -133,8 +138,8 @@ export default {
       let response = ''
 
       for (let i = 0; i < output.length; i++) {
-        response += `<i class="fa fa-angle-double-right ${output[i].name=='Error' ? 'text-danger' : 'text-success'}"></i>&nbsp;`
-        response += `<strong>${output[i].name}</strong>&nbsp;<em>${output[i].type}</em> : <span>${this.formatResult(output[i].value, output[i].type)}</span><br>`
+        response += `<i class="tomo-contract-info__response ${output[i].name=='Error' ? 'tomo-contract-info__response--error' : 'tomo-contract-info__response--success'}"></i>&nbsp;`
+        response += `<strong>${output[i].name}</strong>&nbsp;<em class="tomo-contract-info__type">${output[i].type}</em> : <span>${this.formatResult(output[i].value, output[i].type)}</span>`
       }
       return response
     },
@@ -155,7 +160,16 @@ export default {
     },
     resetInput(e) {
       e.preventDefault()
-      document.querySelectorAll('.tomo-contract-info__func input').innerHTML = ''
+      let inputs = document.querySelectorAll('.tomo-contract-info input')
+      let ouputs = document.querySelectorAll('.tomo-contract-info__result')
+
+      for(let i = 0; i < inputs.length; i++) {
+        inputs[i].value = ''
+      }
+
+      for(let i = 0; i < ouputs.length; i++) {
+        ouputs[i].innerHTML = ''
+      }
     }
   }
 }
