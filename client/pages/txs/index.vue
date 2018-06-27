@@ -1,19 +1,19 @@
 <template>
-	<table-tx></table-tx>
+    <table-tx/>
 </template>
 
 <script>
-  import TableTx from '~/components/TableTx'
+import TableTx from '~/components/TableTx'
 
-  export default {
+export default {
     components: {
-      TableTx,
+        TableTx
     },
     mounted () {
-      // Init breadcrumbs data.
-      this.$store.commit('breadcrumb/setItems', {name: 'txs', to: {name: 'txs'}})
-    },
-  }
+        // Init breadcrumbs data.
+        this.$store.commit('breadcrumb/setItems', { name: 'txs', to: { name: 'txs' } })
+    }
+}
 </script>
 
 <style scoped>
