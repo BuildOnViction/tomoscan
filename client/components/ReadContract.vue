@@ -25,8 +25,8 @@
             <tr
                 v-for="(func, index) in data"
                 :key="index">
-                <td>
-                    <span class="tomo-contract-info__func">
+                <td :class="`tomo-contract-info__func ${func.inputs.length ? 'with-input' : 'no-input'}`">
+                    <span class="tomo-contract-info__name">
                         {{ index + 1 }}. <i class="fa fa-caret-right"/> {{ func.name }}&nbsp;
                     </span>
                     <i
@@ -41,7 +41,7 @@
                             class="text-truncate">{{ func.result.toLowerCase() }}
                         </nuxt-link>
                         <span v-else>
-                            {{ func.result }}
+                            {{ func.result === '' ? '\'\'' : func.result }}
                         </span>
                         <em class="tomo-contract-info__type">{{ func.outputs[0].type }}</em>
                     </span>
@@ -65,13 +65,13 @@
                     <div
                         v-if="func.outputs.length && typeof func.result == 'undefined'"
                         class="tomo-contract-info__outputs">
+                        <i class="fa fa-angle-double-right"/>
                         <span
                             v-for="(output, idx2) in func.outputs"
                             :key="idx2">
-                            <i class="fa fa-angle-double-right"/>
                             <span class="tomo-contract-info__param-name">{{ output.name }}</span>
                             <em class="tomo-contract-info__type">{{ output.type }}</em>
-                            <span v-show="idx2 < func.outputs.length - 1">,</span>
+                            <span v-show="idx2 < func.outputs.length - 1">, </span>
                         </span>
                         <div
                             :id="'output_' + func.name + '_' + index"
@@ -136,7 +136,8 @@ export default {
             let output = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
 
             document.getElementById(outputElement).innerHTML =
-                `<br>[&nbsp;<b>${functionName}</b> method response]<br>${this.formatOuputs(output.data)}<br>`
+                `<div class="tomo-contract-info__response">
+                <p>[<strong>${functionName}</strong> method response]</p>${this.formatOuputs(output.data)}</div>`
         },
         add0xforAddress (straddress) {
             straddress = straddress.trim()
@@ -149,11 +150,12 @@ export default {
             let response = ''
 
             for (let i = 0; i < output.length; i++) {
-                response += `<i class="tomo-contract-info__response
-                    tomo-contract-info__response${output[i].name === 'Error' ? '--error' : '--success'}"></i>&nbsp;`
+                response += '<p>'
+                response += `<i class="response${output[i].name === 'Error' ? '--error' : '--success'}"></i>&nbsp;`
                 response += `<strong>${output[i].name}</strong>&nbsp;
                     <em class="tomo-contract-info__type">${output[i].type}</em> :
                     <span>${this.formatResult(output[i].value, output[i].type)}</span>`
+                response += '</p>'
             }
             return response
         },
@@ -163,11 +165,7 @@ export default {
             } else if (resulttype === 'string') {
                 return strResult
             } else if (resulttype === 'address') {
-                if (strResult !== '0x0000000000000000000000000000000000000000') {
-                    return "<a href='/address/" + strResult + "'>" + strResult + '</a>'
-                } else {
-                    return strResult
-                }
+                return "<a href='/address/" + strResult + "'>" + strResult + '</a>'
             } else {
                 return strResult
             }
@@ -175,7 +173,7 @@ export default {
         resetInput (e) {
             e.preventDefault()
             let inputs = document.querySelectorAll('.tomo-contract-info input')
-            let ouputs = document.querySelectorAll('.tomo-contract-info__result')
+            let ouputs = document.querySelectorAll('.tomo-contract-info__func.with-input .tomo-contract-info__result')
 
             for (let i = 0; i < inputs.length; i++) {
                 inputs[i].value = ''
