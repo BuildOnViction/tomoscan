@@ -111,6 +111,18 @@
       }
     }
 
+    .vue-codemirror {
+      box-shadow: none;
+
+      .CodeMirror {
+        max-height: 100px;
+      }
+
+      .CodeMirror-wrap pre {
+        word-break: break-word;
+      }
+    }
+
     @include media-breakpoint-up(sm) {
 
       tr {

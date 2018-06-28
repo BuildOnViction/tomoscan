@@ -157,17 +157,14 @@
                                             <td>Input Data</td>
                                             <td>
                                                 <span class="text-danger">
-                                                    <read-more
-                                                        :text="tx.input"
-                                                        class="d-sm-none"/>
-                                                    <read-more
-                                                        :text="tx.input"
-                                                        :max-chars="20"
-                                                        class="d-none d-sm-block d-md-none"/>
-                                                    <read-more
-                                                        :text="tx.input"
-                                                        :max-chars="40"
-                                                        class="d-none d-md-block"/>
+                                                    <no-ssr placeholder="Codemirror Loading...">
+                                                        <codemirror
+                                                            :value="tx.input"
+                                                            :options="{
+                                                                mode:'application/ld+json',
+                                                                gutters:[],
+                                                                lineNumbers:false,styleActiveLine:false}" />
+                                                    </no-ssr>
                                                 </span>
                                             </td>
                                         </tr>
