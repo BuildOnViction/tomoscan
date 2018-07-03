@@ -1,0 +1,31 @@
+sudo: required
+language: node_js
+node_js: "8"
+
+install: skip
+script: skip
+
+jobs:
+  include:
+    - stage: Tests
+      script: echo "No tests at the moment"
+    - stage: Build and push Docker images
+      services:
+        - docker
+      before_install:
+        - docker build -t tomochain/tomoscan-server -f Dockerfile.server .
+        - docker build -t tomochain/tomoscan-client -f Dockerfile.client .
+      deploy:
+        provider: script
+        script: bash docker_push.sh
+        on:
+          branch: master
+    - stage: Trigger rebuild of infrastructure images
+      sudo: false
+      script: bash docker_rebuild.sh
+
+stages:
+  - name: Build and push Docker images
+    if: type != pull_request AND branch = master
+  - name: Trigger rebuild of infrastructure images
+    if: type != pull_request AND branch = master

@@ -1,0 +1,33 @@
+FROM node:8-alpine
+
+LABEL maintainer="etienne@tomochain.com"
+
+ENV HOST 0.0.0.0
+
+WORKDIR /app
+
+COPY client .
+
+RUN apk --no-cache --virtual deps add \
+      python \
+      make \
+      g++ \
+      bash \
+      git \
+      libpng-dev \
+      nasm \
+      autoconf \
+      automake \
+    && npm install -g \
+      npm@latest \
+      nuxt \
+      dotenv \
+      node-gyp \
+      pm2 \
+    && npm install \
+    && npm run build \
+    && apk del deps
+
+EXPOSE 3000
+
+ENTRYPOINT ["pm2-docker", "start", "pm2.json", "--only", "prod"]
