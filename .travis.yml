@@ -25,6 +25,7 @@ jobs:
       script: bash docker_rebuild.sh
 
 stages:
+  - name: Tests
   - name: Build and push Docker images
     if: type != pull_request AND branch = master
   - name: Trigger rebuild of infrastructure images
