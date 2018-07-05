@@ -301,7 +301,7 @@ export default {
         onGotoRoute () {
             let search = this.search.trim()
             let regexpTx = /[0-9a-zA-Z]{66}?/
-            let regexpAddr = /^(0x)?[0-9a-f]{40}$/
+            let regexpAddr = /^(0x)?[0-9a-fA-F]{40}$/
             let regexpBlock = /[0-9]+?/
             let to = null
 
