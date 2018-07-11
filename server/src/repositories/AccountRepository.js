@@ -25,7 +25,7 @@ let AccountRepository = {
                 _account.balanceNumber = balance
             }
 
-            let txCount = await Tx.find({ to: hash }).count()
+            let txCount = await Tx.find({ $or: [ { to: hash }, { from: hash } ] }).count()
             if (_account.transactionCount !== txCount) {
                 _account.transactionCount = txCount
             }
