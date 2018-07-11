@@ -16,10 +16,7 @@ let ContractRepository = {
     async insertOrUpdate (
         contractName, contractAddress, releaseVersion, sourceCode, optimization,
         ouput) {
-        let web3 = await Web3Util.getWeb3()
-        let txCountTo = await Tx.find({ to: contractAddress }).count()
-        let txCountFrom = await web3.eth.getTransactionCount(contractAddress)
-        let txCount = txCountTo + txCountFrom
+        let txCount = await Tx.find({ to: contractAddress }).count()
 
         let update = {
             hash: contractAddress,
