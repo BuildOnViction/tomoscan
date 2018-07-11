@@ -218,6 +218,12 @@
 }
 
 .tomo-card--token {
+  .tomo-card__table {
+    @include media-breakpoint-up(2xl) {
+      width: 100%;
+    }
+  }
+
   .tomo-card__table tr {
     grid-gap: 0 15px;
     padding-bottom: 20px;
