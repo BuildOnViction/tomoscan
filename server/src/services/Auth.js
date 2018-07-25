@@ -1,6 +1,7 @@
 import passport from 'passport'
 import passportJwt from 'passport-jwt'
 import User from '../models/User'
+const config = require('config')
 
 let authService = {
     initialize: () => passport.initialize(),
@@ -12,7 +13,7 @@ let authService = {
 function setJwtStrategy () {
     const opts = {
         jwtFromRequest: passportJwt.ExtractJwt.fromAuthHeaderAsBearerToken(),
-        secretOrKey: process.env.JWT_SECRET,
+        secretOrKey: config.get('JWT_SECRET'),
         passReqToCallback: true
     }
     const strategy = new passportJwt.Strategy(opts,

@@ -7,10 +7,8 @@ import CrawlRepository from './repositories/CrawlRepository'
 import TokenRepository from './repositories/TokenRepository'
 import TxRepository from './repositories/TxRepository'
 
-const dotenv = require('dotenv')
+const config = require('config')
 const mongoose = require('mongoose')
-// Load environment variables from .env file
-dotenv.load()
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
@@ -40,7 +38,7 @@ let watch = async () => {
                     crawl.crawl = true
                     crawl.save()
 
-                    if (process.env.APP_ENV === 'dev') {
+                    if (config.get('APP_ENV') === 'dev') {
                         console.log('--- Crawl data: ' + JSON.stringify(crawl))
                     }
                 }
@@ -78,7 +76,7 @@ let watch = async () => {
     }
 }
 
-mongoose.connect(process.env.MONGODB_URI, (err) => {
+mongoose.connect(config.get('MONGODB_URI'), (err) => {
     if (err) {
         console.log(
             'MongoDB Connection Error. Please make sure that MongoDB is running.')
@@ -87,8 +85,8 @@ mongoose.connect(process.env.MONGODB_URI, (err) => {
         try {
             watch()
         } catch (e) {
-            if (process.env.APP_ENV === 'prod') {
-                var slack = require('slack-notify')(process.env.SLACK_WEBHOOK_URL)
+            if (config.get('APP_ENV') === 'prod') {
+                var slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
                 slack.send({
                     channel: '#tm_explorer',
                     text: e

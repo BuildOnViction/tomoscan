@@ -1,6 +1,7 @@
 const bcrypt = require('bcrypt-nodejs')
 const mongoose = require('mongoose')
 const jwt = require('jsonwebtoken')
+const config = require('config')
 
 const schema = new mongoose.Schema({
     name: String,
@@ -24,7 +25,7 @@ schema.pre('save', function (callback) {
     let user = this
 
     if (user.isModified('password')) {
-        user.password = bcrypt.hashSync(user.password, process.env.APP_SECRET)
+        user.password = bcrypt.hashSync(user.password, config.get('APP_SECRET'))
     }
 
     callback()
@@ -32,7 +33,7 @@ schema.pre('save', function (callback) {
 
 schema.methods.authenticate = async function (password) {
     let user = this
-    let hash = bcrypt.hashSync(password, process.env.APP_SECRET)
+    let hash = bcrypt.hashSync(password, config.get('APP_SECRET'))
 
     return user.password === hash
 }
@@ -48,7 +49,7 @@ schema.methods.generateToken = async function (user) {
         expiresIn: 10080 * 1000
     }
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, options)
+    const token = jwt.sign(payload, config.get('JWT_SECRET'), options)
 
     return token ? `bearer ${token}` : false
 }

@@ -4,6 +4,7 @@ import Account from '../models/Account'
 import Token from '../models/Token'
 import axios from 'axios'
 import Contract from '../models/Contract'
+const config = require('config')
 
 const SettingController = Router()
 
@@ -30,7 +31,7 @@ SettingController.get('/setting', async (req, res, next) => {
 SettingController.get('/setting/usd', async (req, res, next) => {
     try {
         let { data } = await axios.get('https://api.coinmarketcap.com/v2/ticker/' +
-      process.env.CMC_ID + '/?convert=USD')
+            config.get('CMC_ID') + '/?convert=USD')
 
         return res.json(data)
     } catch (e) {
