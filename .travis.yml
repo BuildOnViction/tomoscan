@@ -38,6 +38,6 @@ jobs:
 stages:
   - name: Tests
   - name: Build and push Docker images
-    if: type != pull_request AND branch = master
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
   - name: Trigger rebuild of infrastructure images
-    if: type != pull_request AND branch = master
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
