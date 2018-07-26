@@ -1,7 +1,7 @@
 {
   "APP_ENV": "prod",
   "MONGODB": "localhost",
-  "MONGODB_URI": "mongodb://localhost:27017/explorer",
+  "MONGODB_URI": "mongodb://localhost:27017/tomoscan",
   "redis": {
     "host": "localhost",
     "port": 6379,
