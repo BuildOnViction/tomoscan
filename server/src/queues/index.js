@@ -1,4 +1,7 @@
-'use strict';
+'use strict'
+
+import AccountRepository from "../repositories/AccountRepository";
+
 const kue = require('kue')
 const config = require('config')
 const path = require('path')
@@ -11,20 +14,18 @@ const q = kue.createQueue({
         host: config.get('redis.host'),
         auth: config.get('redis.password')
     }
-});
+})
 
 fs.readdirSync(__dirname)
     .filter(function (file) {
-        return (file.indexOf('.') !== 0) && (file !== 'index.js');
+        return (file.indexOf('.') !== 0) && (file !== 'index.js')
     })
     .forEach(function (file) {
-        let consumer = require(path.join(__dirname, file));
-        if (consumer.name === 'newTransaction') {
-            q.process(consumer.name, config.get('processNumber'), consumer.task);
+        let consumer = require(path.join(__dirname, file))
 
-        } else {
-            q.process(consumer.name, consumer.task);
-        }
-    });
+        q.process(consumer.name, consumer.task)
 
-module.exports = q;
+    })
+
+module.exports = q
+// export default q

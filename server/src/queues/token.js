@@ -2,20 +2,16 @@
 
 import TokenRepository from "../repositories/TokenRepository";
 
-const config = require('config')
 import Web3Util from '../helpers/web3'
 import Token from '../models/Token'
 import { formatAscIIJSON, trimWord } from '../helpers/utils'
-import TokenTx from '../models/TokenTx'
-import CrawlRepository from './CrawlRepository'
-const q = require('../queues')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
 consumer.processNumber = 1
 consumer.task = async function(job, done) {
     let address = job.data.address
-
+    console.log('Process token: ', address)
     let token = await Token.findOne({ hash: address })
     if (!token) {
         return false
@@ -49,5 +45,7 @@ consumer.task = async function(job, done) {
 
     token.status = true
     token.save()
+
+    done()
 
 }

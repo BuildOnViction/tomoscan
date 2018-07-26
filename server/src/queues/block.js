@@ -1,23 +1,20 @@
 'use strict'
 
-const config = require('config')
 import Block from '../models/Block'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import { getSigner, toAddress } from '../helpers/utils'
-import AccountRepository from './AccountRepository'
 import Account from '../models/Account'
 import Follow from '../models/Follow'
 import EmailService from '../services/Email'
 import User from '../models/User'
-import CrawlRepository from './CrawlRepository'
-const q = require('../queues')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
 consumer.processNumber = 1
 consumer.task = async function(job, done) {
     let blockNumber = job.data().blockNumber
+    console.log('Process block: ', blockNumber)
     let block = Block.findOne({number: blockNumber, nonce: {$exists: true}})
     let countTx = await Tx.find({blockNumber: blockNumber}).count()
     if (block && countTx === block.e_tx) {
@@ -46,6 +43,8 @@ consumer.task = async function(job, done) {
     await Account.findOneAndUpdate({ hash: signer }, { hash: signer })
 
     // Insert crawl for signer.
+    const q = require('./index')
+    console.log('Queue account: ', signer)
     await q.create('AccountProcess', {address: signer})
         .priority('low').removeOnComplete(true).save()
 
@@ -75,6 +74,7 @@ consumer.task = async function(job, done) {
                         tx.from = tx.from.toLowerCase()
                         tx.from_model = accountFrom
                         // Insert crawl for address.
+                        console.log('Queue account: ', tx.from)
                         await q.create('AccountProcess', {address: tx.from})
                             .priority('low').removeOnComplete(true).save()
                     }
@@ -87,6 +87,7 @@ consumer.task = async function(job, done) {
                         tx.to = tx.to.toLowerCase()
                         tx.to_model = accountTo
                         // Insert crawl for address.
+                        console.log('Queue account: ', tx.to)
                         await q.create('AccountProcess', {address: tx.to})
                             .priority('low').removeOnComplete(true).save()
                     }
@@ -97,7 +98,7 @@ consumer.task = async function(job, done) {
                         { upsert: true, new: true })
 
                     // Insert crawl for tx.
-                    await CrawlRepository.add('tx', tx.hash)
+                    console.log('Queue Transaction: ', tx.hash)
                     await q.create('TransactionProcess', {hash: tx.hash})
                         .priority('critical').removeOnComplete(true).save()
 
@@ -128,4 +129,6 @@ consumer.task = async function(job, done) {
             }
         }
     }
+
+    done()
 }

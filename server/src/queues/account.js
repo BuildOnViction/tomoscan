@@ -1,20 +1,16 @@
 'use strict'
 
-const config = require('config')
 import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import TokenHelper from '../helpers/token'
-import Token from '../models/Token'
-import TokenHolder from '../models/TokenHolder'
-import Contract from '../models/Contract'
-const q = require('../queues')
 
 const consumer = {}
 consumer.name = 'AccountProcess'
 consumer.processNumber = 1
 consumer.task = async function(job, done) {
     let hash = job.data.hash.toLowerCase()
+    console.log('Process account: ', hash)
     let _account = await Account.findOne({ hash: hash, nonce: { $exists: true } })
     _account = _account || {}
 
@@ -38,6 +34,8 @@ consumer.task = async function(job, done) {
         let isToken = await TokenHelper.checkIsToken(code)
         if (isToken) {
             // Insert token pending.
+            const q = require('./index')
+            console.log('Queue token: ', hash)
             await q.create('TokenProcess', {hash: hash})
                 .priority('normal').removeOnComplete(true).save()
         }
@@ -51,5 +49,7 @@ consumer.task = async function(job, done) {
 
     await Account.findOneAndUpdate({ hash: hash }, _account,
         { upsert: true, new: true }).lean()
+
+    done()
 
 }

@@ -1,27 +1,22 @@
 'use strict'
 
-import TxRepository from "../repositories/TxRepository";
-
-const config = require('config')
 import Tx from '../models/Tx'
-import AccountRepository from './AccountRepository'
 import Web3Util from '../helpers/web3'
 import Account from '../models/Account'
 import Token from '../models/Token'
-import TokenRepository from './TokenRepository'
 import Block from '../models/Block'
-import TokenTxRepository from './TokenTxRepository'
 import Log from '../models/Log'
-const q = require('../queues')
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
 consumer.processNumber = 12
 consumer.task = async function(job, done) {
     let hash = job.data.hash
+    console.log('Process Transaction: ', hash)
+    await this.getTxPending(hash)
+    await this.getTxReceipt(hash)
 
-    this.getTxPending(hash)
-    this.getTxReceipt(hash)
+    done()
 }
 
 async function getTxPending(hash) {
@@ -130,12 +125,16 @@ async function parseLog(log) {
     let address = log.address.toLowerCase()
     // Add account and token if not exist in db.
     let token = await Token.findOne({ hash: address })
+    const q = require('./index')
     if (!token) {
+        console.log('Queue account: ', address)
+        console.log('Queue token: ', address)
         await q.create('AccountProcess', {address: address})
             .priority('low').removeOnComplete(true).save()
         await q.create('TokenProcess', {hash: address})
             .priority('normal').removeOnComplete(true).save()
     }
-
-    await TokenTxRepository.addTokenTxFromLog(log)
+    console.log('Queue token transaction: ', log)
+    await q.create('TokenTransactionProcess', {log: JSON.stringify(log)})
+        .priority('normal').removeOnComplete(true).save()
 }
