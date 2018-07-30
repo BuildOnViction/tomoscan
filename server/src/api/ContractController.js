@@ -91,8 +91,7 @@ ContractController.post('/contracts', async (req, res, next) => {
 
                 let runtimeBytecode = '0x' + outputContract.runtimeBytecode
 
-                if (md5(runtimeBytecode.slice(0, -100)) !==
-          md5(originalCode.slice(0, -100))) {
+                if (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100))) {
                     return res.json({ errors: [
                         `Contract names found: ${contracts.join(', ')}`,
                         'Bytecode runtime invalid!',
@@ -189,8 +188,8 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
         let abiObject = JSON.parse(contract.abiCode)
         let contractFunctions = abiObject.filter((item) =>
             (item.type === 'function') &&
-      (item.stateMutability !== 'nonpayable') &&
-      (item.stateMutability !== 'payable'))
+            (item.stateMutability !== 'nonpayable') &&
+            (item.stateMutability !== 'payable'))
 
         let web3 = await Web3Util.getWeb3()
         let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
@@ -203,8 +202,13 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
                 if (func.constant && !func.inputs.length) {
                     var funcNameToCall = 'web3Contract.methods.' + func.name + '().call()'
 
-                    let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
-                    func.result = rs
+                    try {
+                        let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
+                        func.result = rs
+                    } catch(e) {
+                        console.trace(e)
+                        console.log(e)
+                    }
                 }
 
                 results.push(func)
