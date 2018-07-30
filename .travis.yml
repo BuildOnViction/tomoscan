@@ -17,9 +17,20 @@ jobs:
         - docker build -t tomochain/tomoscan-client -f Dockerfile.client .
       deploy:
         provider: script
-        script: bash docker_push.sh
+        script:
+          - bash docker_push.sh latest
+          - bash docker_push.sh $TRAVIS_BUILD_ID
         on:
           branch: master
+          tags: false
+      deploy:
+        provider: script
+        script:
+          - bash docker_push.sh latest
+          - bash docker_push.sh $TRAVIS_TAG
+        on:
+          branch: master
+          tags: true
     - stage: Trigger rebuild of infrastructure images
       sudo: false
       script: bash docker_rebuild.sh
@@ -27,6 +38,6 @@ jobs:
 stages:
   - name: Tests
   - name: Build and push Docker images
-    if: type != pull_request AND branch = master
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
   - name: Trigger rebuild of infrastructure images
-    if: type != pull_request AND branch = master
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan

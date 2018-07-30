@@ -25,9 +25,7 @@ let AccountRepository = {
                 _account.balanceNumber = balance
             }
 
-            let txCountTo = await Tx.find({ to: hash }).count()
-            let txCountFrom = await web3.eth.getTransactionCount(hash)
-            let txCount = txCountTo + txCountFrom
+            let txCount = await Tx.find({ $or: [ { to: hash }, { from: hash } ] }).count()
             if (_account.transactionCount !== txCount) {
                 _account.transactionCount = txCount
             }
