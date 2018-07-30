@@ -148,11 +148,11 @@
                         <b-col sm="6">
                             <b-table
                                 :items="[
-                                    {key: 'Verified At', value: $moment(smartContract.createdAt).format('M-DD-Y')},
+                                    {key: 'Verified At', value: $moment(smartContract.createdAt).format('lll')},
                                     {key: 'Optimization Enabled', value: smartContract.optimization ? 'Yes' : 'No'},
                                 ]"
                                 class="tomo-table tomo-table--verified-contract"
-                                thead-class="d-none"/>
+                                thead-class="d-none" />
                         </b-col>
                     </b-row>
 

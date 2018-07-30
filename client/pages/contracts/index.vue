@@ -55,7 +55,7 @@
             <template
                 slot="createdAt"
                 slot-scope="props">
-                <span>{{ $moment(props.item.createdAt).format('M-DD-Y') }}</span>
+                <span>{{ $moment(props.item.createdAt).format('ll') }}</span>
             </template>
         </table-base>
 
