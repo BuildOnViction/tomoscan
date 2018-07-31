@@ -220,7 +220,7 @@ export default {
 
         this.block = data
         let moment = self.$moment(data.timestamp)
-        this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('MMM-DD-Y hh:mm:ss A')} +UTC)</small>`
+        this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
         self.loading = false
     }

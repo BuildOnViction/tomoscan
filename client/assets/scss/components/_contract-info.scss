@@ -8,7 +8,7 @@
     border-bottom: 1px solid #ddd;
   }
 
-  &__func {
+  &__name {
     i {
       font-size: 12px;
       vertical-align: middle;
@@ -21,19 +21,15 @@
   &__result {
     word-break: break-word;
 
-     > span {
+     > span,
+     > a {
       display: inline-block;
-      margin-right: 15px;
+      margin-right: 5px;
     }
   }
 
   &__type {
     color: #aaaaaa;
-  }
-
-  .fa-long-arrow-right {
-    vertical-align: middle;
-    line-height: .5;
   }
 
   &__inputs {
@@ -51,18 +47,19 @@
     @include media-breakpoint-up(lg) {
       display: inline-block;
       vertical-align: bottom;
-      margin-left: 20px;
+      margin-left: 10px;
 
       input {
         display: inline-block;
         vertical-align: top;
         width: 300px;
+        height: 34px;
         margin-bottom: 0;
       }
 
       button {
-        height: 35px;
         vertical-align: top;
+        padding: 5px 14px;
       }
     }
   }
@@ -81,26 +78,43 @@
 
     span.tomo-contract-info__param-name {
       display: inline-block;
-      margin-right: 15px;
+      margin-right: 5px;
     }
   }
 
-  &__response:before {
-    content: '';
-    display: inline-block;
+  &__response {
+    margin-top: 15px;
+
+    p {
+      margin-bottom: 0;
+    }
+
+    p:first-child {
+      margin-bottom: 5px;
+    }
+    
+    i:before {
+      content: '';
+      display: inline-block;
+      vertical-align: middle;
+      height: 8px;
+      width: 8px;
+      border-radius: 100%;
+      margin-right: 5px;
+    }
+
+    .response--success:before {
+      background-color: $color-success;
+    }
+  
+    .response--error:before {
+      background-color: $color-danger;
+    }
+  }
+
+  .fa-long-arrow-right {
     vertical-align: middle;
-    height: 8px;
-    width: 8px;
-    border-radius: 100%;
-    margin-right: 5px;
-  }
-
-  &__response--success:before {
-    background-color: $color-success;
-  }
-
-  &__response--error:before {
-    background-color: $color-danger;
+    line-height: .5;
   }
 
   @include media-breakpoint-up (sm) {
