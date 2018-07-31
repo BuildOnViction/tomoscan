@@ -23,7 +23,7 @@ fs.readdirSync(__dirname)
     .forEach(function (file) {
         let consumer = require(path.join(__dirname, file))
 
-        q.process(consumer.name, consumer.task)
+        q.process(consumer.name, consumer.processNumber, consumer.task)
 
     })
 

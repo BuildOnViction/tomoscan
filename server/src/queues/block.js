@@ -11,19 +11,21 @@ import User from '../models/User'
 
 const consumer = {}
 consumer.name = 'BlockProcess'
-consumer.processNumber = 1
+consumer.processNumber = 2
 consumer.task = async function(job, done) {
-    let blockNumber = job.data().blockNumber
+    let blockNumber = job.data.block
     console.log('Process block: ', blockNumber)
     let block = Block.findOne({number: blockNumber, nonce: {$exists: true}})
     let countTx = await Tx.find({blockNumber: blockNumber}).count()
     if (block && countTx === block.e_tx) {
+        done()
         return
     }
 
     let web3 = await Web3Util.getWeb3()
     let _block = await web3.eth.getBlock(blockNumber, true)
     if (!_block) {
+        done()
         return
     }
 
@@ -132,3 +134,5 @@ consumer.task = async function(job, done) {
 
     done()
 }
+
+module.exports = consumer

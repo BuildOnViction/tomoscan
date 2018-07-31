@@ -6,16 +6,16 @@ import { convertHexToFloat } from '../helpers/utils'
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
-consumer.processNumber = 1
+consumer.processNumber = 3
 consumer.task = async function(job, done) {
     let token = JSON.parse(job.data.token)
-    console.log('Process token holder: ', token)
+    console.log('Process token holder: ')
     if (!token) { return false }
 
     // Add holder from.
-    await this.updateQuality(token.from, token.address, -token.value)
+    await updateQuality(token.from, token.address, -token.value)
     // Add holder to.
-    await this.updateQuality(token.to, token.address, token.value)
+    await updateQuality(token.to, token.address, token.value)
 
     done()
 }
@@ -61,3 +61,5 @@ async function formatItem(tokenHolder, totalSupply) {
 
     return tokenHolder
 }
+
+module.exports = consumer

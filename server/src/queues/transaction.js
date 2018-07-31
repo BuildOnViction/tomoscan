@@ -13,8 +13,8 @@ consumer.processNumber = 12
 consumer.task = async function(job, done) {
     let hash = job.data.hash
     console.log('Process Transaction: ', hash)
-    await this.getTxPending(hash)
-    await this.getTxReceipt(hash)
+    await getTxPending(hash)
+    await getTxReceipt(hash)
 
     done()
 }
@@ -100,7 +100,7 @@ async function getTxReceipt(hash) {
     if (logs.length) {
         for (let i = 0; i < logs.length; i++) {
             let log = logs[i]
-            await this.parseLog(log)
+            await parseLog(log)
             // Save log into db.
             await Log.findOneAndUpdate({ id: log.id }, log,
                 { upsert: true, new: true })
@@ -131,10 +131,12 @@ async function parseLog(log) {
         console.log('Queue token: ', address)
         await q.create('AccountProcess', {address: address})
             .priority('low').removeOnComplete(true).save()
-        await q.create('TokenProcess', {hash: address})
+        await q.create('TokenProcess', {address: address})
             .priority('normal').removeOnComplete(true).save()
     }
-    console.log('Queue token transaction: ', log)
+    console.log('Queue token transaction: ')
     await q.create('TokenTransactionProcess', {log: JSON.stringify(log)})
         .priority('normal').removeOnComplete(true).save()
 }
+
+module.exports = consumer

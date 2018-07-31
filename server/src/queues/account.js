@@ -3,13 +3,14 @@
 import Account from '../models/Account'
 import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
+import Token from '../models/Token'
 import TokenHelper from '../helpers/token'
 
 const consumer = {}
 consumer.name = 'AccountProcess'
-consumer.processNumber = 1
+consumer.processNumber = 6
 consumer.task = async function(job, done) {
-    let hash = job.data.hash.toLowerCase()
+    let hash = job.data.address.toLowerCase()
     console.log('Process account: ', hash)
     let _account = await Account.findOne({ hash: hash, nonce: { $exists: true } })
     _account = _account || {}
@@ -34,9 +35,11 @@ consumer.task = async function(job, done) {
         let isToken = await TokenHelper.checkIsToken(code)
         if (isToken) {
             // Insert token pending.
+            await Token.findOneAndUpdate({ hash: hash },
+                { hash: hash, status: false }, { upsert: true, new: true })
             const q = require('./index')
             console.log('Queue token: ', hash)
-            await q.create('TokenProcess', {hash: hash})
+            await q.create('TokenProcess', {address: hash})
                 .priority('normal').removeOnComplete(true).save()
         }
         _account.isToken = isToken
@@ -53,3 +56,5 @@ consumer.task = async function(job, done) {
     done()
 
 }
+
+module.exports = consumer

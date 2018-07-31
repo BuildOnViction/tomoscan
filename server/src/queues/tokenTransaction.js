@@ -7,10 +7,10 @@ import TokenTx from '../models/TokenTx'
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
-consumer.processNumber = 1
+consumer.processNumber = 6
 consumer.task = async function(job, done) {
     let log = JSON.parse(job.data.log)
-    console.log('Process token transaction: ', log)
+    console.log('Process token transaction: ')
     let _log = log
     if (typeof log.topics[1] === 'undefined' ||
         typeof log.topics[2] === 'undefined') {
@@ -42,10 +42,12 @@ consumer.task = async function(job, done) {
 
     // Add token holder data.
     const q = require('./index')
-    console.log('Queue token holder: ', _log)
+    console.log('Queue token holder: ')
     await q.create('TokenHolderProcess', {token: JSON.stringify({from: _log.from, to: _log.to, address: _log.address, value: _log.value})})
         .priority('normal').removeOnComplete(true).save()
 
     done()
 
 }
+
+module.exports = consumer
