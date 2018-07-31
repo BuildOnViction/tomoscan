@@ -15,14 +15,18 @@ jobs:
         - docker
       install: skip
       before_script:
-        - docker build -t tomochain/tomoscan .
-        - docker run tomochain/tomoscan
+        - docker build -t tomochain/tomoscan-server -f Dockerfile.server .
+        - docker build -t tomochain/tomoscan-client -f Dockerfile.client .
       script:
         - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-        - docker tag tomochain/tomoscan tomochain/tomoscan:latest
-        - docker push tomochain/tomoscan:latest
-        - docker tag tomochain/tomoscan tomochain/tomoscan:$TRAVIS_BUILD_ID
-        - docker push tomochain/tomoscan:$TRAVIS_BUILD_ID
+        - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:latest
+        - docker push tomochain/tomoscan-server:latest
+        - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:$TRAVIS_BUILD_ID
+        - docker push tomochain/tomoscan-server:$TRAVIS_BUILD_ID
+        - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:latest
+        - docker push tomochain/tomoscan-client:latest
+        - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:$TRAVIS_BUILD_ID
+        - docker push tomochain/tomoscan-client:$TRAVIS_BUILD_ID
       after_success:
         - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
@@ -31,14 +35,18 @@ jobs:
         - docker
       install: skip
       before_script:
-        - docker build -t tomochain/tomoscan .
-        - docker run tomochain/tomoscan
+        - docker build -t tomochain/tomoscan-server -f Dockerfile.server .
+        - docker build -t tomochain/tomoscan-client -f Dockerfile.client .
       script:
         - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-        - docker tag tomochain/tomoscan tomochain/tomoscan:latest
-        - docker push tomochain/tomoscan:latest
-        - docker tag tomochain/tomoscan tomochain/tomoscan:$TRAVIS_TAG
-        - docker push tomochain/tomoscan:$TRAVIS_TAG
+        - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:latest
+        - docker push tomochain/tomoscan-server:latest
+        - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:$TRAVIS_TAG
+        - docker push tomochain/tomoscan-server:$TRAVIS_TAG
+        - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:latest
+        - docker push tomochain/tomoscan-client:latest
+        - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:$TRAVIS_TAG
+        - docker push tomochain/tomoscan-client:$TRAVIS_TAG
       after_success:
         - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
