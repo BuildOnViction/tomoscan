@@ -9,35 +9,42 @@ jobs:
   include:
     - stage: Tests
       script: echo "No tests at the moment"
-    - stage: Build and push Docker images
+
+    - stage: Build and push untagged commit into image tomoscan
       services:
         - docker
-      before_install:
-        - docker build -t tomochain/tomoscan-server -f Dockerfile.server .
-        - docker build -t tomochain/tomoscan-client -f Dockerfile.client .
-      deploy:
-        provider: script
-        script:
-          - bash docker_push.sh latest
-          - bash docker_push.sh $TRAVIS_BUILD_ID
-        on:
-          branch: master
-          tags: false
-      deploy:
-        provider: script
-        script:
-          - bash docker_push.sh latest
-          - bash docker_push.sh $TRAVIS_TAG
-        on:
-          branch: master
-          tags: true
-    - stage: Trigger rebuild of infrastructure images
-      sudo: false
-      script: bash docker_rebuild.sh
+      install: skip
+      before_script:
+        - docker build -t tomochain/tomoscan .
+        - docker run tomochain/tomoscan
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+        - docker tag tomochain/tomoscan tomochain/tomoscan:latest
+        - docker push tomochain/tomoscan:latest
+        - docker tag tomochain/tomoscan tomochain/tomoscan:$TRAVIS_BUILD_ID
+        - docker push tomochain/tomoscan:$TRAVIS_BUILD_ID
+      after_success:
+        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
+
+    - stage: Build and push tagged commit into image tomoscan
+      services:
+        - docker
+      install: skip
+      before_script:
+        - docker build -t tomochain/tomoscan .
+        - docker run tomochain/tomoscan
+      script:
+        - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+        - docker tag tomochain/tomoscan tomochain/tomoscan:latest
+        - docker push tomochain/tomoscan:latest
+        - docker tag tomochain/tomoscan tomochain/tomoscan:$TRAVIS_TAG
+        - docker push tomochain/tomoscan:$TRAVIS_TAG
+      after_success:
+        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
 stages:
   - name: Tests
-  - name: Build and push Docker images
-    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
-  - name: Trigger rebuild of infrastructure images
-    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
+  - name: Build and push untagged commit into image tomoscan
+    if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
+  - name: Build and push tagged commit into image tomoscan
+    if: type != pull_request AND branch = master AND tag = true AND repo = tomochain/tomoscan
