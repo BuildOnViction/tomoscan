@@ -10,7 +10,7 @@ let TokenHelper = {
     }),
 
     checkIsToken:async (code) => {
-        let tokenFuncs = this.getTokenFuncs()
+        let tokenFuncs = TokenHelper.getTokenFuncs()
         let isToken = false
         for (let name in tokenFuncs) {
             let codeCheck = tokenFuncs[name]
