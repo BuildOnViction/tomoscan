@@ -1,11 +1,7 @@
 'use strict'
 
-import Tx from '../models/Tx'
+const db = require('../models')
 import Web3Util from '../helpers/web3'
-import Account from '../models/Account'
-import Token from '../models/Token'
-import Block from '../models/Block'
-import Log from '../models/Log'
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
@@ -20,7 +16,7 @@ consumer.task = async function(job, done) {
 }
 
 async function getTxPending(hash) {
-    let tx = await Tx.findOne({ hash: hash })
+    let tx = await db.Tx.findOne({ hash: hash })
     let web3 = await Web3Util.getWeb3()
     if (!tx) {
         tx = {}
@@ -36,11 +32,11 @@ async function getTxPending(hash) {
 
     delete tx['_id']
 
-    await Tx.findOneAndUpdate({ hash: hash }, tx, { upsert: true, new: true })
+    await db.Tx.findOneAndUpdate({ hash: hash }, tx, { upsert: true, new: true })
 }
 
 async function getTxReceipt(hash) {
-    let tx = await Tx.findOne({ hash: hash })
+    let tx = await db.Tx.findOne({ hash: hash })
     let web3 = await Web3Util.getWeb3()
     if (!tx) {
         tx = {}
@@ -53,7 +49,7 @@ async function getTxReceipt(hash) {
     }
 
     if (tx.from !== null) {
-        let accountFrom = await Account.findOneAndUpdate(
+        let accountFrom = await db.Account.findOneAndUpdate(
             {hash: tx.from},
             {hash: tx.from, status: false},
             { upsert: true, new: true }
@@ -62,7 +58,7 @@ async function getTxReceipt(hash) {
         tx.from_model = accountFrom
     }
     if (tx.to !== null) {
-        let accountTo = await Account.findOneAndUpdate(
+        let accountTo = await db.Account.findOneAndUpdate(
             {hash: tx.to},
             {hash: tx.to, status: false},
             { upsert: true, new: true }
@@ -73,7 +69,7 @@ async function getTxReceipt(hash) {
         if (receipt && typeof receipt.contractAddress !== 'undefined') {
             let contractAddress = receipt.contractAddress.toLowerCase()
             tx.contractAddress = contractAddress
-            tx.to_model = await Account.findOneAndUpdate(
+            tx.to_model = await db.Account.findOneAndUpdate(
                 { hash: contractAddress },
                 {
                     hash: contractAddress,
@@ -89,7 +85,7 @@ async function getTxReceipt(hash) {
     if (receipt.blockNumber) {
         tx.blockNumber = receipt.blockNumber
         // Find block.
-        let block = await Block.findOne({ number: receipt.blockNumber })
+        let block = await db.Block.findOne({ number: receipt.blockNumber })
         if (block) {
             tx.block = block
         }
@@ -102,7 +98,7 @@ async function getTxReceipt(hash) {
             let log = logs[i]
             await parseLog(log)
             // Save log into db.
-            await Log.findOneAndUpdate({ id: log.id }, log,
+            await db.Log.findOneAndUpdate({ id: log.id }, log,
                 { upsert: true, new: true })
         }
     }
@@ -110,7 +106,7 @@ async function getTxReceipt(hash) {
 
     delete tx['_id']
 
-    await Tx.findOneAndUpdate({ hash: hash }, tx,
+    await db.Tx.findOneAndUpdate({ hash: hash }, tx,
         { upsert: true, new: true })
 
 }
@@ -124,7 +120,7 @@ async function parseLog(log) {
 
     let address = log.address.toLowerCase()
     // Add account and token if not exist in db.
-    let token = await Token.findOne({ hash: address })
+    let token = await db.Token.findOne({ hash: address })
     const q = require('./index')
     if (!token) {
         console.log('Queue account: ', address)

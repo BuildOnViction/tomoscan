@@ -1,9 +1,8 @@
 'use strict'
 
-import Block from '../models/Block'
 import web3 from 'web3'
 import { unformatAddress } from '../helpers/utils'
-import TokenTx from '../models/TokenTx'
+const db = require('../models')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
@@ -26,7 +25,7 @@ consumer.task = async function(job, done) {
     _log.value = web3.utils.hexToNumberString(log.data)
     _log.valueNumber = _log.value
     // Find block by blockNumber.
-    let block = await Block.findOne({ number: _log.blockNumber })
+    let block = await db.Block.findOne({ number: _log.blockNumber })
     if (block) {
         _log.block = block
     }
@@ -35,7 +34,7 @@ consumer.task = async function(job, done) {
 
     delete _log['_id']
 
-    let tokenTx = await TokenTx.findOneAndUpdate(
+    let tokenTx = await db.TokenTx.findOneAndUpdate(
         { transactionHash: transactionHash, from: _log.from, to: _log.to },
         _log,
         { upsert: true, new: true })

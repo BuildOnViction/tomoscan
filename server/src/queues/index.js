@@ -1,7 +1,5 @@
 'use strict'
 
-import AccountRepository from "../repositories/AccountRepository";
-
 const kue = require('kue')
 const config = require('config')
 const path = require('path')

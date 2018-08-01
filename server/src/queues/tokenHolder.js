@@ -1,6 +1,6 @@
 'use strict'
 
-import TokenHolder from '../models/TokenHolder'
+const db = require('../models')
 import BigNumber from 'bignumber.js'
 import { convertHexToFloat } from '../helpers/utils'
 
@@ -21,10 +21,10 @@ consumer.task = async function(job, done) {
 }
 
 async function updateQuality(hash, token, quantity) {
-    let holder = await TokenHolder.findOne({ hash: hash, token: token })
+    let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
     if (!holder) {
         // Create new.
-        holder = await TokenHolder.create({
+        holder = await db.TokenHolder.create({
             hash: hash,
             token: token,
             quantity: 0
