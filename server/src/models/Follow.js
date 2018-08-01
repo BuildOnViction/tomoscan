@@ -1,7 +1,9 @@
+'use strict'
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const schema = new mongoose.Schema({
+const Follow = new Schema({
     address: String,
     name: String,
     authCode: String,
@@ -15,6 +17,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let Follow = mongoose.model('Follow', schema)
-
-export default Follow
+module.exports = mongoose.model('Follow', Follow)

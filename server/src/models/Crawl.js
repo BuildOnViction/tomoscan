@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Crawl = new Schema({
     type: String,
     data: String,
     crawl: Boolean
@@ -9,6 +12,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let Crawl = mongoose.model('Crawl', schema)
-
-export default Crawl
+module.exports = mongoose.model('Crawl', Crawl)

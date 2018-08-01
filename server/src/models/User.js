@@ -1,9 +1,12 @@
+'use strict'
+
 const bcrypt = require('bcrypt-nodejs')
 const mongoose = require('mongoose')
+const Schema = mongoose.Schema
 const jwt = require('jsonwebtoken')
 const config = require('config')
 
-const schema = new mongoose.Schema({
+const User = new Schema({
     name: String,
     email: { type: String, unique: true, required: true },
     password: {
@@ -21,7 +24,7 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-schema.pre('save', function (callback) {
+User.pre('save', function (callback) {
     let user = this
 
     if (user.isModified('password')) {
@@ -31,14 +34,14 @@ schema.pre('save', function (callback) {
     callback()
 })
 
-schema.methods.authenticate = async function (password) {
+User.methods.authenticate = async function (password) {
     let user = this
     let hash = bcrypt.hashSync(password, config.get('APP_SECRET'))
 
     return user.password === hash
 }
 
-schema.methods.generateToken = async function (user) {
+User.methods.generateToken = async function (user) {
     if (!user) { return false }
     const payload = {
         id: user._id,
@@ -54,7 +57,7 @@ schema.methods.generateToken = async function (user) {
     return token ? `bearer ${token}` : false
 }
 
-schema.methods.toJSON = function () {
+User.methods.toJSON = function () {
     let obj = this.toObject()
 
     delete obj.password
@@ -62,6 +65,4 @@ schema.methods.toJSON = function () {
     return obj
 }
 
-let User = mongoose.model('User', schema)
-
-export default User
+module.exports = mongoose.model('User', User)

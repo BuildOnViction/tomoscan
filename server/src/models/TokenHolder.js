@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const TokenHolder = new Schema({
     hash: String,
     token: String,
     quantity: String,
@@ -12,6 +15,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let TokenHolder = mongoose.model('TokenHolder', schema)
-
-export default TokenHolder
+module.exports = mongoose.model('TokenHolder', TokenHolder)

@@ -1,7 +1,9 @@
+'use strict'
+
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const schema = new mongoose.Schema({
+const TokenTx = new Schema({
     address: String,
     blockHash: String,
     blockNumber: Number,
@@ -21,6 +23,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let TokenTx = mongoose.model('TokenTx', schema)
-
-export default TokenTx
+module.exports = mongoose.model('TokenTx', TokenTx)

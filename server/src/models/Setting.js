@@ -1,11 +1,12 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Setting = new Schema({
     meta_key: String, meta_value: String
 }, {
     versionKey: false
 })
 
-let Setting = mongoose.model('Setting', schema)
-
-export default Setting
+module.exports = mongoose.model('Setting', Setting)
