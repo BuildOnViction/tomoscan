@@ -2,10 +2,16 @@ version: '3'
 services:
   mongo:
     image: mongo:latest
-    volumes:
-    - ./db/dev:/data/db
+#    volumes:
+#    - ./db/dev:/data/db
     ports:
     - "27017:27017"
+
+  redis:
+    image: redis:latest
+    ports:
+    - "6379:6379"
+
   server:
     build:
       context: .
@@ -15,11 +21,13 @@ services:
      - "3333:3333"
      - "9229:9229"
     environment:
-     - MONGODB_URI=mongodb://mongo:27017/explorer
+     - MONGODB_URI=mongodb://mongo:27017/tomoscan
     links:
      - mongo
+     - redis
     depends_on:
      - mongo
+     - redis
     volumes:
      - ./server:/var/www
      - /var/www/node_modules
