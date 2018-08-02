@@ -3,6 +3,7 @@
 import Web3Util from './helpers/web3'
 const config = require('config')
 const q = require('./queues')
+const db = require('./models')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
@@ -17,7 +18,6 @@ let watch = async () => {
             let nextCrawl = minBlockCrawl + 20
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl; i <= nextCrawl; i++) {
-                console.log('Block queue: ', i)
                 await q.create('BlockProcess', {block: i})
                     .priority('normal').removeOnComplete(true).save()
 
