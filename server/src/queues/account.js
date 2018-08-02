@@ -37,7 +37,6 @@ consumer.task = async function(job, done) {
             await db.Token.findOneAndUpdate({ hash: hash },
                 { hash: hash, status: false }, { upsert: true, new: true })
             const q = require('./index')
-            console.log('Queue token: ', hash)
             await q.create('TokenProcess', {address: hash})
                 .priority('normal').removeOnComplete(true).save()
         }

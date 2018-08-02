@@ -6,10 +6,10 @@ import { convertHexToFloat } from '../helpers/utils'
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
-consumer.processNumber = 3
+consumer.processNumber = 12
 consumer.task = async function(job, done) {
     let token = JSON.parse(job.data.token)
-    console.log('Process token holder: ')
+    console.log('Process token holder: ', token.from, token.to, token.value)
     if (!token) { return false }
 
     // Add holder from.

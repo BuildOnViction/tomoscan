@@ -7,7 +7,7 @@ const db = require('../models')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
-consumer.processNumber = 2
+consumer.processNumber = 1
 consumer.task = async function(job, done) {
     let blockNumber = job.data.block
     console.log('Process block: ', blockNumber)
@@ -42,7 +42,6 @@ consumer.task = async function(job, done) {
 
     // Insert crawl for signer.
     const q = require('./index')
-    console.log('Queue account: ', signer)
     await q.create('AccountProcess', {address: signer})
         .priority('low').removeOnComplete(true).save()
 
@@ -72,7 +71,6 @@ consumer.task = async function(job, done) {
                         tx.from = tx.from.toLowerCase()
                         tx.from_model = accountFrom
                         // Insert crawl for address.
-                        console.log('Queue account: ', tx.from)
                         await q.create('AccountProcess', {address: tx.from})
                             .priority('low').removeOnComplete(true).save()
                     }
@@ -85,7 +83,6 @@ consumer.task = async function(job, done) {
                         tx.to = tx.to.toLowerCase()
                         tx.to_model = accountTo
                         // Insert crawl for address.
-                        console.log('Queue account: ', tx.to)
                         await q.create('AccountProcess', {address: tx.to})
                             .priority('low').removeOnComplete(true).save()
                     }
@@ -96,7 +93,6 @@ consumer.task = async function(job, done) {
                         { upsert: true, new: true })
 
                     // Insert crawl for tx.
-                    console.log('Queue Transaction: ', tx.hash)
                     await q.create('TransactionProcess', {hash: tx.hash})
                         .priority('critical').removeOnComplete(true).save()
 

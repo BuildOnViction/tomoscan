@@ -5,7 +5,7 @@ import Web3Util from '../helpers/web3'
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
-consumer.processNumber = 12
+consumer.processNumber = 3
 consumer.task = async function(job, done) {
     let hash = job.data.hash
     console.log('Process Transaction: ', hash)
@@ -123,14 +123,11 @@ async function parseLog(log) {
     let token = await db.Token.findOne({ hash: address })
     const q = require('./index')
     if (!token) {
-        console.log('Queue account: ', address)
-        console.log('Queue token: ', address)
         await q.create('AccountProcess', {address: address})
             .priority('low').removeOnComplete(true).save()
         await q.create('TokenProcess', {address: address})
             .priority('normal').removeOnComplete(true).save()
     }
-    console.log('Queue token transaction: ')
     await q.create('TokenTransactionProcess', {log: JSON.stringify(log)})
         .priority('normal').removeOnComplete(true).save()
 }
