@@ -2,8 +2,8 @@ version: '3'
 services:
   mongo:
     image: mongo:latest
-#    volumes:
-#    - ./db/dev:/data/db
+    volumes:
+    - ./db/dev:/data/db
     ports:
     - "27017:27017"
 
