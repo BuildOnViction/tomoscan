@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import _ from 'lodash'
 import async from 'async'
-import Block from '../models/Block'
+import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import BlockRepository from '../repositories/BlockRepository'
@@ -26,7 +26,7 @@ BlockController.get('/blocks', async (req, res, next) => {
             let max = offset + perPage
             max = max < maxBlockNumber ? max : maxBlockNumber
             blockNumbers = _.range(offset, max)
-            let existNumbers = await Block.distinct('number',
+            let existNumbers = await db.Block.distinct('number',
                 { number: { $in: blockNumbers } })
             remainNumbers = _.xor(blockNumbers, existNumbers)
         }
@@ -80,7 +80,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
         }
 
         // Find exist in db.
-        let block = await Block.findOne(query)
+        let block = await db.Block.findOne(query)
         if (!block) {
             block = await BlockRepository.addBlockByNumber(hashOrNumb)
         }
@@ -95,21 +95,10 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 
 BlockController.get('/blocks/signers/:slug', async (req, res) => {
     try {
-        let hashOrNumb = req.params.slug
-        let query = {}
-        if (_.isNumber(hashOrNumb)) {
-            query = { number: hashOrNumb }
-        } else {
-            query = { hash: hashOrNumb }
-        }
+        let blockNumber = req.params.slug
 
-        // Find exist in db.
-        let block = await Block.findOne(query)
-        if (!block) {
-            block = await BlockRepository.addBlockByNumber(hashOrNumb)
-        }
-
-        return res.json(block)
+        let blockSigner = await db.BlockSigner.findOne({blockNumber: blockNumber})
+        return res.json(blockSigner)
     } catch (e) {
         console.trace(e)
         console.log(e)
