@@ -1,11 +1,9 @@
 import { Router } from 'express'
-import Tx from '../models/Tx'
 import { paginate } from '../helpers/utils'
 import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
-import TokenTx from '../models/TokenTx'
 import TokenTxRepository from '../repositories/TokenTxRepository'
-import Block from '../models/Block'
+import db from "../models"
 
 const TxController = Router()
 
@@ -75,7 +73,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         let tx = await TxRepository.getTxPending(hash)
         tx = await TxRepository.getTxReceipt(hash)
         // Re-find tx from db with populates.
-        tx = await Tx.findOne({ hash: tx.hash })
+        tx = await db.Tx.findOne({ hash: tx.hash })
             .populate([{ path: 'block' }, { path: 'from_model' }, { path: 'to_model' }])
             .lean()
 
@@ -83,14 +81,14 @@ TxController.get('/txs/:slug', async (req, res) => {
             return res.status(404).send()
         }
         // Append token transfer to tx.
-        let tokenTxs = await TokenTx.find({ transactionHash: tx.hash })
+        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
             .lean()
             .exec()
 
         tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
         tx.tokenTxs = tokenTxs
 
-        let latestBlock = await Block.findOne().sort({ number: -1 })
+        let latestBlock = await db.Block.findOne().sort({ number: -1 })
         tx.latestBlockNumber = latestBlock.number
 
         return res.json(tx)

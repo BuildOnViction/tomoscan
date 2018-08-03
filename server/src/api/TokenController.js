@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import Token from '../models/Token'
 import TokenRepository from '../repositories/TokenRepository'
+import db from "../models"
 
 const TokenController = Router()
 
@@ -26,7 +26,7 @@ TokenController.get('/tokens', async (req, res) => {
 TokenController.get('/tokens/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
-        let token = await Token.findOne({ hash: hash }).lean()
+        let token = await db.Token.findOne({ hash: hash }).lean()
         if (!token) {
             return res.status(404).send()
         }

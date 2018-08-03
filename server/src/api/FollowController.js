@@ -1,9 +1,8 @@
 import { Router } from 'express'
 import authService from '../services/Auth'
 import { paginate } from '../helpers/utils'
-import Follow from '../models/Follow'
 import FollowRepository from '../repositories/FollowRepository'
-import Block from '../models/Block'
+import db from "../models"
 
 const FollowController = Router()
 
@@ -39,7 +38,7 @@ FollowController.post('/follows', authService.authenticate(),
                 return res.sendStatus(401)
             }
 
-            let lastBlock = await Block.findOne().sort({ number: -1 })
+            let lastBlock = await db.Block.findOne().sort({ number: -1 })
             let blockNumber = lastBlock ? lastBlock.number : 0
             let follow = await FollowRepository.firstOrUpdate(req, user, blockNumber)
 
@@ -61,7 +60,7 @@ FollowController.post('/follows/:id', authService.authenticate(),
             }
 
             let id = req.params.id
-            let follow = await Follow.findOne({ _id: id, user: user._id })
+            let follow = await db.Follow.findOne({ _id: id, user: user._id })
             if (!follow) {
                 return res.sendStatus(404)
             }
@@ -89,7 +88,7 @@ FollowController.delete('/follows/:id', authService.authenticate(),
             }
 
             let id = req.params.id
-            let follow = await Follow.findOneAndRemove(
+            let follow = await db.Follow.findOneAndRemove(
                 { _id: id, user: user._id })
 
             return res.json(follow)

@@ -93,4 +93,28 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     }
 })
 
+BlockController.get('/blocks/signers/:slug', async (req, res) => {
+    try {
+        let hashOrNumb = req.params.slug
+        let query = {}
+        if (_.isNumber(hashOrNumb)) {
+            query = { number: hashOrNumb }
+        } else {
+            query = { hash: hashOrNumb }
+        }
+
+        // Find exist in db.
+        let block = await Block.findOne(query)
+        if (!block) {
+            block = await BlockRepository.addBlockByNumber(hashOrNumb)
+        }
+
+        return res.json(block)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 export default BlockController

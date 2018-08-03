@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import Token from '../models/Token'
 import TokenHolderRepository from '../repositories/TokenHolderRepository'
+import db from "../models";
 
 const TokenHolderController = Router()
 
@@ -25,7 +25,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
             // Get token totalSupply.
             let totalSupply = null
             if (address) {
-                let token = await Token.findOne({ hash: address })
+                let token = await db.Token.findOne({ hash: address })
                 if (token) {
                     totalSupply = token.totalSupply
                 }
@@ -42,7 +42,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
             for (let i = 0; i < length; i++) {
                 tokenHashes.push(items[i]['token'])
             }
-            let tokens = await Token.find({ hash: { $in: tokenHashes } })
+            let tokens = await db.Token.find({ hash: { $in: tokenHashes } })
             if (tokens.length) {
                 for (let i = 0; i < length; i++) {
                     for (let j = 0; j < tokens.length; j++) {
