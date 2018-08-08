@@ -39,7 +39,7 @@
                         </tr>
                         <tr>
                             <td>Transactions</td>
-                            <td>{{ block.e_tx }} transactions</td>
+                            <td>{{ block.e_tx ? block.e_tx : block.transactions.length }} transactions</td>
                         </tr>
                         <tr>
                             <td>Hash</td>
@@ -113,6 +113,13 @@
                                         v-else
                                         :maxChars="20">{{ block.miner }}</span>
                                 </nuxt-link>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Finality</td>
+                            <td>
+                                <span :class="block.finality ? 'text-success' : 'text-danger'">
+                                    {{ block.finality ? 'Yes' : 'No' }}</span>
                             </td>
                         </tr>
                         <tr>
