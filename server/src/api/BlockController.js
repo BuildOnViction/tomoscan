@@ -97,8 +97,10 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
     try {
         let blockNumber = req.params.slug
 
-        let blockSigner = await db.BlockSigner.findOne({blockNumber: blockNumber})
-        return res.json(blockSigner)
+        let web3 = await Web3Util.getWeb3()
+
+        let blockSigner = await web3.eth.getBlock(blockNumber)
+        return res.json({signers: blockSigner.signers})
     } catch (e) {
         console.trace(e)
         console.log(e)
