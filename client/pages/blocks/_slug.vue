@@ -171,6 +171,12 @@
                     :block="number.toString()"
                     :page="this"/>
             </b-tab>
+            <b-tab
+                :title="'BlockSigner (' + blockSignerCount + ')'">
+                <block-signer
+                    :block="number.toString()"
+                    :page="this"/>
+            </b-tab>
         </b-tabs>
     </section>
 </template>
@@ -178,11 +184,13 @@
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
 import ReadMore from '~/components/ReadMore'
+import BlockSigner from '~/components/BlockSigner'
 
 export default {
     components: {
         TableTx,
-        ReadMore
+        ReadMore,
+        BlockSigner
     },
     mixins: [mixin],
     head () {
@@ -196,7 +204,8 @@ export default {
             block: null,
             timestamp_moment: null,
             loading: true,
-            txsCount: 0
+            txsCount: 0,
+            blockSignerCount: 0
         }
     },
     created () {
