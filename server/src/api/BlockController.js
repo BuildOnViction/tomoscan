@@ -80,9 +80,23 @@ BlockController.get('/blocks/:slug', async (req, res) => {
         }
 
         // Find exist in db.
-        let block = await db.Block.findOne(query)
+        // let block = await db.Block.findOne(query)
+        let block = await db.Block.findOne({hash: hashOrNumb})
         if (!block) {
-            block = await BlockRepository.addBlockByNumber(hashOrNumb)
+            block = await db.Block.findOne({number: hashOrNumb})
+        }
+        if (!block) {
+            let web3 = await Web3Util.getWeb3()
+            block = await web3.eth.getBlock(hashOrNumb)
+            // block = await BlockRepository.addBlockByNumber(hashOrNumb)
+        }
+
+        if (block && !block.finality) {
+            let web3 = await Web3Util.getWeb3()
+            let b = await web3.eth.getBlock(hashOrNumb)
+            block.finality = b.finality
+            block.save()
+
         }
 
         return res.json(block)
@@ -99,8 +113,8 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
 
         let web3 = await Web3Util.getWeb3()
 
-        let blockSigner = await web3.eth.getBlock(blockNumber)
-        return res.json({signers: blockSigner.signers})
+        let block = await web3.eth.getBlock(blockNumber)
+        return res.json({signers: block.signers})
     } catch (e) {
         console.trace(e)
         console.log(e)
