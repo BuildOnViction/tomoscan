@@ -33,6 +33,19 @@ consumer.task = async function(job, done) {
     _block.timestamp = _block.timestamp * 1000
     _block.e_tx = endTxCount
     _block.signer = signer
+
+    let finalityNumber
+    if (_block.finality){
+        finalityNumber = parseInt(_block.finality)
+    } else {
+        finalityNumber = 0
+    }
+
+    if (finalityNumber >= 75) {
+        _block.finality = true
+    } else {
+        _block.finality = false
+    }
     let txs = _block.transactions
     delete _block['transactions']
     _block.status = true
@@ -45,10 +58,24 @@ consumer.task = async function(job, done) {
     await q.create('AccountProcess', {address: signer})
         .priority('low').removeOnComplete(true).save()
 
+    let signers
+    if (_block.signers && _block.signers.length) {
+        signers = _block.signers
+    } else {
+        signers = []
+    }
     delete _block['_id']
+    delete _block['signers']
 
     block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
         { upsert: true, new: true })
+
+    await db.BlockSigner.findOneAndUpdate({ blockNumber: blockNumber },
+        {
+            blockNumber: blockNumber,
+            finality: _block.finality,
+            signers: signers
+        }, { upsert: true, new: true })
 
     // Sync txs.
     let txCount = db.Tx.find({ blockNumber: block.number }).count()
