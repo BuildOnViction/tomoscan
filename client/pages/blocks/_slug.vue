@@ -39,7 +39,8 @@
                         </tr>
                         <tr>
                             <td>Transactions</td>
-                            <td>{{ block.e_tx ? block.e_tx : block.transactions.length }} transactions</td>
+                            <td>{{ (block.e_tx || block.e_tx >= 0) ? block.e_tx : block.transactions.length }}
+                                transactions</td>
                         </tr>
                         <tr>
                             <td>Hash</td>
@@ -175,13 +176,13 @@
             <b-tab
                 :title="'Transactions (' + txsCount + ')'">
                 <table-tx
-                    :block="number.toString()"
+                    :block="number"
                     :page="this"/>
             </b-tab>
             <b-tab
                 :title="'BlockSigner (' + blockSignerCount + ')'">
                 <block-signer
-                    :block="number.toString()"
+                    :block="number"
                     :page="this"/>
             </b-tab>
         </b-tabs>
