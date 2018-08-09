@@ -72,12 +72,6 @@ BlockController.get('/blocks', async (req, res, next) => {
 BlockController.get('/blocks/:slug', async (req, res) => {
     try {
         let hashOrNumb = req.params.slug
-        let query = {}
-        if (_.isNumber(hashOrNumb)) {
-            query = { number: hashOrNumb }
-        } else {
-            query = { hash: hashOrNumb }
-        }
 
         // Find exist in db.
         // let block = await db.Block.findOne(query)
@@ -85,17 +79,35 @@ BlockController.get('/blocks/:slug', async (req, res) => {
         if (!block) {
             block = await db.Block.findOne({number: hashOrNumb})
         }
+        let check_finality = true
         if (!block) {
+            check_finality = false
             let web3 = await Web3Util.getWeb3()
             block = await web3.eth.getBlock(hashOrNumb)
             // block = await BlockRepository.addBlockByNumber(hashOrNumb)
         }
 
-        if (block && !block.finality) {
+        if (check_finality && !block.finality) {
             let web3 = await Web3Util.getWeb3()
             let b = await web3.eth.getBlock(hashOrNumb)
-            block.finality = b.finality
+            let finalityNumber
+            if (b.finality){
+                finalityNumber = parseInt(b.finality)
+            } else {
+                finalityNumber = 0
+            }
+            let finality = false
+            if (finalityNumber >= 75) {
+                finality = true
+            }
+            block.finality = finality
             block.save()
+
+            await db.BlockSigner.findOneAndUpdate({blockNumber: block.number}, {
+                blockNumber: block.number,
+                finality: finality,
+                signers: b.signers
+            }, { upsert: true, new: true })
 
         }
 
@@ -114,7 +126,11 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
         let web3 = await Web3Util.getWeb3()
 
         let block = await web3.eth.getBlock(blockNumber)
-        return res.json({signers: block.signers})
+        let signers = []
+        if (block.signers) {
+            signers = block.signers
+        }
+        return res.json({signers: signers})
     } catch (e) {
         console.trace(e)
         console.log(e)
