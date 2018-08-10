@@ -4,7 +4,7 @@ import async from 'async'
 import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
-import BlockRepository from '../repositories/BlockRepository'
+import BlockHelper from '../helpers/block'
 
 const BlockController = Router()
 
@@ -34,7 +34,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         // Insert blocks remain.
         async.each(remainNumbers, async (number, next) => {
             if (number) {
-                let e = await BlockRepository.addBlockByNumber(number)
+                let e = await BlockHelper.processBlock(number)
                 if (!e) next(e)
 
                 next()
