@@ -122,14 +122,29 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 BlockController.get('/blocks/signers/:slug', async (req, res) => {
     try {
         let blockNumber = req.params.slug
+        let blockSigner = await db.BlockSigner.findOne({blockNumber: blockNumber})
 
-        let web3 = await Web3Util.getWeb3()
-
-        let block = await web3.eth.getBlock(blockNumber)
-        let signers = []
-        if (block.signers) {
-            signers = block.signers
+        let signers
+        let checkInChain = false
+        if (blockSigner) {
+            signers = blockSigner.signers
+            if (signers.length === 0) {
+                checkInChain = true
+            }
+        } else {
+            checkInChain = true
         }
+
+        if (checkInChain){
+            let web3 = await Web3Util.getWeb3()
+
+            let block = await web3.eth.getBlock(blockNumber)
+            signers = []
+            if (block.signers) {
+                signers = block.signers
+            }
+        }
+
         return res.json({signers: signers})
     } catch (e) {
         console.trace(e)
