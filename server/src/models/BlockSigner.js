@@ -14,7 +14,7 @@ var BlockSigner = new Schema({
             index: true
         }
     ],
-    finality: { type: Boolean, default: false },
+    finality: { type: Number, default: 0 },
 
 }, { timestamps: true })
 

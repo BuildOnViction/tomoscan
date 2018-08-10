@@ -35,11 +35,12 @@ let BlockHelper = {
             finalityNumber = 0
         }
 
-        if (finalityNumber >= 75) {
-            _block.finality = true
-        } else {
-            _block.finality = false
+        // blockNumber = 0 is genesis block
+        if (parseInt(blockNumber) === 0) {
+            finalityNumber = 100
         }
+
+        _block.finality = finalityNumber
         let txs = _block.transactions
         delete _block['transactions']
         _block.status = true
@@ -67,7 +68,7 @@ let BlockHelper = {
         await db.BlockSigner.findOneAndUpdate({ blockNumber: blockNumber },
             {
                 blockNumber: blockNumber,
-                finality: _block.finality,
+                finality: finalityNumber,
                 signers: signers
             }, { upsert: true, new: true })
 

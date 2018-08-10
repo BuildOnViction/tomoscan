@@ -87,7 +87,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
             // block = await BlockRepository.addBlockByNumber(hashOrNumb)
         }
 
-        if (check_finality && !block.finality) {
+        if (check_finality && parseInt(block.finality) < 100) {
             let web3 = await Web3Util.getWeb3()
             let b = await web3.eth.getBlock(hashOrNumb)
             let finalityNumber
@@ -96,16 +96,16 @@ BlockController.get('/blocks/:slug', async (req, res) => {
             } else {
                 finalityNumber = 0
             }
-            let finality = false
-            if (finalityNumber >= 75) {
-                finality = true
+            if (block.number === 0) {
+                finalityNumber = 100
             }
-            block.finality = finality
+
+            block.finality = finalityNumber
             block.save()
 
             await db.BlockSigner.findOneAndUpdate({blockNumber: block.number}, {
                 blockNumber: block.number,
-                finality: finality,
+                finality: finalityNumber,
                 signers: b.signers
             }, { upsert: true, new: true })
 

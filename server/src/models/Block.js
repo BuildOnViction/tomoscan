@@ -24,7 +24,7 @@ const Block = new Schema({
     uncles: Array,
     signer: String,
     status: { type: Boolean, default: false },
-    finality: { type: Boolean, default: false },
+    finality: { type: Number, default: 0 },
     e_tx: { type: Number, default: 0 }
 }, {
     timestamps: true,
