@@ -127,8 +127,10 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
         let signers
         let checkInChain = false
         if (blockSigner) {
-            signers = blockSigner.signers
-            if (signers.length === 0) {
+            if (blockSigner.signers) {
+                signers = blockSigner.signers
+            }
+            else {
                 checkInChain = true
             }
         } else {
