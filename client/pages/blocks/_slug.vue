@@ -118,10 +118,7 @@
                         </tr>
                         <tr>
                             <td>Finality</td>
-                            <td>
-                                <span :class="block.finality ? 'text-success' : 'text-danger'">
-                                    {{ block.finality ? 'Yes' : 'No' }}</span>
-                            </td>
+                            <td>{{ block.finality }} %</td>
                         </tr>
                         <tr>
                             <td>Difficulty</td>
