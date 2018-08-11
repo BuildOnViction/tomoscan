@@ -12,6 +12,7 @@ import FollowController from './FollowController'
 import SettingController from './SettingController'
 import ContractController from './ContractController'
 import LogController from './LogController'
+import RewardController from "./RewardController"
 
 const router = Router()
 
@@ -28,5 +29,6 @@ router.use(FollowController)
 router.use(SettingController)
 router.use(ContractController)
 router.use(LogController)
+router.use(RewardController)
 
 export default router
