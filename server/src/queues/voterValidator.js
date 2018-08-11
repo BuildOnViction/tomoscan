@@ -22,6 +22,15 @@ consumer.task = async function(job, done) {
 
     await validators.forEach(async (validator) => {
         let listVoters = []
+        let voterCap = await validatorContract.methods.getVoterCap(validator)
+        await listVoters.push({
+            voter: validator,
+            epoch: epoch,
+            fromBlock: startBlock,
+            toBlock: endBlock,
+            masterNode: validator,
+            balance: voterCap
+        })
         let voters = await validatorContract.methods.getVoters(validator)
         await voters.forEach(async (voter) => {
             let voterBalance = await validatorContract.methods.getVoterCap(validator, voter)
