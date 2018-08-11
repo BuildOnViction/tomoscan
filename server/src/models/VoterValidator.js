@@ -4,6 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const VoterValidator = new Schema({
+    voter: { type: String },
     epoch: { type: Number },
     fromBlock: { type: Number },
     toBlock: { type: Number },
