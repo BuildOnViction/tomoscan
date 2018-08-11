@@ -1,0 +1,54 @@
+'use strict'
+
+const db = require('../models')
+const config = require('config')
+import Web3Util from '../helpers/web3'
+
+const TomoValidatorABI = require('../contracts/abi/TomoValidator')
+const contractAddress = require('../contracts/contractAddress')
+
+const consumer = {}
+consumer.name = 'RewardVoterProcess'
+consumer.processNumber = 4
+consumer.task = async function(job, done) {
+    let validator = job.data.validator
+    let validatorSignNumber = job.data.validatorSignNumber
+    let totalSignNumber = job.data.totalSignNumber
+    console.log('Process reward at epoch: ', epoch)
+
+    let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+    let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+
+    let reward4voter = config.get('REWARD') * config.get('VOTER_REWARD_PERCENT')
+
+    let web3 = await Web3Util.getWeb3()
+    let validatorContract = await web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+
+    let voters = await validatorContract.methods.getVoters(validator)
+
+    let totalVoterCap = 0
+    let listVoters = []
+    await voters.forEach(async (voter) => {
+        let voterCap = await validatorContract.methods.getVoterCap(validator, voter)
+        totalVoterCap += parseFloat(voterCap)
+        listVoters.push({
+            address: voter,
+            balance: voterCap
+        })
+    })
+
+    await listVoters.forEach(async (voter) => {
+
+        await q.create('AddRewardToAccount', {
+            address: voter.address,
+            balance: ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
+        })
+            .priority('normal').removeOnComplete(true).save()
+    })
+
+
+
+    done()
+}
+
+module.exports = consumer
