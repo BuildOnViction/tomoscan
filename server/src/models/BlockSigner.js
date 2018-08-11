@@ -5,7 +5,7 @@ var Schema = mongoose.Schema
 
 var BlockSigner = new Schema({
     blockNumber: {
-        type: String,
+        type: Number,
         index: true
     },
     signers: [
