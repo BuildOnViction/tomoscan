@@ -19,6 +19,14 @@ consumer.task = async function(job, done) {
             .priority('critical').removeOnComplete(true).save()
     }
 
+    if (parseInt(blockNumber) % config.get('BLOCK_PER_EPOCH') === 0) {
+        let epoch = parseInt(blockNumber)/config.get('BLOCK_PER_EPOCH')
+        if (epoch > 1) {
+            await q.create('RewardValidatorProcess', {epoch: epoch - 1})
+                .priority('critical').removeOnComplete(true).save()
+        }
+    }
+
     done()
 }
 
