@@ -11,6 +11,7 @@ const consumer = {}
 consumer.name = 'RewardVoterProcess'
 consumer.processNumber = 4
 consumer.task = async function(job, done) {
+    let epoch = job.data.epoch
     let validator = job.data.validator
     let validatorSignNumber = job.data.validatorSignNumber
     let totalSignNumber = job.data.totalSignNumber
@@ -37,16 +38,26 @@ consumer.task = async function(job, done) {
         })
     })
 
+    let rewardVoter = []
+
     await listVoters.forEach(async (voter) => {
+        let reward = ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
 
         await q.create('AddRewardToAccount', {
             address: voter.address,
-            balance: ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
+            balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
+
+        let lockBalance = await validatorContract.methods.getVoterCap(validator)
+        rewardVoter.push({
+            address: voter,
+            masterNode: validator,
+            voteBalance: lockBalance,
+            reward: reward
+        })
     })
-
-
+    await db.Reward.update({epoch: epoch}, {reward: {$set: {voter: rewardVoter}}})
 
     done()
 }
