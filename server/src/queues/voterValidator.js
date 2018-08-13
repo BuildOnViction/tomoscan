@@ -17,23 +17,17 @@ consumer.task = async function(job, done) {
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     let web3 = await Web3Util.getWeb3()
-    let validatorContract = await web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-    let validators = await validatorContract.methods.getCandidates()
+    let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+    let validators = await validatorContract.methods.getCandidates().call()
+    console.log('validators: ', validators)
 
     await validators.forEach(async (validator) => {
+        console.log('validator: ', validator)
         let listVoters = []
-        let voterCap = await validatorContract.methods.getVoterCap(validator)
-        await listVoters.push({
-            voter: validator,
-            epoch: epoch,
-            fromBlock: startBlock,
-            toBlock: endBlock,
-            masterNode: validator,
-            balance: voterCap
-        })
-        let voters = await validatorContract.methods.getVoters(validator)
+        let voters = await validatorContract.methods.getVoters(validator).call()
+        console.log('voters: ', voters)
         await voters.forEach(async (voter) => {
-            let voterBalance = await validatorContract.methods.getVoterCap(validator, voter)
+            let voterBalance = await validatorContract.methods.getVoterCap(validator, voter).call()
             await listVoters.push({
                 voter: voter,
                 epoch: epoch,
@@ -51,6 +45,7 @@ consumer.task = async function(job, done) {
         })
 
         if (listVoters.length > 0) {
+            console.log('list voters: ', listVoters)
             await db.VoterValidator.insertMany(listVoters)
         }
     })
