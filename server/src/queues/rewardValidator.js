@@ -41,7 +41,7 @@ consumer.task = async function(job, done) {
     let reward4voter = config.get('REWARD') * config.get('VOTER_REWARD_PERCENT')
 
     let web3 = await Web3Util.getWeb3()
-    let validatorContract = await web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+    let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
 
     // Calculate total sign number in a epoch
     let listSignNumber = await db.BlockSigner.aggregate(
@@ -56,7 +56,7 @@ consumer.task = async function(job, done) {
     })
     // end calculate
 
-    await db.Reward.insert({
+    await db.Reward.findOneAndUpdate({epoch: epoch}, {
         epoch: epoch,
         fromBlock: startBlock,
         toBlock: endBlock,
@@ -65,11 +65,11 @@ consumer.task = async function(job, done) {
             masterNode: [],
             voter: []
         }
-    })
+    }, { upsert: true, new: true })
 
     const q = require('./index')
 
-    let validators = await validatorContract.methods.getCandidates()
+    let validators = await validatorContract.methods.getCandidates().call()
     let totalValidator = await validators.length
     let rewardValidator = []
     await validators.forEach(async (validator) => {
@@ -93,7 +93,7 @@ consumer.task = async function(job, done) {
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator)
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, validator).call()
         await rewardValidator.push({
             address: validator,
             numberBlockSigner: validatorSignNumber,
