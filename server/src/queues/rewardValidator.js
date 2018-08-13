@@ -56,29 +56,53 @@ consumer.task = async function(job, done) {
     })
     // end calculate
 
+    await db.Reward.insert({
+        epoch: epoch,
+        fromBlock: startBlock,
+        toBlock: endBlock,
+        totalReward: config.get('REWARD'),
+        reward: {
+            masterNode: [],
+            voter: []
+        }
+    })
+
     const q = require('./index')
 
     let validators = await validatorContract.methods.getCandidates()
     let totalValidator = await validators.length
+    let rewardValidator = []
     await validators.forEach(async (validator) => {
         let validatorSignNumber = await db.BlockSigner
             .count({blockNumber: {$gte: startBlock, $lte: endBlock}, signers: {$elemMatch: {$eq: validator}}})
 
         await q.create('RewardVoterProcess', {
+            epoch: epoch,
             validator: validator,
             validatorSignNumber: validatorSignNumber,
             totalSignNumber: totalSignNumber
         })
             .priority('normal').removeOnComplete(true).save()
 
+        let reward = (reward4MasterNode / totalValidator) * (validatorSignNumber / totalSignNumber)
+
         // Add reward for validator
         await q.create('AddRewardToAccount', {
             address: validator,
-            balance: (reward4MasterNode / totalValidator) * (validatorSignNumber / totalSignNumber),
+            balance: reward,
         })
             .priority('normal').removeOnComplete(true).save()
 
+        let lockBalance = await validatorContract.methods.getVoterCap(validator)
+        await rewardValidator.push({
+            address: validator,
+            numberBlockSigner: validatorSignNumber,
+            lockBalance: lockBalance,
+            reward: reward
+        })
+
     })
+    await db.Reward.update({epoch: epoch}, {reward: {$set: {masterNode: rewardValidator}}})
 
     // Add reward for foundation
     await q.create('AddRewardToAccount', {
