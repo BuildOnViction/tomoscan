@@ -13,7 +13,7 @@ consumer.task = async function(job, done) {
     await BlockHelper.processBlock(blockNumber)
     const q = require('./index')
 
-    if (parseInt(blockNumber) % config.get('BLOCK_PER_EPOCH') === 800) {
+    if (parseInt(blockNumber) % config.get('BLOCK_PER_EPOCH') === config.get('BLOCK_CALCULATE_VOTER')) {
         let epoch = Math.trunc(parseInt(blockNumber) / config.get('BLOCK_PER_EPOCH'))
         await q.create('VoterProcess', {epoch: epoch})
             .priority('critical').removeOnComplete(true).save()
