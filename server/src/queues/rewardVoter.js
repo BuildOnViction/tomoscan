@@ -23,14 +23,14 @@ consumer.task = async function(job, done) {
     let reward4voter = config.get('REWARD') * config.get('VOTER_REWARD_PERCENT')
 
     let web3 = await Web3Util.getWeb3()
-    let validatorContract = await web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+    let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
 
-    let voters = await validatorContract.methods.getVoters(validator)
+    let voters = await validatorContract.methods.getVoters(validator).call()
 
     let totalVoterCap = 0
     let listVoters = []
     await voters.forEach(async (voter) => {
-        let voterCap = await validatorContract.methods.getVoterCap(validator, voter)
+        let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
         totalVoterCap += parseFloat(voterCap)
         listVoters.push({
             address: voter,
@@ -49,7 +49,7 @@ consumer.task = async function(job, done) {
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator)
+        let lockBalance = await validatorContract.methods.getVoterCap(validator).call()
         rewardVoter.push({
             address: voter,
             masterNode: validator,
