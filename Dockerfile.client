@@ -30,4 +30,5 @@ RUN apk --no-cache --virtual deps add \
 
 EXPOSE 3000
 
-ENTRYPOINT ["pm2-docker", "start", "pm2.json", "--only", "prod"]
+ENTRYPOINT ["npm"]
+CMD ["start"]
