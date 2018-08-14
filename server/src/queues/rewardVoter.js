@@ -29,35 +29,50 @@ consumer.task = async function(job, done) {
 
     let totalVoterCap = 0
     let listVoters = []
-    await voters.forEach(async (voter) => {
+    let voterMap = voters.map(async (voter) => {
         let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
         totalVoterCap += parseFloat(voterCap)
         listVoters.push({
-            address: voter,
+            address: voter.toLowerCase(),
             balance: voterCap
         })
     })
+    await Promise.all(voterMap)
 
     let rewardVoter = []
+    const q = require('./index')
 
-    await listVoters.forEach(async (voter) => {
+    let listVoterMap = listVoters.map(async (voter) => {
         let reward = ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
 
         await q.create('AddRewardToAccount', {
-            address: voter.address,
+            address: voter.address.toLowerCase(),
             balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator).call()
-        rewardVoter.push({
-            address: voter,
-            masterNode: validator,
-            voteBalance: lockBalance,
-            reward: reward
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, voter.address.toLowerCase()).call()
+
+        await rewardVoter.push({
+            epoch: epoch,
+            startBlock: startBlock,
+            endBlock: endBlock,
+            address: voter.address.toLowerCase(),
+            isMasterNode: false,
+            lockBalance: lockBalance,
+            reward: reward,
+            numberBlockSigner: validatorSignNumber,
         })
+
+        if (rewardVoter.length === 5000) {
+            await db.Reward.insertMany(rewardVoter)
+            rewardVoter = []
+        }
     })
-    await db.Reward.update({epoch: epoch}, {reward: {$set: {voter: rewardVoter}}})
+    await Promise.all(listVoterMap)
+    if (rewardVoter.length > 0) {
+        await db.Reward.insertMany(rewardVoter)
+    }
 
     done()
 }
