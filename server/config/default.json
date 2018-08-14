@@ -1,6 +1,5 @@
 {
   "APP_ENV": "prod",
-  "MONGODB": "localhost",
   "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
   "redis": {
     "host": "redis",
@@ -29,9 +28,8 @@
 
   "BLOCK_PER_EPOCH": 900,
   "BLOCK_CALCULATE_VOTER": 800,
-  "REWARD": 220,
+  "REWARD": 250,
   "MASTER_NODE_REWARD_PERCENT": 40,
   "FOUNDATION_REWARD_PERCENT": 10,
-  "VOTER_REWARD_PERCENT": 10
-
+  "VOTER_REWARD_PERCENT": 50
 }
