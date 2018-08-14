@@ -39,7 +39,8 @@
                         </tr>
                         <tr>
                             <td>Transactions</td>
-                            <td>{{ block.e_tx }} transactions</td>
+                            <td>{{ (block.e_tx || block.e_tx >= 0) ? block.e_tx : block.transactions.length }}
+                                transactions</td>
                         </tr>
                         <tr>
                             <td>Hash</td>
@@ -116,6 +117,10 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Finality</td>
+                            <td>{{ block.finality }} %</td>
+                        </tr>
+                        <tr>
                             <td>Difficulty</td>
                             <td>{{ formatNumber(block.difficulty) }}</td>
                         </tr>
@@ -168,7 +173,13 @@
             <b-tab
                 :title="'Transactions (' + txsCount + ')'">
                 <table-tx
-                    :block="number.toString()"
+                    :block="number"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
+                :title="'BlockSigner (' + blockSignerCount + ')'">
+                <block-signer
+                    :block="number"
                     :page="this"/>
             </b-tab>
         </b-tabs>
@@ -178,11 +189,13 @@
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
 import ReadMore from '~/components/ReadMore'
+import BlockSigner from '~/components/BlockSigner'
 
 export default {
     components: {
         TableTx,
-        ReadMore
+        ReadMore,
+        BlockSigner
     },
     mixins: [mixin],
     head () {
@@ -196,7 +209,8 @@ export default {
             block: null,
             timestamp_moment: null,
             loading: true,
-            txsCount: 0
+            txsCount: 0,
+            blockSignerCount: 0
         }
     },
     created () {

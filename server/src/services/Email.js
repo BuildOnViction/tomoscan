@@ -2,12 +2,13 @@ import nodemailer from 'nodemailer'
 import sgTransport from 'nodemailer-sendgrid-transport'
 import path from 'path'
 import Email from 'email-templates'
+const config = require('config')
 
 class EmailService {
     constructor () {
         const options = {
             auth: {
-                api_key: process.env.SENDGRID_API_KEY
+                api_key: config.get('SENDGRID_API_KEY')
             }
         }
         this.transporter = nodemailer.createTransport(sgTransport(options))
@@ -42,13 +43,13 @@ class EmailService {
             to: tx.to,
             wei: tx.value,
             blockNumber: tx.blockNumber,
-            txLink: process.env.CLIENT_URL + 'txs/' + tx.hash,
-            addressLink: process.env.CLIENT_URL + 'address/' + address
+            txLink: config.get('CLIENT_URL') + 'txs/' + tx.hash,
+            addressLink: config.get('CLIENT_URL') + 'address/' + address
         })
     }
 
     async send (templatePath, to, subject, params) {
-        if (process.env.APP_ENV === 'dev') {
+        if (config.get('APP_ENV') === 'dev') {
             console.log(JSON.stringify({ templatePath, to, subject, params }))
         }
         let email = new Email({
@@ -64,7 +65,7 @@ class EmailService {
             transport: this.transporter,
             send: true,
             message: {
-                from: process.env.SENDER_EMAIL
+                from: config.get('SENDER_EMAIL')
             }
         })
 

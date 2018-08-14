@@ -30,7 +30,6 @@ The explorer is still under heavy development, if you find any problems please c
 Copy .env files
 ```bash
 cp client/.env.example client/.env
-cp server/.env.example server/.env
 ```
 
 Build & up docker
@@ -48,18 +47,38 @@ API_URL=http://localhost:3333
 WS_URL=http://localhost:3333
 BASE_UNIT=TOMO
 ```
-#### Server (in `server/.env`)
-```bash
-MONGODB='localhost'
-MONGODB_URI=mongodb://localhost:27017/explorer
+#### Server (in `server/src/config/default.json`)
+```
+cp server/src/config/default.json server/src/config/local.json
+```
+```
+{
+  "APP_ENV": "prod",
+  "MONGODB": "localhost",
+  "MONGODB_URI": "mongodb://localhost:27017/explorer",
+  "redis": {
+    "host": "localhost",
+    "port": 6379,
+    "password": null,
+    "prefix": "TomoScan"
+  },
 
-WEB3_URI=https://testnet.tomochain.com/
-WEB3_WS_URI=wss://testnet.tomochain.com/ws
-BASE_UNIT=TOMO
-PORT=3333
-DEBUG=express:*
+  "WEB3_URI": "https://testnet.tomochain.com/",
+  "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",
+  "DEBUG_QUERY": false,
 
-CLIENT_URL=http://localhost:3000/
-CMC_ID=2570
-SLACK_WEBHOOK_URL=
+  "BASE_UNIT": "TOMO",
+  "PORT": 3333,
+  "DEBUG": "express:*",
+
+  "JWT_SECRET": "RANDOM_HASH",
+  "APP_SECRET": "RANDOM_HASH",
+
+  "SENDGRID_API_KEY": "",
+  "SENDER_EMAIL": "",
+
+  "CLIENT_URL": "http://localhost:3000/",
+  "CMC_ID": 2570,
+  "SLACK_WEBHOOK_URL": ""
+}
 ```

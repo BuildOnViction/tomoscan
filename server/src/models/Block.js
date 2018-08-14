@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Block = new Schema({
     number: { type: Number, unique: true },
     hash: { type: String },
     parentHash: String,
@@ -21,6 +24,7 @@ const schema = new mongoose.Schema({
     uncles: Array,
     signer: String,
     status: { type: Boolean, default: false },
+    finality: { type: Number, default: 0 },
     e_tx: { type: Number, default: 0 }
 }, {
     timestamps: true,
@@ -28,6 +32,4 @@ const schema = new mongoose.Schema({
     toJSON: { virtuals: true }
 })
 
-let Block = mongoose.model('Block', schema)
-
-export default Block
+module.exports = mongoose.model('Block', Block)

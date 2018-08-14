@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Contract = new Schema({
     hash: { type: String },
     contractName: { type: String },
     compiler: { type: String },
@@ -19,6 +22,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let Contract = mongoose.model('Contract', schema)
-
-export default Contract
+module.exports = mongoose.model('Contract', Contract)

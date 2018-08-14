@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const Account = new Schema({
     hash: { type: String, unique: true },
     balance: { type: String },
     balanceNumber: { type: Number },
@@ -16,6 +19,5 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let Account = mongoose.model('Account', schema)
+module.exports = mongoose.model('Account', Account)
 
-export default Account

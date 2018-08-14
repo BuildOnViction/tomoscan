@@ -1,6 +1,9 @@
-const mongoose = require('mongoose')
+'use strict'
 
-const schema = new mongoose.Schema({
+const mongoose = require('mongoose')
+const Schema = mongoose.Schema
+
+const ContractEvent = new Schema({
     address: String,
     blockNumber: Number,
     transactionHash: String,
@@ -20,6 +23,4 @@ const schema = new mongoose.Schema({
     versionKey: false
 })
 
-let ContractEvent = mongoose.model('ContractEvent', schema)
-
-export default ContractEvent
+module.exports = mongoose.model('ContractEvent', ContractEvent)

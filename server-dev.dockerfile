@@ -15,9 +15,9 @@ RUN \
 
 RUN npm i npm@latest -g
 RUN npm install
-RUN npm install -g dotenv node-gyp pm2
+RUN npm install -g config node-gyp pm2
 
-COPY server/.env.example /var/www/.env
+COPY server/config/default.json /var/www/config/local.json
 COPY server /var/www
 COPY server/pm2.json /var/www/pm2.json
 

@@ -3,10 +3,9 @@ import solc from 'solc'
 import md5 from 'blueimp-md5'
 import ContractRepository from '../repositories/ContractRepository'
 import AccountRepository from '../repositories/AccountRepository'
-import Contract from '../models/Contract'
+import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
-import ContractEvent from '../models/ContractEvent'
 import _ from 'lodash'
 
 const ContractController = Router()
@@ -47,7 +46,7 @@ ContractController.post('/contracts', async (req, res, next) => {
         contractName = contractName ? contractName.replace(' ', '') : ''
 
         // Check exists and return.
-        let exist = await Contract.findOne({ hash: contractAddress })
+        let exist = await db.Contract.findOne({ hash: contractAddress })
         if (exist) {
             return res.json({ errors: ['This contract is validated'] })
         }
@@ -116,7 +115,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await Contract.findOne({ hash: hash })
+        let contract = await db.Contract.findOne({ hash: hash })
         if (!contract) {
             return res.status(404).send()
         }
@@ -127,7 +126,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
         let web3 = await Web3Util.getWeb3()
         let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
-        let pastEvents = await ContractEvent.find(
+        let pastEvents = await db.ContractEvent.find(
             { address: hash })
             .sort({ blockNumber: -1 }).lean()
         let fromBlock = 0
@@ -179,7 +178,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await Contract.findOne({ hash: hash })
+        let contract = await db.Contract.findOne({ hash: hash })
 
         if (!contract) {
             return res.status(404).send()
@@ -231,7 +230,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
         let strParams = req.query.strParams
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await Contract.findOne({ hash: hash })
+        let contract = await db.Contract.findOne({ hash: hash })
 
         if (!contract) {
             return res.status(404).send()

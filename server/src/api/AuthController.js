@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import User from '../models/User'
+import db from '../models'
 import EmailService from '../services/Email'
 
 const AuthController = Router()
@@ -9,7 +9,7 @@ AuthController.post('/login', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
 
-        let user = await User.findOne({ email: email })
+        let user = await db.User.findOne({ email: email })
         if (!user) { return res.sendStatus(401) }
 
         let isMatch = await user.authenticate(password)
@@ -31,10 +31,10 @@ AuthController.post('/register', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
 
-        let user = await User.findOne({ email: email })
+        let user = await db.User.findOne({ email: email })
         if (user) { return res.status(422).json({ message: 'Email exists in DB!' }) }
 
-        user = await User.create({
+        user = await db.User.create({
             email: email,
             password: password
         })
