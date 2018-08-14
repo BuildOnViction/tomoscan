@@ -10,7 +10,8 @@ const Reward = new Schema({
     address: {type: String, index: true },
     isMasterNode: {type: Boolean, index: true },
     lockBalance: { type: Number },
-    reward: { type: Number }
+    reward: { type: Number },
+    numberBlockSigner: { type: Number }
 }, {
     timestamps: true,
 })
