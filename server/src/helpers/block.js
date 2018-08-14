@@ -1,7 +1,8 @@
+'use strict'
+
 import Web3Util from './web3'
 import { getSigner, toAddress } from './utils'
 import EmailService from '../services/Email'
-'use strict'
 
 const db = require('../models')
 

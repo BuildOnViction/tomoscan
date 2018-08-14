@@ -1,6 +1,5 @@
 import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import AccountRepository from '../repositories/AccountRepository'
+// import { paginate } from '../helpers/utils'
 
 const RewardController = Router()
 

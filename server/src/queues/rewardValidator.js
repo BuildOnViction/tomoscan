@@ -1,5 +1,6 @@
-import Web3Util from '../helpers/web3'
 'use strict'
+
+import Web3Util from '../helpers/web3'
 
 const db = require('../models')
 const config = require('config')
@@ -62,7 +63,10 @@ consumer.task = async function (job, done) {
     let rewardValidator = []
     let validatorMap = validators.map(async (validator) => {
         let validatorSignNumber = await db.BlockSigner
-            .count({ blockNumber: { $gte: startBlock, $lte: endBlock }, signers: { $elemMatch: { $eq: validator.toLowerCase() } } })
+            .count({
+                blockNumber: { $gte: startBlock, $lte: endBlock },
+                signers: { $elemMatch: { $eq: validator.toLowerCase() } }
+            })
 
         await q.create('RewardVoterProcess', {
             epoch: epoch,
@@ -83,7 +87,10 @@ consumer.task = async function (job, done) {
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator.toLowerCase(), validator.toLowerCase()).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(
+            validator.toLowerCase(),
+            validator.toLowerCase()
+        ).call()
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,

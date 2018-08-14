@@ -79,15 +79,15 @@ BlockController.get('/blocks/:slug', async (req, res) => {
         if (!block) {
             block = await db.Block.findOne({ number: hashOrNumb })
         }
-        let check_finality = true
+        let checkFinality = true
         if (!block) {
-            check_finality = false
+            checkFinality = false
             let web3 = await Web3Util.getWeb3()
             block = await web3.eth.getBlock(hashOrNumb)
             // block = await BlockRepository.addBlockByNumber(hashOrNumb)
         }
 
-        if (check_finality && parseInt(block.finality) < 100) {
+        if (checkFinality && parseInt(block.finality) < 100) {
             let web3 = await Web3Util.getWeb3()
             let b = await web3.eth.getBlock(hashOrNumb)
             let finalityNumber

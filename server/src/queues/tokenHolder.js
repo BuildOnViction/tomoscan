@@ -1,6 +1,7 @@
-import BigNumber from 'bignumber.js'
-import { convertHexToFloat } from '../helpers/utils'
 'use strict'
+
+// import BigNumber from 'bignumber.js'
+import { convertHexToFloat } from '../helpers/utils'
 
 const db = require('../models')
 
@@ -48,17 +49,17 @@ async function updateQuality (hash, token, quantity) {
     holder.save()
 }
 
-async function formatItem (tokenHolder, totalSupply) {
-    if (totalSupply) {
-        totalSupply = new BigNumber(totalSupply)
-        let quantity = new BigNumber(convertHexToFloat(tokenHolder.quantity, 16))
-        let percentAge = quantity.div(totalSupply) * 100
-        percentAge = percentAge.toFixed(4)
-        percentAge = (percentAge.toString() === '0.0000') ? '0.0001' : percentAge
-        tokenHolder.percentAge = percentAge
-    }
-
-    return tokenHolder
-}
+// async function formatItem (tokenHolder, totalSupply) {
+//     if (totalSupply) {
+//         totalSupply = new BigNumber(totalSupply)
+//         let quantity = new BigNumber(convertHexToFloat(tokenHolder.quantity, 16))
+//         let percentAge = quantity.div(totalSupply) * 100
+//         percentAge = percentAge.toFixed(4)
+//         percentAge = (percentAge.toString() === '0.0000') ? '0.0001' : percentAge
+//         tokenHolder.percentAge = percentAge
+//     }
+//
+//     return tokenHolder
+// }
 
 module.exports = consumer

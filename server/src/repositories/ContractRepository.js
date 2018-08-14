@@ -1,5 +1,4 @@
 import axios from 'axios'
-import Web3Util from '../helpers/web3'
 import Tx from '../models/Tx'
 import Contract from '../models/Contract'
 import ContractEvent from '../models/ContractEvent'
