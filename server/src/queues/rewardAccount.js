@@ -7,7 +7,7 @@ const consumer = {}
 consumer.name = 'AddRewardToAccount'
 consumer.processNumber = 6
 consumer.task = async function(job, done) {
-    let address = job.data.address
+    let address = job.data.address.toLowerCase()
     let balance = job.data.balance
     let account = await db.Account.findOneAndUpdate({hash: address}, {hash: address}, { upsert: true, new: true })
 

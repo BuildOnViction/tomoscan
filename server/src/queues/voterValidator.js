@@ -30,7 +30,7 @@ consumer.task = async function(job, done) {
                 epoch: epoch,
                 fromBlock: startBlock,
                 toBlock: endBlock,
-                masterNode: validator,
+                masterNode: validator.toLowerCase(),
                 balance: voterBalance
             })
 
