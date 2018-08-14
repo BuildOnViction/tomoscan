@@ -7,7 +7,9 @@ script: skip
 jobs:
   include:
     - stage: Lint
-      script: cd server && npm install && npm run lint
+      script:
+        - cd client && npm install && npm run lint
+        - cd server && npm install && npm run lint
 
     - stage: Tests
       script: echo "No tests at the moment"
