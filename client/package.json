@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "TomoChain Block Explorer",
   "scripts": {
-    "lint": "eslint --cache ./ --ext .vue --ext .js",
-    "lint-fix": "eslint --cache ./ --ext .vue --ext .js --fix",
+    "lint": "eslint --cache ./ --ext .vue --ext .js --env mocha",
+    "lint-fix": "eslint --cache ./ --ext .vue --ext .js --env mocha --fix",
     "dev": "nuxt",
     "build": "nuxt build",
     "start": "nuxt start",

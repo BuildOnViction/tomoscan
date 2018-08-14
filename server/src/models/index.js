@@ -17,7 +17,7 @@ mongoose.connect(config.get('MONGODB_URI'), { useNewUrlParser: true }, (err) => 
 // import all file in this dir, except index.js
 fs.readdirSync(__dirname)
     .filter(function (file) {
-        return (file.indexOf('.') !== 0) && (file !== 'index.js')
+        return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.indexOf('.map') < 0)
     })
     .forEach(function (file) {
         let model = require(path.join(__dirname, file))

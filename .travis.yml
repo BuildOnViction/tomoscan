@@ -2,11 +2,15 @@ sudo: required
 language: node_js
 node_js: "8"
 
-install: skip
 script: skip
 
 jobs:
   include:
+    - stage: Lint
+      script:
+        - cd $TRAVIS_BUILD_DIR/client && npm install && npm run lint
+        - cd $TRAVIS_BUILD_DIR/server && npm install && npm run lint
+
     - stage: Tests
       script: echo "No tests at the moment"
 
@@ -51,6 +55,7 @@ jobs:
         - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
 stages:
+  - name: Lint
   - name: Tests
   - name: Build and push untagged commit into image tomoscan
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
