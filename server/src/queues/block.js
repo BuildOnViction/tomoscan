@@ -1,7 +1,6 @@
 'use strict'
 
 import BlockHelper from '../helpers/block'
-const db = require('../models')
 const config = require('config')
 
 const consumer = {}

@@ -1,5 +1,6 @@
-import Web3Util from '../helpers/web3'
 'use strict'
+
+import Web3Util from '../helpers/web3'
 
 const db = require('../models')
 const config = require('config')

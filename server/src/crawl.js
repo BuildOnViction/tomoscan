@@ -35,7 +35,7 @@ let watch = async () => {
 
                 if (i !== 0 && i % 10 === 0) {
                     console.log('Sleep 20 seconds')
-                    await sleep(20000)
+                    await sleep(10000)
                     // console.log('process exit')
                     // process.exit(1)
                 }
