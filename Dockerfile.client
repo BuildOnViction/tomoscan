@@ -25,7 +25,7 @@ RUN apk --no-cache --virtual deps add \
 
 COPY client/package*json ./
 
-RUN npm install \
+RUN npm install
 
 COPY client .
 
