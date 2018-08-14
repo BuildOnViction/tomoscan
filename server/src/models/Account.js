@@ -20,4 +20,3 @@ const Account = new Schema({
 })
 
 module.exports = mongoose.model('Account', Account)
-

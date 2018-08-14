@@ -11,8 +11,7 @@ const VoterValidator = new Schema({
     masterNode: { type: String, index: true },
     balance: { type: Number }
 }, {
-    timestamps: true,
+    timestamps: true
 })
 
 module.exports = mongoose.model('VoterValidator', VoterValidator)
-

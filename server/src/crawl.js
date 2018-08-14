@@ -18,7 +18,7 @@ let watch = async () => {
             let nextCrawl = minBlockCrawl + 20
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl; i <= nextCrawl; i++) {
-                await q.create('BlockProcess', {block: i})
+                await q.create('BlockProcess', { block: i })
                     .priority('normal').removeOnComplete(true).save()
 
                 let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
@@ -33,7 +33,7 @@ let watch = async () => {
                 }
                 await setting.save()
 
-                if (i !== 0 && i % 10 === 0){
+                if (i !== 0 && i % 10 === 0) {
                     console.log('Sleep 20 seconds')
                     await sleep(20000)
                     // console.log('process exit')
@@ -43,7 +43,6 @@ let watch = async () => {
         }
     }
 }
-
 
 try {
     watch()

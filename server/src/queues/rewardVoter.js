@@ -1,8 +1,8 @@
+import Web3Util from '../helpers/web3'
 'use strict'
 
 const db = require('../models')
 const config = require('config')
-import Web3Util from '../helpers/web3'
 
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
@@ -10,7 +10,7 @@ const contractAddress = require('../contracts/contractAddress')
 const consumer = {}
 consumer.name = 'RewardVoterProcess'
 consumer.processNumber = 4
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let epoch = job.data.epoch
     let validator = job.data.validator
     let validatorSignNumber = job.data.validatorSignNumber
@@ -61,7 +61,7 @@ consumer.task = async function(job, done) {
             isMasterNode: false,
             lockBalance: lockBalance,
             reward: reward,
-            numberBlockSigner: validatorSignNumber,
+            numberBlockSigner: validatorSignNumber
         })
 
         if (rewardVoter.length === 5000) {

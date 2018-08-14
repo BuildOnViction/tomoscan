@@ -4,11 +4,10 @@ import Web3Util from '../helpers/web3'
 import TokenHelper from '../helpers/token'
 const db = require('../models')
 
-
 const consumer = {}
 consumer.name = 'AccountProcess'
 consumer.processNumber = 6
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let hash = job.data.address.toLowerCase()
     console.log('Process account: ', hash)
     let _account = await db.Account.findOne({ hash: hash, nonce: { $exists: true } })
@@ -37,7 +36,7 @@ consumer.task = async function(job, done) {
             await db.Token.findOneAndUpdate({ hash: hash },
                 { hash: hash, status: false }, { upsert: true, new: true })
             const q = require('./index')
-            await q.create('TokenProcess', {address: hash})
+            await q.create('TokenProcess', { address: hash })
                 .priority('normal').removeOnComplete(true).save()
         }
         _account.isToken = isToken
@@ -52,7 +51,6 @@ consumer.task = async function(job, done) {
         { upsert: true, new: true }).lean()
 
     done()
-
 }
 
 module.exports = consumer

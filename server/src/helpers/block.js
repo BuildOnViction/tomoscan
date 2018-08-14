@@ -1,14 +1,14 @@
-'use strict'
-
-const db = require('../models')
 import Web3Util from './web3'
 import { getSigner, toAddress } from './utils'
 import EmailService from '../services/Email'
+'use strict'
+
+const db = require('../models')
 
 let BlockHelper = {
     processBlock:async (blockNumber) => {
-        let block = db.Block.findOne({number: blockNumber, nonce: {$exists: true}})
-        let countTx = await db.Tx.find({blockNumber: blockNumber}).count()
+        let block = db.Block.findOne({ number: blockNumber, nonce: { $exists: true } })
+        let countTx = await db.Tx.find({ blockNumber: blockNumber }).count()
         if (block && countTx === block.e_tx) {
             return
         }
@@ -29,7 +29,7 @@ let BlockHelper = {
         _block.signer = signer
 
         let finalityNumber
-        if (_block.finality){
+        if (_block.finality) {
             finalityNumber = parseInt(_block.finality)
         } else {
             finalityNumber = 0
@@ -50,7 +50,7 @@ let BlockHelper = {
 
         // Insert crawl for signer.
         const q = require('../queues')
-        await q.create('AccountProcess', {address: signer})
+        await q.create('AccountProcess', { address: signer })
             .priority('low').removeOnComplete(true).save()
 
         let signers
@@ -86,26 +86,26 @@ let BlockHelper = {
                     if (tx && tx.hash) {
                         if (tx.from !== null) {
                             let accountFrom = await db.Account.findOneAndUpdate(
-                                {hash: tx.from},
-                                {hash: tx.from, status: false},
+                                { hash: tx.from },
+                                { hash: tx.from, status: false },
                                 { upsert: true, new: true }
                             )
                             tx.from = tx.from.toLowerCase()
                             tx.from_model = accountFrom
                             // Insert crawl for address.
-                            await q.create('AccountProcess', {address: tx.from})
+                            await q.create('AccountProcess', { address: tx.from })
                                 .priority('low').removeOnComplete(true).save()
                         }
                         if (tx.to !== null) {
                             let accountTo = await db.Account.findOneAndUpdate(
-                                {hash: tx.to},
-                                {hash: tx.to, status: false},
+                                { hash: tx.to },
+                                { hash: tx.to, status: false },
                                 { upsert: true, new: true }
                             )
                             tx.to = tx.to.toLowerCase()
                             tx.to_model = accountTo
                             // Insert crawl for address.
-                            await q.create('AccountProcess', {address: tx.to})
+                            await q.create('AccountProcess', { address: tx.to })
                                 .priority('low').removeOnComplete(true).save()
                         }
 
@@ -115,7 +115,7 @@ let BlockHelper = {
                             { upsert: true, new: true })
 
                         // Insert crawl for tx.
-                        await q.create('TransactionProcess', {hash: tx.hash})
+                        await q.create('TransactionProcess', { hash: tx.hash })
                             .priority('critical').removeOnComplete(true).save()
 
                         // Send email to follower.
@@ -146,7 +146,7 @@ let BlockHelper = {
             }
         }
         return block
-    },
+    }
 }
 
 export default BlockHelper

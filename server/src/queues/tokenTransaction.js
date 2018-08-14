@@ -7,7 +7,7 @@ const db = require('../models')
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
 consumer.processNumber = 6
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let log = JSON.parse(job.data.log)
     console.log('Process token transaction: ')
     let _log = log
@@ -41,11 +41,10 @@ consumer.task = async function(job, done) {
 
     // Add token holder data.
     const q = require('./index')
-    await q.create('TokenHolderProcess', {token: JSON.stringify({from: _log.from, to: _log.to, address: _log.address, value: _log.value})})
+    await q.create('TokenHolderProcess', { token: JSON.stringify({ from: _log.from, to: _log.to, address: _log.address, value: _log.value }) })
         .priority('normal').removeOnComplete(true).save()
 
     done()
-
 }
 
 module.exports = consumer

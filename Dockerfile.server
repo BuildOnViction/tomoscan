@@ -6,8 +6,6 @@ ENV HOST 0.0.0.0
 
 WORKDIR /app
 
-COPY server .
-
 RUN apk --no-cache --virtual deps add \
       python \
       make \
@@ -17,12 +15,19 @@ RUN apk --no-cache --virtual deps add \
     && npm install -g \
        npm@latest \
        dotenv \
-       node-gyp \
-       pm2 \
-    && npm install \
-    && npm run build \
+       node-gyp
+
+COPY server/package*json .
+RUN npm install
+
+COPY server .
+
+RUN npm run build \
+    && npm run build-prod \
     && apk del deps
 
 EXPOSE 3333
 
-ENTRYPOINT ["pm2-docker", "start", "pm2.json", "--only", "prod"]
+ENTRYPOINT ["npm"]
+
+CMD ["start"]

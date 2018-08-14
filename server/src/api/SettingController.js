@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import axios from 'axios'
-import db from "../models"
+import db from '../models'
 const config = require('config')
 
 const SettingController = Router()

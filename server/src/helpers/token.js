@@ -1,6 +1,5 @@
 'use strict'
 
-
 let TokenHelper = {
     getTokenFuncs: async () => ({
         'decimals': '0x313ce567', // hex to decimal
@@ -21,7 +20,7 @@ let TokenHelper = {
         }
 
         return isToken
-    },
+    }
 }
 
 export default TokenHelper

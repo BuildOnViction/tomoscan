@@ -1,8 +1,8 @@
+import Web3Util from '../helpers/web3'
 'use strict'
 
 const db = require('../models')
 const config = require('config')
-import Web3Util from '../helpers/web3'
 
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
@@ -10,7 +10,7 @@ const contractAddress = require('../contracts/contractAddress')
 const consumer = {}
 consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let epoch = job.data.epoch
     console.log('Process reward at epoch: ', epoch)
 
@@ -44,8 +44,8 @@ consumer.task = async function(job, done) {
     // Calculate total sign number in a epoch
     let listSignNumber = await db.BlockSigner.aggregate(
         [
-            {$match: {blockNumber: {$gte: startBlock, $lte: endBlock}}},
-            {$project: {number: {$size: "$signers"}}}
+            { $match: { blockNumber: { $gte: startBlock, $lte: endBlock } } },
+            { $project: { number: { $size: '$signers' } } }
         ]
     )
     let totalSignNumber = 0
@@ -62,7 +62,7 @@ consumer.task = async function(job, done) {
     let rewardValidator = []
     let validatorMap = validators.map(async (validator) => {
         let validatorSignNumber = await db.BlockSigner
-            .count({blockNumber: {$gte: startBlock, $lte: endBlock}, signers: {$elemMatch: {$eq: validator.toLowerCase()}}})
+            .count({ blockNumber: { $gte: startBlock, $lte: endBlock }, signers: { $elemMatch: { $eq: validator.toLowerCase() } } })
 
         await q.create('RewardVoterProcess', {
             epoch: epoch,
@@ -79,7 +79,7 @@ consumer.task = async function(job, done) {
         // Add reward for validator
         await q.create('AddRewardToAccount', {
             address: ownerValidator.toLowerCase(),
-            balance: reward,
+            balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
@@ -92,26 +92,24 @@ consumer.task = async function(job, done) {
             isMasterNode: true,
             lockBalance: lockBalance,
             reward: reward,
-            numberBlockSigner: validatorSignNumber,
+            numberBlockSigner: validatorSignNumber
         })
 
         if (rewardValidator.length === 5000) {
             await db.Reward.insertMany(rewardValidator)
             rewardValidator = []
         }
-
     })
     await Promise.all(validatorMap)
 
-    if (rewardValidator.length > 0){
+    if (rewardValidator.length > 0) {
         await db.Reward.insertMany(rewardValidator)
-
     }
 
     // Add reward for foundation
     await q.create('AddRewardToAccount', {
         address: contractAddress.foundation,
-        balance: reward4Foundation,
+        balance: reward4Foundation
     })
         .priority('normal').removeOnComplete(true).save()
 

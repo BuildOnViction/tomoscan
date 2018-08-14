@@ -4,3 +4,4 @@ db/dev/*
 db/prod/*
 .*sw*
 .eslintcache
+server/config/local.json

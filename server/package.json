@@ -5,8 +5,9 @@
     "lint-fix": "eslint --cache ./ --ext .vue --ext .js --fix",
     "dev": "nodemon --exec \"babel-node ./src/crawl.js --presets es2015,stage-0\" & nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
-    "start": "node dist/crawl.js & node dist",
-    "prestart": "npm run -s build",
+    "start": "node dist",
+    "crawl": "node dist/crawl.js",
+    "build-prod": "npm run -s build",
     "test": "eslint src"
   },
   "eslintConfig": {

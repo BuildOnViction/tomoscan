@@ -2,14 +2,13 @@
 
 const db = require('../models')
 
-
 const consumer = {}
 consumer.name = 'AddRewardToAccount'
 consumer.processNumber = 6
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     let balance = job.data.balance
-    let account = await db.Account.findOneAndUpdate({hash: address}, {hash: address}, { upsert: true, new: true })
+    let account = await db.Account.findOneAndUpdate({ hash: address }, { hash: address }, { upsert: true, new: true })
 
     if (account.balanceNumber) {
         account.balanceNumber += parseFloat(balance)
@@ -23,7 +22,6 @@ consumer.task = async function(job, done) {
     }
 
     done()
-
 }
 
 module.exports = consumer

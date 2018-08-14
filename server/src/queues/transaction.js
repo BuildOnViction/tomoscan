@@ -1,12 +1,12 @@
+import Web3Util from '../helpers/web3'
 'use strict'
 
 const db = require('../models')
-import Web3Util from '../helpers/web3'
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
 consumer.processNumber = 3
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let hash = job.data.hash
     console.log('Process Transaction: ', hash)
     await getTxPending(hash)
@@ -15,7 +15,7 @@ consumer.task = async function(job, done) {
     done()
 }
 
-async function getTxPending(hash) {
+async function getTxPending (hash) {
     let tx = await db.Tx.findOne({ hash: hash })
     let web3 = await Web3Util.getWeb3()
     if (!tx) {
@@ -35,7 +35,7 @@ async function getTxPending(hash) {
     await db.Tx.findOneAndUpdate({ hash: hash }, tx, { upsert: true, new: true })
 }
 
-async function getTxReceipt(hash) {
+async function getTxReceipt (hash) {
     let tx = await db.Tx.findOne({ hash: hash })
     let web3 = await Web3Util.getWeb3()
     if (!tx) {
@@ -50,8 +50,8 @@ async function getTxReceipt(hash) {
 
     if (tx.from !== null) {
         let accountFrom = await db.Account.findOneAndUpdate(
-            {hash: tx.from},
-            {hash: tx.from, status: false},
+            { hash: tx.from },
+            { hash: tx.from, status: false },
             { upsert: true, new: true }
         )
         tx.from = tx.from.toLowerCase()
@@ -59,8 +59,8 @@ async function getTxReceipt(hash) {
     }
     if (tx.to !== null) {
         let accountTo = await db.Account.findOneAndUpdate(
-            {hash: tx.to},
-            {hash: tx.to, status: false},
+            { hash: tx.to },
+            { hash: tx.to, status: false },
             { upsert: true, new: true }
         )
         tx.to = tx.to.toLowerCase()
@@ -108,11 +108,9 @@ async function getTxReceipt(hash) {
 
     await db.Tx.findOneAndUpdate({ hash: hash }, tx,
         { upsert: true, new: true })
-
 }
 
-async function parseLog(log) {
-
+async function parseLog (log) {
     const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
     if (log.topics[0] !== TOPIC_TRANSFER) {
         return false
@@ -123,12 +121,12 @@ async function parseLog(log) {
     let token = await db.Token.findOne({ hash: address })
     const q = require('./index')
     if (!token) {
-        await q.create('AccountProcess', {address: address})
+        await q.create('AccountProcess', { address: address })
             .priority('low').removeOnComplete(true).save()
-        await q.create('TokenProcess', {address: address})
+        await q.create('TokenProcess', { address: address })
             .priority('normal').removeOnComplete(true).save()
     }
-    await q.create('TokenTransactionProcess', {log: JSON.stringify(log)})
+    await q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
         .priority('normal').removeOnComplete(true).save()
 }
 

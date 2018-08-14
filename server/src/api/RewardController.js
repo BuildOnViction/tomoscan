@@ -13,5 +13,4 @@ RewardController.get('/rewards', async (req, res) => {
     }
 })
 
-
 export default RewardController

@@ -3,7 +3,7 @@ import { paginate } from '../helpers/utils'
 import TxRepository from '../repositories/TxRepository'
 import BlockRepository from '../repositories/BlockRepository'
 import TokenTxRepository from '../repositories/TokenTxRepository'
-import db from "../models"
+import db from '../models'
 
 const TxController = Router()
 

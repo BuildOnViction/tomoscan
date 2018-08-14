@@ -1,16 +1,15 @@
 {
-  "APP_ENV": "prod",
-  "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
+  "MONGODB_URI": "MONGODB_URI",
   "redis": {
     "host": "REDIS_HOST"
   },
   "WEB3_URI": "WEB3_URI",
   "WEB3_WS_URI": "WEB3_WS_URI",
-  "PORT": 3333,
+  "PORT": "PORT",
 
   "JWT_SECRET": "JWT_SECRET",
   "APP_SECRET": "APP_SECRET",
-  "SENDGRID_API_KEY": "",
-  "SENDER_EMAIL": "",
+  "SENDGRID_API_KEY": "SENDGRID_API_KEY",
+  "SENDER_EMAIL": "SENDER_EMAIL",
   "CLIENT_URL": "CLIENT_URL"
 }

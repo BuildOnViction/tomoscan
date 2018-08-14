@@ -2,13 +2,13 @@
 
 import Web3Util from '../helpers/web3'
 import TokenHelper from '../helpers/token'
-import {trimWord} from '../helpers/utils'
+import { trimWord } from '../helpers/utils'
 const db = require('../models')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
 consumer.processNumber = 6
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let address = job.data.address
     console.log('Process token: ', address)
     let token = await db.Token.findOne({ hash: address })
@@ -21,7 +21,7 @@ consumer.task = async function(job, done) {
     let web3 = await Web3Util.getWeb3()
 
     if (typeof token.name === 'undefined') {
-        let name = await web3.eth.call({ to: token.hash, data: tokenFuncs['name']})
+        let name = await web3.eth.call({ to: token.hash, data: tokenFuncs['name'] })
         name = await web3.utils.hexToUtf8(name)
         token.name = name
     }
@@ -48,8 +48,6 @@ consumer.task = async function(job, done) {
     token.save()
 
     done()
-
-
 }
 
 module.exports = consumer

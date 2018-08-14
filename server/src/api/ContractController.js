@@ -204,7 +204,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
                     try {
                         let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
                         func.result = rs
-                    } catch(e) {
+                    } catch (e) {
                         console.trace(e)
                         console.log(e)
                     }

@@ -10,7 +10,6 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const config = require('config')
 
-
 const app = express()
 
 // Init socket.io.
@@ -28,7 +27,7 @@ app.use(bodyParser.json())
 app.use(authService.initialize())
 authService.setJwtStrategy()
 
-mongoose.connect(config.get('MONGODB_URI'), {useNewUrlParser: true}, (err) => {
+mongoose.connect(config.get('MONGODB_URI'), { useNewUrlParser: true }, (err) => {
     if (err) {
         console.log(
             'MongoDB Connection Error. Please make sure that MongoDB is running.')

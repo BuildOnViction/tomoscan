@@ -1,13 +1,13 @@
+import BigNumber from 'bignumber.js'
+import { convertHexToFloat } from '../helpers/utils'
 'use strict'
 
 const db = require('../models')
-import BigNumber from 'bignumber.js'
-import { convertHexToFloat } from '../helpers/utils'
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
 consumer.processNumber = 12
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let token = JSON.parse(job.data.token)
     console.log('Process token holder: ', token.from, token.to, token.value)
     if (!token) { return false }
@@ -20,7 +20,7 @@ consumer.task = async function(job, done) {
     done()
 }
 
-async function updateQuality(hash, token, quantity) {
+async function updateQuality (hash, token, quantity) {
     let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
     if (!holder) {
         // Create new.
@@ -48,8 +48,7 @@ async function updateQuality(hash, token, quantity) {
     holder.save()
 }
 
-
-async function formatItem(tokenHolder, totalSupply) {
+async function formatItem (tokenHolder, totalSupply) {
     if (totalSupply) {
         totalSupply = new BigNumber(totalSupply)
         let quantity = new BigNumber(convertHexToFloat(tokenHolder.quantity, 16))

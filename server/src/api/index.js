@@ -12,7 +12,7 @@ import FollowController from './FollowController'
 import SettingController from './SettingController'
 import ContractController from './ContractController'
 import LogController from './LogController'
-import RewardController from "./RewardController"
+import RewardController from './RewardController'
 
 const router = Router()
 

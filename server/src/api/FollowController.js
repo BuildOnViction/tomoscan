@@ -2,7 +2,7 @@ import { Router } from 'express'
 import authService from '../services/Auth'
 import { paginate } from '../helpers/utils'
 import FollowRepository from '../repositories/FollowRepository'
-import db from "../models"
+import db from '../models'
 
 const FollowController = Router()
 

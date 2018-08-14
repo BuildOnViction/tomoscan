@@ -1,15 +1,15 @@
+import Web3Util from '../helpers/web3'
 'use strict'
 
 const db = require('../models')
 const config = require('config')
-import Web3Util from '../helpers/web3'
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
 
 const consumer = {}
 consumer.name = 'VoterProcess'
 consumer.processNumber = 1
-consumer.task = async function(job, done) {
+consumer.task = async function (job, done) {
     let epoch = job.data.epoch
     console.log('Get all voter at epoch: ', epoch)
 
@@ -20,7 +20,7 @@ consumer.task = async function(job, done) {
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
     let validators = await validatorContract.methods.getCandidates().call()
 
-    let validatorMap =  validators.map(async (validator) => {
+    let validatorMap = validators.map(async (validator) => {
         let listVoters = []
         let voters = await validatorContract.methods.getVoters(validator).call()
         let voterMap = voters.map(async (voter) => {

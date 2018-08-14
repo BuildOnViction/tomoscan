@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import TokenRepository from '../repositories/TokenRepository'
-import db from "../models"
+import db from '../models'
 
 const TokenController = Router()
 
