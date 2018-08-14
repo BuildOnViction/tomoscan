@@ -19,14 +19,11 @@ consumer.task = async function(job, done) {
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
     let validators = await validatorContract.methods.getCandidates().call()
-    console.log('validators: ', validators)
 
-    await validators.forEach(async (validator) => {
-        console.log('validator: ', validator)
+    let validatorMap =  validators.map(async (validator) => {
         let listVoters = []
         let voters = await validatorContract.methods.getVoters(validator).call()
-        console.log('voters: ', voters)
-        await voters.forEach(async (voter) => {
+        let voterMap = voters.map(async (voter) => {
             let voterBalance = await validatorContract.methods.getVoterCap(validator, voter).call()
             await listVoters.push({
                 voter: voter,
@@ -37,18 +34,21 @@ consumer.task = async function(job, done) {
                 balance: voterBalance
             })
 
-            // Insert maximum 50k records in one time (Limited of mongodb is 100k)
-            if (listVoters.length === 50000) {
+            // Insert maximum 5k records in one time (Limited of mongodb is 100k)
+            if (listVoters.length === 5000) {
+                // console.log('listVoters: ', listVoters)
                 await db.VoterValidator.insertMany(listVoters)
                 listVoters = []
             }
         })
 
+        await Promise.all(voterMap)
+
         if (listVoters.length > 0) {
-            console.log('list voters: ', listVoters)
             await db.VoterValidator.insertMany(listVoters)
         }
     })
+    await Promise.all(validatorMap)
 
     done()
 }
