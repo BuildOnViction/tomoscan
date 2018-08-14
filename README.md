@@ -30,7 +30,6 @@ The explorer is still under heavy development, if you find any problems please c
 Copy .env files
 ```bash
 cp client/.env.example client/.env
-cp server/.env.example server/.env
 ```
 
 Build & up docker
@@ -50,7 +49,7 @@ BASE_UNIT=TOMO
 ```
 #### Server (in `server/src/config/default.json`)
 ```
-cp server/src/config/default.json server/serc/config/local.json
+cp server/src/config/default.json server/src/config/local.json
 ```
 ```
 {
