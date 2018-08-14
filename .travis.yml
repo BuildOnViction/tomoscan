@@ -54,6 +54,7 @@ jobs:
         - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
 stages:
+  - name: Lint
   - name: Tests
   - name: Build and push untagged commit into image tomoscan
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
