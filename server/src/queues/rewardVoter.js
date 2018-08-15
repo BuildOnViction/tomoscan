@@ -21,7 +21,7 @@ consumer.task = async function (job, done) {
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
-    let reward4voter = config.get('REWARD') * config.get('VOTER_REWARD_PERCENT') / 100
+    let reward4voter = config.get('REWARD') * 10 ** 18 * config.get('VOTER_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)

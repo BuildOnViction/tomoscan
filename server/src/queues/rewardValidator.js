@@ -36,8 +36,8 @@ consumer.task = async function (job, done) {
     // })
     // await Promise.all(signerMap)
 
-    let reward4MasterNode = config.get('REWARD') * config.get('MASTER_NODE_REWARD_PERCENT') / 100
-    let reward4Foundation = config.get('REWARD') * config.get('FOUNDATION_REWARD_PERCENT') / 100
+    let reward4MasterNode = config.get('REWARD') * 10 ** 18 * config.get('MASTER_NODE_REWARD_PERCENT') / 100
+    let reward4Foundation = config.get('REWARD') * 10 ** 18 * config.get('FOUNDATION_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
@@ -89,7 +89,7 @@ consumer.task = async function (job, done) {
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator, validator).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, ownerValidator).call()
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,
