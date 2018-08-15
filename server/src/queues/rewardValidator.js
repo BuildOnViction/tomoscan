@@ -62,15 +62,16 @@ consumer.task = async function (job, done) {
     let totalValidator = await validators.length
     let rewardValidator = []
     let validatorMap = validators.map(async (validator) => {
+        validator = validator.toString().toLowerCase()
         let validatorSignNumber = await db.BlockSigner
             .count({
                 blockNumber: { $gte: startBlock, $lte: endBlock },
-                signers: { $elemMatch: { $eq: validator.toLowerCase() } }
+                signers: { $elemMatch: { $eq: validator } }
             })
 
         await q.create('RewardVoterProcess', {
             epoch: epoch,
-            validator: validator.toLowerCase(),
+            validator: validator,
             validatorSignNumber: validatorSignNumber,
             totalSignNumber: totalSignNumber
         })
@@ -78,24 +79,22 @@ consumer.task = async function (job, done) {
 
         let reward = (reward4MasterNode / totalValidator) * (validatorSignNumber / totalSignNumber)
 
-        let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.toLowerCase())
+        let ownerValidator = await validatorContract.methods.getCandidateOwner(validator).call()
+        ownerValidator = ownerValidator.toString().toLowerCase()
 
         // Add reward for validator
         await q.create('AddRewardToAccount', {
-            address: ownerValidator.toLowerCase(),
+            address: ownerValidator,
             balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(
-            validator.toLowerCase(),
-            validator.toLowerCase()
-        ).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, validator).call()
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,
             endBlock: endBlock,
-            address: ownerValidator.toLowerCase(),
+            address: ownerValidator,
             isMasterNode: true,
             lockBalance: lockBalance,
             reward: reward,

@@ -31,10 +31,11 @@ consumer.task = async function (job, done) {
     let totalVoterCap = 0
     let listVoters = []
     let voterMap = voters.map(async (voter) => {
+        voter = voter.toString().toLowerCase()
         let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
         totalVoterCap += parseFloat(voterCap)
         listVoters.push({
-            address: voter.toLowerCase(),
+            address: voter,
             balance: voterCap
         })
     })
@@ -44,21 +45,22 @@ consumer.task = async function (job, done) {
     const q = require('./index')
 
     let listVoterMap = listVoters.map(async (voter) => {
+        let voterAddress = voter.address.toString().toLowerCase()
         let reward = ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
 
         await q.create('AddRewardToAccount', {
-            address: voter.address.toLowerCase(),
+            address: voterAddress,
             balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator, voter.address.toLowerCase()).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, voterAddress).call()
 
         await rewardVoter.push({
             epoch: epoch,
             startBlock: startBlock,
             endBlock: endBlock,
-            address: voter.address.toLowerCase(),
+            address: voterAddress,
             isMasterNode: false,
             lockBalance: lockBalance,
             reward: reward,

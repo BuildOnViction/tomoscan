@@ -51,7 +51,7 @@ async function getTxReceipt (hash) {
 
     if (tx.from !== null) {
         let accountFrom = await db.Account.findOneAndUpdate(
-            { hash: tx.from },
+            { hash: tx.from.toLowerCase() },
             { hash: tx.from, status: false },
             { upsert: true, new: true }
         )
@@ -60,7 +60,7 @@ async function getTxReceipt (hash) {
     }
     if (tx.to !== null) {
         let accountTo = await db.Account.findOneAndUpdate(
-            { hash: tx.to },
+            { hash: tx.to.toLowerCase() },
             { hash: tx.to, status: false },
             { upsert: true, new: true }
         )
