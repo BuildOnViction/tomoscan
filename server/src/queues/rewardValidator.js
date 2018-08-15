@@ -13,7 +13,7 @@ consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    console.log('Process reward at epoch: ', epoch)
+    console.log('Process reward for validator at epoch: ', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -36,8 +36,8 @@ consumer.task = async function (job, done) {
     // })
     // await Promise.all(signerMap)
 
-    let reward4MasterNode = config.get('REWARD') * config.get('MASTER_NODE_REWARD_PERCENT')
-    let reward4Foundation = config.get('REWARD') * config.get('FOUNDATION_REWARD_PERCENT')
+    let reward4MasterNode = config.get('REWARD') * config.get('MASTER_NODE_REWARD_PERCENT') / 100
+    let reward4Foundation = config.get('REWARD') * config.get('FOUNDATION_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
