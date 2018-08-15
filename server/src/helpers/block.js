@@ -89,7 +89,7 @@ let BlockHelper = {
                         if (tx.from !== null) {
                             let accountFrom = await db.Account.findOneAndUpdate(
                                 { hash: tx.from.toLowerCase() },
-                                { hash: tx.from, status: false },
+                                { hash: tx.from.toLowerCase(), status: false },
                                 { upsert: true, new: true }
                             )
                             tx.from = tx.from.toLowerCase()
@@ -101,7 +101,7 @@ let BlockHelper = {
                         if (tx.to !== null) {
                             let accountTo = await db.Account.findOneAndUpdate(
                                 { hash: tx.to.toLowerCase() },
-                                { hash: tx.to, status: false },
+                                { hash: tx.to.toLowerCase(), status: false },
                                 { upsert: true, new: true }
                             )
                             tx.to = tx.to.toLowerCase()
