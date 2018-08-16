@@ -61,10 +61,11 @@ consumer.task = async function (job, done) {
             startBlock: startBlock,
             endBlock: endBlock,
             address: voterAddress,
-            isMasterNode: false,
-            lockBalance: lockBalance,
-            reward: reward,
-            numberBlockSigner: validatorSignNumber
+            validator: validator,
+            reward4Validator: false,
+            lockBalance: lockBalance.toString(),
+            reward: reward.toString(),
+            signNumber: validatorSignNumber
         })
 
         if (rewardVoter.length === 5000) {
