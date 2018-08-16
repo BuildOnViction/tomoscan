@@ -503,3 +503,46 @@
     border-radius: 10px;
   }
 }
+
+.tomo-table--reward {
+
+  i.tx-failed {
+    vertical-align: middle;
+  }
+
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 6% 30% 10% 10% 20% 12% 12%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 6% 30% 10% 10% 20% 12% 12%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 6% 25% 8% 10% 20% 12% 12%;
+    }
+  }
+
+  .text-truncate {
+    max-width: 18.75rem;
+
+    @include media-breakpoint-up(lg) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 19rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 21rem;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      max-width: 24rem;
+    }
+  }
+}

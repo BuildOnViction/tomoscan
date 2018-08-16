@@ -22,16 +22,18 @@ consumer.task = async function (job, done) {
     let validators = await validatorContract.methods.getCandidates().call()
 
     let validatorMap = validators.map(async (validator) => {
+        validator = validator.toString().toLowerCase()
         let listVoters = []
         let voters = await validatorContract.methods.getVoters(validator).call()
         let voterMap = voters.map(async (voter) => {
+            voter = voter.toString().toLowerCase()
             let voterBalance = await validatorContract.methods.getVoterCap(validator, voter).call()
             await listVoters.push({
                 voter: voter,
                 epoch: epoch,
                 fromBlock: startBlock,
                 toBlock: endBlock,
-                masterNode: validator.toLowerCase(),
+                masterNode: validator,
                 balance: voterBalance
             })
 

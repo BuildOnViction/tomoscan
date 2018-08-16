@@ -16,12 +16,12 @@ consumer.task = async function (job, done) {
     let validator = job.data.validator
     let validatorSignNumber = job.data.validatorSignNumber
     let totalSignNumber = job.data.totalSignNumber
-    console.log('Process reward at epoch: ', epoch)
+    console.log('Process reward for voter at epoch: ', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
-    let reward4voter = config.get('REWARD') * config.get('VOTER_REWARD_PERCENT')
+    let reward4voter = config.get('REWARD') * 10 ** 18 * config.get('VOTER_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
@@ -31,10 +31,11 @@ consumer.task = async function (job, done) {
     let totalVoterCap = 0
     let listVoters = []
     let voterMap = voters.map(async (voter) => {
+        voter = voter.toString().toLowerCase()
         let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
         totalVoterCap += parseFloat(voterCap)
         listVoters.push({
-            address: voter.toLowerCase(),
+            address: voter,
             balance: voterCap
         })
     })
@@ -44,25 +45,27 @@ consumer.task = async function (job, done) {
     const q = require('./index')
 
     let listVoterMap = listVoters.map(async (voter) => {
+        let voterAddress = voter.address.toString().toLowerCase()
         let reward = ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
 
         await q.create('AddRewardToAccount', {
-            address: voter.address.toLowerCase(),
+            address: voterAddress,
             balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator, voter.address.toLowerCase()).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, voterAddress).call()
 
         await rewardVoter.push({
             epoch: epoch,
             startBlock: startBlock,
             endBlock: endBlock,
-            address: voter.address.toLowerCase(),
-            isMasterNode: false,
-            lockBalance: lockBalance,
-            reward: reward,
-            numberBlockSigner: validatorSignNumber
+            address: voterAddress,
+            validator: validator,
+            reward4Validator: false,
+            lockBalance: lockBalance.toString(),
+            reward: reward.toString(),
+            signNumber: validatorSignNumber
         })
 
         if (rewardVoter.length === 5000) {

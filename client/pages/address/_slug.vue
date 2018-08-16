@@ -235,6 +235,13 @@
                     :address="hash"
                     :page="this"/>
             </b-tab>
+            <b-tab
+                v-if="hasReward"
+                :title="'Rewards (' + rewardTime + ')'">
+                <table-reward
+                    :address="hash"
+                    :page="this"/>
+            </b-tab>
         </b-tabs>
     </section>
 </template>
@@ -247,6 +254,7 @@ import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
 import ReadContract from '~/components/ReadContract'
+import TableReward from '~/components/TableReward'
 
 export default {
     components: {
@@ -256,7 +264,8 @@ export default {
         TableEvent,
         ReadMore,
         VueQrcode,
-        ReadContract
+        ReadContract,
+        TableReward
     },
     mixins: [mixin],
     head () {
@@ -273,7 +282,9 @@ export default {
         blocksCount: 0,
         eventsCount: 0,
         tokensCount: 0,
-        loading: true
+        loading: true,
+        hasReward: true,
+        rewardTime: 0
     }),
     computed: {
         usdPrice () {
