@@ -13,7 +13,7 @@ consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    console.log('Process reward at epoch: ', epoch)
+    console.log('Process reward for validator at epoch: ', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -36,8 +36,8 @@ consumer.task = async function (job, done) {
     // })
     // await Promise.all(signerMap)
 
-    let reward4MasterNode = config.get('REWARD') * config.get('MASTER_NODE_REWARD_PERCENT')
-    let reward4Foundation = config.get('REWARD') * config.get('FOUNDATION_REWARD_PERCENT')
+    let reward4MasterNode = config.get('REWARD') * 10 ** 18 * config.get('MASTER_NODE_REWARD_PERCENT') / 100
+    let reward4Foundation = config.get('REWARD') * 10 ** 18 * config.get('FOUNDATION_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
@@ -62,15 +62,16 @@ consumer.task = async function (job, done) {
     let totalValidator = await validators.length
     let rewardValidator = []
     let validatorMap = validators.map(async (validator) => {
+        validator = validator.toString().toLowerCase()
         let validatorSignNumber = await db.BlockSigner
             .count({
                 blockNumber: { $gte: startBlock, $lte: endBlock },
-                signers: { $elemMatch: { $eq: validator.toLowerCase() } }
+                signers: { $elemMatch: { $eq: validator } }
             })
 
         await q.create('RewardVoterProcess', {
             epoch: epoch,
-            validator: validator.toLowerCase(),
+            validator: validator,
             validatorSignNumber: validatorSignNumber,
             totalSignNumber: totalSignNumber
         })
@@ -78,28 +79,27 @@ consumer.task = async function (job, done) {
 
         let reward = (reward4MasterNode / totalValidator) * (validatorSignNumber / totalSignNumber)
 
-        let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.toLowerCase())
+        let ownerValidator = await validatorContract.methods.getCandidateOwner(validator).call()
+        ownerValidator = ownerValidator.toString().toLowerCase()
 
         // Add reward for validator
         await q.create('AddRewardToAccount', {
-            address: ownerValidator.toLowerCase(),
+            address: ownerValidator,
             balance: reward
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(
-            validator.toLowerCase(),
-            validator.toLowerCase()
-        ).call()
+        let lockBalance = await validatorContract.methods.getVoterCap(validator, ownerValidator).call()
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,
             endBlock: endBlock,
-            address: ownerValidator.toLowerCase(),
-            isMasterNode: true,
-            lockBalance: lockBalance,
-            reward: reward,
-            numberBlockSigner: validatorSignNumber
+            address: ownerValidator,
+            validator: validator,
+            reward4Validator: true,
+            lockBalance: lockBalance.toString(),
+            reward: reward.toString(),
+            signNumber: validatorSignNumber
         })
 
         if (rewardValidator.length === 5000) {

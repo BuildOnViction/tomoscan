@@ -17,7 +17,7 @@ let watch = async () => {
         if (minBlockCrawl < maxBlockNum) {
             let nextCrawl = minBlockCrawl + 20
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
-            for (let i = minBlockCrawl; i <= nextCrawl; i++) {
+            for (let i = minBlockCrawl; i < nextCrawl; i++) {
                 await q.create('BlockProcess', { block: i })
                     .priority('normal').removeOnComplete(true).save()
 
@@ -35,7 +35,7 @@ let watch = async () => {
 
                 if (i !== 0 && i % 10 === 0) {
                     console.log('Sleep 20 seconds')
-                    await sleep(10000)
+                    await sleep(20000)
                     // console.log('process exit')
                     // process.exit(1)
                 }

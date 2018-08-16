@@ -22,6 +22,7 @@ let BlockHelper = {
 
         // Get signer.
         let signer = toAddress(getSigner(_block), 100)
+        signer = signer.toLowerCase()
 
         // Update end tx count.
         let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
@@ -87,8 +88,8 @@ let BlockHelper = {
                     if (tx && tx.hash) {
                         if (tx.from !== null) {
                             let accountFrom = await db.Account.findOneAndUpdate(
-                                { hash: tx.from },
-                                { hash: tx.from, status: false },
+                                { hash: tx.from.toLowerCase() },
+                                { hash: tx.from.toLowerCase(), status: false },
                                 { upsert: true, new: true }
                             )
                             tx.from = tx.from.toLowerCase()
@@ -99,8 +100,8 @@ let BlockHelper = {
                         }
                         if (tx.to !== null) {
                             let accountTo = await db.Account.findOneAndUpdate(
-                                { hash: tx.to },
-                                { hash: tx.to, status: false },
+                                { hash: tx.to.toLowerCase() },
+                                { hash: tx.to.toLowerCase(), status: false },
                                 { upsert: true, new: true }
                             )
                             tx.to = tx.to.toLowerCase()
