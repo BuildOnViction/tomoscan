@@ -10,9 +10,9 @@ consumer.task = async function (job, done) {
     let balance = job.data.balance
     let account = await db.Account.findOneAndUpdate({ hash: address }, { hash: address }, { upsert: true, new: true })
 
-    if (account.balanceNumber) {
-        account.balanceNumber += parseFloat(balance)
-        account.balance = account.balanceNumber.toString()
+    if (account.balance) {
+        account.balance = (parseFloat(account.balance) + parseFloat(balance)).toString()
+        account.balanceNumber = parseFloat(account.balance)
 
         await account.save()
     } else {
