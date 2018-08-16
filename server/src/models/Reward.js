@@ -8,10 +8,11 @@ const Reward = new Schema({
     startBlock: { type: Number },
     endBlock: { type: Number },
     address: { type: String, index: true },
-    isMasterNode: { type: Boolean, index: true },
-    lockBalance: { type: Number },
-    reward: { type: Number },
-    numberBlockSigner: { type: Number }
+    validator: { type: String, index: true },
+    reward4Validator: { type: Boolean, index: true },
+    lockBalance: { type: String },
+    reward: { type: String },
+    signNumber: { type: Number }
 }, {
     timestamps: true
 })
