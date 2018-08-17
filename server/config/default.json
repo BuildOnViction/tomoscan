@@ -20,7 +20,7 @@
   "APP_SECRET": "RANDOM_HASH",
 
   "SENDGRID_API_KEY": "",
-  "SENDER_EMAIL": "",
+  "SENDER_EMAIL": "contact@tomochain.com",
 
   "CLIENT_URL": "http://localhost:3000/",
   "CMC_ID": 2570,
