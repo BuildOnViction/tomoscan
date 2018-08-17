@@ -127,7 +127,6 @@ consumer.task = async function (job, done) {
         await db.Reward.insertMany(rewardValidator)
     }
 
-
     done()
 }
 

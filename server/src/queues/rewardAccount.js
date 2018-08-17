@@ -1,6 +1,5 @@
 'use strict'
 
-const db = require('../models')
 import AccountHelper from '../helpers/account'
 
 const consumer = {}
@@ -15,7 +14,6 @@ consumer.task = async function (job, done) {
     account.balanceNumber = parseFloat(account.balance)
 
     await account.save()
-
 
     done()
 }
