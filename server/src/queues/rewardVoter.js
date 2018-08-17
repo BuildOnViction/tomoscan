@@ -62,7 +62,7 @@ consumer.task = async function (job, done) {
             endBlock: endBlock,
             address: voterAddress,
             validator: validator,
-            reward4Validator: false,
+            reason: 'Voter',
             lockBalance: lockBalance.toString(),
             reward: reward.toString(),
             signNumber: validatorSignNumber
