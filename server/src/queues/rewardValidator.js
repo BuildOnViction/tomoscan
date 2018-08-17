@@ -96,16 +96,30 @@ consumer.task = async function (job, done) {
             endBlock: endBlock,
             address: ownerValidator,
             validator: validator,
-            reward4Validator: true,
+            reason: 'Validator',
             lockBalance: lockBalance.toString(),
             reward: reward.toString(),
             signNumber: validatorSignNumber
         })
 
-        if (rewardValidator.length === 5000) {
-            await db.Reward.insertMany(rewardValidator)
-            rewardValidator = []
-        }
+        // Reward for foundation
+        let foundationReward = reward4Foundation / totalValidator
+        await rewardValidator.push({
+            epoch: epoch,
+            startBlock: startBlock,
+            endBlock: endBlock,
+            address: contractAddress.foundation,
+            validator: validator,
+            reason: 'Foundation',
+            lockBalance: 0,
+            reward: foundationReward.toString(),
+            signNumber: validatorSignNumber
+        })
+        await q.create('AddRewardToAccount', {
+            address: contractAddress.foundation,
+            balance: foundationReward
+        })
+            .priority('normal').removeOnComplete(true).save()
     })
     await Promise.all(validatorMap)
 
@@ -113,12 +127,6 @@ consumer.task = async function (job, done) {
         await db.Reward.insertMany(rewardValidator)
     }
 
-    // Add reward for foundation
-    await q.create('AddRewardToAccount', {
-        address: contractAddress.foundation,
-        balance: reward4Foundation
-    })
-        .priority('normal').removeOnComplete(true).save()
 
     done()
 }
