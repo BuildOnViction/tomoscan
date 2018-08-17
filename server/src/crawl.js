@@ -33,9 +33,9 @@ let watch = async () => {
                 }
                 await setting.save()
 
-                if (i !== 0 && i % 10 === 0) {
-                    console.log('Sleep 20 seconds')
-                    await sleep(20000)
+                if (i !== 0 && i % 20 === 0) {
+                    console.log('Sleep 10 seconds')
+                    await sleep(10000)
                     // console.log('process exit')
                     // process.exit(1)
                 }
