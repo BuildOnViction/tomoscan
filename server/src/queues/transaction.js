@@ -6,7 +6,7 @@ const db = require('../models')
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
-consumer.processNumber = 3
+consumer.processNumber = 6
 consumer.task = async function (job, done) {
     let hash = job.data.hash
     console.log('Process Transaction: ', hash)
