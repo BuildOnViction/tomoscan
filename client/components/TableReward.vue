@@ -140,10 +140,6 @@ export default {
             self.page.rewardTime = data.total
             self.perPage = data.perPage
 
-            if (self.page) {
-                self.page.blocksCount = self.total
-            }
-
             // Hide loading.
             self.loading = false
 
