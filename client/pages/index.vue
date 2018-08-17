@@ -9,7 +9,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'TOMO Explorer'
+            title: 'Tomoscan - Tomochain Block Explorer'
         }
     },
     data: () => ({}),

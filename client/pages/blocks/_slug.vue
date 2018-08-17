@@ -120,14 +120,14 @@
                             <td>Finality</td>
                             <td>{{ block.finality }} %</td>
                         </tr>
-                        <tr>
+                        <!--tr>
                             <td>Difficulty</td>
                             <td>{{ formatNumber(block.difficulty) }}</td>
-                        </tr>
-                        <tr>
+                        </tr-->
+                        <!--tr>
                             <td>Total Difficulty</td>
                             <td>{{ formatNumber(block.totalDifficulty) }}</td>
-                        </tr>
+                        </tr-->
                         <tr>
                             <td>Gas Used</td>
                             <td>{{ formatNumber(block.gasUsed) }}</td>
@@ -136,7 +136,7 @@
                             <td>Gas Limit</td>
                             <td>{{ formatNumber(block.gasLimit) }}</td>
                         </tr>
-                        <tr>
+                        <!--tr>
                             <td>Nonce</td>
                             <td>
                                 <read-more
@@ -147,7 +147,7 @@
                                     :max-chars="20"
                                     class="d-none d-sm-block"/>
                             </td>
-                        </tr>
+                        </tr-->
                         <tr>
                             <td>Extra Data</td>
                             <td>
