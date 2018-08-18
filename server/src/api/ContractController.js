@@ -1,12 +1,12 @@
 import { Router } from 'express'
 import solc from 'solc'
 import md5 from 'blueimp-md5'
-import ContractRepository from '../repositories/ContractRepository'
 import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import _ from 'lodash'
 import AccountHelper from "../helpers/account"
+import ContractHelper from "../helpers/contract"
 
 const ContractController = Router()
 
@@ -25,7 +25,7 @@ ContractController.get('/contracts', async (req, res, next) => {
 
 ContractController.get('/contracts/soljsons', async (req, res, next) => {
     try {
-        const versions = await ContractRepository.getVersions()
+        const versions = await ContractHelper.getVersions()
 
         return res.json(versions)
     } catch (e) {
@@ -37,7 +37,7 @@ ContractController.get('/contracts/soljsons', async (req, res, next) => {
 
 ContractController.post('/contracts', async (req, res, next) => {
     try {
-        const versions = await ContractRepository.getVersions()
+        const versions = await ContractHelper.getVersions()
         const sourceCode = req.body.sourceCode
         const optimization = req.body.optimization
         const version = req.body.version
@@ -103,7 +103,7 @@ ContractController.post('/contracts', async (req, res, next) => {
                     ] })
                 }
 
-                let contract = await ContractRepository.insertOrUpdate(contractName,
+                let contract = await ContractHelper.insertOrUpdate(contractName,
                     contractAddress,
                     versionRelease, sourceCode, optimization, output)
 
@@ -159,7 +159,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
                         let functionName = _.findKey(contract.functionHashes,
                             (o) => o === functionHash)
 
-                        let contractEvent = await ContractRepository.addNew(hash,
+                        let contractEvent = await ContractHelper.addNew(hash,
                             functionHash, functionName,
                             results[j])
 
