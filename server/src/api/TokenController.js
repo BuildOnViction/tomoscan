@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TokenRepository from '../repositories/TokenRepository'
 import db from '../models'
+import TokenHelper from '../helpers/token'
 
 const TokenController = Router()
 
@@ -12,7 +12,7 @@ TokenController.get('/tokens', async (req, res) => {
 
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]
-            data.items[i] = await TokenRepository.formatItem(item)
+            data.items[i] = await TokenHelper.formatItem(item)
         }
 
         return res.json(data)
@@ -31,7 +31,7 @@ TokenController.get('/tokens/:slug', async (req, res) => {
             return res.status(404).send()
         }
 
-        token = await TokenRepository.formatItem(token)
+        token = await TokenHelper.formatItem(token)
 
         res.json(token)
     } catch (e) {

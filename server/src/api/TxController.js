@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TxRepository from '../repositories/TxRepository'
-import BlockRepository from '../repositories/BlockRepository'
 import TokenTxRepository from '../repositories/TokenTxRepository'
 import db from '../models'
+import BlockHelper from '../helpers/block'
+import TransactionHelper from '../helpers/transaction'
 
 const TxController = Router()
 
@@ -14,7 +14,7 @@ TxController.get('/txs', async (req, res) => {
         if (blockNumber) {
             params.query = { blockNumber: blockNumber }
             // Get txs by block number.
-            await BlockRepository.addBlockByNumber(blockNumber)
+            await BlockHelper.addBlockByNumber(blockNumber)
         }
 
         // Check filter type.
@@ -70,8 +70,8 @@ TxController.get('/txs/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let tx = await TxRepository.getTxPending(hash)
-        tx = await TxRepository.getTxReceipt(hash)
+        let tx = await TransactionHelper.getTxPending(hash)
+        tx = await TransactionHelper.getTxReceipt(hash)
         // Re-find tx from db with populates.
         tx = await db.Tx.findOne({ hash: tx.hash })
             .populate([{ path: 'block' }, { path: 'from_model' }, { path: 'to_model' }])
@@ -103,7 +103,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
     try {
         let hash = req.params.hash
         hash = hash ? hash.toLowerCase() : hash
-        let tx = await TxRepository.getTxReceipt(hash)
+        let tx = await TransactionHelper.getTxReceipt(hash)
 
         return res.json(tx.status)
     } catch (e) {

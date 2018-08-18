@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
     let epoch = job.data.epoch
     let validator = job.data.validator
     let validatorSignNumber = job.data.validatorSignNumber
-    let totalSignNumber = job.data.totalSignNumber
+    let totalReward = job.data.totalReward
     console.log('Process reward for voter at epoch: ', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
@@ -46,7 +46,7 @@ consumer.task = async function (job, done) {
 
     let listVoterMap = listVoters.map(async (voter) => {
         let voterAddress = voter.address.toString().toLowerCase()
-        let reward = ((reward4voter * voter.balance) / totalVoterCap) * (validatorSignNumber / totalSignNumber)
+        let reward = ((reward4voter * voter.balance) / totalVoterCap) * totalReward
 
         await q.create('AddRewardToAccount', {
             address: voterAddress,
@@ -62,7 +62,7 @@ consumer.task = async function (job, done) {
             endBlock: endBlock,
             address: voterAddress,
             validator: validator,
-            reward4Validator: false,
+            reason: 'Voter',
             lockBalance: lockBalance.toString(),
             reward: reward.toString(),
             signNumber: validatorSignNumber

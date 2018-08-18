@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import LogRepository from '../repositories/LogRepository'
+import LogHelper from '../helpers/log'
 
 const LogController = Router()
 
@@ -19,7 +19,7 @@ LogController.get('/logs', async (req, res) => {
         let data = await paginate(req, 'Log', params)
         let items = data.items
         for (let i = 0; i < items.length; i++) {
-            data.items[i] = await LogRepository.formatItem(items[i])
+            data.items[i] = await LogHelper.formatItem(items[i])
         }
 
         return res.json(data)

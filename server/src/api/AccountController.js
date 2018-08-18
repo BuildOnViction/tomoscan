@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import AccountRepository from '../repositories/AccountRepository'
+import AccountHelper from '../helpers/account'
 
 const AccountController = Router()
 
@@ -29,8 +29,8 @@ AccountController.get('/accounts/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()
-        let account = await AccountRepository.updateAccount(hash)
-        account = await AccountRepository.formatItem(account)
+        let account = await AccountHelper.processAccount(hash)
+        account = await AccountHelper.formatItem(account)
 
         return res.json(account)
     } catch (e) {

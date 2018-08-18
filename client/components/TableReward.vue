@@ -48,9 +48,9 @@
                     class="text-truncate">{{ props.item.validator }}</nuxt-link>
             </template>
             <template
-                slot="reward4Validator"
+                slot="reason"
                 slot-scope="props">
-                {{ props.item.reward4Validator ? 'For validator' : 'For voter' }}
+                {{ props.item.reason }}
             </template>
 
             <template
@@ -103,7 +103,7 @@ export default {
             signNumber: { label: 'Sign number' },
             lockBalance: { label: 'Lock balance' },
             reward: { label: 'Reward' },
-            reward4Validator: { label: 'Reason' },
+            reason: { label: 'Reason' },
             timestamp: { label: 'Age' }
         },
         loading: true,
@@ -139,10 +139,6 @@ export default {
             self.pages = data.pages
             self.page.rewardTime = data.total
             self.perPage = data.perPage
-
-            if (self.page) {
-                self.page.blocksCount = self.total
-            }
 
             // Hide loading.
             self.loading = false
