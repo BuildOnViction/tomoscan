@@ -36,8 +36,7 @@ consumer.task = async function (job, done) {
     // })
     // await Promise.all(signerMap)
 
-    let reward4MasterNode = config.get('REWARD') * 10 ** 18 * config.get('MASTER_NODE_REWARD_PERCENT') / 100
-    let reward4Foundation = config.get('REWARD') * 10 ** 18 * config.get('FOUNDATION_REWARD_PERCENT') / 100
+    let totalReward = config.get('REWARD') * 10 ** 18
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
@@ -69,15 +68,19 @@ consumer.task = async function (job, done) {
                 signers: { $elemMatch: { $eq: validator } }
             })
 
+        let reward4group = (totalReward * validatorSignNumber) / totalSignNumber
+        let reward4validator = reward4group * config.get('MASTER_NODE_REWARD_PERCENT') / 100
+        let reward4foundation = reward4group * config.get('FOUNDATION_REWARD_PERCENT') / 100
+        let reward4voter = reward4group * config.get('VOTER_REWARD_PERCENT') / 100
+
         await q.create('RewardVoterProcess', {
             epoch: epoch,
             validator: validator,
             validatorSignNumber: validatorSignNumber,
-            totalSignNumber: totalSignNumber
+            totalReward: reward4voter
         })
             .priority('normal').removeOnComplete(true).save()
 
-        let reward = (reward4MasterNode / totalValidator) * (validatorSignNumber / totalSignNumber)
 
         let ownerValidator = await validatorContract.methods.getCandidateOwner(validator).call()
         ownerValidator = ownerValidator.toString().toLowerCase()
@@ -85,7 +88,7 @@ consumer.task = async function (job, done) {
         // Add reward for validator
         await q.create('AddRewardToAccount', {
             address: ownerValidator,
-            balance: reward
+            balance: reward4validator
         })
             .priority('normal').removeOnComplete(true).save()
 
@@ -98,12 +101,11 @@ consumer.task = async function (job, done) {
             validator: validator,
             reason: 'Validator',
             lockBalance: lockBalance.toString(),
-            reward: reward.toString(),
+            reward: reward4validator.toString(),
             signNumber: validatorSignNumber
         })
 
         // Reward for foundation
-        let foundationReward = reward4Foundation / totalValidator
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,
@@ -112,12 +114,12 @@ consumer.task = async function (job, done) {
             validator: validator,
             reason: 'Foundation',
             lockBalance: 0,
-            reward: foundationReward.toString(),
+            reward: reward4foundation.toString(),
             signNumber: validatorSignNumber
         })
         await q.create('AddRewardToAccount', {
             address: contractAddress.foundation,
-            balance: foundationReward
+            balance: reward4foundation
         })
             .priority('normal').removeOnComplete(true).save()
     })

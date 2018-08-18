@@ -10,8 +10,9 @@ consumer.task = async function (job, done) {
     let balance = job.data.balance
     let account = await AccountHelper.processAccount(address)
 
-    account.balance = (parseFloat(account.balance) + parseFloat(balance)).toString()
-    account.balanceNumber = parseFloat(account.balance)
+    let newBalance = parseFloat(account.balance) + parseFloat(balance)
+    account.balance = newBalance.toString()
+    account.balanceNumber = newBalance
 
     await account.save()
 
