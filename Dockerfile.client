@@ -29,6 +29,8 @@ RUN npm install
 
 COPY client .
 
+RUN cp .env.example .env
+
 RUN npm run build \
     && apk del deps
 

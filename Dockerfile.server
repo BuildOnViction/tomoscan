@@ -28,6 +28,6 @@ RUN npm run build \
 
 EXPOSE 3333
 
-ENTRYPOINT ["npm"]
+ENTRYPOINT ["./entrypoint.sh"]
 
 CMD ["start"]
