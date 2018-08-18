@@ -14,15 +14,15 @@ AuthController.post('/login', async (req, res) => {
 
         let isMatch = await user.authenticate(password)
 
-        if (!isMatch) { return res.sendStatus(422) }
+        if (!isMatch) { return res.sendStatus(400) }
 
         let token = await user.generateToken(user)
 
-        if (!token) { return res.sendStatus(422) }
+        if (!token) { return res.sendStatus(400) }
 
         return res.json({ user, token })
     } catch (e) {
-        return res.status(422).json(e)
+        return res.status(400).json(e)
     }
 })
 
@@ -32,15 +32,14 @@ AuthController.post('/register', async (req, res) => {
         const password = req.body.password
 
         let user = await db.User.findOne({ email: email })
-        console.log('user: ', user)
-        if (user) { return res.status(422).json({ message: 'Email exists in DB!' }) }
-
+        if (user) {
+            return res.status(400).json({ message: 'Email exists in DB!' })
+        }
         user = await db.User.create({
             email: email,
             password: password
         })
-        console.log('kaka: ', user)
-        if (!user) { return res.sendStatus(422) }
+        if (!user) { return res.sendStatus(400) }
 
         let token = await user.generateToken(user)
 
@@ -50,7 +49,8 @@ AuthController.post('/register', async (req, res) => {
 
         return res.json({ user, token })
     } catch (e) {
-        return res.status(422).json(e)
+        console.log('error: ', e)
+        return res.status(400).json(e)
     }
 })
 
