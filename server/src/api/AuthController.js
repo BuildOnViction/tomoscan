@@ -32,13 +32,14 @@ AuthController.post('/register', async (req, res) => {
         const password = req.body.password
 
         let user = await db.User.findOne({ email: email })
+        console.log('user: ', user)
         if (user) { return res.status(422).json({ message: 'Email exists in DB!' }) }
 
         user = await db.User.create({
             email: email,
             password: password
         })
-
+        console.log('kaka: ', user)
         if (!user) { return res.sendStatus(422) }
 
         let token = await user.generateToken(user)

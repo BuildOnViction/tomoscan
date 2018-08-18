@@ -1,5 +1,8 @@
 'use strict'
 
+import TokenTx from "../models/TokenTx";
+import {formatAscIIJSON} from "./utils";
+
 let TokenHelper = {
     getTokenFuncs: async () => ({
         'decimals': '0x313ce567', // hex to decimal
@@ -20,6 +23,15 @@ let TokenHelper = {
         }
 
         return isToken
+    },
+
+    formatItem: async (item) => {
+        item.tokenTxsCount = await TokenTx.find({ address: item.hash }).count()
+        item.name = formatAscIIJSON(item.name)
+        item.symbol = formatAscIIJSON(item.symbol)
+        item.totalSupply = item.totalSupply / Math.pow(10, item.decimals)
+
+        return item
     }
 }
 

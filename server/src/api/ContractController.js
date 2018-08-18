@@ -2,11 +2,11 @@ import { Router } from 'express'
 import solc from 'solc'
 import md5 from 'blueimp-md5'
 import ContractRepository from '../repositories/ContractRepository'
-import AccountRepository from '../repositories/AccountRepository'
 import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import _ from 'lodash'
+import AccountHelper from "../helpers/account"
 
 const ContractController = Router()
 
@@ -51,7 +51,7 @@ ContractController.post('/contracts', async (req, res, next) => {
             return res.json({ errors: ['This contract is validated'] })
         }
 
-        const originalCode = await AccountRepository.getCode(contractAddress)
+        const originalCode = await AccountHelper.getCode(contractAddress)
         let versionRelease = versions[version]
         versionRelease = versionRelease.replace('soljson-', '')
         versionRelease = versionRelease.replace('.js', '')

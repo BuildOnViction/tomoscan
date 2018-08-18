@@ -2,6 +2,11 @@
 
 import Web3Util from './web3'
 import TokenHelper from './token'
+import Tx from "../models/Tx";
+import Token from "../models/Token";
+import Contract from "../models/Contract";
+import TokenHolder from "../models/TokenHolder";
+import Account from "../models/Account";
 
 const db = require('../models')
 
@@ -48,6 +53,58 @@ let AccountHelper = {
             { upsert: true, new: true })
 
         return acc
+    },
+    async formatItem (address, baseRank) {
+        // Find txn create from.
+        let fromTxn = null
+        if (address.isContract) {
+            let tx = await Tx.findOne({
+                from: address.contractCreation,
+                to: null,
+                contractAddress: address.hash
+            })
+            if (tx) {
+                fromTxn = tx.hash
+            }
+        }
+        address.fromTxn = fromTxn
+
+        // Get token.
+        let token = null
+        if (address.isToken) {
+            token = await Token.findOne(
+                { hash: address.hash, quantity: { $gte: 0 } })
+        }
+        address.token = token
+
+        // Inject contract to address object.
+        address.contract = await Contract.findOne({ hash: address.hash })
+
+        // Check has token holders.
+        let hasTokens = await TokenHolder.findOne({ hash: address.hash })
+        address.hashTokens = !!hasTokens
+
+        return address
+    },
+
+    async getCode (hash) {
+        try {
+            if (!hash) { return }
+
+            let code = ''
+            let account = await Account.findOne({ hash: hash })
+            if (!account) {
+                let web3 = await Web3Util.getWeb3()
+                code = await web3.eth.getCode(hash)
+            } else {
+                code = account.code
+            }
+
+            return code
+        } catch (e) {
+            console.trace(e)
+            throw e
+        }
     }
 }
 
