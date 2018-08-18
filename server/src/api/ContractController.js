@@ -89,8 +89,13 @@ ContractController.post('/contracts', async (req, res, next) => {
                 })
 
                 let runtimeBytecode = '0x' + outputContract.runtimeBytecode
-
-                if (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100))) {
+                
+                // TODO: this hard-code to verify built-in smart contracts
+                // if (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100))) {
+                if ((contractAddress !== '0x0000000000000000000000000000000000000088'
+                    || contractAddress !== '0x0000000000000000000000000000000000000089'
+                    || contractAddress !== '0x0000000000000000000000000000000000000090')
+                    && (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100)))) {
                     return res.json({ errors: [
                         `Contract names found: ${contracts.join(', ')}`,
                         'Bytecode runtime invalid!',
