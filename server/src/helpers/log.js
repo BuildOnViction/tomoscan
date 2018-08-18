@@ -27,7 +27,7 @@ let LogHelper = {
         log.tx = tx
         log.methodCode = tx ? tx.input.substring(0, 10) : ''
         let code = log.methodCode.replace('0x', '')
-        let funcs = LogRepository.getFunctionHashes()
+        let funcs = LogHelper.getFunctionHashes()
         log.methodName = await _.findKey(funcs, (value, key) => value === code)
 
         return log

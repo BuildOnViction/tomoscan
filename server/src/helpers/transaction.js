@@ -1,6 +1,6 @@
 'use strict'
 
-import Web3Util from "./web3";
+import Web3Util from './web3'
 
 const db = require('../models')
 

@@ -1,9 +1,6 @@
 'use strict'
 
-import Web3Util from '../helpers/web3'
 import TransactionHelper from '../helpers/transaction'
-
-const db = require('../models')
 
 const consumer = {}
 consumer.name = 'TransactionProcess'

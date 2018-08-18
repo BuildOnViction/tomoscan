@@ -5,8 +5,8 @@ import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import _ from 'lodash'
-import AccountHelper from "../helpers/account"
-import ContractHelper from "../helpers/contract"
+import AccountHelper from '../helpers/account'
+import ContractHelper from '../helpers/contract'
 
 const ContractController = Router()
 

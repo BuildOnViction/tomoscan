@@ -6,7 +6,6 @@ let ContractHelper = {
         let { data } = await axios.get(
             'https://ethereum.github.io/solc-bin/bin/list.json')
         return Object.values(data.releases)
-
     },
 
     async insertOrUpdate (

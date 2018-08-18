@@ -58,7 +58,6 @@ consumer.task = async function (job, done) {
     const q = require('./index')
 
     let validators = await validatorContract.methods.getCandidates().call()
-    let totalValidator = await validators.length
     let rewardValidator = []
     let validatorMap = validators.map(async (validator) => {
         validator = validator.toString().toLowerCase()
@@ -80,7 +79,6 @@ consumer.task = async function (job, done) {
             totalReward: reward4voter
         })
             .priority('normal').removeOnComplete(true).save()
-
 
         let ownerValidator = await validatorContract.methods.getCandidateOwner(validator).call()
         ownerValidator = ownerValidator.toString().toLowerCase()

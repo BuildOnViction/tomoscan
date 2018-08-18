@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import LogHelper from "../helpers/log"
+import LogHelper from '../helpers/log'
 
 const LogController = Router()
 
