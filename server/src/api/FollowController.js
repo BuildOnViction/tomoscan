@@ -1,8 +1,8 @@
 import { Router } from 'express'
 import authService from '../services/Auth'
 import { paginate } from '../helpers/utils'
-import FollowRepository from '../repositories/FollowRepository'
 import db from '../models'
+import FollowHelper from "../helpers/follow"
 
 const FollowController = Router()
 
@@ -20,7 +20,7 @@ FollowController.get('/follows', authService.authenticate(),
             }
             let data = await paginate(req, 'Follow', params)
             let items = data.items
-            data.items = await FollowRepository.formatItems(items)
+            data.items = await FollowHelper.formatItems(items)
 
             return res.json(data)
         } catch (e) {
@@ -40,7 +40,7 @@ FollowController.post('/follows', authService.authenticate(),
 
             let lastBlock = await db.Block.findOne().sort({ number: -1 })
             let blockNumber = lastBlock ? lastBlock.number : 0
-            let follow = await FollowRepository.firstOrUpdate(req, user, blockNumber)
+            let follow = await FollowHelper.firstOrUpdate(req, user, blockNumber)
 
             return res.json(follow)
         } catch (e) {
