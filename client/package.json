@@ -5,7 +5,7 @@
   "scripts": {
     "lint": "eslint --cache ./ --ext .vue --ext .js --env mocha",
     "lint-fix": "eslint --cache ./ --ext .vue --ext .js --env mocha --fix",
-    "dev": "nuxt",
+    "dev": "HOST=0.0.0.0 nuxt",
     "build": "nuxt build",
     "start": "nuxt start",
     "test": "mocha"
