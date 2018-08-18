@@ -3,6 +3,7 @@ import Web3Connector from './services/Web3Connector'
 import authService from './services/Auth'
 
 const express = require('express')
+const events = require('events')
 const logger = require('morgan')
 const compression = require('compression')
 const mongoose = require('mongoose')
@@ -11,6 +12,9 @@ const bodyParser = require('body-parser')
 const config = require('config')
 
 const app = express()
+
+// fix warning max listener
+events.EventEmitter.defaultMaxListeners = 100
 
 // Init socket.io.
 const server = require('http').createServer(app)
