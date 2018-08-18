@@ -53,6 +53,12 @@ consumer.task = async function (job, done) {
     })
     await Promise.all(validatorMap)
 
+    if (epoch > 1) {
+        const q = require('./queues')
+        await q.create('RewardValidatorProcess', { epoch: epoch - 1 })
+            .priority('critical').removeOnComplete(true).save()
+    }
+
     done()
 }
 
