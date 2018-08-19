@@ -55,7 +55,7 @@ consumer.task = async function (job, done) {
 
     if (epoch > 1) {
         const q = require('./index')
-        await q.create('RewardValidatorProcess', { epoch: epoch - 1 })
+        q.create('RewardValidatorProcess', { epoch: epoch - 1 })
             .priority('critical').removeOnComplete(true).save()
     }
 

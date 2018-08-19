@@ -48,7 +48,7 @@ consumer.task = async function (job, done) {
         let voterAddress = voter.address.toString().toLowerCase()
         let reward = ((reward4voter * voter.balance) / totalVoterCap) * totalReward
 
-        await q.create('AddRewardToAccount', {
+        q.create('AddRewardToAccount', {
             address: voterAddress,
             balance: reward
         })

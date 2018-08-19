@@ -72,7 +72,7 @@ consumer.task = async function (job, done) {
         let reward4foundation = reward4group * config.get('FOUNDATION_REWARD_PERCENT') / 100
         let reward4voter = reward4group * config.get('VOTER_REWARD_PERCENT') / 100
 
-        await q.create('RewardVoterProcess', {
+        q.create('RewardVoterProcess', {
             epoch: epoch,
             validator: validator,
             validatorSignNumber: validatorSignNumber,
@@ -84,7 +84,7 @@ consumer.task = async function (job, done) {
         ownerValidator = ownerValidator.toString().toLowerCase()
 
         // Add reward for validator
-        await q.create('AddRewardToAccount', {
+        q.create('AddRewardToAccount', {
             address: ownerValidator,
             balance: reward4validator
         })
@@ -115,7 +115,7 @@ consumer.task = async function (job, done) {
             reward: reward4foundation.toString(),
             signNumber: validatorSignNumber
         })
-        await q.create('AddRewardToAccount', {
+        q.create('AddRewardToAccount', {
             address: contractAddress.foundation,
             balance: reward4foundation
         })

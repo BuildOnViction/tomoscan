@@ -32,7 +32,7 @@ let AccountHelper = {
                 await db.Token.findOneAndUpdate({ hash: hash },
                     { hash: hash, status: false }, { upsert: true, new: true })
                 const q = require('./index')
-                await q.create('TokenProcess', { address: hash })
+                q.create('TokenProcess', { address: hash })
                     .priority('normal').removeOnComplete(true).save()
             }
             _account.isToken = isToken
