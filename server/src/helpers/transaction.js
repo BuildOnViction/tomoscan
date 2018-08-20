@@ -111,12 +111,12 @@ let TransactionHelper = {
         let token = await db.Token.findOne({ hash: address })
         const q = require('./index')
         if (!token) {
-            await q.create('AccountProcess', { address: address })
+            q.create('AccountProcess', { address: address })
                 .priority('low').removeOnComplete(true).save()
-            await q.create('TokenProcess', { address: address })
+            q.create('TokenProcess', { address: address })
                 .priority('normal').removeOnComplete(true).save()
         }
-        await q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
+        q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
             .priority('normal').removeOnComplete(true).save()
     }
 }
