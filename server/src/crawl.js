@@ -4,6 +4,11 @@ import Web3Util from './helpers/web3'
 const config = require('config')
 const q = require('./queues')
 const db = require('./models')
+const events = require('events')
+
+// fix warning max listener
+events.EventEmitter.defaultMaxListeners = 1000
+process.setMaxListeners(1000)
 
 // let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
