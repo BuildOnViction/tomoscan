@@ -5,7 +5,7 @@ const config = require('config')
 const q = require('./queues')
 const db = require('./models')
 
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+// let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let watch = async () => {
     while (true) {
