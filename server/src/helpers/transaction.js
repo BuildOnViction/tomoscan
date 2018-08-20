@@ -22,7 +22,8 @@ let TransactionHelper = {
 
         delete tx['_id']
 
-        await db.Tx.findOneAndUpdate({ hash: hash }, tx, { upsert: true, new: true })
+        let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx, { upsert: true, new: true })
+        return trans
     },
 
     getTxReceipt: async (hash) => {
@@ -96,8 +97,9 @@ let TransactionHelper = {
 
         delete tx['_id']
 
-        await db.Tx.findOneAndUpdate({ hash: hash }, tx,
+        let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
             { upsert: true, new: true })
+        return trans
     },
 
     parseLog: async (log) => {
