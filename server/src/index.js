@@ -15,7 +15,7 @@ const app = express()
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000
-process.setMaxListeners(1000);
+process.setMaxListeners(1000)
 
 // Init socket.io.
 const server = require('http').createServer(app)
