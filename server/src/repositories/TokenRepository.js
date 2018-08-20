@@ -30,7 +30,7 @@ let TokenRepository = {
         await CrawlRepository.add('token', hash)
 
         let token = await Token.findOneAndUpdate({ hash: hash },
-            { hash: hash, status: false }, { upsert: true, new: true })
+            { hash: hash }, { upsert: true, new: true })
         return token
     },
 

@@ -30,7 +30,7 @@ let AccountHelper = {
             if (isToken) {
                 // Insert token pending.
                 await db.Token.findOneAndUpdate({ hash: hash },
-                    { hash: hash, status: false }, { upsert: true, new: true })
+                    { hash: hash }, { upsert: true, new: true })
                 const q = require('./index')
                 q.create('TokenProcess', { address: hash })
                     .priority('normal').removeOnComplete(true).save()

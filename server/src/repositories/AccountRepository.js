@@ -61,7 +61,7 @@ let AccountRepository = {
         hash = hash.toLowerCase()
 
         let account = await Account.findOneAndUpdate({ hash: hash },
-            { hash: hash, status: false }, { upsert: true, new: true })
+            { hash: hash }, { upsert: true, new: true })
         return account
     },
 

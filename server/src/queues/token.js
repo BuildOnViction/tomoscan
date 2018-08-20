@@ -14,7 +14,7 @@ consumer.task = async function (job, done) {
     let token = await db.Token.findOne({ hash: address })
     if (!token) {
         token = await db.Token.findOneAndUpdate({ hash: address },
-            { hash: address, status: false }, { upsert: true, new: true })
+            { hash: address }, { upsert: true, new: true })
     }
     let tokenFuncs = await TokenHelper.getTokenFuncs()
 
