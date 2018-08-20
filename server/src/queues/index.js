@@ -6,7 +6,7 @@ const path = require('path')
 const fs = require('fs')
 
 // fix warning max listener
-process.setMaxListeners(1000);
+process.setMaxListeners(1000)
 
 const q = kue.createQueue({
     prefix: config.get('redis.prefix'),
@@ -16,7 +16,7 @@ const q = kue.createQueue({
         auth: config.get('redis.password')
     }
 })
-q.setMaxListeners(1000);
+q.setMaxListeners(1000)
 
 fs.readdirSync(__dirname)
     .filter(function (file) {
