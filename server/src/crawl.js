@@ -13,7 +13,6 @@ process.setMaxListeners(1000)
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let watch = async () => {
-    let minBlockCrawl = 0
     let step = 200
     let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
     if (!setting) {
@@ -22,11 +21,11 @@ let watch = async () => {
             meta_value: 0
         })
     }
+    let minBlockCrawl = parseInt(setting.meta_value || 0)
 
     while (true) {
         let web3 = await Web3Util.getWeb3()
         let maxBlockNum = await web3.eth.getBlockNumber()
-        minBlockCrawl = parseInt(minBlockCrawl || (setting || {}).meta_value || 0)
         if (minBlockCrawl < maxBlockNum) {
             let nextCrawl = minBlockCrawl + step
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
