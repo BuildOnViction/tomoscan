@@ -16,10 +16,17 @@ let watch = async () => {
     let minBlockCrawl = 0
     let step = 200
     let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
+    if (!setting) {
+        setting = await new db.Setting({
+            meta_key: 'min_block_crawl',
+            meta_value: 0
+        })
+    }
+
     while (true) {
         let web3 = await Web3Util.getWeb3()
         let maxBlockNum = await web3.eth.getBlockNumber()
-        minBlockCrawl = minBlockCrawl || (setting || {}).meta_value || 0
+        minBlockCrawl = parseInt(minBlockCrawl || (setting || {}).meta_value || 0)
         if (minBlockCrawl < maxBlockNum) {
             let nextCrawl = minBlockCrawl + step
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
@@ -31,17 +38,10 @@ let watch = async () => {
             }
         }
 
-        if (!setting) {
-            setting = await new db.Setting({
-                meta_key: 'min_block_crawl',
-                meta_value: 0
-            })
-        }
-
-        if (minBlockCrawl >= parseInt(setting.meta_value)) {
+        if (minBlockCrawl > parseInt(setting.meta_value)) {
             setting.meta_value = minBlockCrawl
+            await setting.save()
         }
-        await setting.save()
 
         if (String(maxBlockNum) === String(minBlockCrawl)) {
             console.log('Sleep 0.5 seconds')
