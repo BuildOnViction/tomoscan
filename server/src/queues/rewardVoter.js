@@ -1,6 +1,7 @@
 'use strict'
 
 import Web3Util from '../helpers/web3'
+import BigNumber from 'bignumber.js'
 
 const db = require('../models')
 const config = require('config')
@@ -13,27 +14,26 @@ consumer.name = 'RewardVoterProcess'
 consumer.processNumber = 4
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    let validator = job.data.validator
+    let validator = job.data.validator.toLowerCase()
     let validatorSignNumber = job.data.validatorSignNumber
     let totalReward = job.data.totalReward
-    console.log('Process reward for voter at epoch: ', epoch)
+    totalReward = new BigNumber(totalReward)
+    console.log('Process reward for voter of validator', validator, ' at epoch: ', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
-
-    let reward4voter = config.get('REWARD') * 10 ** 18 * config.get('VOTER_REWARD_PERCENT') / 100
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
 
     let voters = await validatorContract.methods.getVoters(validator).call()
 
-    let totalVoterCap = 0
+    let totalVoterCap = await validatorContract.methods.getCandidateCap(validator).call()
+    totalVoterCap = new BigNumber(totalVoterCap)
     let listVoters = []
     let voterMap = voters.map(async (voter) => {
         voter = voter.toString().toLowerCase()
         let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
-        totalVoterCap += parseFloat(voterCap)
         listVoters.push({
             address: voter,
             balance: voterCap
@@ -46,7 +46,7 @@ consumer.task = async function (job, done) {
 
     let listVoterMap = listVoters.map(async (voter) => {
         let voterAddress = voter.address.toString().toLowerCase()
-        let reward = ((reward4voter * voter.balance) / totalVoterCap) * totalReward
+        let reward = totalReward.multipliedBy(voter.balance).dividedBy(totalVoterCap)
 
         q.create('AddRewardToAccount', {
             address: voterAddress,
@@ -63,7 +63,7 @@ consumer.task = async function (job, done) {
             address: voterAddress,
             validator: validator,
             reason: 'Voter',
-            lockBalance: lockBalance.toString(),
+            lockBalance: new BigNumber(lockBalance).toString(),
             reward: reward.toString(),
             signNumber: validatorSignNumber
         })

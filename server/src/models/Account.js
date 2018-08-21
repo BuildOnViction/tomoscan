@@ -12,7 +12,7 @@ const Account = new Schema({
     contractCreation: String,
     isContract: Boolean,
     storageAt: String,
-    status: Boolean,
+    status: { type: Boolean, default: false },
     isToken: Boolean
 }, {
     timestamps: true,

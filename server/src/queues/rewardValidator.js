@@ -1,6 +1,7 @@
 'use strict'
 
 import Web3Util from '../helpers/web3'
+import BigNumber from 'bignumber.js'
 
 const db = require('../models')
 const config = require('config')
@@ -36,7 +37,7 @@ consumer.task = async function (job, done) {
     // })
     // await Promise.all(signerMap)
 
-    let totalReward = config.get('REWARD') * 10 ** 18
+    let totalReward = new BigNumber(config.get('REWARD')).multipliedBy(10 ** 18)
 
     let web3 = await Web3Util.getWeb3()
     let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
@@ -66,11 +67,14 @@ consumer.task = async function (job, done) {
                 blockNumber: { $gte: startBlock, $lte: endBlock },
                 signers: { $elemMatch: { $eq: validator } }
             })
+        let validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
+        let foundationRewardPercent = new BigNumber(config.get('FOUNDATION_REWARD_PERCENT'))
+        let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
 
-        let reward4group = (totalReward * validatorSignNumber) / totalSignNumber
-        let reward4validator = reward4group * config.get('MASTER_NODE_REWARD_PERCENT') / 100
-        let reward4foundation = reward4group * config.get('FOUNDATION_REWARD_PERCENT') / 100
-        let reward4voter = reward4group * config.get('VOTER_REWARD_PERCENT') / 100
+        let reward4group = totalReward.multipliedBy(validatorSignNumber).dividedBy(totalSignNumber)
+        let reward4validator = reward4group.multipliedBy(validatorRewardPercent).dividedBy(100)
+        let reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
+        let reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
 
         q.create('RewardVoterProcess', {
             epoch: epoch,
@@ -98,7 +102,7 @@ consumer.task = async function (job, done) {
             address: ownerValidator,
             validator: validator,
             reason: 'Validator',
-            lockBalance: lockBalance.toString(),
+            lockBalance: new BigNumber(lockBalance),
             reward: reward4validator.toString(),
             signNumber: validatorSignNumber
         })
@@ -122,7 +126,6 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true).save()
     })
     await Promise.all(validatorMap)
-
     if (rewardValidator.length > 0) {
         await db.Reward.insertMany(rewardValidator)
     }

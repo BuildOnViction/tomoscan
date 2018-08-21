@@ -3,7 +3,7 @@ import AccountHelper from './account'
 
 let FollowHelper = {
     async firstOrUpdate (req, user, startBlock) {
-        let address = req.body.address
+        let address = req.body.address.toLowerCase()
         let name = req.body.name
         let update = {
             user: user,

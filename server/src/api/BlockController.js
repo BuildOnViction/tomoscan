@@ -75,7 +75,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 
         // Find exist in db.
         // let block = await db.Block.findOne(query)
-        let block = await db.Block.findOne({ hash: hashOrNumb })
+        let block = await db.Block.findOne({ hash: hashOrNumb.toLowerCase() })
         if (!block) {
             block = await db.Block.findOne({ number: hashOrNumb })
         }

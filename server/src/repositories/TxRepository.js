@@ -54,11 +54,11 @@ let TxRepository = {
 
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                tx.from_model = await AccountRepository.addAccountPending(tx.from)
+                tx.from_model = await AccountRepository.addAccountPending(tx.from.toLowerCase())
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
-                tx.to_model = await AccountRepository.addAccountPending(tx.to)
+                tx.to_model = await AccountRepository.addAccountPending(tx.to.toLowerCase())
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
@@ -67,7 +67,7 @@ let TxRepository = {
                         { hash: contractAddress },
                         {
                             hash: contractAddress,
-                            contractCreation: tx.from,
+                            contractCreation: tx.from.toLowerCase(),
                             isContract: true
                         },
                         { upsert: true, new: true })

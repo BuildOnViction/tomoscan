@@ -11,11 +11,11 @@ TokenTxController.get('/token-txs', async (req, res) => {
         let params = {}
         params.query = {}
         if (token) {
-            params.query = { address: token }
+            params.query = { address: token.toLowerCase() }
         }
         if (address) {
             params.query = Object.assign(params.query,
-                { $or: { from: address, to: address } })
+                { $or: { from: address.toLowerCase(), to: address.toLowerCase() } })
         }
         params.populate = [{ path: 'block' }]
         let data = await paginate(req, 'TokenTx', params)

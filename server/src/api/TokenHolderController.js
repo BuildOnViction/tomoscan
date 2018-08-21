@@ -7,7 +7,7 @@ const TokenHolderController = Router()
 
 TokenHolderController.get('/token-holders', async (req, res) => {
     try {
-        let address = req.query.address
+        let address = req.query.address.toLowerCase()
         let params = {}
         if (address) {
             params.query = { token: address }

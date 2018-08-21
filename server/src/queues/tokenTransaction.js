@@ -42,8 +42,8 @@ consumer.task = async function (job, done) {
     // Add token holder data.
     const q = require('./index')
     q.create('TokenHolderProcess', { token: JSON.stringify({
-        from: _log.from,
-        to: _log.to,
+        from: _log.from.toLowerCase(),
+        to: _log.to.toLowerCase(),
         address: _log.address,
         value: _log.value
     }) })

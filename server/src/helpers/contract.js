@@ -8,9 +8,8 @@ let ContractHelper = {
         return Object.values(data.releases)
     },
 
-    async insertOrUpdate (
-        contractName, contractAddress, releaseVersion, sourceCode, optimization,
-        ouput) {
+    async insertOrUpdate (contractName, contractAddress, releaseVersion, sourceCode, optimization, ouput) {
+        contractAddress = contractAddress.toLowerCase()
         let txCount = await db.Tx.find({ to: contractAddress }).count()
 
         let update = {
@@ -37,8 +36,8 @@ let ContractHelper = {
         if (exist) {
             return null
         }
-        obj.address = address
-        obj.functionHash = functionHash
+        obj.address = address.toLowerCase()
+        obj.functionHash = functionHash.toLowerCase()
         obj.functionName = functionName
         let event = await db.ContractEvent.create(obj)
         return event

@@ -11,7 +11,7 @@ const Token = new Schema({
     totalSupplyNumber: Number,
     symbol: String,
     decimals: Number,
-    status: Boolean
+    status: { type: Boolean, default: false }
 }, {
     timestamps: true,
     toJSON: { virtuals: true, getters: true },

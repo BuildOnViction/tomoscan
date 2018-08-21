@@ -6,6 +6,7 @@ const db = require('../models')
 
 let AccountHelper = {
     processAccount:async (hash) => {
+        hash = hash.toLowerCase()
         let _account = await db.Account.findOne({ hash: hash, nonce: { $exists: true } })
         _account = _account || {}
 
@@ -30,7 +31,7 @@ let AccountHelper = {
             if (isToken) {
                 // Insert token pending.
                 await db.Token.findOneAndUpdate({ hash: hash },
-                    { hash: hash, status: false }, { upsert: true, new: true })
+                    { hash: hash }, { upsert: true, new: true })
                 const q = require('./index')
                 q.create('TokenProcess', { address: hash })
                     .priority('normal').removeOnComplete(true).save()
@@ -84,7 +85,7 @@ let AccountHelper = {
     async getCode (hash) {
         try {
             if (!hash) { return }
-
+            hash = hash.toLowerCase()
             let code = ''
             let account = await db.Account.findOne({ hash: hash })
             if (!account) {
