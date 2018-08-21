@@ -41,7 +41,7 @@ ContractController.post('/contracts', async (req, res, next) => {
         const sourceCode = req.body.sourceCode
         const optimization = req.body.optimization
         const version = req.body.version
-        const contractAddress = req.body.contractAddress
+        const contractAddress = req.body.contractAddress.toLowerCase()
         let contractName = req.body.contractName
         contractName = contractName ? contractName.replace(' ', '') : ''
 

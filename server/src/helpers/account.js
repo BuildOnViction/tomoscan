@@ -6,6 +6,7 @@ const db = require('../models')
 
 let AccountHelper = {
     processAccount:async (hash) => {
+        hash = hash.toLowerCase()
         let _account = await db.Account.findOne({ hash: hash, nonce: { $exists: true } })
         _account = _account || {}
 
@@ -84,7 +85,7 @@ let AccountHelper = {
     async getCode (hash) {
         try {
             if (!hash) { return }
-
+            hash = hash.toLowerCase()
             let code = ''
             let account = await db.Account.findOne({ hash: hash })
             if (!account) {

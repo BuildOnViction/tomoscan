@@ -96,7 +96,7 @@ let BlockHelper = {
                             tx.from = tx.from.toLowerCase()
                             tx.from_model = accountFrom
                             // Insert crawl for address.
-                            q.create('AccountProcess', { address: tx.from })
+                            q.create('AccountProcess', { address: tx.from.toLowerCase() })
                                 .priority('low').removeOnComplete(true).save()
                         }
                         if (tx.to !== null) {
@@ -118,26 +118,26 @@ let BlockHelper = {
                             { upsert: true, new: true })
 
                         // Insert crawl for tx.
-                        q.create('TransactionProcess', { hash: tx.hash })
+                        q.create('TransactionProcess', { hash: tx.hash.toLowerCase() })
                             .priority('critical').removeOnComplete(true).save()
 
                         // Send email to follower.
                         let followers = await db.Follow.find({
                             startBlock: { $lte: tx.blockNumber },
                             sendEmail: true,
-                            $or: [{ address: tx.from }, { address: tx.to }]
+                            $or: [{ address: tx.from.toLowerCase() }, { address: tx.to.toLowerCase() }]
                         })
 
                         if (followers.length) {
                             let email = new EmailService()
                             for (let i = 0; i < followers.length; i++) {
                                 let follow = followers[i]
-                                let user = await db.User.findOne({ _id: follow.user })
+                                let user = await db.User.findOne({ _id: follow.user.toLowerCase() })
                                 if (user) {
-                                    if (follow.notifySent && follow.address === tx.from) {
+                                    if (follow.notifySent && follow.address === tx.from.toLowerCase()) {
                                         // isSent email template.
                                         email.followAlert(user, tx, follow.address, 'sent')
-                                    } else if (follow.notifyReceive && follow.address === tx.to) {
+                                    } else if (follow.notifyReceive && follow.address === tx.to.toLowerCase()) {
                                         // isReceive email template.
                                         email.followAlert(user, tx, follow.address, 'received')
                                     }

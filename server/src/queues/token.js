@@ -9,7 +9,7 @@ const consumer = {}
 consumer.name = 'TokenProcess'
 consumer.processNumber = 6
 consumer.task = async function (job, done) {
-    let address = job.data.address
+    let address = job.data.address.toLowerCase()
     console.log('Process token: ', address)
     let token = await db.Token.findOne({ hash: address })
     if (!token) {

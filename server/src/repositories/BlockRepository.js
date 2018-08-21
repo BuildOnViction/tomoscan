@@ -61,21 +61,20 @@ let BlockRepository = {
                         if (tx && tx.hash) {
                             if (tx.from !== null) {
                                 tx.from = tx.from.toLowerCase()
-                                tx.from_model = await AccountRepository.addAccountPending(
-                                    tx.from)
+                                tx.from_model = await AccountRepository.addAccountPending(tx.from.toLowerCase())
                                 // Insert crawl for address.
-                                await CrawlRepository.add('address', tx.from)
+                                await CrawlRepository.add('address', tx.from.toLowerCase())
                             }
                             if (tx.to !== null) {
                                 tx.to = tx.to.toLowerCase()
-                                tx.to_model = await AccountRepository.addAccountPending(tx.to)
+                                tx.to_model = await AccountRepository.addAccountPending(tx.to.toLowerCase())
                                 // Insert crawl for address.
-                                await CrawlRepository.add('address', tx.to)
+                                await CrawlRepository.add('address', tx.to.toLowerCase())
                             }
 
                             delete tx['_id']
 
-                            tx = await Tx.findOneAndUpdate({ hash: tx.hash }, tx,
+                            tx = await Tx.findOneAndUpdate({ hash: tx.hash.toLowerCase() }, tx,
                                 { upsert: true, new: true })
 
                             // Insert crawl for tx.

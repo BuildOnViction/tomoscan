@@ -6,6 +6,7 @@ const db = require('../models')
 
 let TransactionHelper = {
     getTxPending: async (hash) => {
+        hash = hash.toLowerCase()
         let tx = await db.Tx.findOne({ hash: hash })
         let web3 = await Web3Util.getWeb3()
         if (!tx) {
@@ -27,6 +28,7 @@ let TransactionHelper = {
     },
 
     getTxReceipt: async (hash) => {
+        hash = hash.toLowerCase()
         let tx = await db.Tx.findOne({ hash: hash })
         let web3 = await Web3Util.getWeb3()
         if (!tx) {
@@ -64,7 +66,7 @@ let TransactionHelper = {
                     { hash: contractAddress },
                     {
                         hash: contractAddress,
-                        contractCreation: tx.from,
+                        contractCreation: tx.from.toLowerCase(),
                         isContract: true
                     },
                     { upsert: true, new: true })

@@ -6,8 +6,8 @@ const TokenTxController = Router()
 
 TokenTxController.get('/token-txs', async (req, res) => {
     try {
-        let token = req.query.token
-        let address = req.query.address
+        let token = req.query.token.toLowerCase()
+        let address = req.query.address.toLowerCase()
         let params = {}
         params.query = {}
         if (token) {

@@ -6,7 +6,7 @@ const LogController = Router()
 
 LogController.get('/logs', async (req, res) => {
     try {
-        let address = req.query.address
+        let address = req.query.address.toLowerCase()
         let params = {}
         if (address) {
             params.query = { address: address, $where: 'this.topics.length > 1' }
