@@ -125,7 +125,7 @@ let BlockHelper = {
                         let followers = await db.Follow.find({
                             startBlock: { $lte: tx.blockNumber },
                             sendEmail: true,
-                            $or: [{ address: tx.from.toLowerCase() }, { address: tx.to.toLowerCase() }]
+                            $or: [{ address: tx.from }, { address: tx.to }]
                         })
 
                         if (followers.length) {
