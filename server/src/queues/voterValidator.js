@@ -1,6 +1,7 @@
 'use strict'
 
 import Web3Util from '../helpers/web3'
+import BigNumber from 'bignumber.js'
 
 const db = require('../models')
 const config = require('config')
@@ -34,12 +35,11 @@ consumer.task = async function (job, done) {
                 fromBlock: startBlock,
                 toBlock: endBlock,
                 masterNode: validator,
-                balance: voterBalance
+                balance: new BigNumber(voterBalance)
             })
 
             // Insert maximum 5k records in one time (Limited of mongodb is 100k)
             if (listVoters.length === 5000) {
-                // console.log('listVoters: ', listVoters)
                 await db.VoterValidator.insertMany(listVoters)
                 listVoters = []
             }
