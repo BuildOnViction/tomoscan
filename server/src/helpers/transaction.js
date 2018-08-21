@@ -111,7 +111,7 @@ let TransactionHelper = {
         let address = log.address.toLowerCase()
         // Add account and token if not exist in db.
         let token = await db.Token.findOne({ hash: address })
-        const q = require('./index')
+        const q = require('../queues')
         if (!token) {
             q.create('AccountProcess', { address: address })
                 .priority('low').removeOnComplete(true).save()
