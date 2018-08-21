@@ -11,6 +11,7 @@ let BlockHelper = {
         let block = db.Block.findOne({ number: blockNumber, nonce: { $exists: true } })
         let countTx = await db.Tx.find({ blockNumber: blockNumber }).count()
         if (block && countTx === block.e_tx) {
+            console.log('Block already processed')
             return
         }
 
