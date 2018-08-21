@@ -10,42 +10,41 @@ const events = require('events')
 events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
-// let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let watch = async () => {
+    let minBlockCrawl = 0
+    let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
     while (true) {
         let web3 = await Web3Util.getWeb3()
         let maxBlockNum = await web3.eth.getBlockNumber()
-        let minBlockCrawl = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
-        minBlockCrawl = minBlockCrawl ? minBlockCrawl.meta_value : 0
-        minBlockCrawl = parseInt(minBlockCrawl)
+        minBlockCrawl = minBlockCrawl || (setting || {}).meta_value || 0
         if (minBlockCrawl < maxBlockNum) {
             let nextCrawl = minBlockCrawl + 20
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
-            console.log('Start block', minBlockCrawl, 'next block', nextCrawl)
-            for (let i = minBlockCrawl; i < nextCrawl; i++) {
+            for (let i = minBlockCrawl; i <= nextCrawl; i++) {
                 q.create('BlockProcess', { block: i })
                     .priority('normal').removeOnComplete(true).save()
 
-                let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
-                if (!setting) {
-                    setting = await new db.Setting({
-                        meta_key: 'min_block_crawl',
-                        meta_value: 0
-                    })
-                }
-                if (i >= parseInt(setting.meta_value)) {
-                    setting.meta_value = i
-                }
-                await setting.save()
-
-                // if (i !== 0 && i % 20 === 0) {
-                //     console.log('Sleep 10 seconds')
-                //     await sleep(10000)
-                //     // console.log('process exit')
-                //     // process.exit(1)
-                // }
+                minBlockCrawl = i
             }
+        }
+
+        if (!setting) {
+            setting = await new db.Setting({
+                meta_key: 'min_block_crawl',
+                meta_value: 0
+            })
+        }
+
+        if (minBlockCrawl >= parseInt(setting.meta_value)) {
+            setting.meta_value = minBlockCrawl
+        }
+        await setting.save()
+
+        if (String(maxBlockNum) === String(minBlockCrawl)) {
+            console.log('Sleep 0.5 seconds')
+            await sleep(500)
         }
     }
 }
