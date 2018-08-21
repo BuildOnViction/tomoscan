@@ -14,13 +14,14 @@ let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let watch = async () => {
     let minBlockCrawl = 0
+    let step = 200
     let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
     while (true) {
         let web3 = await Web3Util.getWeb3()
         let maxBlockNum = await web3.eth.getBlockNumber()
         minBlockCrawl = minBlockCrawl || (setting || {}).meta_value || 0
         if (minBlockCrawl < maxBlockNum) {
-            let nextCrawl = minBlockCrawl + 20
+            let nextCrawl = minBlockCrawl + step
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl; i <= nextCrawl; i++) {
                 q.create('BlockProcess', { block: i })
