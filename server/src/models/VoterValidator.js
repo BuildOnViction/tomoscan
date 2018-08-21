@@ -9,7 +9,7 @@ const VoterValidator = new Schema({
     fromBlock: { type: Number },
     toBlock: { type: Number },
     masterNode: { type: String, index: true },
-    balance: { type: Number }
+    balance: { type: String }
 }, {
     timestamps: true
 })
