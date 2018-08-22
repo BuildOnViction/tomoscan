@@ -24,7 +24,7 @@
                             <tbody>
                                 <tr>
                                     <td>Total Supply</td>
-                                    <td>{{ formatUnit(formatNumber(token.totalSupply), symbol) }}</td>
+                                    <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
