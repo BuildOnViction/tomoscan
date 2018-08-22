@@ -34,7 +34,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         // Insert blocks remain.
         async.each(remainNumbers, async (number, next) => {
             if (number) {
-                let e = await BlockHelper.processBlock(number)
+                let e = await BlockHelper.processBlock(number, false)
                 if (!e) next(e)
 
                 next()

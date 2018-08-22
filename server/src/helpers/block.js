@@ -7,7 +7,7 @@ import EmailService from '../services/Email'
 const db = require('../models')
 
 let BlockHelper = {
-    processBlock:async (blockNumber) => {
+    processBlock:async (blockNumber, startQueue) => {
         let block = db.Block.findOne({ number: blockNumber, nonce: { $exists: true } })
         let countTx = await db.Tx.find({ blockNumber: blockNumber }).count()
         if (block && countTx === block.e_tx) {
@@ -52,10 +52,11 @@ let BlockHelper = {
         await db.Account.findOneAndUpdate({ hash: signer }, { hash: signer })
 
         // Insert crawl for signer.
-        const q = require('../queues')
-        q.create('AccountProcess', { address: signer })
-            .priority('low').removeOnComplete(true).save()
-
+        const q = (startQueue) ? require('../queues') : false
+        if (startQueue) {
+            q.create('AccountProcess', { address: signer })
+                .priority('low').removeOnComplete(true).save()
+        }
         let signers
         if (_block.signers && _block.signers.length) {
             signers = _block.signers
@@ -96,8 +97,10 @@ let BlockHelper = {
                             tx.from = tx.from.toLowerCase()
                             tx.from_model = accountFrom
                             // Insert crawl for address.
-                            q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                                .priority('low').removeOnComplete(true).save()
+                            if (startQueue) {
+                                q.create('AccountProcess', { address: tx.from.toLowerCase() })
+                                    .priority('low').removeOnComplete(true).save()
+                            }
                         }
                         if (tx.to !== null) {
                             let accountTo = await db.Account.findOneAndUpdate(
@@ -108,8 +111,10 @@ let BlockHelper = {
                             tx.to = tx.to.toLowerCase()
                             tx.to_model = accountTo
                             // Insert crawl for address.
-                            q.create('AccountProcess', { address: tx.to })
-                                .priority('low').removeOnComplete(true).save()
+                            if (startQueue) {
+                                q.create('AccountProcess', { address: tx.to })
+                                    .priority('low').removeOnComplete(true).save()
+                            }
                         }
 
                         delete tx['_id']
@@ -118,8 +123,10 @@ let BlockHelper = {
                             { upsert: true, new: true })
 
                         // Insert crawl for tx.
-                        q.create('TransactionProcess', { hash: tx.hash.toLowerCase() })
-                            .priority('critical').removeOnComplete(true).save()
+                        if (startQueue) {
+                            q.create('TransactionProcess', { hash: tx.hash.toLowerCase() })
+                                .priority('critical').removeOnComplete(true).save()
+                        }
 
                         // Send email to follower.
                         let cOr = (tx.to !== null)
