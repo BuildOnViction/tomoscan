@@ -55,18 +55,19 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true).save()
 
         let lockBalance = await validatorContract.methods.getVoterCap(validator, voterAddress).call()
-
-        await rewardVoter.push({
-            epoch: epoch,
-            startBlock: startBlock,
-            endBlock: endBlock,
-            address: voterAddress,
-            validator: validator,
-            reason: 'Voter',
-            lockBalance: new BigNumber(lockBalance).toString(),
-            reward: reward.toString(),
-            signNumber: validatorSignNumber
-        })
+        if (String(lockBalance) !== '0') {
+            await rewardVoter.push({
+                epoch: epoch,
+                startBlock: startBlock,
+                endBlock: endBlock,
+                address: voterAddress,
+                validator: validator,
+                reason: 'Voter',
+                lockBalance: new BigNumber(lockBalance).toString(),
+                reward: reward.toString(),
+                signNumber: validatorSignNumber
+            })
+        }
 
         if (rewardVoter.length === 5000) {
             await db.Reward.insertMany(rewardVoter)
