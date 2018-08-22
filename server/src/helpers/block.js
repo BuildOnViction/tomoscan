@@ -122,10 +122,14 @@ let BlockHelper = {
                             .priority('critical').removeOnComplete(true).save()
 
                         // Send email to follower.
+                        let cOr = (tx.to !== null)
+                            ? [{ address: tx.from.toLowerCase() }, { address: tx.to.toLowerCase() }]
+                            : [{ address: tx.from.toLowerCase() }]
+
                         let followers = await db.Follow.find({
                             startBlock: { $lte: tx.blockNumber },
                             sendEmail: true,
-                            $or: [{ address: tx.from }, { address: tx.to }]
+                            $or: cOr
                         })
 
                         if (followers.length) {
