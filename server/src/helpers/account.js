@@ -7,7 +7,7 @@ const db = require('../models')
 let AccountHelper = {
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
-        let _account = await db.Account.findOne({ hash: hash, nonce: { $exists: true } })
+        let _account = await db.Account.findOne({ hash: hash })
         _account = _account || {}
 
         let web3 = await Web3Util.getWeb3()
@@ -18,10 +18,10 @@ let AccountHelper = {
             _account.balanceNumber = balance
         }
 
-        let txCount = await db.Tx.find({ $or: [ { to: hash }, { from: hash } ] }).count()
-        if (_account.transactionCount !== txCount) {
-            _account.transactionCount = txCount
-        }
+
+        // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+        // Try to count txs in better performance way
+        _account.transactionCount = (_account.transactionCount || 0) + 1
 
         let code = await web3.eth.getCode(hash)
         if (_account.code !== code) {

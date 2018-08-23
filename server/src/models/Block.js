@@ -5,9 +5,9 @@ const Schema = mongoose.Schema
 
 const Block = new Schema({
     number: { type: Number, unique: true },
-    hash: { type: String },
-    parentHash: String,
-    nonce: String,
+    hash: { type: String, index: true },
+    parentHash: { type: String, index: true },
+    nonce: { type: String, index: true },
     sha3Uncles: String,
     logsBloom: String,
     transactionsRoot: String,
@@ -23,7 +23,7 @@ const Block = new Schema({
     timestamp: Date,
     uncles: Array,
     signer: String,
-    status: { type: Boolean, default: false },
+    status: { type: Boolean, default: false, index: true },
     finality: { type: Number, default: 0 },
     e_tx: { type: Number, default: 0 }
 }, {
