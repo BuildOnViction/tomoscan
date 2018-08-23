@@ -18,8 +18,10 @@ let AccountHelper = {
             _account.balanceNumber = balance
         }
 
-        // Try to count txs in better performance way
-        _account.transactionCount = _account.transactionCount || 0
+        let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+        if (_account.transactionCount !== txCount) {
+            _account.transactionCount = txCount
+        }
 
         let code = await web3.eth.getCode(hash)
         if (_account.code !== code) {
@@ -60,9 +62,11 @@ let AccountHelper = {
             _account.balanceNumber = balance
         }
 
-        // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
-        // Try to count txs in better performance way
         _account.transactionCount = (_account.transactionCount || 0) + 1
+        let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+        if (_account.transactionCount !== txCount) {
+            _account.transactionCount = txCount
+        }
 
         let code = await web3.eth.getCode(hash)
         if (_account.code !== code) {
