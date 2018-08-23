@@ -14,7 +14,7 @@ jobs:
     - stage: Tests
       script: echo "No tests at the moment"
 
-    - stage: Build and push untagged commit into image tomoscan
+    - stage: Build and push tomoscan image (untagged)
       services:
         - docker
       install: skip
@@ -34,7 +34,7 @@ jobs:
       after_success:
         - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
-    - stage: Build and push tagged commit into image tomoscan
+    - stage: Build and push tomoscan image (tagged)
       services:
         - docker
       install: skip
@@ -57,7 +57,7 @@ jobs:
 stages:
   - name: Lint
   - name: Tests
-  - name: Build and push untagged commit into image tomoscan
+  - name: Build and push tomoscan image (untagged)
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
-  - name: Build and push tagged commit into image tomoscan
-    if: type != pull_request AND branch = master AND tag = true AND repo = tomochain/tomoscan
+  - name: Build and push tomoscan image (tagged)
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
