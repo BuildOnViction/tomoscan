@@ -52,6 +52,7 @@ let AccountHelper = {
     async formatItem (address, baseRank) {
         // Find txn create from.
         let fromTxn = null
+        address = address.toJSON()
         if (address.isContract) {
             let tx = await db.Tx.findOne({
                 from: address.contractCreation,
@@ -74,11 +75,12 @@ let AccountHelper = {
 
         // Inject contract to address object.
         address.contract = await db.Contract.findOne({ hash: address.hash })
+        // console.log('address.contract:', address.hash, address.contract)
 
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: address.hash })
         address.hashTokens = !!hasTokens
-
+console.log('address', address)
         return address
     },
 
