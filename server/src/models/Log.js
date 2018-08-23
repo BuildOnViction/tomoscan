@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Log = new Schema({
-    address: String,
+    address: { type: String, index: true },
     blockNumber: Number,
     blockHash: String,
     data: String,
@@ -12,7 +12,7 @@ const Log = new Schema({
     logIndex: Number,
     removed: Boolean,
     topics: {},
-    transactionHash: String,
+    transactionHash: { type: String, index: true },
     transactionIndex: Number
 //  returnValues: {},
 //  event: String,

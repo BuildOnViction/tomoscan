@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Block = new Schema({
-    number: { type: Number, unique: true },
-    hash: { type: String },
+    number: { type: Number, unique: true, index: true },
+    hash: { type: String, index: true },
     parentHash: String,
     nonce: String,
     sha3Uncles: String,
@@ -23,7 +23,7 @@ const Block = new Schema({
     timestamp: Date,
     uncles: Array,
     signer: String,
-    status: { type: Boolean, default: false },
+    status: { type: Boolean, default: false, index: true },
     finality: { type: Number, default: 0 },
     e_tx: { type: Number, default: 0 }
 }, {

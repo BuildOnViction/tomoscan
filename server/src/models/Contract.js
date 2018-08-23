@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Contract = new Schema({
-    hash: { type: String },
+    hash: { type: String, index: true },
     contractName: { type: String },
     compiler: { type: String },
     sourceCode: String,

@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Follow = new Schema({
-    address: String,
+    address: { type: String, index: true },
     name: String,
     authCode: String,
     sendEmail: Boolean,

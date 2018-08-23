@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Token = new Schema({
-    hash: { type: String, unique: true, required: true },
-    owner: String,
+    hash: { type: String, unique: true, required: true, index: true },
+    owner: { type: String, index: true },
     name: String,
     totalSupply: String,
     totalSupplyNumber: Number,

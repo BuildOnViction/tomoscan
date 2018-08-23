@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TokenHolder = new Schema({
-    hash: String,
+    hash: { type: String, index: true },
     token: String,
     quantity: String,
     quantityNumber: Number
