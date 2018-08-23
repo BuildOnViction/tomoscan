@@ -60,7 +60,6 @@ let AccountHelper = {
             _account.balanceNumber = balance
         }
 
-
         // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
         // Try to count txs in better performance way
         _account.transactionCount = (_account.transactionCount || 0) + 1
@@ -122,7 +121,7 @@ let AccountHelper = {
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: address.hash })
         address.hashTokens = !!hasTokens
-console.log('address', address)
+        console.log('address', address)
         return address
     },
 

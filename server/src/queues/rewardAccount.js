@@ -23,7 +23,6 @@ consumer.task = async function (job, done) {
 
         done()
     }
-
 }
 
 module.exports = consumer
