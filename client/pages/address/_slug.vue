@@ -116,6 +116,7 @@
                     :page="this"/>
             </b-tab>
             <b-tab
+                v-if="!address.isContract"
                 :title="'Mined Blocks (' + blocksCount + ')'">
                 <table-tx-by-account :page="this"/>
             </b-tab>
@@ -236,7 +237,7 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                v-if="hasReward"
+                v-if="hasReward && !address.isContract"
                 :title="'Rewards (' + rewardTime + ')'">
                 <table-reward
                     :address="hash"

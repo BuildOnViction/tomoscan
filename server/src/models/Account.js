@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Account = new Schema({
-    hash: { type: String, unique: true },
+    hash: { type: String, unique: true, index: true },
     balance: { type: String },
     balanceNumber: { type: Number },
     code: String,
@@ -12,7 +12,7 @@ const Account = new Schema({
     contractCreation: String,
     isContract: { type: Boolean, index: true },
     storageAt: String,
-    status: { type: Boolean, default: false },
+    status: { type: Boolean, default: false, index: true },
     isToken: {
         type: Boolean,
         index: true

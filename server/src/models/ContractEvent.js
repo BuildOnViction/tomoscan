@@ -4,9 +4,9 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const ContractEvent = new Schema({
-    address: String,
+    address: { type: String, index: true },
     blockNumber: Number,
-    transactionHash: String,
+    transactionHash: { type: String, index: true },
     transactionIndex: Number,
     blockHash: String,
     logIndex: Number,

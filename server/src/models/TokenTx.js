@@ -4,10 +4,10 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TokenTx = new Schema({
-    address: String,
+    address: { type: String, index: true },
     blockHash: String,
     blockNumber: Number,
-    transactionHash: String,
+    transactionHash: { type: String, index: true },
     transactionIndex: Number,
     from: String,
     to: String,

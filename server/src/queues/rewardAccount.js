@@ -9,16 +9,20 @@ consumer.processNumber = 12
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     let balance = job.data.balance
-    balance = new BigNumber(balance)
-    let account = await AccountHelper.processAccount(address)
-    let newBalance = new BigNumber(account.balance).plus(balance)
+    console.log('AddReward balance', balance, 'to account', address)
+    if (balance !== 'NaN') {
+        balance = new BigNumber(balance)
 
-    account.balance = newBalance.toString()
-    account.balanceNumber = newBalance
+        let account = await AccountHelper.processAccount(address)
+        let newBalance = new BigNumber(account.balance).plus(balance)
 
-    await account.save()
+        account.balance = newBalance.toString()
+        account.balanceNumber = newBalance.toNumber()
 
-    done()
+        await account.save()
+
+        done()
+    }
 }
 
 module.exports = consumer

@@ -101,7 +101,7 @@ consumer.task = async function (job, done) {
             endBlock: endBlock,
             address: ownerValidator,
             validator: validator,
-            reason: 'Validator',
+            reason: 'Master node',
             lockBalance: new BigNumber(lockBalance),
             reward: reward4validator.toString(),
             signNumber: validatorSignNumber

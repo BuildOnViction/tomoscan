@@ -24,16 +24,18 @@ TokenHolderController.get('/token-holders', async (req, res) => {
         if (items.length) {
             // Get token totalSupply.
             let totalSupply = null
+            let decimals
             if (address) {
                 let token = await db.Token.findOne({ hash: address })
                 if (token) {
                     totalSupply = token.totalSupply
+                    decimals = token.decimals
                 }
             }
             let length = items.length
             let baseRank = (data.currentPage - 1) * data.perPage
             for (let i = 0; i < length; i++) {
-                items[i] = await TokenHolderRepository.formatItem(items[i], totalSupply)
+                items[i] = await TokenHolderRepository.formatItem(items[i], totalSupply, decimals)
                 items[i]['rank'] = baseRank + i + 1
             }
 
