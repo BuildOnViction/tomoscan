@@ -9,7 +9,7 @@ consumer.task = async function (job, done) {
     let hash = job.data.address.toLowerCase()
     console.log('Process account: ', hash)
 
-    await AccountHelper.processAccountInQueue(hash)
+    await AccountHelper.processAccount(hash)
 
     done()
 }
