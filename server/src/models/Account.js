@@ -10,10 +10,13 @@ const Account = new Schema({
     code: String,
     transactionCount: Number,
     contractCreation: String,
-    isContract: Boolean,
+    isContract: { type: Boolean, index: true },
     storageAt: String,
     status: { type: Boolean, default: false, index: true },
-    isToken: Boolean
+    isToken: {
+        type: Boolean,
+        index: true
+    }
 }, {
     timestamps: true,
     versionKey: false

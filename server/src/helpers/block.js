@@ -48,15 +48,7 @@ let BlockHelper = {
         delete _block['transactions']
         _block.status = true
 
-        // Update address signer.
-        await db.Account.findOneAndUpdate({ hash: signer }, { hash: signer })
-
-        // Insert crawl for signer.
         const q = (startQueue) ? require('../queues') : false
-        if (startQueue) {
-            q.create('AccountProcess', { address: signer })
-                .priority('low').removeOnComplete(true).save()
-        }
         let signers
         if (_block.signers && _block.signers.length) {
             signers = _block.signers

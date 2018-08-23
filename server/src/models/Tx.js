@@ -4,14 +4,32 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Tx = new Schema({
-    hash: { type: String, unique: true, required: true, index: true },
-    nonce: Number,
-    blockHash: String,
-    blockNumber: Number,
-    transactionHash: { type: String, index: true},
+    hash: { type: String, unique: true, required: true },
+    nonce: {
+        type: Number,
+        index: true
+    },
+    blockHash: {
+        index: true,
+        type: String
+    },
+    blockNumber: {
+        index: true,
+        type: Number
+    },
+    transactionHash: {
+        type: String,
+        index: true
+    },
     transactionIndex: Number,
-    from: { type: String, index: true},
-    to: { type: String, index: true},
+    from: {
+        type: String,
+        index: true
+    },
+    to: {
+        type: String,
+        index: true
+    },
     value: String,
     gas: Number,
     gasPrice: String,
