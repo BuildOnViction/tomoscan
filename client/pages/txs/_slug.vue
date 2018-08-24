@@ -68,7 +68,9 @@
                                                     v-else
                                                     class="text-muted mr-1">Pending...</span>
                                                 <span>
-                                                    ({{ tx.latestBlockNumber - tx.blockNumber }} block confirmation)
+                                                    ({{ (tx.latestBlockNumber - tx.blockNumber > 0)
+                                                        ? tx.latestBlockNumber - tx.blockNumber
+                                                    : 0 }} block confirmation)
                                                 </span>
                                             </td>
                                         </tr>
