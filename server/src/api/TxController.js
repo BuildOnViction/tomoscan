@@ -14,7 +14,7 @@ TxController.get('/txs', async (req, res) => {
         if (blockNumber) {
             params.query = { blockNumber: blockNumber }
             // Get txs by block number.
-            await BlockHelper.processBlock(blockNumber)
+            await BlockHelper.processBlock(blockNumber, false)
         }
 
         // Check filter type.

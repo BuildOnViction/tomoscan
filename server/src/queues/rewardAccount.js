@@ -13,7 +13,7 @@ consumer.task = async function (job, done) {
     if (balance !== 'NaN') {
         balance = new BigNumber(balance)
 
-        let account = await AccountHelper.processAccount(address)
+        let account = await AccountHelper.processAccount(address, false)
         let newBalance = new BigNumber(account.balance).plus(balance)
 
         account.balance = newBalance.toString()
