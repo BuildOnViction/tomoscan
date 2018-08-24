@@ -5,7 +5,7 @@ import TokenHelper from './token'
 const db = require('../models')
 
 let AccountHelper = {
-    processAccount:async (hash) => {
+    processAccount:async (hash, startQueue) => {
         hash = hash.toLowerCase()
         let _account = await db.Account.findOne({ hash: hash })
         _account = _account || {}
@@ -28,11 +28,11 @@ let AccountHelper = {
             _account.code = code
 
             let isToken = await TokenHelper.checkIsToken(code)
-            if (isToken) {
+            if (isToken && startQueue) {
                 // Insert token pending.
                 await db.Token.findOneAndUpdate({ hash: hash },
                     { hash: hash }, { upsert: true, new: true })
-                const q = require('./index')
+                const q = require('../queues')
                 q.create('TokenProcess', { address: hash })
                     .priority('normal').removeOnComplete(true).save()
             }
