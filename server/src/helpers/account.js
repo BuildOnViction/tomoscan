@@ -80,7 +80,6 @@ let AccountHelper = {
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: address.hash })
         address.hashTokens = !!hasTokens
-        console.log('address', address)
         return address
     },
 
