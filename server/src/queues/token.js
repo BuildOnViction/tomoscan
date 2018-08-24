@@ -11,16 +11,12 @@ consumer.processNumber = 6
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     console.log('Process token: ', address)
-    let token = await db.Token.findOne({ hash: address })
-    if (!token) {
-        token = await db.Token.findOneAndUpdate({ hash: address },
-            { hash: address }, { upsert: true, new: true })
-    }
+    let token = await db.Token.findOneAndUpdate({ hash: address }, { hash: address }, { upsert: true, new: true })
     let tokenFuncs = await TokenHelper.getTokenFuncs()
 
     let web3 = await Web3Util.getWeb3()
 
-    if (typeof token.name === 'undefined') {
+    if (!token.name) {
         let name = await web3.eth.call({ to: token.hash, data: tokenFuncs['name'] })
         name = await web3.utils.hexToUtf8(name)
         token.name = name

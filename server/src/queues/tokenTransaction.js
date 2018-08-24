@@ -13,6 +13,7 @@ consumer.task = async function (job, done) {
     let _log = log
     if (typeof log.topics[1] === 'undefined' ||
         typeof log.topics[2] === 'undefined') {
+        done()
         return false
     }
 
@@ -24,11 +25,11 @@ consumer.task = async function (job, done) {
     }
     _log.value = web3.utils.hexToNumberString(log.data)
     _log.valueNumber = _log.value
-    // Find block by blockNumber.
-    let block = await db.Block.findOne({ number: _log.blockNumber })
-    if (block) {
-        _log.block = block
-    }
+    // // Find block by blockNumber.
+    // let block = await db.Block.findOne({ number: _log.blockNumber })
+    // if (block) {
+    //     _log.block = block
+    // }
     _log.address = _log.address.toLowerCase()
     let transactionHash = _log.transactionHash.toLowerCase()
 

@@ -11,7 +11,10 @@ consumer.processNumber = 12
 consumer.task = async function (job, done) {
     let token = JSON.parse(job.data.token)
     console.log('Process token holder: ', token.from, token.to, token.value)
-    if (!token) { return false }
+    if (!token) {
+        done()
+        return false
+    }
 
     // Add holder from.
     await updateQuality(token.from, token.address, -token.value)
