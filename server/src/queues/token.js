@@ -4,6 +4,7 @@ import Web3Util from '../helpers/web3'
 import TokenHelper from '../helpers/token'
 import { trimWord } from '../helpers/utils'
 const db = require('../models')
+const BigNumber = require('bignumber.js')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
@@ -40,9 +41,8 @@ consumer.task = async function (job, done) {
 
     let totalSupply = await web3.eth.call({ to: token.hash, data: tokenFuncs['totalSupply'] })
     totalSupply = await web3.utils.hexToNumberString(totalSupply).trim()
-    totalSupply = parseFloat(totalSupply) / 10 ** parseInt(token.decimals)
     token.totalSupply = totalSupply
-    token.totalSupplyNumber = totalSupply
+    token.totalSupplyNumber = new BigNumber(totalSupply).div(10 ** parseInt(token.decimals))
 
     token.status = true
     token.save()
