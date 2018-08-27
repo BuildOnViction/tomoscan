@@ -99,7 +99,7 @@ export default {
     data: () => ({
         fields: {
             epoch: { label: 'Epoch' },
-            validator: { label: 'Validator' },
+            validator: { label: 'MasterNode' },
             signNumber: { label: 'Sign number' },
             lockBalance: { label: 'Lock balance' },
             reward: { label: 'Reward' },
