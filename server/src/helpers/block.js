@@ -228,6 +228,63 @@ let BlockHelper = {
             }
         }
         return block
+    },
+    getBlockDetail: async (hashOrNumber) => {
+        let block = db.Block.findOne({ number: hashOrNumber })
+        if (!block) {
+            block = await db.Block.findOne({ hash: hashOrNumber.toLowerCase() })
+        }
+        if (block) {
+            let countTx = await db.Tx.find({ blockNumber: hashOrNumber }).count()
+            if (block && countTx === block.e_tx) {
+                return block
+            }
+        }
+
+        let web3 = await Web3Util.getWeb3()
+        let _block = await web3.eth.getBlock(hashOrNumber)
+        if (!_block) {
+            return null
+        }
+
+        // Get signer.
+        let signer = toAddress(getSigner(_block), 100)
+        signer = signer.toLowerCase()
+
+        // Update end tx count.
+        let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
+        _block.timestamp = _block.timestamp * 1000
+        _block.e_tx = endTxCount
+        _block.signer = signer
+
+        let finalityNumber
+        if (_block.finality) {
+            finalityNumber = parseInt(_block.finality)
+        } else {
+            finalityNumber = 0
+        }
+
+        // blockNumber = 0 is genesis block
+        if (parseInt(blockNumber) === 0) {
+            finalityNumber = 100
+        }
+
+        _block.finality = finalityNumber
+        _block.status = true
+
+        await db.BlockSigner.findOneAndUpdate({ blockNumber: _block.number }, {
+            blockNumber: _block.number,
+            finality: finalityNumber,
+            signers: _block.signers
+        }, { upsert: true, new: true })
+
+        delete _block['_id']
+        delete _block['signers']
+
+        block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
+            { upsert: true, new: true })
+
+        return block
     }
 }
 

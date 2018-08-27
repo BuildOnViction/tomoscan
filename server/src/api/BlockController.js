@@ -34,7 +34,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         // Insert blocks remain.
         async.each(remainNumbers, async (number, next) => {
             if (number) {
-                let e = await BlockHelper.processBlock(number, false)
+                let e = await BlockHelper.getBlockDetail(number)
                 if (!e) next(e)
 
                 next()
@@ -73,42 +73,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
     try {
         let hashOrNumb = req.params.slug
 
-        // Find exist in db.
-        // let block = await db.Block.findOne(query)
-        let block = await db.Block.findOne({ hash: hashOrNumb.toLowerCase() })
-        if (!block) {
-            block = await db.Block.findOne({ number: hashOrNumb })
-        }
-        let checkFinality = true
-        if (!block) {
-            checkFinality = false
-            let web3 = await Web3Util.getWeb3()
-            block = await web3.eth.getBlock(hashOrNumb)
-            // block = await BlockRepository.addBlockByNumber(hashOrNumb)
-        }
-
-        if (checkFinality && parseInt(block.finality) < 100) {
-            let web3 = await Web3Util.getWeb3()
-            let b = await web3.eth.getBlock(hashOrNumb)
-            let finalityNumber
-            if (b.finality) {
-                finalityNumber = parseInt(b.finality)
-            } else {
-                finalityNumber = 0
-            }
-            if (block.number === 0) {
-                finalityNumber = 100
-            }
-
-            block.finality = finalityNumber
-            block.save()
-
-            await db.BlockSigner.findOneAndUpdate({ blockNumber: block.number }, {
-                blockNumber: block.number,
-                finality: finalityNumber,
-                signers: b.signers
-            }, { upsert: true, new: true })
-        }
+        let block = await BlockHelper.getBlockDetail(hashOrNumb)
 
         return res.json(block)
     } catch (e) {
