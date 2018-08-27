@@ -41,7 +41,7 @@ consumer.task = async function (job, done) {
                 blockNumber: { $gte: startBlock, $lte: endBlock },
                 signers: { $elemMatch: { $eq: validator } }
             })
-        if (validatorSignNumber > 0){
+        if (validatorSignNumber > 0) {
             totalSignNumber += validatorSignNumber
             validatorSigners.push({
                 address: validator,

@@ -225,7 +225,6 @@ let BlockHelper = {
                     q.create('TransactionProcess', { hash: tx.toLowerCase() })
                         .priority('critical').removeOnComplete(true).save()
                 }
-
             }
         }
         return block

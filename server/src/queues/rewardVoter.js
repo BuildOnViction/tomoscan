@@ -46,7 +46,7 @@ consumer.task = async function (job, done) {
     const q = require('./index')
 
     let listVoterMap = listVoters.map(async (voter) => {
-        if (voter.balance.toString() !== '0'){
+        if (voter.balance.toString() !== '0') {
             let voterAddress = voter.address.toString().toLowerCase()
             let reward = totalReward.multipliedBy(voter.balance).dividedBy(totalVoterCap)
             q.create('AddRewardToAccount', {

@@ -11,7 +11,7 @@ consumer.task = async function (job, done) {
     let fromAccount = job.data.fromAccount
     let toAccount = job.data.toAccount
     let blockNumber = job.data.blockNumber
-    console.log('Process Follow at transaction ', transaction, )
+    console.log('Process Follow at transaction ', transaction)
     // Send email to follower.
     let cOr = (toAccount !== null)
         ? [{ address: fromAccount.toLowerCase() }, { address: toAccount.toLowerCase() }]
@@ -29,6 +29,7 @@ consumer.task = async function (job, done) {
             let follow = followers[i]
             let user = await db.User.findOne({ _id: follow.user.toLowerCase() })
             if (user) {
+                let tx = db.Tx.findOne({hash: transaction})
                 if (follow.notifySent && follow.address === fromAccount.toLowerCase()) {
                     // isSent email template.
                     email.followAlert(user, tx, follow.address, 'sent')
