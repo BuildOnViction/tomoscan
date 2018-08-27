@@ -30,6 +30,7 @@ module.exports = {
         '~/plugins/axios',
         '~/plugins/vuelidate',
         '~/plugins/bootstrap-vue',
+        '~/plugins/google-analytics',
         '~/plugins/clipboards',
         { src: '~/plugins/vue-codemirror', ssr: false }
     ],
