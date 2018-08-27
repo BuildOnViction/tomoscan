@@ -152,6 +152,82 @@ let BlockHelper = {
             }
         }
         return block
+    },
+    newProcess:async (blockNumber, startQueue) => {
+        let block = db.Block.findOne({ number: blockNumber })
+        let countTx = await db.Tx.count({ blockNumber: blockNumber })
+        if (block && countTx === block.e_tx) {
+            console.log('Block already processed', blockNumber)
+            return blockNumber
+        }
+
+        let web3 = await Web3Util.getWeb3()
+        let _block = await web3.eth.getBlock(blockNumber)
+        if (!_block) {
+            return null
+        }
+
+        // Get signer.
+        let signer = toAddress(getSigner(_block), 100)
+        signer = signer.toLowerCase()
+
+        // Update end tx count.
+        let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
+        _block.timestamp = _block.timestamp * 1000
+        _block.e_tx = endTxCount
+        _block.signer = signer
+
+        let finalityNumber
+        if (_block.finality) {
+            finalityNumber = parseInt(_block.finality)
+        } else {
+            finalityNumber = 0
+        }
+
+        // blockNumber = 0 is genesis block
+        if (parseInt(blockNumber) === 0) {
+            finalityNumber = 100
+        }
+
+        _block.finality = finalityNumber
+        let txs = _block.transactions
+        delete _block['transactions']
+        _block.status = true
+
+        const q = (startQueue) ? require('../queues') : false
+        let signers
+        if (_block.signers && _block.signers.length) {
+            signers = _block.signers
+        } else {
+            signers = []
+        }
+        delete _block['_id']
+        delete _block['signers']
+
+        block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
+            { upsert: true, new: true })
+
+        await db.BlockSigner.findOneAndUpdate({ blockNumber: blockNumber },
+            {
+                blockNumber: blockNumber,
+                finality: finalityNumber,
+                signers: signers
+            }, { upsert: true, new: true })
+
+        // Sync txs.
+        if (countTx !== block.e_tx) {
+            // Insert transaction before.
+            for (let i = 0; i < txs.length; i++) {
+                let tx = txs[i]
+
+                // Insert crawl for tx.
+                if (startQueue) {
+                    q.create('TransactionProcess', { hash: tx.toLowerCase() })
+                        .priority('critical').removeOnComplete(true).save()
+                }
+            }
+        }
+        return block
     }
 }
 

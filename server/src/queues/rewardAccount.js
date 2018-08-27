@@ -20,9 +20,8 @@ consumer.task = async function (job, done) {
         account.balanceNumber = newBalance.toNumber()
 
         await account.save()
-
-        done()
     }
+    done()
 }
 
 module.exports = consumer

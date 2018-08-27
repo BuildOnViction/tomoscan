@@ -546,3 +546,45 @@
     }
   }
 }
+
+.tomo-table--contracts {
+
+  td {
+    grid-template-columns: 35% auto;
+
+    @include media-breakpoint-up(sm) {
+      grid-template-columns: 40% auto;
+    }
+
+    @include media-breakpoint-up(md) {
+      grid-template-columns: 30% auto;
+    }
+  }
+
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 25% 15% 22% 20% 8% 10%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 25% 15% 20% 20% 10% 10%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 28% 12% 20% 20% 10% 10%;
+    }
+  }
+
+  .text-truncate {
+
+    @include media-breakpoint-up(xl) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 100%;
+    }
+  }
+}

@@ -12,10 +12,11 @@ const consumer = {}
 consumer.name = 'VoterProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let epoch = job.data.epoch
+    let currentEpoch = job.data.epoch
+    let epoch = parseInt(currentEpoch) - 1
     console.log('Get all voter at epoch: ', epoch)
 
-    let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+    let endBlock = epoch * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     let web3 = await Web3Util.getWeb3()
@@ -35,7 +36,7 @@ consumer.task = async function (job, done) {
                 fromBlock: startBlock,
                 toBlock: endBlock,
                 masterNode: validator,
-                balance: new BigNumber(voterBalance)
+                balance: new BigNumber(voterBalance).toString()
             })
 
             // Insert maximum 5k records in one time (Limited of mongodb is 100k)

@@ -34,6 +34,7 @@ consumer.task = async function (job, done) {
     let voterMap = voters.map(async (voter) => {
         voter = voter.toString().toLowerCase()
         let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
+        voterCap = new BigNumber(voterCap)
         listVoters.push({
             address: voter,
             balance: voterCap
@@ -45,17 +46,15 @@ consumer.task = async function (job, done) {
     const q = require('./index')
 
     let listVoterMap = listVoters.map(async (voter) => {
-        let voterAddress = voter.address.toString().toLowerCase()
-        let reward = totalReward.multipliedBy(voter.balance).dividedBy(totalVoterCap)
+        if (voter.balance.toString() !== '0') {
+            let voterAddress = voter.address.toString().toLowerCase()
+            let reward = totalReward.multipliedBy(voter.balance).dividedBy(totalVoterCap)
+            q.create('AddRewardToAccount', {
+                address: voterAddress,
+                balance: reward.toString()
+            })
+                .priority('normal').removeOnComplete(true).save()
 
-        q.create('AddRewardToAccount', {
-            address: voterAddress,
-            balance: reward
-        })
-            .priority('normal').removeOnComplete(true).save()
-
-        let lockBalance = await validatorContract.methods.getVoterCap(validator, voterAddress).call()
-        if (String(lockBalance) !== '0') {
             await rewardVoter.push({
                 epoch: epoch,
                 startBlock: startBlock,
@@ -63,7 +62,7 @@ consumer.task = async function (job, done) {
                 address: voterAddress,
                 validator: validator,
                 reason: 'Voter',
-                lockBalance: new BigNumber(lockBalance).toString(),
+                lockBalance: voter.balance.toString(),
                 reward: reward.toString(),
                 signNumber: validatorSignNumber
             })
