@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TokenHolderRepository from '../repositories/TokenHolderRepository'
 import db from '../models'
+import TokenHolderHelper from '../helpers/tokenHolder'
 
 const TokenHolderController = Router()
 
@@ -35,7 +35,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
             let length = items.length
             let baseRank = (data.currentPage - 1) * data.perPage
             for (let i = 0; i < length; i++) {
-                items[i] = await TokenHolderRepository.formatItem(items[i], totalSupply, decimals)
+                items[i] = await TokenHolderHelper.formatHolder(items[i], totalSupply, decimals)
                 items[i]['rank'] = baseRank + i + 1
             }
 

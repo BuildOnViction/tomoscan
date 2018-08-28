@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TokenTxRepository from '../repositories/TokenTxRepository'
 import db from '../models'
-import BlockHelper from '../helpers/block'
 import TransactionHelper from '../helpers/transaction'
+import Web3Util from '../helpers/web3'
+import TokenTransactionHelper from '../helpers/tokenTransaction'
 
 const TxController = Router()
 
@@ -13,8 +13,6 @@ TxController.get('/txs', async (req, res) => {
         let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
             params.query = { blockNumber: blockNumber }
-            // Get txs by block number.
-            await BlockHelper.processBlock(blockNumber, false)
         }
 
         // Check filter type.
@@ -70,22 +68,18 @@ TxController.get('/txs/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let tx = await TransactionHelper.getTxPending(hash)
-        tx = await TransactionHelper.getTxReceipt(hash)
-        // Re-find tx from db with populates.
-        tx = await db.Tx.findOne({ hash: tx.hash })
-            .populate([{ path: 'block' }, { path: 'from_model' }, { path: 'to_model' }])
-            .lean()
 
+        let tx = await TransactionHelper.getTxDetail(hash)
         if (!tx) {
             return res.status(404).send()
         }
-        // Append token transfer to tx.
-        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
-            .lean()
-            .exec()
+        tx = tx.toJSON()
+        tx.from_model = await db.Account.findOne({ hash: tx.from })
+        tx.to_model = await db.Account.findOne({ hash: tx.to })
 
-        tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
+        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
+
+        tokenTxs = await TokenTransactionHelper.formatTokenTransaction(tokenTxs)
         tx.tokenTxs = tokenTxs
 
         let latestBlock = await db.Block.findOne().sort({ number: -1 })
@@ -103,9 +97,19 @@ TxController.get('/txs/status/:hash', async (req, res) => {
     try {
         let hash = req.params.hash
         hash = hash ? hash.toLowerCase() : hash
-        let tx = await TransactionHelper.getTxReceipt(hash)
+        let tx = await db.Tx.findOne({ hash: hash })
+        let status = false
+        if (!tx) {
+            let web3 = await Web3Util.getWeb3()
+            let receipt = await web3.eth.getTransactionReceipt(hash)
+            if (receipt) {
+                status = receipt.status
+            }
+        } else {
+            status = tx.status
+        }
 
-        return res.json(tx.status)
+        return res.json(status)
     } catch (e) {
         console.trace(e)
         console.log(e)

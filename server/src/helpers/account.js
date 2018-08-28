@@ -5,6 +5,39 @@ import TokenHelper from './token'
 const db = require('../models')
 
 let AccountHelper = {
+    getAccountDetail: async (hash) => {
+        hash = hash.toLowerCase()
+        let _account = await db.Account.findOne({ hash: hash })
+        _account = _account || {}
+
+        let web3 = await Web3Util.getWeb3()
+
+        let balance = await web3.eth.getBalance(hash)
+        if (_account.balance !== balance) {
+            _account.balance = balance
+            _account.balanceNumber = balance
+        }
+
+        let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+        if (_account.transactionCount !== txCount) {
+            _account.transactionCount = txCount
+        }
+
+        let code = await web3.eth.getCode(hash)
+        if (_account.code !== code) {
+            _account.code = code
+
+            _account.isToken = await TokenHelper.checkIsToken(code)
+        }
+
+        _account.isContract = (_account.code !== '0x')
+        _account.status = true
+
+        delete _account['_id']
+
+        let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
+        return ac
+    },
     processAccount:async (hash, startQueue) => {
         hash = hash.toLowerCase()
         let _account = await db.Account.findOne({ hash: hash })
@@ -49,7 +82,7 @@ let AccountHelper = {
 
         return acc
     },
-    async formatItem (address, baseRank) {
+    async formatAccount (address) {
         // Find txn create from.
         let fromTxn = null
         address = address.toJSON()

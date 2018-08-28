@@ -12,7 +12,7 @@ TokenController.get('/tokens', async (req, res) => {
 
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]
-            data.items[i] = await TokenHelper.formatItem(item)
+            data.items[i] = await TokenHelper.formatToken(item)
         }
 
         return res.json(data)
@@ -31,7 +31,7 @@ TokenController.get('/tokens/:slug', async (req, res) => {
             return res.status(404).send()
         }
 
-        token = await TokenHelper.formatItem(token)
+        token = await TokenHelper.formatToken(token)
 
         res.json(token)
     } catch (e) {

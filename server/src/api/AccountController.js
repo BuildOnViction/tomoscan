@@ -29,8 +29,8 @@ AccountController.get('/accounts/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()
-        let account = await AccountHelper.processAccount(hash, false)
-        account = await AccountHelper.formatItem(account)
+        let account = await AccountHelper.getAccountDetail(hash)
+        account = await AccountHelper.formatAccount(account)
 
         return res.json(account)
     } catch (e) {

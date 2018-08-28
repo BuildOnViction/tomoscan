@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TokenTxRepository from '../repositories/TokenTxRepository'
+import TokenTransactionHelper from '../helpers/tokenTransaction'
 
 const TokenTxController = Router()
 
@@ -22,7 +22,7 @@ TokenTxController.get('/token-txs', async (req, res) => {
 
         let items = data.items
         if (items.length) {
-            items = await TokenTxRepository.formatItems(items)
+            items = await TokenTransactionHelper.formatTokenTransaction(items)
         }
         data.items = items
 
