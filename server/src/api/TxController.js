@@ -1,9 +1,9 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import TokenTxRepository from '../repositories/TokenTxRepository'
 import db from '../models'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
+import TokenTransactionHelper from '../helpers/tokenTransaction'
 
 const TxController = Router()
 
@@ -79,7 +79,7 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
 
-        tokenTxs = await TokenTxRepository.formatItems(tokenTxs)
+        tokenTxs = await TokenTransactionHelper.formatTokenTransaction(tokenTxs)
         tx.tokenTxs = tokenTxs
 
         let latestBlock = await db.Block.findOne().sort({ number: -1 })

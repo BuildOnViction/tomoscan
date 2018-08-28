@@ -19,7 +19,7 @@ let LogHelper = {
         }
     },
 
-    async formatItem (log) {
+    async formatLog (log) {
         let block = await db.Block.findOne({ number: log.blockNumber })
         let tx = await db.Tx.findOne({ hash: log.transactionHash.toLowerCase() })
 
