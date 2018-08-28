@@ -2,7 +2,6 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import TokenTxRepository from '../repositories/TokenTxRepository'
 import db from '../models'
-import BlockHelper from '../helpers/block'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
 
@@ -98,12 +97,12 @@ TxController.get('/txs/status/:hash', async (req, res) => {
     try {
         let hash = req.params.hash
         hash = hash ? hash.toLowerCase() : hash
-        let tx = await db.Tx.findOne({ hash: hash})
+        let tx = await db.Tx.findOne({ hash: hash })
         let status = false
         if (!tx) {
             let web3 = await Web3Util.getWeb3()
             let receipt = await web3.eth.getTransactionReceipt(hash)
-            if  (receipt) {
+            if (receipt) {
                 status = receipt.status
             }
         } else {

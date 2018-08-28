@@ -35,9 +35,8 @@ let AccountHelper = {
 
         delete _account['_id']
 
-        return await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
-
-
+        let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
+        return ac
     },
     processAccount:async (hash, startQueue) => {
         hash = hash.toLowerCase()

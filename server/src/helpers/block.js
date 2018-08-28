@@ -265,7 +265,7 @@ let BlockHelper = {
         }
 
         // blockNumber = 0 is genesis block
-        if (parseInt(blockNumber) === 0) {
+        if (parseInt(_block.number) === 0) {
             finalityNumber = 100
         }
 
