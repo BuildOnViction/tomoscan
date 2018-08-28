@@ -1,9 +1,7 @@
 'use strict'
 
-import { convertHexToFloat } from './utils'
-import BigNumber from 'bignumber.js'
-import Token from "../models/Token";
-import Block from "../models/Block";
+import Token from '../models/Token'
+import Block from '../models/Block'
 
 let TokenTransactionHelper = {
 
