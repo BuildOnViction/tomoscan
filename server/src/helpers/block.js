@@ -234,11 +234,8 @@ let BlockHelper = {
         if (!block) {
             block = await db.Block.findOne({ hash: hashOrNumber.toLowerCase() })
         }
-        if (block) {
-            let countTx = await db.Tx.find({ blockNumber: hashOrNumber }).count()
-            if (block && countTx === block.e_tx) {
-                return block
-            }
+        if (block && block.finality === 100) {
+            return block
         }
 
         let web3 = await Web3Util.getWeb3()
@@ -246,16 +243,14 @@ let BlockHelper = {
         if (!_block) {
             return null
         }
-
         // Get signer.
         let signer = toAddress(getSigner(_block), 100)
-        signer = signer.toLowerCase()
+        _block.signer = signer.toLowerCase()
 
         // Update end tx count.
         let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
         _block.timestamp = _block.timestamp * 1000
         _block.e_tx = endTxCount
-        _block.signer = signer
 
         let finalityNumber
         if (_block.finality) {
