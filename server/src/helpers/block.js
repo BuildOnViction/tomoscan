@@ -20,13 +20,15 @@ let BlockHelper = {
             return null
         }
 
+        let timestamp = _block.timestamp * 1000
+
         // Get signer.
         let signer = toAddress(getSigner(_block), 100)
         signer = signer.toLowerCase()
 
         // Update end tx count.
         let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
-        _block.timestamp = _block.timestamp * 1000
+        _block.timestamp = timestamp
         _block.e_tx = endTxCount
         _block.signer = signer
 
@@ -74,7 +76,7 @@ let BlockHelper = {
                 let tx = txs[i]
 
                 // Insert crawl for tx.
-                q.create('TransactionProcess', { hash: tx.toLowerCase() })
+                q.create('TransactionProcess', { hash: tx.toLowerCase(), timestamp: timestamp })
                     .priority('critical').removeOnComplete(true).save()
             }
         }
