@@ -6,13 +6,15 @@ const LogController = Router()
 
 LogController.get('/logs', async (req, res) => {
     try {
-        let address = req.query.address.toLowerCase()
+        let address = req.query.address
         let params = {}
         if (address) {
+            address = address.toLowerCase()
             params.query = { address: address, $where: 'this.topics.length > 1' }
         }
         let tx = req.query.tx
         if (tx) {
+            tx = tx.toLowerCase()
             params.query = { transactionHash: tx }
         }
         params.sort = { blockNumber: -1 }
