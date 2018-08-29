@@ -84,7 +84,6 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         let latestBlock = await db.Block.findOne().sort({ number: -1 })
         tx.latestBlockNumber = latestBlock.number
-        console.log('transaction:', tx)
 
         return res.json(tx)
     } catch (e) {
