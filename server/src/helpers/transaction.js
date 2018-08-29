@@ -24,9 +24,9 @@ let TransactionHelper = {
         q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
             .priority('normal').removeOnComplete(true).save()
     },
-    newProcess: async (hash, startQueue) => {
+    crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
-        let tx = { hash: hash }
+        let tx = { hash: hash, timestamp: timestamp }
         let web3 = await Web3Util.getWeb3()
 
         let _tx = await web3.eth.getTransaction(hash)
@@ -124,6 +124,8 @@ let TransactionHelper = {
             await db.Tx.findOneAndUpdate({ hash: hash }, tx)
             return tx
         }
+        let block = await web3.eth.getBlock(_tx.blockNumber)
+        tx.timestamp = block.timestamp * 1000
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
         tx.gasUsed = receipt.gasUsed
