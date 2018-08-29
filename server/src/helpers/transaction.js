@@ -124,6 +124,8 @@ let TransactionHelper = {
             await db.Tx.findOneAndUpdate({ hash: hash }, tx)
             return tx
         }
+        let block = await web3.eth.getBlock(_tx.blockNumber)
+        tx.timestamp = block.timestamp * 1000
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
         tx.gasUsed = receipt.gasUsed
