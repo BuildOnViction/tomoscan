@@ -154,7 +154,7 @@
                                     <i
                                         v-if="! stats"
                                         class="tomo-loading"/>
-                                    <span v-else>{{ formatNumber(stats.lastBlock.number + 1) }}&nbsp;Blocks</span>
+                                    <span v-else>{{ formatNumber(stats.totalBlock) }}&nbsp;Blocks</span>
                                 </nuxt-link>
                             </div>
                         </div>
