@@ -157,6 +157,10 @@ export default {
             default: () => {
                 return {}
             }
+        },
+        block_timestamp: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -251,7 +255,11 @@ export default {
                     self.items = array
 
                     // Format data.
-                    self.items = self.formatData(self.items)
+                    if (self.blockNumber) {
+                        self.items = self.formatData(self.items, self.block_timestamp)
+                    } else {
+                        self.items = self.formatData(self.items, null)
+                    }
 
                     // Hide loading.
                     self.loading = false
@@ -260,13 +268,15 @@ export default {
 
             return data
         },
-        formatData (items = []) {
+        formatData (items = [], blockTimestamp) {
             let _items = []
             items.forEach((item) => {
                 let _item = item
 
                 // Format for timestamp.
-                if (!item.block) {
+                if (blockTimestamp) {
+                    _item.timestamp = blockTimestamp
+                } else if (!item.block) {
                     _item.timestamp = item.createdAt
                 } else {
                     _item.timestamp = item.block.timestamp
