@@ -41,7 +41,7 @@ const Tx = new Schema({
     from_model: { type: Schema.Types.ObjectId, ref: 'Account' },
     to_model: { type: Schema.Types.ObjectId, ref: 'Account' },
     status: { type: Boolean, default: false },
-    timestamp: Date,
+    timestamp: Date
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },
