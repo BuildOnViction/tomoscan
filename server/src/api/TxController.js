@@ -47,6 +47,7 @@ TxController.get('/txs', async (req, res) => {
         }
         let address = req.query.address
         if (typeof address !== 'undefined') {
+            address = address.toLowerCase()
             params.query = Object.assign({}, params.query,
                 { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
         }
