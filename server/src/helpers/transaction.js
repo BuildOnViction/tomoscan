@@ -24,7 +24,7 @@ let TransactionHelper = {
         q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
             .priority('normal').removeOnComplete(true).save()
     },
-    newProcess: async (hash, timestamp) => {
+    crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
         let tx = { hash: hash, timestamp: timestamp }
         let web3 = await Web3Util.getWeb3()

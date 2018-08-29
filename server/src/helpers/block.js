@@ -6,7 +6,7 @@ import { getSigner, toAddress } from './utils'
 const db = require('../models')
 
 let BlockHelper = {
-    newProcess:async (blockNumber) => {
+    crawlBlock:async (blockNumber) => {
         let block = db.Block.findOne({ number: blockNumber })
         let countTx = await db.Tx.count({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
