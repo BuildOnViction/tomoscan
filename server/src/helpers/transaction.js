@@ -103,11 +103,11 @@ let TransactionHelper = {
     },
     getTxDetail: async (hash) => {
         hash = hash.toLowerCase()
-        let tx = await db.Tx.findOne({ hash: hash })
-        if (tx) {
-            return tx
-        }
-        tx = { hash: hash }
+        // let tx = await db.Tx.findOne({ hash: hash })
+        // if (tx) {
+        //     return tx
+        // }
+        let tx = { hash: hash }
         let web3 = await Web3Util.getWeb3()
 
         let _tx = await web3.eth.getTransaction(hash)
@@ -136,6 +136,20 @@ let TransactionHelper = {
         tx.from = tx.from.toLowerCase()
         if (tx.to) {
             tx.to = tx.to.toLowerCase()
+        } else {
+            if (receipt && typeof receipt.contractAddress !== 'undefined') {
+                let contractAddress = receipt.contractAddress.toLowerCase()
+                tx.contractAddress = contractAddress
+
+                await db.Account.findOneAndUpdate(
+                    { hash: contractAddress },
+                    {
+                        hash: contractAddress,
+                        contractCreation: tx.from.toLowerCase(),
+                        isContract: true
+                    },
+                    { upsert: true, new: true })
+            }
         }
 
         delete tx['_id']
