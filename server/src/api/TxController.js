@@ -96,6 +96,8 @@ TxController.get('/txs/:slug', async (req, res) => {
         let toModel
         if (tx.to) {
             toModel = await db.Account.findOne({ hash: tx.to.toLowerCase() })
+        } else {
+            toModel = await db.Account.findOne({ hash: tx.contractAddress.toLowerCase() })
         }
         tx.to_model = toModel
 
