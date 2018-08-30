@@ -57,6 +57,23 @@ TxController.get('/txs', async (req, res) => {
         }
         let data = await paginate(req, 'Tx', params)
 
+        // If exist blockNumber & not found txs on db (or less than) will get txs on chain
+        if (blockNumber) {
+            let block = await db.Block.findOne({ number: blockNumber })
+            if (block && data.items.length < block.e_tx) {
+                let web3 = await Web3Util.getWeb3()
+                let _block = await await web3.eth.getBlock(blockNumber, true)
+                let trans = _block.transactions
+                data = {
+                    total: trans.length,
+                    perPage: trans.length,
+                    currentPage: 1,
+                    pages: 1,
+                    items: trans
+                }
+            }
+        }
+
         return res.json(data)
     } catch (e) {
         console.trace(e)

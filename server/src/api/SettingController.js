@@ -8,10 +8,10 @@ const SettingController = Router()
 SettingController.get('/setting', async (req, res, next) => {
     try {
     // Get total blocks in db.
-        let totalBlock = await db.Block.find().count()
-        let totalAddress = await db.Account.find({ status: true }).count()
-        let totalToken = await db.Token.find({ status: true }).count()
-        let totalSmartContract = await db.Contract.find().count()
+        let totalBlock = await db.Block.count()
+        let totalAddress = await db.Account.count({ status: true })
+        let totalToken = await db.Token.count({ status: true })
+        let totalSmartContract = await db.Contract.count()
         let lastBlock = await db.Block.findOne().sort({ number: -1 })
 
         return res.json(

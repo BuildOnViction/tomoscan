@@ -174,6 +174,7 @@
                 :title="'Transactions (' + txsCount + ')'">
                 <table-tx
                     :block="number"
+                    :block_timestamp="block.timestamp"
                     :page="this"/>
             </b-tab>
             <b-tab
