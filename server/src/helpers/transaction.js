@@ -134,7 +134,9 @@ let TransactionHelper = {
         }
         tx.status = receipt.status
         tx.from = tx.from.toLowerCase()
-        tx.to = tx.to.toLowerCase()
+        if (tx.to) {
+            tx.to = tx.to.toLowerCase()
+        }
 
         delete tx['_id']
 
