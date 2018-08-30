@@ -133,6 +133,10 @@ let TransactionHelper = {
             tx.blockNumber = receipt.blockNumber
         }
         tx.status = receipt.status
+        tx.from = tx.from.toLowerCase()
+        if (tx.to) {
+            tx.to = tx.to.toLowerCase()
+        }
 
         delete tx['_id']
 

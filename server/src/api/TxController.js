@@ -92,8 +92,12 @@ TxController.get('/txs/:slug', async (req, res) => {
             return res.status(404).send()
         }
         tx = tx.toJSON()
-        tx.from_model = await db.Account.findOne({ hash: tx.from })
-        tx.to_model = await db.Account.findOne({ hash: tx.to })
+        tx.from_model = await db.Account.findOne({ hash: tx.from.toLowerCase() })
+        let toModel
+        if (tx.to) {
+            toModel = await db.Account.findOne({ hash: tx.to.toLowerCase() })
+        }
+        tx.to_model = toModel
 
         let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
 
