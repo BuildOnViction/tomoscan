@@ -92,13 +92,18 @@
                                         <tr>
                                             <td>To</td>
                                             <td>
-                                                <div v-if="tx.to">
+                                                <div v-if="tx.to && tx.to_model">
                                                     <i
                                                         v-if="tx.to_model && tx.to_model.isContract"
                                                         class="tm tm-icon-contract mr-2"/>
                                                     <nuxt-link
                                                         :to="{name: 'address-slug', params: {slug: tx.to}}"
                                                         class="text-truncate">{{ tx.to_model.hash }}</nuxt-link>
+                                                </div>
+                                                <div v-else-if="tx.to">
+                                                    <nuxt-link
+                                                        :to="{name: 'address-slug', params: {slug: tx.to}}"
+                                                        class="text-truncate">{{ tx.to }}</nuxt-link>
                                                 </div>
                                                 <div v-else>
                                                     <span>[Contract&nbsp;</span>
