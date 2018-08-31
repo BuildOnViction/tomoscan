@@ -106,8 +106,9 @@ TxController.get('/txs/:slug', async (req, res) => {
         tokenTxs = await TokenTransactionHelper.formatTokenTransaction(tokenTxs)
         tx.tokenTxs = tokenTxs
 
-        let latestBlock = await db.Block.findOne().sort({ number: -1 })
-        tx.latestBlockNumber = latestBlock.number
+        let web3 = await Web3Util.getWeb3()
+        let blk = await web3.eth.getBlock('latest')
+        tx.latestBlockNumber = (blk || {}).number || tx.blockNumber
 
         return res.json(tx)
     } catch (e) {
