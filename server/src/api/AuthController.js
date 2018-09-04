@@ -35,17 +35,29 @@ AuthController.post('/register', async (req, res) => {
         if (user) {
             return res.status(400).json({ message: 'Email exists in DB!' })
         }
-        user = await db.User.create({
+
+        user = new db.User({
             email: email,
             password: password
         })
-        if (!user) { return res.sendStatus(400) }
+        let error = user.validateSync()
+        if (error) {
+            let message
+            if (error.errors.password) {
+                message = error.errors.password.message
+            } else {
+                message = 'Validation error!'
+            }
+            console.log('message', message)
+            return res.status(400).json({ message: message })
+        }
+        await user.save()
 
         let token = await user.generateToken(user)
 
         // Send email welcome.
-        let emailServoce = new EmailService()
-        emailServoce.newUserRegister(user)
+        let emailService = new EmailService()
+        emailService.newUserRegister(user)
 
         return res.json({ user, token })
     } catch (e) {
