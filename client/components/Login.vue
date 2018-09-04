@@ -100,7 +100,7 @@ export default {
             const password = self.formPassword
 
             try {
-                let { data } = self.$store.dispatch('user/login', { email, password })
+                let data = await self.$store.dispatch('user/login', { email, password })
 
                 if (!data) {
                     self.errorMessage = 'Can\'t log in to your account. Please check again.'
@@ -109,10 +109,7 @@ export default {
                     self.$refs.modalRegister.hide()
                 }
             } catch (e) {
-                if (e.response.status === 401) {
-                    self.errorMessage = e.response.data.message
-                }
-                if (e.response.status === 422) {
+                if (e.response.data.message) {
                     self.errorMessage = e.response.data.message
                 }
             }

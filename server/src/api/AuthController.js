@@ -10,11 +10,15 @@ AuthController.post('/login', async (req, res) => {
         const password = req.body.password
 
         let user = await db.User.findOne({ email: email })
-        if (!user) { return res.sendStatus(401) }
+        if (!user) {
+            return res.status(404).json({ message: 'User not found!' })
+        }
 
         let isMatch = await user.authenticate(password)
 
-        if (!isMatch) { return res.sendStatus(400) }
+        if (!isMatch) {
+            return res.status(400).json({ message: 'Password incorrect!' })
+        }
 
         let token = await user.generateToken(user)
 
