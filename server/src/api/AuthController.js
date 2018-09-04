@@ -17,7 +17,7 @@ AuthController.post('/login', async (req, res) => {
         let isMatch = await user.authenticate(password)
 
         if (!isMatch) {
-            return res.status(400).json({ message: 'Password incorrect!' })
+            return res.status(400).json({ message: 'Password or email is incorrect!' })
         }
 
         let token = await user.generateToken(user)
