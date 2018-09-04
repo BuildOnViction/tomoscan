@@ -37,7 +37,7 @@ AuthController.post('/register', async (req, res) => {
 
         let user = await db.User.findOne({ email: email })
         if (user) {
-            return res.status(400).json({ message: 'Email exists in DB!' })
+            return res.status(400).json({ message: 'Account already exists!' })
         }
 
         user = new db.User({
