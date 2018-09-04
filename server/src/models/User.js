@@ -16,7 +16,7 @@ const User = new Schema({
                 // Minimum 6 characters at least 1 Alphabet and 1 Number:
                 return /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(v)
             },
-            message: 'Minimum 6 characters at least 1 alphabet and 1 number'
+            message: 'Password must be at least 6 characters long and contain at least 1 alphabet & 1 number'
         }
     }
 }, {

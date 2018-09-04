@@ -129,8 +129,7 @@ export default {
                 // Close modal.
                 self.$refs.modalRegister.hide()
             } catch (e) {
-                console.log(e.response)
-                if (e.response.status === 422) {
+                if (e.response.data.message) {
                     self.errorMessage = e.response.data.message
                 }
             }
