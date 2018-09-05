@@ -49,7 +49,7 @@ TxController.get('/txs', async (req, res) => {
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
             // if account is contract, has more condition
-            let account = await db.Account.findOne({ hash: address})
+            let account = await db.Account.findOne({ hash: address })
             if (account && account.isContract) {
                 params.query = Object.assign({}, params.query,
                     { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
@@ -57,7 +57,6 @@ TxController.get('/txs', async (req, res) => {
                 params.query = Object.assign({}, params.query,
                     { $or: [{ from: address }, { to: address }] })
             }
-
         }
         params.populate = populates
         // if (!params.sort) {
