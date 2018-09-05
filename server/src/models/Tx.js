@@ -5,36 +5,18 @@ const Schema = mongoose.Schema
 
 const Tx = new Schema({
     hash: { type: String, unique: true, required: true },
-    nonce: {
-        type: Number,
-        index: true
-    },
-    blockHash: {
-        index: true,
-        type: String
-    },
-    blockNumber: {
-        index: true,
-        type: Number
-    },
-    transactionHash: {
-        type: String,
-        index: true
-    },
+    nonce: { type: Number, index: true },
+    blockHash: { index: true, type: String },
+    blockNumber: { index: true, type: Number },
+    transactionHash: { type: String, index: true },
     transactionIndex: Number,
-    from: {
-        type: String,
-        index: true
-    },
-    to: {
-        type: String,
-        index: true
-    },
+    from: { type: String, index: true },
+    to: { type: String, index: true },
     value: String,
     gas: Number,
     gasPrice: String,
     input: String,
-    contractAddress: String,
+    contractAddress: { type: String, index: true },
     cumulativeGasUsed: Number,
     gasUsed: Number,
     block: { type: Schema.Types.ObjectId, ref: 'Block' },

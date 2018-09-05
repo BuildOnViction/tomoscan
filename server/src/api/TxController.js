@@ -48,13 +48,20 @@ TxController.get('/txs', async (req, res) => {
         let address = req.query.address
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
-            params.query = Object.assign({}, params.query,
-                { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
+            // if account is contract, has more condition
+            let account = await db.Account.findOne({ hash: address })
+            if (account && account.isContract) {
+                params.query = Object.assign({}, params.query,
+                    { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
+            } else {
+                params.query = Object.assign({}, params.query,
+                    { $or: [{ from: address }, { to: address }] })
+            }
         }
         params.populate = populates
-        if (!params.sort) {
-            params.sort = { blockNumber: -1 }
-        }
+        // if (!params.sort) {
+        //     params.sort = { blockNumber: -1 }
+        // }
         let data = await paginate(req, 'Tx', params)
 
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
