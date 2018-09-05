@@ -95,7 +95,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         hash = hash ? hash.toLowerCase() : hash
 
         let tx
-        try{
+        try {
             tx = await TransactionHelper.getTxDetail(hash)
         } catch (e) {
             console.log(e)
