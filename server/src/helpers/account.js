@@ -2,6 +2,7 @@
 
 import Web3Util from './web3'
 import TokenHelper from './token'
+import ContractHelper from "./contract";
 const db = require('../models')
 
 let AccountHelper = {
@@ -82,38 +83,43 @@ let AccountHelper = {
 
         return acc
     },
-    async formatAccount (address) {
+    async formatAccount (account) {
         // Find txn create from.
         let fromTxn = null
-        address = address.toJSON()
-        if (address.isContract) {
+        account = account.toJSON()
+        if (account.isContract) {
             let tx = await db.Tx.findOne({
-                from: address.contractCreation,
+                from: account.contractCreation,
                 to: null,
-                contractAddress: address.hash
+                contractAddress: account.hash
             })
             if (tx) {
                 fromTxn = tx.hash
             }
         }
-        address.fromTxn = fromTxn
+        account.fromTxn = fromTxn
 
         // Get token.
         let token = null
-        if (address.isToken) {
+        if (account.isToken) {
             token = await db.Token.findOne(
-                { hash: address.hash, quantity: { $gte: 0 } })
+                { hash: account.hash, quantity: { $gte: 0 } })
         }
-        address.token = token
+        account.token = token
 
-        // Inject contract to address object.
-        address.contract = await db.Contract.findOne({ hash: address.hash })
-        // console.log('address.contract:', address.hash, address.contract)
+        // Inject contract to account object.
+        let contract = await db.Contract.findOne({ hash: account.hash })
+        account.contract = contract
+        if (contract) {
+            let txCount = await ContractHelper.updateTxCount(account.hash)
+            account.transactionCount = txCount
+        }
+        // console.log('account.contract:', account.hash, account.contract)
 
         // Check has token holders.
-        let hasTokens = await db.TokenHolder.findOne({ hash: address.hash })
-        address.hashTokens = !!hasTokens
-        return address
+        let hasTokens = await db.TokenHolder.findOne({ hash: account.hash })
+        account.hashTokens = !!hasTokens
+        return account
     },
 
     async getCode (hash) {
