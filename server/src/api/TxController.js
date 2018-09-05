@@ -25,26 +25,26 @@ TxController.get('/txs', async (req, res) => {
         }
 
         // Check type listing is pending.
-        // let type = req.query.type
-        // let populates = [
-        //     {
-        //         path: 'block',
-        //         select: 'timestamp'
-        //     },
-        //     { path: 'from_model' },
-        //     { path: 'to_model' }]
-        // switch (type) {
-        // case 'pending':
-        //     params.query = { blockNumber: null, block: null }
-        //     params.limit = 0
-        //     break
-        // case 'token':
-        //     populates.push(
-        //         { path: 'from_model', match: { isToken: true } })
-        //     populates.push(
-        //         { path: 'to_model', match: { isToken: true } })
-        //     break
-        // }
+        let type = req.query.type
+        let populates = [
+            {
+                path: 'block',
+                select: 'timestamp'
+            },
+            { path: 'from_model' },
+            { path: 'to_model' }]
+        switch (type) {
+        case 'pending':
+            params.query = { blockNumber: null, block: null }
+            params.limit = 0
+            break
+        case 'token':
+            populates.push(
+                { path: 'from_model', match: { isToken: true } })
+            populates.push(
+                { path: 'to_model', match: { isToken: true } })
+            break
+        }
         let address = req.query.address
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
@@ -59,7 +59,7 @@ TxController.get('/txs', async (req, res) => {
             }
 
         }
-        // params.populate = populates
+        params.populate = populates
         // if (!params.sort) {
         //     params.sort = { blockNumber: -1 }
         // }
