@@ -15,7 +15,8 @@ module.exports = {
             {
                 hid: 'description',
                 name: 'description',
-                content: 'TOMO Explorer project'
+                content: 'Examining all blocks, transactions, finality, smart contracts and token information' +
+                    ' with a user-friendly, details and perfection-oriented user interface.'
             }
         ],
         link: [
