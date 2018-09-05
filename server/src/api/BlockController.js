@@ -75,6 +75,10 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 
         let block = await BlockHelper.getBlockDetail(hashOrNumb)
 
+        if (block === null) {
+            return res.status(404).json({ message: 'Block is not found!' })
+        }
+
         return res.json(block)
     } catch (e) {
         console.trace(e)
