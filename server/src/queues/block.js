@@ -5,7 +5,7 @@ const config = require('config')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
-consumer.processNumber = 2
+consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = job.data.block
     console.log('Process block: ', blockNumber)
