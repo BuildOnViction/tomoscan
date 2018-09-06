@@ -277,7 +277,11 @@ export default {
                 if (blockTimestamp) {
                     _item.timestamp = blockTimestamp
                 } else if (!item.block) {
-                    _item.timestamp = item.createdAt
+                    if (item.timestamp) {
+                        _item.timestamp = item.timestamp
+                    } else {
+                        _item.timestamp = item.createdAt
+                    }
                 } else {
                     _item.timestamp = item.block.timestamp
                 }

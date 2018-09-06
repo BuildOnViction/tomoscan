@@ -29,7 +29,13 @@ AccountController.get('/accounts/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()
-        let account = await AccountHelper.getAccountDetail(hash)
+        let account
+        try {
+            account = await AccountHelper.getAccountDetail(hash)
+        } catch (e) {
+            console.log(e)
+            return res.status(404).json({ message: 'Account is not found!' })
+        }
         account = await AccountHelper.formatAccount(account)
 
         return res.json(account)

@@ -94,7 +94,13 @@ TxController.get('/txs/:slug', async (req, res) => {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
 
-        let tx = await TransactionHelper.getTxDetail(hash)
+        let tx
+        try {
+            tx = await TransactionHelper.getTxDetail(hash)
+        } catch (e) {
+            console.log(e)
+            return res.status(404).json({ message: 'Transaction is not found!' })
+        }
         if (!tx) {
             return res.status(404).send()
         }
@@ -119,7 +125,6 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         return res.json(tx)
     } catch (e) {
-        console.trace(e)
         console.log(e)
         return res.status(500).send()
     }
