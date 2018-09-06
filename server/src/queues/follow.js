@@ -11,17 +11,17 @@ consumer.task = async function (job, done) {
     let fromAccount = job.data.fromAccount
     let toAccount = job.data.toAccount
     let blockNumber = job.data.blockNumber
-    console.log('Process Follow at transaction ', transaction)
     // Send email to follower.
     let cOr = (toAccount !== null)
         ? [{ address: fromAccount.toLowerCase() }, { address: toAccount.toLowerCase() }]
         : [{ address: fromAccount.toLowerCase() }]
 
+    // TODO: should paginate it
     let followers = await db.Follow.find({
         startBlock: { $lte: blockNumber },
         sendEmail: true,
         $or: cOr
-    })
+    }).limit(100)
 
     if (followers.length) {
         let email = new EmailService()
