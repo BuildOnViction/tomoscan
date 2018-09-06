@@ -7,10 +7,10 @@ const Follow = new Schema({
     address: { type: String, index: true },
     name: String,
     authCode: String,
-    sendEmail: Boolean,
+    sendEmail: { type: Boolean, index: true },
     notifyReceive: Boolean,
     notifySent: Boolean,
-    startBlock: Number,
+    startBlock: { type: Number, index: true },
     user: { type: Schema.Types.ObjectId, ref: 'User' }
 }, {
     timestamps: true,

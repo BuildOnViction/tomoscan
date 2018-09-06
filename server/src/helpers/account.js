@@ -39,10 +39,13 @@ let AccountHelper = {
         let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return ac
     },
-    processAccount:async (hash, startQueue) => {
+    processAccount:async (hash) => {
         hash = hash.toLowerCase()
         let _account = await db.Account.findOne({ hash: hash })
-        _account = _account || {}
+        if (_account) {
+            return _account
+        }
+        _account = {}
 
         let web3 = await Web3Util.getWeb3()
 
@@ -62,7 +65,7 @@ let AccountHelper = {
             _account.code = code
 
             let isToken = await TokenHelper.checkIsToken(code)
-            if (isToken && startQueue) {
+            if (isToken) {
                 // Insert token pending.
                 await db.Token.findOneAndUpdate({ hash: hash },
                     { hash: hash }, { upsert: true, new: true })
