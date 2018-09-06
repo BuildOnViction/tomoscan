@@ -61,4 +61,5 @@ try {
     }
     console.trace(e)
     console.log(e)
+    process.exit(1)
 }

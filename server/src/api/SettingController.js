@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import axios from 'axios'
 import db from '../models'
+import Web3Util from '../helpers/web3'
 const config = require('config')
 
 const SettingController = Router()
@@ -8,7 +9,9 @@ const SettingController = Router()
 SettingController.get('/setting', async (req, res, next) => {
     try {
     // Get total blocks in db.
-        let totalBlock = await db.Block.count()
+        let web3 = await Web3Util.getWeb3()
+        let blk = await web3.eth.getBlock('latest')
+        let totalBlock = (blk || {}).number || await db.Block.count()
         let totalAddress = await db.Account.count({ status: true })
         let totalToken = await db.Token.count({ status: true })
         let totalSmartContract = await db.Contract.count()
