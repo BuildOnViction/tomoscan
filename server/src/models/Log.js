@@ -8,7 +8,7 @@ const Log = new Schema({
     blockNumber: Number,
     blockHash: String,
     data: String,
-    id: String,
+    id: { type: String, index: true },
     logIndex: Number,
     removed: Boolean,
     topics: {},
