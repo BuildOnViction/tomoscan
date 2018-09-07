@@ -50,12 +50,10 @@ let BlockHelper = {
         delete _block['transactions']
         _block.status = true
 
-        const q = require('../queues')
-        let signers
+        // const q = require('../queues')
+        let signers = []
         if (_block.signers && _block.signers.length) {
             signers = _block.signers
-        } else {
-            signers = []
         }
         delete _block['_id']
         delete _block['signers']
