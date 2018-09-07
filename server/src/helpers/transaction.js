@@ -26,18 +26,14 @@ let TransactionHelper = {
     },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
-        let tx = { hash: hash, timestamp: timestamp }
-
         // TODO: should handle web3 connection error
         let web3 = await Web3Util.getWeb3()
-        let _tx = await web3.eth.getTransaction(hash)
+        let tx = await web3.eth.getTransaction(hash)
         const q = require('../queues')
 
-        if (!_tx) {
+        if (!tx) {
             return false
         }
-
-        tx = Object.assign(tx, _tx)
 
         let receipt = await web3.eth.getTransactionReceipt(hash)
 
