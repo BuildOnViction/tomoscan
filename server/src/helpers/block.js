@@ -11,9 +11,10 @@ let BlockHelper = {
         let countTx = await db.Tx.count({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
             console.log('Block already processed', blockNumber)
-            return block
+            return null
         }
 
+        // TODO: should hanldle web3 connection error
         let web3 = await Web3Util.getWeb3()
         let _block = await web3.eth.getBlock(blockNumber)
         if (!_block) {
@@ -70,6 +71,7 @@ let BlockHelper = {
             }, { upsert: true, new: true })
 
         // Sync txs.
+        /*
         if (countTx !== block.e_tx) {
             // Insert transaction before.
             for (let i = 0; i < txs.length; i++) {
@@ -77,10 +79,11 @@ let BlockHelper = {
 
                 // Insert crawl for tx.
                 q.create('TransactionProcess', { hash: tx.toLowerCase(), timestamp: timestamp })
-                    .priority('critical').removeOnComplete(true).save()
+                    .priority('high').removeOnComplete(true).save()
             }
         }
-        return block
+        */
+        return { txs, timestamp }
     },
     getBlockDetail: async (hashOrNumber) => {
         let block = db.Block.findOne({ number: hashOrNumber })
