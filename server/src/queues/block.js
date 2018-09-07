@@ -1,6 +1,7 @@
 'use strict'
 
 import BlockHelper from '../helpers/block'
+import TransactionHelper from '../helpers/transaction'
 const config = require('config')
 
 const consumer = {}
@@ -15,13 +16,8 @@ consumer.task = async function (job, done) {
     if (b) {
         let { txs, timestamp } = b
         let map = txs.map(tx => {
-            return new Promise((resolve, reject) => {
-                // TODO: Should handle on 'error'
-                q.create('TransactionProcess', { hash: tx.toLowerCase(), timestamp: timestamp })
-                    .priority('high').removeOnComplete(true).save().on('complete', () => {
-                        return resolve()
-                    })
-            })
+            console.log('Process Transaction: ', tx)
+            return TransactionHelper.crawlTransaction(tx, timestamp)
         })
         await Promise.all(map)
     }
