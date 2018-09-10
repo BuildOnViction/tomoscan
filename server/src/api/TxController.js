@@ -53,7 +53,7 @@ TxController.get('/txs', async (req, res) => {
             if (account && account.isContract) {
                 params.query = Object.assign({}, params.query,
                     { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
-            } else {
+            } else if (account) { // have account
                 params.query = Object.assign({}, params.query,
                     { $or: [{ from: address }, { to: address }] })
             }
