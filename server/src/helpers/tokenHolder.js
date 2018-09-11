@@ -9,6 +9,7 @@ let TokenHolderHelper = {
         if (totalSupply) {
             totalSupply = new BigNumber(totalSupply)
             let quantity = new BigNumber(convertHexToFloat(tokenHolder.quantity, 16))
+            tokenHolder.balance = tokenHolder.balance || quantity.toString(10)
 
             let percentAge = quantity.div(10 ** decimals).div(totalSupply) * 100
             percentAge = percentAge.toFixed(4)
@@ -30,6 +31,7 @@ let TokenHolderHelper = {
             })
         }
 
+        holder.balance = new BigNumber(quantity).toString(10)
         // Convert number to hex.
         quantity = parseFloat(quantity).toString(16)
         let quantityCalc = convertHexToFloat(holder.quantity, 16) +

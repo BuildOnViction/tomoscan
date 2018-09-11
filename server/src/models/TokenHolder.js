@@ -7,6 +7,7 @@ const TokenHolder = new Schema({
     hash: { type: String, index: true },
     token: String,
     quantity: String,
+    balance: String,
     quantityNumber: Number
 }, {
     timestamps: true,
