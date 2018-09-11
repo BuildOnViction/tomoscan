@@ -101,7 +101,7 @@
                 </table>
                 <div class="text-center text-lg-right tomo-qrcode">
                     <vue-qrcode
-                        :value="currentUrl"
+                        :value="hash"
                         :options="{size: 250}"
                         class="img-fluid"/>
                 </div>
@@ -277,7 +277,6 @@ export default {
     data: () => ({
         hash: null,
         address: null,
-        currentUrl: '',
         smartContract: null,
         txsCount: 0,
         blocksCount: 0,
@@ -307,9 +306,6 @@ export default {
     },
     mounted () {
         let self = this
-
-        // Set current url.
-        self.currentUrl = window.location.href
 
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', {
