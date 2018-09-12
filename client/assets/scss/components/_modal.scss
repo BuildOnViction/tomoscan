@@ -124,6 +124,12 @@
   }
 }
 
+#forgotPwModal {
+  .modal-header h5:before {
+    content: url('~/assets/img/lock.svg');
+  }
+}
+
 .tomo-modal--follow {
 
   .control-label {

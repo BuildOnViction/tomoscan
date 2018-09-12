@@ -18,7 +18,8 @@ const User = new Schema({
             },
             message: 'Password must be at least 6 characters long and contain at least 1 alphabet & 1 number'
         }
-    }
+    },
+    latestResetToken: String
 }, {
     timestamps: true,
     versionKey: false
@@ -41,20 +42,39 @@ User.methods.authenticate = async function (password) {
     return user.password === hash
 }
 
-User.methods.generateToken = async function (user) {
+User.methods.generateToken = async function (user, action = '') {
+    let payload, options, token
+
     if (!user) { return false }
-    const payload = {
-        id: user._id,
-        email: user.email
+
+    switch (action) {
+    case 'resetPwd':
+        payload = {
+            id: user._id,
+            email: user.email
+        }
+        options = {
+            expiresIn: '2h' // 2 hours for resetting password
+        }
+        token = jwt.sign(payload, config.get('JWT_SECRET'), options)
+
+        return token || false
+
+    case '':
+        payload = {
+            id: user._id,
+            email: user.email
+        }
+
+        options = {
+            expiresIn: 10080 * 1000
+        }
+        token = jwt.sign(payload, config.get('JWT_SECRET'), options)
+
+        return token ? `bearer ${token}` : false
+    default:
+        break
     }
-
-    const options = {
-        expiresIn: 10080 * 1000
-    }
-
-    const token = jwt.sign(payload, config.get('JWT_SECRET'), options)
-
-    return token ? `bearer ${token}` : false
 }
 
 User.methods.toJSON = function () {
@@ -63,6 +83,23 @@ User.methods.toJSON = function () {
     delete obj.password
 
     return obj
+}
+
+User.methods.tokenDecoding = async function (token) {
+    let infor
+    try {
+        infor = jwt.verify(token, config.get('JWT_SECRET'))
+    } catch (error) {
+        return { error: { message: 'The reset password link has expired' } }
+    }
+
+    return infor
+}
+
+User.methods.encryptPassword = async function (password) {
+    const hash = bcrypt.hashSync(password, config.get('APP_SECRET'))
+
+    return hash
 }
 
 module.exports = mongoose.model('User', User)
