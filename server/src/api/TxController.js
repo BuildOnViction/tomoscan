@@ -56,7 +56,7 @@ TxController.get('/txs', async (req, res) => {
         }
         params.populate = populates
         if (!params.sort) {
-             params.sort = { blockNumber: -1 }
+            params.sort = { blockNumber: -1 }
         }
         let data = await paginate(req, 'Tx', params)
 
