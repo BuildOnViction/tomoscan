@@ -115,8 +115,8 @@ export default {
                 if (!data) {
                     self.errorMessage = 'Can\'t log in to your account. Please check again.'
                 } else {
-                    self.resetModal()
                     self.$refs.modalRegister.hide()
+                    self.resetModal()
                 }
             } catch (e) {
                 if (e.response.data.message) {
@@ -128,6 +128,7 @@ export default {
             this.formEmail = ''
             this.formPassword = ''
             this.errorMessage = ''
+            this.$v.$reset()
         }
     }
 }

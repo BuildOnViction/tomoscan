@@ -124,10 +124,10 @@ export default {
 
             try {
                 await self.$store.dispatch('user/register', { email, password })
-                self.resetModal()
 
                 // Close modal.
                 self.$refs.modalRegister.hide()
+                self.resetModal()
             } catch (e) {
                 if (e.response.data.message) {
                     self.errorMessage = e.response.data.message
@@ -138,6 +138,7 @@ export default {
             this.formEmail = ''
             this.formPassword = ''
             this.formPasswordConfirmation = ''
+            this.$v.$reset()
         }
     }
 }
