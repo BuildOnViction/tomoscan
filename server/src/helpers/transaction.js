@@ -67,6 +67,7 @@ let TransactionHelper = {
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
         tx.gasUsed = receipt.gasUsed
+        tx.timestamp = timestamp
         if (receipt.blockNumber) {
             tx.blockNumber = receipt.blockNumber
         }
