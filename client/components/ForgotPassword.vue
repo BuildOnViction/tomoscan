@@ -100,6 +100,7 @@ export default {
         resetModal () {
             this.formEmail = ''
             this.errorMessage = ''
+            this.$v.$reset()
         }
     }
 }
