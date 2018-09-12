@@ -27,10 +27,6 @@ TxController.get('/txs', async (req, res) => {
         // Check type listing is pending.
         let type = req.query.type
         let populates = [
-            {
-                path: 'block',
-                select: 'timestamp'
-            },
             { path: 'from_model' },
             { path: 'to_model' }]
         switch (type) {
@@ -59,9 +55,9 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         params.populate = populates
-        // if (!params.sort) {
-        //     params.sort = { blockNumber: -1 }
-        // }
+        if (!params.sort) {
+            params.sort = { blockNumber: -1 }
+        }
         let data = await paginate(req, 'Tx', params)
 
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
