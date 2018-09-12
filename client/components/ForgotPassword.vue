@@ -5,7 +5,7 @@
         class="tomo-modal"
         title="Password Recovery"
         ok-only
-        ok-title="LOL"
+        ok-title="Submit"
         data-toggle="modal"
         target="successModal"
         @ok="validate"
