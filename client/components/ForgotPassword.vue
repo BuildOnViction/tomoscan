@@ -1,13 +1,17 @@
 <template>
     <b-modal
-        ref="modalRegister"
+        ref="modalForgotPw"
         :id="modalId"
         class="tomo-modal"
-        title="Log in"
+        title="Password Recovery"
+        ok-only
+        ok-title="Submit"
+        data-toggle="modal"
+        target="successModal"
         @ok="validate"
         @keydown.native.enter="validate">
         <div
-            v-show="errorMessage"
+            v-if="errorMessage"
             class="alert alert-danger">
             {{ errorMessage }}
         </div>
@@ -31,41 +35,14 @@
                     v-if="$v.formEmail.$dirty && ! $v.formEmail.email"
                     class="text-danger text-block">Please enter email format</div>
             </div>
-            <div class="form-group">
-                <label class="control-label">Password:</label>
-                <input
-                    v-model="formPassword"
-                    :class="getValidationClass('formPassword')"
-                    name="password"
-                    type="password"
-                    autocomplete="new-password"
-                    class="form-control"
-                    placeholder="Enter your password">
-                <div
-                    v-if="$v.formPassword.$dirty && ! $v.formPassword.required"
-                    class="text-danger">Password is required</div>
-                <div
-                    v-if="$v.formPassword.$dirty && ! $v.formPassword.minLength"
-                    class="text-danger">Password require min 6 characters</div>
-            </div>
-            <div>
-                <b-link
-                    v-b-modal="'forgotPwModal'"
-                    data-toggle="modal">Forgot my password</b-link>
-            </div>
         </form>
-        <forgot-password :modal-id="'forgotPwModal'"/>
     </b-modal>
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
-import { required, minLength, email } from 'vuelidate/lib/validators'
-import ForgotPassword from '~/components/ForgotPassword.vue'
+import { required, email } from 'vuelidate/lib/validators'
 
 export default {
-    components: {
-        ForgotPassword
-    },
     mixins: [validationMixin],
     props: {
         modalId: {
@@ -76,15 +53,13 @@ export default {
     data () {
         return {
             formEmail: '',
-            formPassword: '',
             errorMessage: null
         }
     },
     validations: {
         formEmail: {
             required, email
-        },
-        formPassword: { required, minLength: minLength(6) }
+        }
     },
     methods: {
         getValidationClass (fieldName) {
@@ -100,22 +75,20 @@ export default {
             this.$v.$touch()
 
             if (!this.$v.$invalid) {
-                this.login()
+                this.findPassword()
             }
         },
-        async login () {
+        async findPassword () {
             let self = this
 
             const email = self.formEmail
-            const password = self.formPassword
-
             try {
-                let data = await self.$store.dispatch('user/login', { email, password })
-
+                const data = await self.$store.dispatch('user/forgotPassword', { email })
                 if (!data) {
-                    self.errorMessage = 'Can\'t log in to your account. Please check again.'
+                    self.errorMessage = 'Something went wrong. Please check again.'
                 } else {
-                    self.$refs.modalRegister.hide()
+                    alert('Your password have been sent to you by email. You will now be returned to where you were.')
+                    self.$refs.modalForgotPw.hide()
                     self.resetModal()
                 }
             } catch (e) {
@@ -126,7 +99,6 @@ export default {
         },
         resetModal () {
             this.formEmail = ''
-            this.formPassword = ''
             this.errorMessage = ''
             this.$v.$reset()
         }

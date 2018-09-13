@@ -31,7 +31,6 @@ module.exports = {
         '~/plugins/axios',
         '~/plugins/vuelidate',
         '~/plugins/bootstrap-vue',
-        '~/plugins/google-analytics',
         '~/plugins/clipboards',
         { src: '~/plugins/vue-codemirror', ssr: false }
     ],
@@ -40,6 +39,13 @@ module.exports = {
         '@nuxtjs/moment',
         '@nuxtjs/font-awesome',
         '@nuxtjs/toast',
+        [
+            '@nuxtjs/google-analytics', {
+                id: process.env.GA_ID || '',
+                autoTracking: {
+                    screenView: true
+                }
+            }],
         [
             'nuxt-imagemin', {
                 optipng: { optimizationLevel: 5 },

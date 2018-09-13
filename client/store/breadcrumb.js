@@ -135,6 +135,10 @@ br.register('contracts-verify', (brs) => {
     brs.parent('contracts')
     brs.push('Contracts Verify', { name: 'contracts-verify' })
 })
+br.register('reset-password', (brs) => {
+    brs.parent('index')
+    brs.push('Reset Password', { name: 'reset-password' })
+})
 
 export const state = () => ({
     items: null

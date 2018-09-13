@@ -80,6 +80,28 @@ class EmailService {
 
         return result
     }
+
+    async recoverPassword (user, token) {
+        if (!user) {
+            return false
+        }
+        const url = config.get('CLIENT_URL')
+
+        return this.send('reset-password', user.email, 'Reset Your Password', {
+            name: user.email,
+            link: `${url}reset-password?email=${user.email}&token=${token}`
+        })
+    }
+
+    async resetEmailComfirmation (user) {
+        if (!user) {
+            return false
+        }
+
+        return this.send('reset-pw-comfirmation', user.email, 'Your Password Has Been Updated', {
+            name: user.email
+        })
+    }
 }
 
 export default EmailService

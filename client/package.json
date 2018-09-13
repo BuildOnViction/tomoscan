@@ -13,6 +13,7 @@
   "dependencies": {
     "@nuxtjs/axios": "^5.3.1",
     "@nuxtjs/font-awesome": "^1.0.3",
+    "@nuxtjs/google-analytics": "^2.0.2",
     "@nuxtjs/moment": "^1.0.0",
     "@nuxtjs/toast": "^3.0.1",
     "@xkeshi/vue-qrcode": "^0.3.0",
@@ -47,8 +48,7 @@
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.5.0",
     "node-sass": "^4.8.3",
-    "sass-loader": "^7.0.1",
-    "vue-analytics": "^5.15.0"
+    "sass-loader": "^7.0.1"
   },
   "engines": {
     "node": "6.1.0"

@@ -54,5 +54,35 @@ export const actions = {
         } catch (e) {
             return Promise.reject(e)
         }
+    },
+    async forgotPassword ({ commit }, { email }) {
+        const { data } = await this.$axios.post('/api/lostpw', { email })
+
+        commit('setData', null)
+        commit('setToken', null)
+
+        return data
+    },
+    async tokenValidation ({ commit }, { email, token }) {
+        try {
+            await this.$axios.post('/api/tokenValidation', { email, token })
+
+            commit('setData', null)
+            commit('setToken', null)
+        } catch (error) {
+            return Promise.reject(error)
+        }
+    },
+    async resetpassword ({ commit }, { email, password, token }) {
+        try {
+            const data = await this.$axios.post('/api/reset-password', { email, password, token })
+
+            commit('setData', null)
+            commit('setToken', null)
+
+            return data
+        } catch (error) {
+            return Promise.reject(error)
+        }
     }
 }

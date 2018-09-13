@@ -223,6 +223,7 @@
 
         <register :modal-id="'registerModal'"/>
         <login :modal-id="'loginModal'"/>
+        <forgot-password :modal-id="'forgotPwModal'"/>
     </section>
 </template>
 
@@ -232,13 +233,15 @@ import MyFooter from '~/components/Footer.vue'
 import Breadcrumb from '~/components/Breadcrumb.vue'
 import Register from '~/components/Register.vue'
 import Login from '~/components/Login.vue'
+import ForgotPassword from '~/components/ForgotPassword.vue'
 
 export default {
     components: {
         MyFooter,
         Breadcrumb,
         Register,
-        Login
+        Login,
+        ForgotPassword
     },
     mixins: [mixin],
     data () {
