@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import cors from 'cors'
 
 import AccountController from './AccountController'
 import TxController from './TxController'
@@ -16,6 +17,7 @@ import RewardController from './RewardController'
 const router = Router()
 
 // Add USERS Routes
+router.all('*', cors())
 router.use(AuthController)
 router.use(BlockController)
 router.use(AccountController)

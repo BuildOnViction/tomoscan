@@ -25,6 +25,9 @@ module.exports = {
                 type: 'image/x-icon',
                 href: '/favicon_48x48.ico?v=001'
             }
+        ],
+        script: [
+            { src: 'https://www.google.com/recaptcha/api.js' }
         ]
     },
     plugins: [

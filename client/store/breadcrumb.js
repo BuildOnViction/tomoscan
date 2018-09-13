@@ -137,7 +137,7 @@ br.register('contracts-verify', (brs) => {
 })
 br.register('reset-password', (brs) => {
     brs.parent('index')
-    brs.push('Reset Password', { name: 'reset-password' })
+    brs.push('Reset Password', { name: 'accounts-reset-password' })
 })
 
 export const state = () => ({

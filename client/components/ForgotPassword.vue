@@ -34,6 +34,14 @@
                 <div
                     v-if="$v.formEmail.$dirty && ! $v.formEmail.email"
                     class="text-danger text-block">Please enter email format</div>
+                <div
+                    class="mt-4">
+                    <vue-recaptcha
+                        ref="recaptcha"
+                        :sitekey="reCaptchaKey"
+                        @verify="onCaptchaVerified"
+                        @expired="onCaptchaExpired"/>
+                </div>
             </div>
         </form>
     </b-modal>
@@ -41,8 +49,12 @@
 <script>
 import { validationMixin } from 'vuelidate'
 import { required, email } from 'vuelidate/lib/validators'
+import VueRecaptcha from 'vue-recaptcha'
 
 export default {
+    components: {
+        VueRecaptcha
+    },
     mixins: [validationMixin],
     props: {
         modalId: {
@@ -53,7 +65,8 @@ export default {
     data () {
         return {
             formEmail: '',
-            errorMessage: null
+            errorMessage: null,
+            reCaptchaKey: process.env.RECAPTCHA_SITEKEY
         }
     },
     validations: {
@@ -78,18 +91,24 @@ export default {
                 this.findPassword()
             }
         },
+        created () {
+            const self = this
+            self.reCaptchaKey = process.env.RECAPTCHA_SITEKEY
+        },
         async findPassword () {
             let self = this
 
             const email = self.formEmail
+            const captchaToken = self.recaptchaToken
             try {
-                const data = await self.$store.dispatch('user/forgotPassword', { email })
-                if (!data) {
-                    self.errorMessage = 'Something went wrong. Please check again.'
+                const response = await self.$store.dispatch('user/forgotPassword', { email, captchaToken })
+
+                if (response.error) {
+                    self.errorMessage = response.error.message
                 } else {
-                    alert('Your password have been sent to you by email. You will now be returned to where you were.')
                     self.$refs.modalForgotPw.hide()
                     self.resetModal()
+                    self.$router.replace({ name: 'accounts-forgot-password-confirmation', params: { email } })
                 }
             } catch (e) {
                 if (e.response.data.message) {
@@ -100,7 +119,17 @@ export default {
         resetModal () {
             this.formEmail = ''
             this.errorMessage = ''
+            this.$refs.recaptcha.reset()
             this.$v.$reset()
+        },
+        onCaptchaVerified (recaptchaToken) {
+            const self = this
+            self.recaptchaToken = recaptchaToken
+            self.errorMessage = ''
+        },
+        onCaptchaExpired () {
+            this.$refs.recaptcha.reset()
+            self.recaptchaToken = null
         }
     }
 }

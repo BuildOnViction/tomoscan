@@ -51,6 +51,7 @@
             <div>
                 <b-link
                     v-b-modal="'forgotPwModal'"
+                    class="forgot-password"
                     data-toggle="modal">Forgot my password</b-link>
             </div>
         </form>
