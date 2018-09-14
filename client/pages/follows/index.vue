@@ -230,7 +230,7 @@ export default {
             errorMessage: null,
             formName: '',
             formAddress: '',
-            formSendEmail: '',
+            formSendEmail: false,
             formNotifySent: null,
             formNotifyReceive: null,
             formIsEdit: false,
@@ -295,7 +295,7 @@ export default {
                     notifySent: self.formSendEmail ? self.formNotifySent : false,
                     notifyReceive: self.formSendEmail ? self.formNotifyReceive : false
                 }
-
+console.log(body)
                 let url = '/api/follows'
                 if (self.currentNotify) {
                     url += '/' + self.currentNotify._id
@@ -347,7 +347,7 @@ export default {
         resetForm () {
             this.formAddress = ''
             this.formName = ''
-            this.formSendEmail = ''
+            this.formSendEmail = false
             this.formIsEdit = false
             this.currentNotify = null
             this.formNotifyReceive = null
