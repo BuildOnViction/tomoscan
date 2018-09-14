@@ -55,8 +55,8 @@ export const actions = {
             return Promise.reject(e)
         }
     },
-    async forgotPassword ({ commit }, { email }) {
-        const { data } = await this.$axios.post('/api/lostpw', { email })
+    async forgotPassword ({ commit }, { email, captchaToken }) {
+        const { data } = await this.$axios.post('/api/lostpw', { email, captchaToken })
 
         commit('setData', null)
         commit('setToken', null)

@@ -65,7 +65,7 @@ class EmailService {
             transport: this.transporter,
             send: true,
             message: {
-                from: config.get('SENDER_EMAIL')
+                from: `TomoChain <${config.get('SENDER_EMAIL')}>`
             }
         })
 
@@ -89,7 +89,7 @@ class EmailService {
 
         return this.send('reset-password', user.email, 'Reset Your Password', {
             name: user.email,
-            link: `${url}reset-password?email=${user.email}&token=${token}`
+            link: `${url}accounts/reset-password?email=${user.email}&token=${token}`
         })
     }
 

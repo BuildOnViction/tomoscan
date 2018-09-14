@@ -44,14 +44,17 @@
                         v-if="$v.formPasswordConfirmation.$dirty && ! $v.formPasswordConfirmation.sameAsPassword"
                         class="text-danger">Those passwords didn't match</div>
                 </div>
-                <b-button
-                    type="reset"
-                    variant="danger"
-                    @click="resetFields">Reset</b-button>
-                <b-button
-                    type="submit"
-                    variant="primary"
-                    class="btn btn-primary">Next</b-button>
+                <div class="mt-2">
+                    <b-button
+                        type="submit"
+                        variant="primary"
+                        class="btn btn-primary mr-4">OK</b-button>
+                    <b-button
+                        type="reset"
+                        variant="secondary"
+                        color="white"
+                        @click="resetFields">Reset</b-button>
+                </div>
             </form>
         </b-col>
         <b-col />
@@ -61,7 +64,6 @@
 <script>
 import { required, sameAs, minLength } from 'vuelidate/lib/validators'
 export default {
-    components: {},
     props: {
         modalId: {
             type: String,
@@ -75,6 +77,7 @@ export default {
             errorMessage: null,
             token: '',
             email: ''
+
         }
     },
     validations: {
@@ -128,7 +131,6 @@ export default {
 
             const token = this.$route.query.token || ''
             const email = this.$route.query.email || ''
-
             try {
                 const response = await self.$store.dispatch('user/resetpassword', {
                     email,
@@ -138,8 +140,8 @@ export default {
                 if (response.data.error) {
                     self.errorMessage = response.data.error.message
                 } else {
-                    alert(response.data.message)
-                    self.$router.replace({ name: 'index' })
+                    self.resetFields()
+                    self.$router.push({ name: 'accounts-reset-pw-successful' })
                 }
             } catch (error) {
                 console.log(error)

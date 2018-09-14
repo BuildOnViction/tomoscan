@@ -1,6 +1,8 @@
 import { Router } from 'express'
+import axios from 'axios'
 import db from '../models'
 import EmailService from '../services/Email'
+const config = require('config')
 
 const AuthController = Router()
 
@@ -73,10 +75,25 @@ AuthController.post('/register', async (req, res) => {
 AuthController.post('/lostpw', async (req, res) => {
     try {
         const email = req.body.email
+        const captchaToken = req.body.captchaToken
 
         let user = await db.User.findOne({ email })
         if (!user) {
-            return res.status(404).json({ message: 'User not found!' })
+            return res.status(404).json({ error: { message: 'User not found!' } })
+        }
+
+        if (!captchaToken) {
+            return res.json({ error: { message: 'Captcha is required' } })
+        }
+
+        const captchaValidation = await axios.post(
+            'https://www.google.com/recaptcha/api/siteverify?' +
+                'secret=' + config.get('RE_CAPTCHA_SECRET') +
+                '&response=' + captchaToken
+        )
+
+        if (!captchaValidation.data.success) {
+            return res.json({ error: { message: 'Oops, something went wrong on our side' } })
         }
 
         // generate token
