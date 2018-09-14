@@ -80,7 +80,6 @@ export default {
                     number: num++
                 })
             })
-            console.log(self.signers)
             self.total = data.signers.length
             self.page.blockSignerCount = self.total
 
