@@ -84,7 +84,7 @@ let BlockHelper = {
         return { txs, timestamp }
     },
     getBlockDetail: async (hashOrNumber) => {
-        let block = db.Block.findOne({ number: hashOrNumber })
+        let block = await db.Block.findOne({ number: hashOrNumber })
         if (!block) {
             block = await db.Block.findOne({ hash: hashOrNumber.toLowerCase() })
         }
