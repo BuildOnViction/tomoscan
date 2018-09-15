@@ -10,16 +10,21 @@ consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     let balance = job.data.balance
     console.log('AddReward balance', balance, 'to account', address)
-    if (balance !== 'NaN') {
-        balance = new BigNumber(balance)
+    try {
+        if (balance !== 'NaN') {
+            balance = new BigNumber(balance)
 
-        let account = await AccountHelper.processAccount(address, false)
-        let newBalance = new BigNumber(account.balance).plus(balance)
+            let account = await AccountHelper.processAccount(address, false)
+            let newBalance = new BigNumber(account.balance).plus(balance)
 
-        account.balance = newBalance.toString()
-        account.balanceNumber = newBalance.toNumber()
+            account.balance = newBalance.toString()
+            account.balanceNumber = newBalance.toNumber()
 
-        await account.save()
+            await account.save()
+        }
+    } catch (e) {
+        console.error(consumer.name, e)
+        done(e)
     }
     done()
 }

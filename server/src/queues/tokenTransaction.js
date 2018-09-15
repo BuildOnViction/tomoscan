@@ -52,7 +52,8 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true).save()
 
     } catch (e) {
-        console.error(e)
+        console.error(consumer.name, e)
+        done(e)
     }
 
     done()
