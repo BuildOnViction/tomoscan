@@ -295,7 +295,6 @@ export default {
                     notifySent: self.formSendEmail ? self.formNotifySent : false,
                     notifyReceive: self.formSendEmail ? self.formNotifyReceive : false
                 }
-console.log(body)
                 let url = '/api/follows'
                 if (self.currentNotify) {
                     url += '/' + self.currentNotify._id

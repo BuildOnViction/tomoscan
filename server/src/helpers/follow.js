@@ -26,7 +26,7 @@ let FollowHelper = {
             let hash = items[i].address
             let addressObj = await db.Account.findOne({ hash: hash })
             if (!addressObj) {
-                addressObj = await AccountHelper.updateAccount(hash)
+                addressObj = await AccountHelper.getAccountDetail(hash)
             }
             items[i].addressObj = addressObj
         }

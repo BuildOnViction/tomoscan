@@ -9,7 +9,12 @@ consumer.task = async function (job, done) {
     let hash = job.data.hash.toLowerCase()
     let timestamp = job.data.timestamp
     console.log('Process Transaction: ', hash)
-    await TransactionHelper.crawlTransaction(hash, timestamp)
+    try {
+        await TransactionHelper.crawlTransaction(hash, timestamp)
+    } catch (e) {
+        console.error(e)
+        done(e)
+    }
 
     done()
 }
