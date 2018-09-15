@@ -3,6 +3,7 @@
 import Web3Util from './web3'
 
 const db = require('../models')
+const emitter = require('../helpers/errorHandler')
 
 let TransactionHelper = {
     parseLog: async (log) => {
@@ -26,79 +27,83 @@ let TransactionHelper = {
     },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
-        // TODO: should handle web3 connection error
-        let web3 = await Web3Util.getWeb3()
-        let tx = await web3.eth.getTransaction(hash)
-        const q = require('../queues')
 
-        if (!tx) {
-            return false
-        }
-        let receipt = await web3.eth.getTransactionReceipt(hash)
+        try {
+            let web3 = await Web3Util.getWeb3()
+            let tx = await web3.eth.getTransaction(hash)
+            const q = require('../queues')
 
-        if (!receipt) {
-            return false
-        }
-
-        if (tx.from !== null) {
-            tx.from = tx.from.toLowerCase()
-            q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                .priority('normal').removeOnComplete(true).save()
-        }
-        if (tx.to !== null) {
-            tx.to = tx.to.toLowerCase()
-            q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                .priority('normal').removeOnComplete(true).save()
-        } else {
-            if (receipt && typeof receipt.contractAddress !== 'undefined') {
-                let contractAddress = receipt.contractAddress.toLowerCase()
-                tx.contractAddress = contractAddress
-
-                await db.Account.findOneAndUpdate(
-                    { hash: contractAddress },
-                    {
-                        hash: contractAddress,
-                        contractCreation: tx.from.toLowerCase(),
-                        isContract: true
-                    },
-                    { upsert: true, new: true })
+            if (!tx) {
+                return false
             }
-        }
+            let receipt = await web3.eth.getTransactionReceipt(hash)
 
-        tx.cumulativeGasUsed = receipt.cumulativeGasUsed
-        tx.gasUsed = receipt.gasUsed
-        tx.timestamp = timestamp
-        if (receipt.blockNumber) {
-            tx.blockNumber = receipt.blockNumber
-        }
-
-        q.create('FollowProcess', {
-            transaction: hash,
-            blockNumber: tx.blockNumber,
-            fromAccount: tx.from,
-            toAccount: tx.to
-        }).priority('low').removeOnComplete(true).save()
-
-        // Parse log.
-        let logs = receipt.logs
-        tx.logs = logs
-        if (logs.length) {
-            for (let i = 0; i < logs.length; i++) {
-                let log = logs[i]
-                await TransactionHelper.parseLog(log)
-                // Save log into db.
-                await db.Log.findOneAndUpdate({ id: log.id }, log,
-                    { upsert: true, new: true })
+            if (!receipt) {
+                return false
             }
+
+            if (tx.from !== null) {
+                tx.from = tx.from.toLowerCase()
+                q.create('AccountProcess', { address: tx.from.toLowerCase() })
+                    .priority('normal').removeOnComplete(true).save()
+            }
+            if (tx.to !== null) {
+                tx.to = tx.to.toLowerCase()
+                q.create('AccountProcess', { address: tx.to.toLowerCase() })
+                    .priority('normal').removeOnComplete(true).save()
+            } else {
+                if (receipt && typeof receipt.contractAddress !== 'undefined') {
+                    let contractAddress = receipt.contractAddress.toLowerCase()
+                    tx.contractAddress = contractAddress
+
+                    await db.Account.findOneAndUpdate(
+                        { hash: contractAddress },
+                        {
+                            hash: contractAddress,
+                            contractCreation: tx.from.toLowerCase(),
+                            isContract: true
+                        },
+                        { upsert: true, new: true })
+                }
+            }
+
+            tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+            tx.gasUsed = receipt.gasUsed
+            tx.timestamp = timestamp
+            if (receipt.blockNumber) {
+                tx.blockNumber = receipt.blockNumber
+            }
+
+            q.create('FollowProcess', {
+                transaction: hash,
+                blockNumber: tx.blockNumber,
+                fromAccount: tx.from,
+                toAccount: tx.to
+            }).priority('low').removeOnComplete(true).save()
+
+            // Parse log.
+            let logs = receipt.logs
+            tx.logs = logs
+            if (logs.length) {
+                for (let i = 0; i < logs.length; i++) {
+                    let log = logs[i]
+                    await TransactionHelper.parseLog(log)
+                    // Save log into db.
+                    await db.Log.findOneAndUpdate({ id: log.id }, log,
+                        { upsert: true, new: true })
+                }
+            }
+            tx.status = receipt.status
+
+            delete tx['_id']
+
+            let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
+                { upsert: true, new: true })
+
+            return trans
+        } catch (e) {
+            emitter.emit('error', e)
         }
-        tx.status = receipt.status
-
-        delete tx['_id']
-
-        let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
-            { upsert: true, new: true })
-
-        return trans
     },
     getTxDetail: async (hash) => {
         hash = hash.toLowerCase()

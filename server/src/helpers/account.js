@@ -4,6 +4,7 @@ import Web3Util from './web3'
 import TokenHelper from './token'
 import ContractHelper from './contract'
 const db = require('../models')
+const emitter = require('../helpers/errorHandler')
 
 let AccountHelper = {
     getAccountDetail: async (hash) => {
@@ -41,50 +42,54 @@ let AccountHelper = {
     },
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
-        let _account = await db.Account.findOne({ hash: hash })
-        if (_account) {
-            return _account
-        }
-        _account = {}
-
-        let web3 = await Web3Util.getWeb3()
-
-        let balance = await web3.eth.getBalance(hash)
-        if (_account.balance !== balance) {
-            _account.balance = balance
-            _account.balanceNumber = balance
-        }
-
-        let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
-        if (_account.transactionCount !== txCount) {
-            _account.transactionCount = txCount
-        }
-
-        let code = await web3.eth.getCode(hash)
-        if (_account.code !== code) {
-            _account.code = code
-
-            let isToken = await TokenHelper.checkIsToken(code)
-            if (isToken) {
-                // Insert token pending.
-                await db.Token.findOneAndUpdate({ hash: hash },
-                    { hash: hash }, { upsert: true, new: true })
-                const q = require('../queues')
-                q.create('TokenProcess', { address: hash })
-                    .priority('normal').removeOnComplete(true).save()
+        try {
+            let _account = await db.Account.findOne({ hash: hash })
+            if (_account) {
+                return _account
             }
-            _account.isToken = isToken
+            _account = {}
+
+            let web3 = await Web3Util.getWeb3()
+
+            let balance = await web3.eth.getBalance(hash)
+            if (_account.balance !== balance) {
+                _account.balance = balance
+                _account.balanceNumber = balance
+            }
+
+            let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+            if (_account.transactionCount !== txCount) {
+                _account.transactionCount = txCount
+            }
+
+            let code = await web3.eth.getCode(hash)
+            if (_account.code !== code) {
+                _account.code = code
+
+                let isToken = await TokenHelper.checkIsToken(code)
+                if (isToken) {
+                    // Insert token pending.
+                    await db.Token.findOneAndUpdate({ hash: hash },
+                        { hash: hash }, { upsert: true, new: true })
+                    const q = require('../queues')
+                    q.create('TokenProcess', { address: hash })
+                        .priority('normal').removeOnComplete(true).save()
+                }
+                _account.isToken = isToken
+            }
+
+            _account.isContract = (_account.code !== '0x')
+            _account.status = true
+
+            delete _account['_id']
+
+            let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account,
+                { upsert: true, new: true })
+
+            return acc
+        } catch (e) {
+            emitter.emit('error', e)
         }
-
-        _account.isContract = (_account.code !== '0x')
-        _account.status = true
-
-        delete _account['_id']
-
-        let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account,
-            { upsert: true, new: true })
-
-        return acc
     },
     async formatAccount (account) {
         // Find txn create from.
