@@ -111,7 +111,6 @@ consumer.task = async function (job, done) {
         if (rewardValidator.length > 0) {
             await db.Reward.insertMany(rewardValidator)
         }
-
     } catch (e) {
         console.error(consumer.name, e)
         done(e)

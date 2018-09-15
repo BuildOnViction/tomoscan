@@ -24,7 +24,6 @@ consumer.task = async function (job, done) {
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     try {
-
         let web3 = await Web3Util.getWeb3()
         let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
 

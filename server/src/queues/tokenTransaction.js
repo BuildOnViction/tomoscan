@@ -50,7 +50,6 @@ consumer.task = async function (job, done) {
             value: _log.value
         }) })
             .priority('normal').removeOnComplete(true).save()
-
     } catch (e) {
         console.error(consumer.name, e)
         done(e)

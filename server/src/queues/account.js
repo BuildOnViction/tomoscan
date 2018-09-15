@@ -11,7 +11,6 @@ consumer.task = async function (job, done) {
         console.log('Process account: ', hash)
 
         await AccountHelper.processAccount(hash)
-
     } catch (e) {
         console.error(consumer.name, e)
         done(e)

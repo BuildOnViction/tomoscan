@@ -1,7 +1,6 @@
 'use strict'
 
 import Web3Util from './helpers/web3'
-const config = require('config')
 const q = require('./queues')
 const db = require('./models')
 const events = require('events')
