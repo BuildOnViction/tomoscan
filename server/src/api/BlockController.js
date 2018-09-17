@@ -118,7 +118,7 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
     } catch (e) {
         console.trace(e)
         console.log(e)
-        return res.status(500).send()
+        return res.status(406).send()
     }
 })
 
