@@ -12,4 +12,8 @@ if [[ ! -z $APP_SECRET_FILE ]]; then
   export APP_SECRET=$(cat $APP_SECRET_FILE)
 fi
 
+if [[ ! -z $RE_CAPTCHA_SECRET_FILE ]]; then
+  export RE_CAPTCHA_SECRET=$(cat $RE_CAPTCHA_SECRET_FILE)
+fi
+
 exec npm "$@"
