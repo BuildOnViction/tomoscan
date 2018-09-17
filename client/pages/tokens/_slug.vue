@@ -27,8 +27,20 @@
                                     <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
                                 </tr>
                                 <tr>
+                                    <td>Price</td>
+                                    <td>$0.0000 @ 0.0000000 TOMO</td>
+                                </tr>
+                                <tr>
+                                    <td>Holders</td>
+                                    <td>2000 address</td>
+                                </tr>
+                                <tr>
                                     <td>Transfers</td>
                                     <td>{{ formatNumber(token.tokenTxsCount) }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Official Site</td>
+                                    <td>x</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -55,6 +67,70 @@
                                 <tr>
                                     <td>Decimal</td>
                                     <td>{{ token.decimals }}</td>
+                                </tr>
+                                <tr>
+                                    <td>Links</td>
+                                    <td>
+                                        <ul
+                                            class="list-inline s-icons"
+                                            style="margin-bottom:-7px">
+                                            <li class="list-inline-item">
+                                                <a
+                                                    href="mailto:info@token.com">
+                                                    <i class="fa fa-envelope"/>
+                                                </a>
+                                            </li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://medium.com/">
+                                                <i class="fa fa-pencil-square-o"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://www.facebook.com/">
+                                                <i class="fa fa-facebook"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://twitter.com/">
+                                                <i class="fa fa-twitter"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://bitcointalk.org/index.php?topic=">
+                                                <i class="fa fa-btc"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://github.com/">
+                                                <i class="fa fa-github"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://t.me/">
+                                                <i class="fa fa-telegram"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="">
+                                                <i class="fa fa-file-text-o"/>
+                                            </a></li>
+                                            <li class="list-inline-item"><a
+                                                target="_blank"
+                                                href="https://coinmarketcap.com/currencies//">
+                                                <i class="fa fa-bar-chart"/>
+                                            </a></li>
+                                        </ul>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>Filtered By</td>
+                                    <td>
+                                        <input
+                                            type="text"
+                                            class="form-control-sm"
+                                            placeholder="Address">
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
