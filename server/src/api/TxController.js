@@ -81,7 +81,7 @@ TxController.get('/txs', async (req, res) => {
     } catch (e) {
         console.trace(e)
         console.log(e)
-        return res.status(500).send()
+        return res.status(406).send()
     }
 })
 
@@ -122,7 +122,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         return res.json(tx)
     } catch (e) {
         console.log(e)
-        return res.status(500).send()
+        return res.status(406).send()
     }
 })
 
@@ -146,7 +146,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
     } catch (e) {
         console.trace(e)
         console.log(e)
-        return res.status(500).send()
+        return res.status(406).send()
     }
 })
 
