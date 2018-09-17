@@ -77,7 +77,7 @@ let BlockHelper = {
     getBlockDetail: async (hashOrNumber) => {
         let block = await db.Block.findOne({ number: hashOrNumber })
         if (!block) {
-            block = await db.Block.findOne({ hash: hashOrNumber.toLowerCase() })
+            block = await db.Block.findOne({ hash: String(hashOrNumber).toLowerCase() })
         }
         if (block && block.finality === 100) {
             return block
