@@ -32,6 +32,8 @@ TokenController.get('/tokens/:slug', async (req, res) => {
         }
 
         token = await TokenHelper.formatToken(token)
+        let tokenInfo = await db.TokenInfo.findOne({ hash: hash })
+        token.moreInfo = tokenInfo
 
         res.json(token)
     } catch (e) {

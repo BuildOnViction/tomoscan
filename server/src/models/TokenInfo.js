@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 const TokenInfo = new Schema({
     hash: {type: String, unique: true, required: true, index: true},
     website: String,
-    community: [{
+    communities: [{
         name: String,
         icon: String,
         url: String,
