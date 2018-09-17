@@ -27,12 +27,8 @@
                                     <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
                                 </tr>
                                 <tr>
-                                    <td>Price</td>
-                                    <td>$0.0000 @ 0.0000000 TOMO</td>
-                                </tr>
-                                <tr>
                                     <td>Holders</td>
-                                    <td>2000 address</td>
+                                    <td>{{ holdersCount }} {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
@@ -117,7 +113,7 @@
                                             </a></li>
                                             <li class="list-inline-item"><a
                                                 target="_blank"
-                                                href="https://coinmarketcap.com/currencies//">
+                                                href="https://coinmarketcap.com/currencies/">
                                                 <i class="fa fa-bar-chart"/>
                                             </a></li>
                                         </ul>
