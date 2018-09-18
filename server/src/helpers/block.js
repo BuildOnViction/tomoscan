@@ -62,13 +62,6 @@ let BlockHelper = {
             block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
 
-            await db.BlockSigner.findOneAndUpdate({ blockNumber: blockNumber },
-                {
-                    blockNumber: blockNumber,
-                    finality: finalityNumber,
-                    signers: signers
-                }, { upsert: true, new: true })
-
             return { txs, timestamp }
         } catch (e) {
             emitter.emit('error', e)
@@ -112,12 +105,6 @@ let BlockHelper = {
 
             _block.finality = finalityNumber
             _block.status = true
-
-            await db.BlockSigner.findOneAndUpdate({ blockNumber: _block.number }, {
-                blockNumber: _block.number,
-                finality: finalityNumber,
-                signers: _block.signers
-            }, { upsert: true, new: true })
 
             delete _block['_id']
             delete _block['signers']

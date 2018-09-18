@@ -25,6 +25,51 @@ let TransactionHelper = {
         q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
             .priority('normal').removeOnComplete(true).save()
     },
+    parseBlockSigner: async (to, log) => {
+        const TOPIC_SIGN = '0x62855fa22e051687c32ac285857751f6d3f2c100c72756d8d30cb7ecb1f64f54'
+        const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000089'
+
+        if (log.topics[0] !== TOPIC_SIGN || to !== CONTRACT_ADDRESS) {
+            return false
+        }
+
+        try {
+            let web3 = await Web3Util.getWeb3()
+            let data = web3.eth.abi.decodeLog([
+                {
+                    type: 'address',
+                    name: '_signer'
+                },
+                {
+                    type: 'uint256',
+                    name: '_blockNumber'
+                },
+                {
+                    type: 'bytes32',
+                    name: '_blockHash'
+                }
+            ], log.data)
+
+            let blockNumber = data._blockNumber
+            let signer = (data._signer || '').toLowerCase()
+            let blockHash = (data._blockHash || '').toLowerCase()
+
+            return db.BlockSigner.updateOne({
+                blockHash: blockHash
+            }, {
+                $set: {
+                    blockNumber: blockNumber,
+                    blockHash: blockHash
+                },
+                $addToSet: {
+                    signers: signer
+                }
+            }, { upsert: true })
+        } catch (e) {
+            console.log('ERROR parseBlockSigner', e)
+            return false
+        }
+    },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
 
@@ -88,6 +133,7 @@ let TransactionHelper = {
                 for (let i = 0; i < logs.length; i++) {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
+                    await TransactionHelper.parseBlockSigner(tx.to, log)
                     // Save log into db.
                     await db.Log.findOneAndUpdate({ id: log.id }, log,
                         { upsert: true, new: true })
