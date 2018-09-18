@@ -22,17 +22,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
+                                <tr v-if="!holder">
                                     <td>Total Supply</td>
                                     <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
                                 </tr>
-                                <tr>
+                                <tr v-else>
+                                    <td>Holder</td>
+                                    <td>
+                                        <nuxt-link
+                                            :to="{name: 'address-slug', params:{slug: holder}}"
+                                            class="text-truncate">{{ holder }}</nuxt-link>
+                                    </td>
+                                </tr>
+                                <tr v-if="!holder">
                                     <td>Holders</td>
                                     <td>{{ holdersCount }} {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
                                 </tr>
+                                <tr v-else>
+                                    <td>Balance</td>
+                                    <td>{{ toEther(convertHexToFloat(holderBalance.toString(), 16)) }} {{ symbol }}</td>
+                                </tr>
                                 <tr>
                                     <td>Transfers</td>
-                                    <td>{{ formatNumber(token.tokenTxsCount) }}</td>
+                                    <td>{{ formatNumber(tokenTxsCount) }}</td>
                                 </tr>
                                 <tr
                                     v-if="moreInfo">
@@ -97,15 +109,15 @@
                                     <td>
                                         <div class="input-group input-group-sm mb-2">
                                             <input
+                                                v-model="addressFilter"
                                                 type="text"
                                                 class="form-control"
                                                 placeholder="Address"
-                                                aria-label="Address"
-                                                aria-describedby="basic-addon2">
+                                                aria-label="Address">
                                             <div class="input-group-append">
                                                 <button
                                                     class="btn btn-primary"
-                                                    type="button">Filter</button>
+                                                    type="button">Apply</button>
                                             </div>
                                         </div>
                                     </td>
@@ -164,7 +176,9 @@ export default {
             tokenTxsCount: 0,
             holdersCount: 0,
             moreInfo: null,
-            holder: null
+            holder: null,
+            addressFilter: null,
+            holderBalance: 0
         }
     },
     created () {
@@ -189,6 +203,16 @@ export default {
 
         self.loading = false
         self.moreInfo = data.moreInfo
+
+        if (self.holder) {
+            self.holderBalance = await self.getTokenHolder(self.hash, self.holder, self.$axios)
+        }
+    },
+    methods: {
+        async getTokenHolder (token, holder, func) {
+            let { data } = await func.get('/api/tokens/' + token + '/holder/' + holder)
+            return data.quantity
+        }
     }
 }
 </script>
