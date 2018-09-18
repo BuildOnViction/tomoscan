@@ -51,23 +51,11 @@ let BlockHelper = {
             delete _block['transactions']
             _block.status = true
 
-            // const q = require('../queues')
-            let signers = []
-            if (_block.signers && _block.signers.length) {
-                signers = _block.signers
-            }
             delete _block['_id']
             delete _block['signers']
 
             await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
-
-            await db.BlockSigner.findOneAndUpdate({ blockNumber: blockNumber },
-                {
-                    blockNumber: blockNumber,
-                    finality: finalityNumber,
-                    signers: signers
-                }, { upsert: true, new: true })
 
             return { txs, timestamp }
         } catch (e) {
@@ -112,12 +100,6 @@ let BlockHelper = {
 
             _block.finality = finalityNumber
             _block.status = true
-
-            await db.BlockSigner.findOneAndUpdate({ blockNumber: _block.number }, {
-                blockNumber: _block.number,
-                finality: finalityNumber,
-                signers: _block.signers
-            }, { upsert: true, new: true })
 
             delete _block['_id']
             delete _block['signers']

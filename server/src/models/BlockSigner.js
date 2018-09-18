@@ -8,13 +8,16 @@ var BlockSigner = new Schema({
         type: Number,
         index: true
     },
+    blockHash: {
+        type: String,
+        index: true
+    },
     signers: [
         {
             type: String,
             index: true
         }
-    ],
-    finality: { type: Number, default: 0 }
+    ]
 
 }, { timestamps: true })
 
