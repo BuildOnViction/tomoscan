@@ -24,7 +24,7 @@
                 slot="hash"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.hash}}"
+                    :to="{name: 'tokens-slug', params: { slug: address}, query: { holder: props.item.hash}}"
                     class="text-truncate">{{ props.item.hash }}</nuxt-link>
             </template>
 

@@ -128,6 +128,10 @@ export default {
             type: String,
             default: ''
         },
+        holder: {
+            type: String,
+            default: ''
+        },
         page: {
             type: Object,
             default: () => {
@@ -182,6 +186,9 @@ export default {
             }
             if (self.address) {
                 params.address = self.address
+            }
+            if (self.holder) {
+                params.address = self.holder
             }
 
             let query = this.serializeQuery(params)

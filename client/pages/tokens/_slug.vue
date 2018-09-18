@@ -37,7 +37,12 @@
                                 <tr
                                     v-if="moreInfo">
                                     <td>Official Site</td>
-                                    <td>x</td>
+                                    <td>
+                                        <a
+                                            :href="moreInfo.website"
+                                            target="_blank"
+                                            class="text-truncate">{{ moreInfo.website }}</a>
+                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -90,10 +95,19 @@
                                 <tr>
                                     <td>Filtered By</td>
                                     <td>
-                                        <input
-                                            type="text"
-                                            class="form-control-sm"
-                                            placeholder="Address">
+                                        <div class="input-group input-group-sm mb-2">
+                                            <input
+                                                type="text"
+                                                class="form-control"
+                                                placeholder="Address"
+                                                aria-label="Address"
+                                                aria-describedby="basic-addon2">
+                                            <div class="input-group-append">
+                                                <button
+                                                    class="btn btn-primary"
+                                                    type="button">Filter</button>
+                                            </div>
+                                        </div>
                                     </td>
                                 </tr>
                             </tbody>
@@ -109,9 +123,12 @@
                     <b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
                         <table-token-tx
                             :token="hash"
+                            :holder="holder"
                             :page="this"/>
                     </b-tab>
-                    <b-tab :title="'Token Holders (' + holdersCount + ')'">
+                    <b-tab
+                        v-if="!holder"
+                        :title="'Token Holders (' + holdersCount + ')'">
                         <table-token-holder
                             :address="hash"
                             :page="this"/>
@@ -146,11 +163,13 @@ export default {
             loading: true,
             tokenTxsCount: 0,
             holdersCount: 0,
-            moreInfo: null
+            moreInfo: null,
+            holder: null
         }
     },
     created () {
         this.hash = this.$route.params.slug
+        this.holder = this.$route.query.holder
     },
     async mounted () {
         let self = this
