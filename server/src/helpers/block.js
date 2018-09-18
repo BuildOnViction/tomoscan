@@ -9,7 +9,7 @@ const emitter = require('../helpers/errorHandler')
 let BlockHelper = {
     crawlBlock:async (blockNumber) => {
         try {
-            let block = db.Block.findOne({ number: blockNumber })
+            let block = await db.Block.findOne({ number: blockNumber })
             let countTx = await db.Tx.count({ blockNumber: blockNumber })
             if (block && countTx === block.e_tx) {
                 console.log('Block already processed', blockNumber)
@@ -59,7 +59,7 @@ let BlockHelper = {
             delete _block['_id']
             delete _block['signers']
 
-            block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
+            await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
 
             return { txs, timestamp }

@@ -30,7 +30,7 @@ consumer.task = async function (job, done) {
                 let follow = followers[i]
                 let user = await db.User.findOne({ _id: follow.user.toLowerCase() })
                 if (user) {
-                    let tx = db.Tx.findOne({ hash: transaction })
+                    let tx = await db.Tx.findOne({ hash: transaction })
                     if (follow.notifySent && follow.address === fromAccount.toLowerCase()) {
                         // isSent email template.
                         email.followAlert(user, tx, follow.address, 'sent')
