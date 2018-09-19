@@ -14,7 +14,7 @@ export const paginate = async (
     params.total = params.hasOwnProperty('total') ? params.total : null
     params.populate = params.hasOwnProperty('populate') ? params.populate : []
 
-    let count = await mongoose.model(modelName).countDocuments(params.query)
+    let count = await mongoose.model(modelName).estimatedDocumentCount(params.query)
     let total = params.total ? params.total : count
     let pages = Math.ceil(total / perPage)
 
