@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const TokenInfo = new Schema({
-    hash: {type: String, unique: true, required: true, index: true},
+    hash: { type: String, unique: true, required: true, index: true },
     website: String,
     communities: [{
         name: String,
@@ -12,9 +12,9 @@ const TokenInfo = new Schema({
         url: String,
         title: String
     }],
-    status: {type: Boolean, default: false}
+    status: { type: Boolean, default: false }
 }, {
-    timestamps: false,
+    timestamps: false
 })
 
 module.exports = mongoose.model('TokenInfo', TokenInfo)
