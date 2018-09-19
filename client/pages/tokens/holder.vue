@@ -23,12 +23,16 @@
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td>Total Supply</td>
-                                    <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
+                                    <td>Holder</td>
+                                    <td>
+                                        <nuxt-link
+                                            :to="{name: 'address-slug', params:{slug: holder}}"
+                                            class="text-truncate">{{ holder }}</nuxt-link>
+                                    </td>
                                 </tr>
                                 <tr>
-                                    <td>Holders</td>
-                                    <td>{{ holdersCount }} {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
+                                    <td>Balance</td>
+                                    <td>{{ toEther(convertHexToFloat(holderBalance.toString(), 16)) }} {{ symbol }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
@@ -124,12 +128,7 @@
                     <b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
                         <table-token-tx
                             :token="hash"
-                            :page="this"/>
-                    </b-tab>
-                    <b-tab
-                        :title="'Token Holders (' + holdersCount + ')'">
-                        <table-token-holder
-                            :address="hash"
+                            :holder="holder"
                             :page="this"/>
                     </b-tab>
                 </b-tabs>
@@ -140,12 +139,10 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTokenTx from '~/components/TableTokenTx'
-import TableTokenHolder from '~/components/TableTokenHolder'
 
 export default {
     components: {
-        TableTokenTx,
-        TableTokenHolder
+        TableTokenTx
     },
     mixins: [mixin],
     head () {
@@ -163,12 +160,14 @@ export default {
             tokenTxsCount: 0,
             holdersCount: 0,
             moreInfo: null,
+            holder: null,
             addressFilter: null,
             holderBalance: 0
         }
     },
     created () {
-        this.hash = this.$route.params.slug
+        this.hash = this.$route.query.token
+        this.holder = this.$route.query.holder
     },
     async mounted () {
         let self = this
@@ -188,10 +187,15 @@ export default {
 
         self.loading = false
         self.moreInfo = data.moreInfo
+
+        self.holderBalance = await self.getTokenHolder(self.hash, self.holder)
     },
     methods: {
+        async getTokenHolder (token, holder) {
+            let { data } = await this.$axios.get('/api/tokens/' + token + '/holder/' + holder)
+            return data.quantity
+        },
         async filterAddress () {
-
         }
     }
 }
