@@ -78,9 +78,6 @@ AuthController.post('/lostpw', async (req, res) => {
         const captchaToken = req.body.captchaToken
 
         let user = await db.User.findOne({ email })
-        if (!user) {
-            return res.json({ error: { message: 'User not found!' } })
-        }
 
         if (!captchaToken) {
             return res.json({ error: { message: 'Captcha is required' } })
@@ -96,14 +93,16 @@ AuthController.post('/lostpw', async (req, res) => {
             return res.json({ error: { message: 'Oops, something went wrong on our side' } })
         }
 
-        // generate token
-        const token = await user.generateToken(user, 'resetPwd')
-
         // Send email forgot password.
-        let emailService = new EmailService()
-        emailService.recoverPassword(user, token)
+        if (user) {
+            // generate token
+            const token = await user.generateToken(user, 'resetPwd')
 
-        return res.json({ user })
+            let emailService = new EmailService()
+            emailService.recoverPassword(user, token)
+        }
+
+        return res.json({ message: 'Done' })
     } catch (e) {
         return res.status(400).json(e)
     }
