@@ -131,6 +131,22 @@
                             :holder="holder"
                             :page="this"/>
                     </b-tab>
+                    <b-tab
+                        v-if="address && address.isContract && smartContract"
+                        title="Code"
+                        @click="refreshCodemirror">
+                        <read-source-code
+                            ref="readSourceCode"
+                            :token="hash"
+                            :smartcontract="smartContract"
+                            :address="address"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="smartContract"
+                        title="Read Contract">
+                        <read-contract
+                            :contract="hash"/>
+                    </b-tab>
                 </b-tabs>
             </b-col>
         </b-row>
@@ -139,9 +155,13 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTokenTx from '~/components/TableTokenTx'
+import ReadSourceCode from '~/components/ReadSourceCode'
+import ReadContract from '~/components/ReadContract'
 
 export default {
     components: {
+        ReadContract,
+        ReadSourceCode,
         TableTokenTx
     },
     mixins: [mixin],
@@ -162,6 +182,8 @@ export default {
             moreInfo: null,
             holder: null,
             addressFilter: null,
+            address: null,
+            smartContract: null,
             holderBalance: 0
         }
     },
@@ -189,6 +211,7 @@ export default {
         self.moreInfo = data.moreInfo
 
         self.holderBalance = await self.getTokenHolder(self.hash, self.holder)
+        self.getAccountFromApi()
     },
     methods: {
         async getTokenHolder (token, holder) {
@@ -196,6 +219,13 @@ export default {
             return data.quantity
         },
         async filterAddress () {
+        },
+        async getAccountFromApi () {
+            let self = this
+
+            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
+            self.address = data
+            self.smartContract = data.contract
         }
     }
 }

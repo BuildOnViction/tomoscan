@@ -167,6 +167,18 @@ const mixin = {
             }
 
             this.$toast.show(msg)
+        },
+        refreshCodemirror () {
+            this.$nextTick(() => {
+                if (this.$refs['readSourceCode']) {
+                    let readSourceCode = this.$refs['readSourceCode']
+                    for (const $ref in readSourceCode.$refs) {
+                        if (readSourceCode.$refs[$ref].hasOwnProperty('codemirror')) {
+                            readSourceCode.$refs[$ref].codemirror.refresh()
+                        }
+                    }
+                }
+            })
         }
     }
 }
