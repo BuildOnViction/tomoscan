@@ -165,11 +165,11 @@
                             <button
                                 v-clipboard="smartContract.sourceCode"
                                 class="btn btn-sm mr-2 code-actions__copy"
-                                @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+                                @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
                             <button
                                 class="btn btn-sm code-actions__toggle"
                                 data-mode="light"
-                                @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+                                @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
                         </div>
                         <no-ssr placeholder="Codemirror Loading...">
                             <codemirror
@@ -186,12 +186,12 @@
                             <button
                                 v-clipboard="smartContract.abiCode"
                                 class="btn btn-sm mr-2 code-actions__copy"
-                                @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+                                @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
                             <button
                                 id="btn-abi-code"
                                 class="btn btn-sm code-actions__toggle"
                                 data-mode="light"
-                                @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+                                @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
                         </div>
                         <no-ssr placeholder="Codemirror Loading...">
                             <codemirror
@@ -210,12 +210,12 @@
                         <button
                             v-clipboard="address.code"
                             class="btn btn-sm mr-2 code-actions__copy"
-                            @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
+                            @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
                         <button
                             id="btn-code"
                             class="btn btn-sm code-actions__toggle"
                             data-mode="light"
-                            @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
+                            @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
                     </div>
                     <no-ssr placeholder="Codemirror Loading...">
                         <codemirror
@@ -341,46 +341,6 @@ export default {
                     }
                 }
             })
-        },
-        copyCode (e) {
-            let id = e.trigger.parentNode.id
-            let msg = ''
-
-            if (id === 'code-actions--source') {
-                msg = 'Source code copied to clipboard'
-            }
-
-            if (id === 'code-actions--abi') {
-                msg = 'ABI code copied to clipboard'
-            }
-
-            if (id === 'code-actions--creation') {
-                msg = 'Contract creation code copied to clipboard'
-            }
-
-            this.$toast.show(msg)
-        },
-        toggleMode (e) {
-            let id = e.target.parentNode.id
-            let mode = e.target.getAttribute('data-mode')
-            let theme = mode === 'light' ? 'base16-dark' : 'eclipse'
-
-            if (id === 'code-actions--source') {
-                this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--abi') {
-                this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--creation') {
-                this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
-            }
-
-            e.target.innerHTML = (mode === 'light')
-                ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
-            mode = (mode === 'light') ? 'dark' : 'light'
-            e.target.setAttribute('data-mode', mode)
         }
     }
 }
