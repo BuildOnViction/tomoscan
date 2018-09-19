@@ -108,21 +108,30 @@
             </div>
         </div>
 
-        <b-tabs class="tomo-tabs">
+        <b-tabs
+            ref="allTabs"
+            v-model="tabIndex"
+            class="tomo-tabs">
             <b-tab
-                :title="'Transactions (' + txsCount + ')'">
+                id="transactions"
+                :title="'Transactions (' + txsCount + ')'"
+                href="#transactions"
+                @click="onClick">
                 <table-tx
                     :address="hash"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
-                :title="'Mined Blocks (' + blocksCount + ')'">
+                :title="'Mined Blocks (' + blocksCount + ')'"
+                href="#minedBlocks"
+                @click="onClick">
                 <table-tx-by-account :page="this"/>
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
-                :title="'Token Holding (' + tokensCount + ')'">
+                :title="'Token Holding (' + tokensCount + ')'"
+                @click="onClick">
                 <table-tokens-by-account
                     :address="hash"
                     :page="this"/>
@@ -130,6 +139,7 @@
             <b-tab
                 v-if="address && address.isContract"
                 title="Code"
+                href="#code"
                 @click="refreshCodemirror">
                 <read-source-code
                     ref="readSourceCode"
@@ -139,19 +149,25 @@
             </b-tab>
             <b-tab
                 v-if="address && address.isContract && smartContract"
-                title="Read Contract">
-                <read-contract
-                    :contract="hash"/>
+                title="Read Contract"
+                href="readContract"
+                @click="onClick">
+            <read-contract
+                :contract="hash"/>
             </b-tab>
             <b-tab
-                :title="'Events (' + eventsCount + ')'">
+                :title="'Events (' + eventsCount + ')'"
+                href="#events"
+                @click="onClick">
                 <table-event
                     :address="hash"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="hasReward && !address.isContract"
-                :title="'Rewards (' + rewardTime + ')'">
+                :title="'Rewards (' + rewardTime + ')'"
+                href="#rewards"
+                @click="onClick">
                 <table-reward
                     :address="hash"
                     :page="this"/>
@@ -199,7 +215,8 @@ export default {
         tokensCount: 0,
         loading: true,
         hasReward: true,
-        rewardTime: 0
+        rewardTime: 0,
+        tabIndex: 0
     }),
     computed: {
         usdPrice () {
@@ -213,10 +230,22 @@ export default {
             ]
         }
     },
+    watch: {
+        $route (to, from) {
+            if (window.location.hash) {
+                this.updateHashChange()
+            }
+        }
+    },
     created () {
         let hash = this.$route.params.slug
         if (hash) {
             this.hash = hash
+        }
+    },
+    updated () {
+        if (window.location.hash) {
+            this.updateHashChange()
         }
     },
     mounted () {
@@ -247,6 +276,26 @@ export default {
             let self = this
 
             self.$store.dispatch('app/getUSDPrice')
+        },
+        updateHashChange () {
+            const allTabs = this.$refs.allTabs
+            if (this.$route.hash) {
+                allTabs.tabs.forEach((i, index) => {
+                    if (i.href === this.$route.hash) {
+                        this.tabIndex = index
+                        return
+                    }
+                    return true
+                })
+            }
+        },
+        onClick () {
+            const allTabs = this.$refs.allTabs
+            if (allTabs) {
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
+            }
         }
     }
 }

@@ -120,14 +120,22 @@
 
         <b-row>
             <b-col>
-                <b-tabs class="tomo-tabs">
-                    <b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
+                <b-tabs
+                    ref="allTabs"
+                    v-model="tabIndex"
+                    class="tomo-tabs">
+                    <b-tab
+                        :title="'Token Transfers (' + tokenTxsCount + ')'"
+                        href="#tokenTransfers"
+                        @click="onClick">
                         <table-token-tx
                             :token="hash"
                             :page="this"/>
                     </b-tab>
                     <b-tab
-                        :title="'Token Holders (' + holdersCount + ')'">
+                        :title="'Token Holders (' + holdersCount + ')'"
+                        href="#tokenHolders"
+                        @click="onClick">
                         <table-token-holder
                             :address="hash"
                             :page="this"/>
@@ -186,11 +194,24 @@ export default {
             addressFilter: null,
             address: null,
             smartContract: null,
-            holderBalance: 0
+            holderBalance: 0,
+            tabIndex: 0
+        }
+    },
+    watch: {
+        $route (to, from) {
+            if (window.location.hash) {
+                this.updateHashChange()
+            }
         }
     },
     created () {
         this.hash = this.$route.params.slug
+    },
+    updated () {
+        if (window.location.hash) {
+            this.updateHashChange()
+        }
     },
     async mounted () {
         let self = this
@@ -219,9 +240,29 @@ export default {
         async getAccountFromApi () {
             let self = this
 
-            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
+            let {data} = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
+        },
+        updateHashChange () {
+            const allTabs = this.$refs.allTabs
+            if (this.$route.hash) {
+                allTabs.tabs.forEach((i, index) => {
+                    if (i.href === this.$route.hash) {
+                        this.tabIndex = index
+                        return
+                    }
+                    return true
+                })
+            }
+        },
+        onClick () {
+            const allTabs = this.$refs.allTabs
+            if (allTabs) {
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
+            }
         }
     }
 }
