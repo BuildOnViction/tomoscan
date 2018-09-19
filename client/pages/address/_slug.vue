@@ -108,16 +108,22 @@
             </div>
         </div>
 
-        <b-tabs class="tomo-tabs">
+        <b-tabs
+            ref="allTabs"
+            v-model="tabIndex"
+            class="tomo-tabs">
             <b-tab
-                :title="'Transactions (' + txsCount + ')'">
+                id="transactions"
+                :title="'Transactions (' + txsCount + ')'"
+                href="#transactions">
                 <table-tx
                     :address="hash"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
-                :title="'Mined Blocks (' + blocksCount + ')'">
+                :title="'Mined Blocks (' + blocksCount + ')'"
+                href="#minedBlocks">
                 <table-tx-by-account :page="this"/>
             </b-tab>
             <b-tab
@@ -130,6 +136,7 @@
             <b-tab
                 v-if="address && address.isContract"
                 title="Code"
+                href="#code"
                 @click="refreshCodemirror">
                 <section v-if="smartContract">
                     <h5 class="mb-4">
@@ -227,18 +234,21 @@
             </b-tab>
             <b-tab
                 v-if="address && address.isContract && smartContract"
-                title="Read Contract">
+                title="Read Contract"
+                href="readContract">
                 <read-contract/>
             </b-tab>
             <b-tab
-                :title="'Events (' + eventsCount + ')'">
+                :title="'Events (' + eventsCount + ')'"
+                href="#events">
                 <table-event
                     :address="hash"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="hasReward && !address.isContract"
-                :title="'Rewards (' + rewardTime + ')'">
+                :title="'Rewards (' + rewardTime + ')'"
+                href="#rewards">
                 <table-reward
                     :address="hash"
                     :page="this"/>
@@ -284,7 +294,8 @@ export default {
         tokensCount: 0,
         loading: true,
         hasReward: true,
-        rewardTime: 0
+        rewardTime: 0,
+        tabIndex: 0
     }),
     computed: {
         usdPrice () {
@@ -298,10 +309,28 @@ export default {
             ]
         }
     },
+    watch: {
+        tabIndex (value) {
+            const allTabs = this.$refs.allTabs
+            const location = window.location
+            location.hash = allTabs.tabs[value].href
+        }
+    },
     created () {
         let hash = this.$route.params.slug
         if (hash) {
             this.hash = hash
+        }
+    },
+    updated () {
+        const allTabs = this.$refs.allTabs
+        if (this.$route.hash) {
+            allTabs.tabs.forEach((i, index) => {
+                if (i.href === this.$route.hash) {
+                    this.tabIndex = index
+                }
+                return true
+            })
         }
     },
     mounted () {

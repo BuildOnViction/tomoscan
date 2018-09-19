@@ -25,8 +25,13 @@
 
         <b-row>
             <b-col>
-                <b-tabs class="tomo-tabs">
-                    <b-tab title="Overview">
+                <b-tabs
+                    ref="allTabs"
+                    v-model="tabIndex"
+                    class="tomo-tabs">
+                    <b-tab
+                        title="Overview"
+                        href="#overview">
                         <div class="card tomo-card tomo-card--transaction">
                             <div class="tomo-card__body">
                                 <table
@@ -182,7 +187,8 @@
                     </b-tab>
                     <b-tab
                         v-if="eventsCount > 0"
-                        :title="'Events (' + eventsCount + ')'">
+                        :title="'Events (' + eventsCount + ')'"
+                        href="#events">
                         <table-event
                             :tx="hash"
                             :page="this"/>
@@ -213,7 +219,26 @@ export default {
             hash: null,
             tx: null,
             eventsCount: 0,
-            loading: true
+            loading: true,
+            tabIndex: 0
+        }
+    },
+    watch: {
+        tabIndex (value) {
+            const allTabs = this.$refs.allTabs
+            const location = window.location
+            location.hash = allTabs.tabs[value].href
+        }
+    },
+    updated () {
+        const allTabs = this.$refs.allTabs
+        if (this.$route.hash) {
+            allTabs.tabs.forEach((i, index) => {
+                if (i.href === this.$route.hash) {
+                    this.tabIndex = index
+                }
+                return true
+            })
         }
     },
     created () {

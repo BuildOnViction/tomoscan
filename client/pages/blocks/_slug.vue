@@ -169,16 +169,21 @@
             </div>
         </div>
 
-        <b-tabs class="tomo-tabs">
+        <b-tabs
+            ref="allTabs"
+            v-model="tabIndex"
+            class="tomo-tabs">
             <b-tab
-                :title="'Transactions (' + txsCount + ')'">
+                :title="'Transactions (' + txsCount + ')'"
+                href="#transactions">
                 <table-tx
                     :block="number"
                     :block_timestamp="block.timestamp"
                     :page="this"/>
             </b-tab>
             <b-tab
-                :title="'BlockSigner (' + blockSignerCount + ')'">
+                :title="'BlockSigner (' + blockSignerCount + ')'"
+                href="#blockSigner">
                 <block-signer
                     :block="number"
                     :page="this"/>
@@ -211,7 +216,26 @@ export default {
             timestamp_moment: null,
             loading: true,
             txsCount: 0,
-            blockSignerCount: 0
+            blockSignerCount: 0,
+            tabIndex: 0
+        }
+    },
+    watch: {
+        tabIndex (value) {
+            const allTabs = this.$refs.allTabs
+            const location = window.location
+            location.hash = allTabs.tabs[value].href
+        }
+    },
+    updated () {
+        const allTabs = this.$refs.allTabs
+        if (this.$route.hash) {
+            allTabs.tabs.forEach((i, index) => {
+                if (i.href === this.$route.hash) {
+                    this.tabIndex = index
+                }
+                return true
+            })
         }
     },
     created () {

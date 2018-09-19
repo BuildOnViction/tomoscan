@@ -65,13 +65,20 @@
 
         <b-row>
             <b-col>
-                <b-tabs class="tomo-tabs">
-                    <b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
+                <b-tabs
+                    ref="allTabs"
+                    v-model="tabIndex"
+                    class="tomo-tabs">
+                    <b-tab
+                        :title="'Token Transfers (' + tokenTxsCount + ')'"
+                        href="#tokenTransfers">
                         <table-token-tx
                             :token="hash"
                             :page="this"/>
                     </b-tab>
-                    <b-tab :title="'Token Holders (' + holdersCount + ')'">
+                    <b-tab
+                        :title="'Token Holders (' + holdersCount + ')'"
+                        href="#tokenHolders">
                         <table-token-holder
                             :address="hash"
                             :page="this"/>
@@ -105,11 +112,30 @@ export default {
             symbol: null,
             loading: true,
             tokenTxsCount: 0,
-            holdersCount: 0
+            holdersCount: 0,
+            tabIndex: 0
+        }
+    },
+    watch: {
+        tabIndex (value) {
+            const allTabs = this.$refs.allTabs
+            const location = window.location
+            location.hash = allTabs.tabs[value].href
         }
     },
     created () {
         this.hash = this.$route.params.slug
+    },
+    updated () {
+        const allTabs = this.$refs.allTabs
+        if (this.$route.hash) {
+            allTabs.tabs.forEach((i, index) => {
+                if (i.href === this.$route.hash) {
+                    this.tabIndex = index
+                }
+                return true
+            })
+        }
     },
     async mounted () {
         let self = this
