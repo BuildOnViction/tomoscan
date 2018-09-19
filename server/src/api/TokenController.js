@@ -47,9 +47,7 @@ TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
     try {
         let token = req.params.token.toLowerCase()
         let holder = req.params.holder.toLowerCase()
-        console.log(token, holder)
         let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
-        console.log(tokenHolder)
         if (!tokenHolder) {
             return res.status(404).send()
         }
