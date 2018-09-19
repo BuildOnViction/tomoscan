@@ -31,7 +31,8 @@
                     class="tomo-tabs">
                     <b-tab
                         title="Overview"
-                        href="#overview">
+                        href="#overview"
+                        @click="onClick">
                         <div class="card tomo-card tomo-card--transaction">
                             <div class="tomo-card__body">
                                 <table
@@ -188,7 +189,8 @@
                     <b-tab
                         v-if="eventsCount > 0"
                         :title="'Events (' + eventsCount + ')'"
-                        href="#events">
+                        href="#events"
+                        @click="onClick">
                         <table-event
                             :tx="hash"
                             :page="this"/>
@@ -224,21 +226,15 @@ export default {
         }
     },
     watch: {
-        tabIndex (value) {
-            const allTabs = this.$refs.allTabs
-            const location = window.location
-            location.hash = allTabs.tabs[value].href
+        $route (to, from) {
+            if (window.location.hash) {
+                this.updateHashChange()
+            }
         }
     },
     updated () {
-        const allTabs = this.$refs.allTabs
-        if (this.$route.hash) {
-            allTabs.tabs.forEach((i, index) => {
-                if (i.href === this.$route.hash) {
-                    this.tabIndex = index
-                }
-                return true
-            })
+        if (window.location.hash) {
+            this.updateHashChange()
         }
     },
     created () {
@@ -261,6 +257,28 @@ export default {
         this.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
         self.loading = false
+    },
+    methods: {
+        updateHashChange () {
+            const allTabs = this.$refs.allTabs
+            if (this.$route.hash) {
+                allTabs.tabs.forEach((i, index) => {
+                    if (i.href === this.$route.hash) {
+                        this.tabIndex = index
+                        return
+                    }
+                    return true
+                })
+            }
+        },
+        onClick () {
+            const allTabs = this.$refs.allTabs
+            if (allTabs) {
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
+            }
+        }
     }
 }
 </script>

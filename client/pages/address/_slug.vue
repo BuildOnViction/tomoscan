@@ -115,7 +115,8 @@
             <b-tab
                 id="transactions"
                 :title="'Transactions (' + txsCount + ')'"
-                href="#transactions">
+                href="#transactions"
+                @click="onClick">
                 <table-tx
                     :address="hash"
                     :page="this"/>
@@ -123,12 +124,14 @@
             <b-tab
                 v-if="!address.isContract"
                 :title="'Mined Blocks (' + blocksCount + ')'"
-                href="#minedBlocks">
+                href="#minedBlocks"
+                @click="onClick">
                 <table-tx-by-account :page="this"/>
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
-                :title="'Token Holding (' + tokensCount + ')'">
+                :title="'Token Holding (' + tokensCount + ')'"
+                @click="onClick">
                 <table-tokens-by-account
                     :address="hash"
                     :page="this"/>
@@ -235,12 +238,14 @@
             <b-tab
                 v-if="address && address.isContract && smartContract"
                 title="Read Contract"
-                href="readContract">
+                href="readContract"
+                @click="onClick">
                 <read-contract/>
             </b-tab>
             <b-tab
                 :title="'Events (' + eventsCount + ')'"
-                href="#events">
+                href="#events"
+                @click="onClick">
                 <table-event
                     :address="hash"
                     :page="this"/>
@@ -248,7 +253,8 @@
             <b-tab
                 v-if="hasReward && !address.isContract"
                 :title="'Rewards (' + rewardTime + ')'"
-                href="#rewards">
+                href="#rewards"
+                @click="onClick">
                 <table-reward
                     :address="hash"
                     :page="this"/>
@@ -310,10 +316,10 @@ export default {
         }
     },
     watch: {
-        tabIndex (value) {
-            const allTabs = this.$refs.allTabs
-            const location = window.location
-            location.hash = allTabs.tabs[value].href
+        $route (to, from) {
+            if (window.location.hash) {
+                this.updateHashChange()
+            }
         }
     },
     created () {
@@ -323,14 +329,8 @@ export default {
         }
     },
     updated () {
-        const allTabs = this.$refs.allTabs
-        if (this.$route.hash) {
-            allTabs.tabs.forEach((i, index) => {
-                if (i.href === this.$route.hash) {
-                    this.tabIndex = index
-                }
-                return true
-            })
+        if (window.location.hash) {
+            this.updateHashChange()
         }
     },
     mounted () {
@@ -370,6 +370,7 @@ export default {
                     }
                 }
             })
+            this.onClick()
         },
         copyCode (e) {
             let id = e.trigger.parentNode.id
@@ -410,6 +411,26 @@ export default {
                 ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
             mode = (mode === 'light') ? 'dark' : 'light'
             e.target.setAttribute('data-mode', mode)
+        },
+        updateHashChange () {
+            const allTabs = this.$refs.allTabs
+            if (this.$route.hash) {
+                allTabs.tabs.forEach((i, index) => {
+                    if (i.href === this.$route.hash) {
+                        this.tabIndex = index
+                        return
+                    }
+                    return true
+                })
+            }
+        },
+        onClick () {
+            const allTabs = this.$refs.allTabs
+            if (allTabs) {
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
+            }
         }
     }
 }
