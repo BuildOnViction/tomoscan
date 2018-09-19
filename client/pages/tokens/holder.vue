@@ -134,7 +134,7 @@
                     <b-tab
                         v-if="address && address.isContract && smartContract"
                         title="Code"
-                        @click="refreshCodemirror">
+                        @click="refreshCodeMirror">
                         <read-source-code
                             ref="readSourceCode"
                             :token="hash"

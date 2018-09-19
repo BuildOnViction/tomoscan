@@ -140,7 +140,7 @@
                 v-if="address && address.isContract"
                 title="Code"
                 href="#code"
-                @click="refreshCodemirror">
+                @click="refreshCodeMirror">
                 <read-source-code
                     ref="readSourceCode"
                     :token="hash"
@@ -152,8 +152,8 @@
                 title="Read Contract"
                 href="readContract"
                 @click="onClick">
-            <read-contract
-                :contract="hash"/>
+                <read-contract
+                    :contract="hash"/>
             </b-tab>
             <b-tab
                 :title="'Events (' + eventsCount + ')'"

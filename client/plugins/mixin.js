@@ -168,7 +168,7 @@ const mixin = {
 
             this.$toast.show(msg)
         },
-        refreshCodemirror () {
+        refreshCodeMirror () {
             this.$nextTick(() => {
                 if (this.$refs['readSourceCode']) {
                     let readSourceCode = this.$refs['readSourceCode']

@@ -143,7 +143,7 @@
                     <b-tab
                         v-if="address && address.isContract && smartContract"
                         title="Code"
-                        @click="refreshCodemirror">
+                        @click="refreshCodeMirror">
                         <read-source-code
                             ref="readSourceCode"
                             :token="hash"
@@ -240,7 +240,7 @@ export default {
         async getAccountFromApi () {
             let self = this
 
-            let {data} = await this.$axios.get('/api/accounts/' + self.hash)
+            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
         },
