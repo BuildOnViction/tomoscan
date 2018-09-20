@@ -12,6 +12,8 @@ const TokenInfo = new Schema({
         url: String,
         title: String
     }],
+    overview: String,
+    icoInfo: String,
     status: { type: Boolean, default: false }
 }, {
     timestamps: false
