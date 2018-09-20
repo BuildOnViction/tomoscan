@@ -62,4 +62,4 @@ stages:
   - name: Build and push image
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
   - name: Build and push image (tagged)
-    if: type != pull_request AND branch = master AND tag = true AND repo = tomochain/tomoscan
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
