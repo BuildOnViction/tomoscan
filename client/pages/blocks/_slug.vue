@@ -174,7 +174,7 @@
             v-model="tabIndex"
             class="tomo-tabs">
             <b-tab
-                :title="'Transactions (' + txsCount + ')'"
+                :title="'Transactions (' + formatNumber(txsCount) + ')'"
                 href="#transactions"
                 @click="onClick">
                 <table-tx
@@ -183,7 +183,7 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                :title="'BlockSigner (' + blockSignerCount + ')'"
+                :title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"
                 href="#blockSigner"
                 @click="onClick">
                 <block-signer

@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 
 const TokenHolder = new Schema({
     hash: { type: String, index: true },
-    token: String,
+    token: { type: String, index: true },
     quantity: String,
     balance: String,
     quantityNumber: Number

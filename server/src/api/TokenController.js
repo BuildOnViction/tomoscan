@@ -32,8 +32,27 @@ TokenController.get('/tokens/:slug', async (req, res) => {
         }
 
         token = await TokenHelper.formatToken(token)
+        let tokenInfo = await db.TokenInfo.findOne({ hash: hash })
+        token.moreInfo = tokenInfo
 
         res.json(token)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
+TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
+    try {
+        let token = req.params.token.toLowerCase()
+        let holder = req.params.holder.toLowerCase()
+        let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
+        if (!tokenHolder) {
+            return res.status(404).send()
+        }
+
+        res.json(tokenHolder)
     } catch (e) {
         console.trace(e)
         console.log(e)
