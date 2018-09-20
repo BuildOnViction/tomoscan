@@ -38,14 +38,18 @@
                                     <td>Transfers</td>
                                     <td>{{ formatNumber(tokenTxsCount) }}</td>
                                 </tr>
-                                <tr
-                                    v-if="moreInfo">
+                                <tr>
                                     <td>Official Site</td>
-                                    <td>
+                                    <td
+                                        v-if="moreInfo">
                                         <a
                                             :href="moreInfo.website"
                                             target="_blank"
                                             class="text-truncate">{{ moreInfo.website }}</a>
+                                    </td>
+                                    <td
+                                        v-else>
+                                        Not Available, Update ?
                                     </td>
                                 </tr>
                             </tbody>
@@ -105,12 +109,13 @@
                                                 type="text"
                                                 class="form-control"
                                                 placeholder="Address"
-                                                aria-label="Address">
+                                                aria-label="Address"
+                                                @keyup.enter="filterAddress">
                                             <div class="input-group-append">
                                                 <button
-                                                    :onclick="filterAddress()"
                                                     class="btn btn-primary"
-                                                    type="button">Apply</button>
+                                                    type="button"
+                                                    @click="filterAddress">Apply</button>
                                             </div>
                                         </div>
                                     </td>
@@ -167,7 +172,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Token ' + this.$route.params.slug + ' Info'
+            title: 'Token Holder Info'
         }
     },
     data () {
@@ -188,8 +193,8 @@ export default {
         }
     },
     created () {
-        this.hash = this.$route.query.token
-        this.holder = this.$route.query.holder
+        this.hash = this.$route.params.slug
+        this.holder = this.$route.params.holder
     },
     async mounted () {
         let self = this
@@ -219,6 +224,11 @@ export default {
             return data.quantity
         },
         async filterAddress () {
+            let search = this.addressFilter.trim()
+
+            let to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
+
+            return this.$router.push(to)
         },
         async getAccountFromApi () {
             let self = this
