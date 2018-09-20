@@ -169,16 +169,23 @@
             </div>
         </div>
 
-        <b-tabs class="tomo-tabs">
+        <b-tabs
+            ref="allTabs"
+            v-model="tabIndex"
+            class="tomo-tabs">
             <b-tab
-                :title="'Transactions (' + txsCount + ')'">
+                :title="'Transactions (' + txsCount + ')'"
+                href="#transactions"
+                @click="onClick">
                 <table-tx
                     :block="number"
                     :block_timestamp="block.timestamp"
                     :page="this"/>
             </b-tab>
             <b-tab
-                :title="'BlockSigner (' + blockSignerCount + ')'">
+                :title="'BlockSigner (' + blockSignerCount + ')'"
+                href="#blockSigner"
+                @click="onClick">
                 <block-signer
                     :block="number"
                     :page="this"/>
@@ -211,8 +218,19 @@ export default {
             timestamp_moment: null,
             loading: true,
             txsCount: 0,
-            blockSignerCount: 0
+            blockSignerCount: 0,
+            tabIndex: 0
         }
+    },
+    watch: {
+        $route (to, from) {
+            if (window.location.hash) {
+                this.updateHashChange()
+            }
+        }
+    },
+    updated () {
+        this.updateHashChange()
     },
     created () {
         let number = this.$route.params.slug
@@ -238,6 +256,28 @@ export default {
         this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
         self.loading = false
+    },
+    methods: {
+        updateHashChange () {
+            const allTabs = this.$refs.allTabs
+            if (this.$route.hash) {
+                allTabs.tabs.forEach((i, index) => {
+                    if (i.href === this.$route.hash) {
+                        this.tabIndex = index
+                        return
+                    }
+                    return true
+                })
+            }
+        },
+        onClick () {
+            const allTabs = this.$refs.allTabs
+            if (allTabs) {
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
+            }
+        }
     }
 }
 </script>

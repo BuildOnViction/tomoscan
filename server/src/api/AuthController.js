@@ -78,9 +78,6 @@ AuthController.post('/lostpw', async (req, res) => {
         const captchaToken = req.body.captchaToken
 
         let user = await db.User.findOne({ email })
-        if (!user) {
-            return res.status(404).json({ error: { message: 'User not found!' } })
-        }
 
         if (!captchaToken) {
             return res.json({ error: { message: 'Captcha is required' } })
@@ -96,14 +93,16 @@ AuthController.post('/lostpw', async (req, res) => {
             return res.json({ error: { message: 'Oops, something went wrong on our side' } })
         }
 
-        // generate token
-        const token = await user.generateToken(user, 'resetPwd')
-
         // Send email forgot password.
-        let emailService = new EmailService()
-        emailService.recoverPassword(user, token)
+        if (user) {
+            // generate token
+            const token = await user.generateToken(user, 'resetPwd')
 
-        return res.json({ user })
+            let emailService = new EmailService()
+            emailService.recoverPassword(user, token)
+        }
+
+        return res.json({ message: 'Done' })
     } catch (e) {
         return res.status(400).json(e)
     }
@@ -116,27 +115,27 @@ AuthController.post('/tokenValidation', async (req, res) => {
         let user = await db.User.findOne({ email })
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found!' })
+            return res.status(406).json({ error: { message: 'User not found!' } })
         }
 
         if (!token) {
-            return res.status(404).json({ message: 'Token not found!' })
+            return res.status(406).json({ error: { message: 'Token not found!' } })
         }
 
         // Check if token has been used
         if (token === user.latestResetToken) {
-            return res.status(406).json({ message: 'The reset password link has expired' })
+            return res.status(406).json({ error: { message: 'The reset password link has expired' } })
         }
 
         const validation = await user.tokenDecoding(token)
 
         if (validation.error) {
-            return res.status(406).json({ message: 'The reset password link has expired' })
+            return res.status(406).json({ error: { message: 'The reset password link has expired' } })
         }
 
         return res.json({ message: 'All checked' })
     } catch (error) {
-        return res.status(400).json({ message: 'Something went wrong' })
+        return res.status(400).json({ error: { message: 'Something went wrong' } })
     }
 })
 
@@ -149,11 +148,11 @@ AuthController.post('/reset-password', async (req, res) => {
         let token = req.body.token
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found!' })
+            return res.status(404).json({ error: { message: 'User not found!' } })
         }
 
         if (!token) {
-            return res.status(404).json({ message: 'Token not found!' })
+            return res.status(404).json({ error: { message: 'Token not found!' } })
         }
 
         const validation = await user.tokenDecoding(token)
