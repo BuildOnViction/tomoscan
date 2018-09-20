@@ -132,7 +132,7 @@
         <b-row>
             <b-col>
                 <b-tabs class="tomo-tabs">
-                    <b-tab :title="'Token Transfers (' + tokenTxsCount + ')'">
+                    <b-tab :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'">
                         <table-token-tx
                             :token="hash"
                             :holder="holder"

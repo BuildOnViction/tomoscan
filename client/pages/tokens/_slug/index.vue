@@ -132,7 +132,7 @@
                     v-model="tabIndex"
                     class="tomo-tabs">
                     <b-tab
-                        :title="'Token Transfers (' + tokenTxsCount + ')'"
+                        :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
                         href="#tokenTransfers"
                         @click="onClick">
                         <table-token-tx
@@ -140,7 +140,7 @@
                             :page="this"/>
                     </b-tab>
                     <b-tab
-                        :title="'Token Holders (' + holdersCount + ')'"
+                        :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
                         href="#tokenHolders"
                         @click="onClick">
                         <table-token-holder

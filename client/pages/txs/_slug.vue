@@ -188,7 +188,7 @@
                     </b-tab>
                     <b-tab
                         v-if="eventsCount > 0"
-                        :title="'Events (' + eventsCount + ')'"
+                        :title="'Events (' + formatNumber(eventsCount) + ')'"
                         href="#events"
                         @click="onClick">
                         <table-event

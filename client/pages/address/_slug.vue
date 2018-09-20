@@ -114,7 +114,7 @@
             class="tomo-tabs">
             <b-tab
                 id="transactions"
-                :title="'Transactions (' + txsCount + ')'"
+                :title="'Transactions (' + formatNumber(txsCount) + ')'"
                 href="#transactions"
                 @click="onClick">
                 <table-tx
@@ -123,14 +123,14 @@
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
-                :title="'Mined Blocks (' + blocksCount + ')'"
+                :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks"
                 @click="onClick">
                 <table-tx-by-account :page="this"/>
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
-                :title="'Token Holding (' + tokensCount + ')'"
+                :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
                 @click="onClick">
                 <table-tokens-by-account
                     :address="hash"
@@ -156,7 +156,7 @@
                     :contract="hash"/>
             </b-tab>
             <b-tab
-                :title="'Events (' + eventsCount + ')'"
+                :title="'Events (' + formatNumber(eventsCount) + ')'"
                 href="#events"
                 @click="onClick">
                 <table-event
@@ -165,7 +165,7 @@
             </b-tab>
             <b-tab
                 v-if="hasReward && !address.isContract"
-                :title="'Rewards (' + rewardTime + ')'"
+                :title="'Rewards (' + formatNumber(rewardTime) + ')'"
                 href="#rewards"
                 @click="onClick">
                 <table-reward
