@@ -99,19 +99,25 @@
                                 <tr>
                                     <td>Filtered By</td>
                                     <td>
-                                        <div class="input-group input-group-sm mb-2">
+                                        <div class="input-group input-group-sm">
                                             <input
                                                 v-model="addressFilter"
                                                 type="text"
-                                                class="form-control"
+                                                class="form-control form-control-sm"
                                                 placeholder="Address"
                                                 aria-label="Address"
-                                                @keyup.enter="filterAddress">
+                                                style="margin: 0 !important;; padding: 5px !important; height: 21px"
+                                                @keyup.enter="filterAddress(addressFilter)">
                                             <div class="input-group-append">
                                                 <button
-                                                    class="btn btn-primary"
+                                                    class="btn btn-primary btn-primary-sm"
                                                     type="button"
-                                                    @click="filterAddress">Apply</button>
+                                                    style="margin: 0 !important;; padding: 0px !important; height: 21px"
+                                                    @click="filterAddress(addressFilter)">
+                                                    <i
+                                                        style="margin: 2px 5px; line-height: 100%"
+                                                        class="fa fa-filter"/>
+                                                </button>
                                             </div>
                                         </div>
                                     </td>
@@ -239,13 +245,6 @@ export default {
         self.getAccountFromApi()
     },
     methods: {
-        async filterAddress () {
-            let search = this.addressFilter.trim()
-
-            let to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
-
-            return this.$router.push(to)
-        },
         async getAccountFromApi () {
             let self = this
 

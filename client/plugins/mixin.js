@@ -179,6 +179,13 @@ const mixin = {
                     }
                 }
             })
+        },
+        async filterAddress (filter) {
+            if (filter) {
+                let search = filter.trim()
+                let to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
+                return this.$router.push(to)
+            }
         }
     }
 }
