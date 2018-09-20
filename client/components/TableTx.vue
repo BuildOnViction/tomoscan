@@ -211,6 +211,7 @@ export default {
     },
     methods: {
         async getDataFromApi () {
+            const location = window.location
             let self = this
 
             // Show loading.
@@ -230,7 +231,12 @@ export default {
             if (self.address) {
                 params.address = self.address
             }
-
+            if (location.pathname.includes('txs/signTxs')) {
+                params.typeOfTxs = 'signTxs'
+            }
+            if (location.pathname.includes('txs/otherTxs')) {
+                params.typeOfTxs = 'otherTxs'
+            }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
             self.total = data.total
