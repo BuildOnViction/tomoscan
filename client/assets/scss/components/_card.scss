@@ -78,6 +78,20 @@
       &:first-child {
         color: $black;
       }
+      div.filter-address {
+        margin-bottom: -10px;
+        margin-top: -5px;
+      }
+    }
+
+    td.token-info-link {
+      ul {
+        margin: 0;
+      }
+      li i.fa {
+        font-size: 15px;
+        line-height: 100%;
+      }
     }
 
     a {

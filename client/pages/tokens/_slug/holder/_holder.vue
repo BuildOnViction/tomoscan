@@ -80,7 +80,7 @@
                                 </tr>
                                 <tr>
                                     <td>Links</td>
-                                    <td>
+                                    <td class="token-info-link">
                                         <ul
                                             v-if="moreInfo && moreInfo.communities"
                                             class="list-inline s-icons">
@@ -103,20 +103,18 @@
                                 <tr>
                                     <td>Filtered By</td>
                                     <td>
-                                        <div class="input-group input-group-sm">
+                                        <div class="input-group input-group-sm filter-address">
                                             <input
                                                 v-model="addressFilter"
                                                 type="text"
                                                 class="form-control form-control-sm"
                                                 placeholder="Address"
                                                 aria-label="Address"
-                                                style="margin: 0 !important;; padding: 5px !important; height: 21px"
                                                 @keyup.enter="filterAddress(addressFilter)">
                                             <div class="input-group-append">
                                                 <button
                                                     class="btn btn-primary btn-primary-sm"
                                                     type="button"
-                                                    style="margin: 0 !important;; padding: 0px !important; height: 21px"
                                                     @click="filterAddress(addressFilter)">
                                                     <i
                                                         style="margin: 2px 5px; line-height: 100%"
