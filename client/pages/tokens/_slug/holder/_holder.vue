@@ -116,9 +116,7 @@
                                                     class="btn btn-primary btn-primary-sm"
                                                     type="button"
                                                     @click="filterAddress(addressFilter)">
-                                                    <i
-                                                        style="margin: 2px 5px; line-height: 100%"
-                                                        class="fa fa-filter"/>
+                                                    <i class="fa fa-filter"/>
                                                 </button>
                                             </div>
                                         </div>
