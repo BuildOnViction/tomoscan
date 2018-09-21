@@ -91,6 +91,13 @@ export default {
         perPage: 15,
         pages: 1
     }),
+    watch: {
+        $route (to, from) {
+            const hash = window.location.hash
+            const page = hash.substring(1)
+            this.onChangePaginate(page)
+        }
+    },
     mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'tokens', to: { name: 'tokens' } })
@@ -104,7 +111,7 @@ export default {
             self.loading = true
 
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
 
@@ -123,6 +130,8 @@ export default {
         onChangePaginate (page) {
             let self = this
             self.currentPage = page
+            // Set page
+            window.location.hash = page
 
             self.getDataFromApi()
         }
