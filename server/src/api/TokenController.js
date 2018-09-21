@@ -69,9 +69,9 @@ TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
         }
         let body = req.body
 
-        await db.TokenInfo.findOneAndUpdate({hash: hash}, body, { upsert: true, new: true })
+        await db.TokenInfo.findOneAndUpdate({ hash: hash }, body, { upsert: true, new: true })
 
-        res.json({message: 'Update successful'})
+        res.json({ message: 'Update successful' })
     } catch (e) {
         console.trace(e)
         console.log(e)
