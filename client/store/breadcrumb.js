@@ -125,7 +125,7 @@ br.register('tokens-slug-info', (brs, location) => {
 })
 br.register('tokentxs', (brs) => {
     brs.parent('index')
-    brs.push('Token (ERC20) Transfers', { name: 'tokentxs' })
+    brs.push('Token (TRC20) Transfers', { name: 'tokentxs' })
 })
 br.register('follows', (brs) => {
     brs.parent('index')

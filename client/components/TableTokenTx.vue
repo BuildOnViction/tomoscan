@@ -98,8 +98,8 @@
             <template
                 slot="token"
                 slot-scope="props">
-                <span v-if="props.item.symbol">ERC20 ({{ props.item.symbol }})</span>
-                <i v-else>ERC20</i>
+                <span v-if="props.item.symbol">TRC20 ({{ props.item.symbol }})</span>
+                <i v-else>TRC20</i>
             </template>
         </table-base>
 
