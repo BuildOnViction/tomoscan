@@ -235,7 +235,7 @@ export default {
     created () {
         let number = this.$route.params.slug
         if (number) {
-            this.number = number
+            this.number = number.toString()
         }
     },
     async mounted () {
