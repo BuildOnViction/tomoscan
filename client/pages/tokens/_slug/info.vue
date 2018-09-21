@@ -160,7 +160,7 @@ export default {
             symbol: null,
             loading: true,
             address: null,
-            errors: null,
+            errors: [],
             socialValue: [{
                 type: '',
                 value: ''
@@ -249,11 +249,11 @@ export default {
                 overview: this.overview,
                 icoInfo: this.icoInfo
             }
-            let { data } = await self.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
+            let { data } = await this.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
             if (data.errors) {
                 this.errors = data.errors
             } else {
-                return self.$router.push({ name: 'tokens-slug', params: { slug: this.hash } })
+                return this.$router.push({ name: 'tokens-slug', params: { slug: this.hash } })
             }
         }
     }
