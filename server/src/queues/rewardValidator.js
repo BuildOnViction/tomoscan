@@ -7,6 +7,7 @@ const db = require('../models')
 const config = require('config')
 
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
+const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
 
 const consumer = {}
@@ -27,6 +28,25 @@ consumer.task = async function (job, done) {
     try {
         let web3 = await Web3Util.getWeb3()
         let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+        let bs = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
+
+        // verify block was on chain
+        for (let i = startBlock; i <= endBlock; i++) {
+            let blockHash = (await web3.eth.getBlock(i)).hash
+            let ss = await bs.methods.getSigners(blockHash).call()
+            await db.BlockSigner.updateOne({
+                blockHash: blockHash,
+                blockNumber: i
+            }, {
+                $set: {
+                    blockHash: blockHash,
+                    blockNumber: i,
+                    signers: ss.map(it => (it || '').toLowerCase())
+                }
+            }, {
+                upsert: true
+            })
+        }
 
         let totalSignNumber = 0
 
@@ -38,9 +58,9 @@ consumer.task = async function (job, done) {
         let validatorMap = validators.map(async (validator) => {
             validator = validator.toString().toLowerCase()
             let validatorSignNumber = await db.BlockSigner
-                .count({
+                .countDocuments({
                     blockNumber: { $gte: startBlock, $lte: endBlock },
-                    signers: { $elemMatch: { $eq: validator } }
+                    signers: validator
                 })
             if (validatorSignNumber > 0) {
                 totalSignNumber += validatorSignNumber
