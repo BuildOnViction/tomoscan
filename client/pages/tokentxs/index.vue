@@ -13,7 +13,7 @@ export default {
     },
     head () {
         return {
-            title: 'Token (ERC20) Transfers'
+            title: 'Token (TRC20) Transfers'
         }
     },
     async mounted () {

@@ -193,6 +193,13 @@ export default {
         pages: 1,
         blockNumber: null
     }),
+    watch: {
+        $route (to, from) {
+            const hash = window.location.hash
+            const page = hash.substring(1)
+            this.onChangePaginate(page)
+        }
+    },
     async mounted () {
         let self = this
         self.fields = self.isPending() ? self.fields_pending : self.fields_basic
@@ -211,13 +218,14 @@ export default {
     },
     methods: {
         async getDataFromApi () {
+            const location = window.location
             let self = this
 
             // Show loading.
             self.loading = true
 
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
             if (self.blockNumber) {
@@ -230,7 +238,12 @@ export default {
             if (self.address) {
                 params.address = self.address
             }
-
+            if (location.pathname.includes('txs/signTxs')) {
+                params.typeOfTxs = 'signTxs'
+            }
+            if (location.pathname.includes('txs/otherTxs')) {
+                params.typeOfTxs = 'otherTxs'
+            }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
             self.total = data.total
@@ -294,6 +307,8 @@ export default {
         onChangePaginate (page) {
             let self = this
             self.currentPage = page
+            // Set page
+            window.location.hash = page
 
             self.getDataFromApi()
         },

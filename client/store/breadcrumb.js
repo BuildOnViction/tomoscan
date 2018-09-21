@@ -143,6 +143,14 @@ br.register('reset-password', (brs) => {
     brs.parent('index')
     brs.push('Reset Password', { name: 'accounts-reset-password' })
 })
+br.register('sign-txs', (brs) => {
+    brs.parent('txs')
+    brs.push('Sign Transactions', { name: 'txs-signTxs' })
+})
+br.register('other-txs', (brs) => {
+    brs.parent('txs')
+    brs.push('Other Transactions', { name: 'txs-otherTxs' })
+})
 
 export const state = () => ({
     items: null

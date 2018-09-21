@@ -1,0 +1,86 @@
+[
+    {
+        "constant": true,
+        "inputs": [],
+        "name": "epochNumber",
+        "outputs": [
+            {
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "name": "_epochNumber",
+                "type": "uint256"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "anonymous": false,
+        "inputs": [
+            {
+                "indexed": false,
+                "name": "_signer",
+                "type": "address"
+            },
+            {
+                "indexed": false,
+                "name": "_blockNumber",
+                "type": "uint256"
+            },
+            {
+                "indexed": false,
+                "name": "_blockHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "Sign",
+        "type": "event"
+    },
+    {
+        "constant": false,
+        "inputs": [
+            {
+                "name": "_blockNumber",
+                "type": "uint256"
+            },
+            {
+                "name": "_blockHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "sign",
+        "outputs": [],
+        "payable": false,
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "constant": true,
+        "inputs": [
+            {
+                "name": "_blockHash",
+                "type": "bytes32"
+            }
+        ],
+        "name": "getSigners",
+        "outputs": [
+            {
+                "name": "",
+                "type": "address[]"
+            }
+        ],
+        "payable": false,
+        "stateMutability": "view",
+        "type": "function"
+    }
+]

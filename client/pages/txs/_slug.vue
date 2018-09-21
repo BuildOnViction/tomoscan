@@ -152,7 +152,7 @@
                                                                 params: {slug: tokenTx.address}}">
                                                             <span
                                                                 v-if="tokenTx.symbol"
-                                                                v-html="'&nbsp;ERC20 (' + tokenTx.symbol + ')'"/>
+                                                                v-html="'&nbsp;TRC20 (' + tokenTx.symbol + ')'"/>
                                                         </nuxt-link>
                                                         <span>&nbsp;from&nbsp;</span>
                                                         <nuxt-link

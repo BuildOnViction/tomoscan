@@ -9,6 +9,7 @@ const TxController = Router()
 
 TxController.get('/txs', async (req, res) => {
     try {
+        const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000089'
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
         let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
@@ -57,6 +58,18 @@ TxController.get('/txs', async (req, res) => {
         params.populate = populates
         if (!params.sort) {
             params.sort = { blockNumber: -1 }
+        }
+        // Check type of txs
+        if (req.query.typeOfTxs) {
+            let condition = { to: CONTRACT_ADDRESS }
+            if (req.query.typeOfTxs !== 'signTxs') {
+                condition = { to: { $ne: CONTRACT_ADDRESS } }
+            }
+            if (params.query) {
+                params.query = Object.assign({}, params.query, condition || {})
+            } else {
+                params.query = condition || {}
+            }
         }
         let data = await paginate(req, 'Tx', params)
 
@@ -149,5 +162,8 @@ TxController.get('/txs/status/:hash', async (req, res) => {
         return res.status(406).send()
     }
 })
+
+TxController.get('/txs/signtxs', async (req, res) => {})
+TxController.get('/txs/othertxs', async (req, res) => {})
 
 export default TxController
