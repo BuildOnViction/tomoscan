@@ -60,4 +60,23 @@ TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
     }
 })
 
+TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
+    try {
+        let hash = req.params.token.toLowerCase()
+        let token = await db.Token.findOne({ hash: hash })
+        if (!token) {
+            return res.status(404).send()
+        }
+        let body = req.body
+
+        await db.TokenInfo.findOneAndUpdate({ hash: hash }, body, { upsert: true, new: true })
+
+        res.json({ message: 'Update successful' })
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(406).send()
+    }
+})
+
 export default TokenController

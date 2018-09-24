@@ -45,7 +45,10 @@
                                     </td>
                                     <td
                                         v-else>
-                                        Not Available, Update ?
+                                        Not Available,
+                                        <nuxt-link
+                                            :to="{name: 'tokens-slug-info', params: {slug: hash}}"
+                                            class="text-truncate">Update</nuxt-link> ?
                                     </td>
                                 </tr>
                             </tbody>
@@ -92,7 +95,10 @@
                                             </li>
                                         </ul>
                                         <span v-else>
-                                            Not Available, Update ?
+                                            Not Available,
+                                            <nuxt-link
+                                                :to="{name: 'tokens-slug-info', params: {slug: hash}}"
+                                                class="text-truncate">Update</nuxt-link> ?
                                         </span>
                                     </td>
                                 </tr>
