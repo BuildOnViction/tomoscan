@@ -6,9 +6,9 @@ const Schema = mongoose.Schema
 const TokenHolder = new Schema({
     hash: { type: String, index: true },
     token: { type: String, index: true },
-    quantity: { type: String, index: true },
+    quantity: String,
     balance: String,
-    quantityNumber: Number
+    quantityNumber: { type: Number, index: true }
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },
