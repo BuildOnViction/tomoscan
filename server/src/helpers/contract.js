@@ -10,7 +10,13 @@ let ContractHelper = {
 
     async insertOrUpdate (contractName, contractAddress, releaseVersion, sourceCode, optimization, ouput) {
         contractAddress = contractAddress.toLowerCase()
-        let txCount = await db.Tx.count({ to: contractAddress })
+        let txCount = await db.Tx.count({
+            $or: [
+                { from: contractAddress },
+                { to: contractAddress },
+                { contractAddress: contractAddress }
+            ]
+        })
 
         let update = {
             hash: contractAddress,
@@ -46,9 +52,6 @@ let ContractHelper = {
         let txCount = await db.Tx.count({ $or: [{ from: hash }, { to: hash }, { contractAddress: hash }] })
         await db.Contract.findOneAndUpdate({ hash: hash },
             { txCount: txCount },
-            { upsert: true, new: true })
-        await db.Account.findOneAndUpdate({ hash: hash },
-            { transactionCount: txCount },
             { upsert: true, new: true })
         return txCount
     }

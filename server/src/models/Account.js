@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 const Account = new Schema({
     hash: { type: String, unique: true, index: true },
     balance: { type: String },
-    balanceNumber: { type: Number },
+    balanceNumber: { type: Number, index: true },
     code: String,
     transactionCount: Number,
     contractCreation: String,

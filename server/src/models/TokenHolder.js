@@ -8,7 +8,7 @@ const TokenHolder = new Schema({
     token: { type: String, index: true },
     quantity: String,
     balance: String,
-    quantityNumber: Number
+    quantityNumber: { type: Number, index: true }
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },

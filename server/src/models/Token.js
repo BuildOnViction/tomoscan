@@ -8,7 +8,7 @@ const Token = new Schema({
     owner: { type: String, index: true },
     name: String,
     totalSupply: String,
-    totalSupplyNumber: Number,
+    totalSupplyNumber: { type: Number, index: true },
     symbol: String,
     decimals: Number,
     status: { type: Boolean, default: false }
