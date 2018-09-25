@@ -65,9 +65,8 @@
                             <td>Token Contract</td>
                             <td>
                                 <nuxt-link
-                                    :to="{name: 'tokens-slug', params: {slug: address.token.hash}}"
-                                    class="pull-right text-right">
-                                    {{ address.token.name }}({{ address.token.symbol }})
+                                    :to="{name: 'tokens-slug', params: {slug: address.token.hash}}">
+                                    {{ trimWord(address.token.name) }}({{ trimWord(address.token.symbol) }})
                                 </nuxt-link>
                             </td>
                         </tr>
