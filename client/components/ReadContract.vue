@@ -137,7 +137,7 @@ export default {
             params.strParams = strParams
 
             let query = this.serializeQuery(params)
-            let output = await this.$axios.get('/api/contracts/' + self.contract + '/call/?' + query)
+            let output = await this.$axios.get('/api/contracts/' + this.contract + '/call/?' + query)
 
             document.getElementById(outputElement).innerHTML =
                 `<div class="tomo-contract-info__response">
