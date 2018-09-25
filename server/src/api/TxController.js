@@ -72,24 +72,39 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         let data = await paginate(req, 'Tx', params)
-
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
         if (blockNumber) {
             let block = await db.Block.findOne({ number: blockNumber })
+            let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+            perPage = Math.min(25, perPage)
+            const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+
+            const offset = page > 1 ? (page - 1) * perPage : 0
             if (block && data.items.length < block.e_tx) {
-                let web3 = await Web3Util.getWeb3()
-                let _block = await await web3.eth.getBlock(blockNumber, true)
-                let trans = _block.transactions
+                const web3 = await Web3Util.getWeb3()
+
+                const _block = await web3.eth.getBlock(blockNumber)
+
+                const trans = _block.transactions
+                const items = []
+                for (let i = offset; i < (offset + perPage); i++) {
+                    if (i < trans.length) {
+                        items.push(await web3.eth.getTransaction(trans[i]))
+                    } else {
+                        break
+                    }
+                }
+
+                const pages = Math.ceil(trans.length / perPage)
                 data = {
                     total: trans.length,
-                    perPage: trans.length,
-                    currentPage: 1,
-                    pages: 1,
-                    items: trans
+                    perPage: perPage,
+                    currentPage: page,
+                    pages: pages,
+                    items: items
                 }
             }
         }
-
         return res.json(data)
     } catch (e) {
         console.trace(e)
@@ -162,8 +177,5 @@ TxController.get('/txs/status/:hash', async (req, res) => {
         return res.status(406).send()
     }
 })
-
-TxController.get('/txs/signtxs', async (req, res) => {})
-TxController.get('/txs/othertxs', async (req, res) => {})
 
 export default TxController
