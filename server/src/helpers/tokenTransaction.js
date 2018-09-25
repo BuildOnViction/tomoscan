@@ -17,7 +17,6 @@ let TokenTransactionHelper = {
             for (let i = 0; i < items.length; i++) {
                 for (let j = 0; j < tokens.length; j++) {
                     if (items[i]['address'] === tokens[j]['hash']) {
-                        console.log('kkkkk')
                         let item = items[i].toJSON()
                         item.symbol = (typeof tokens[j]['symbol'] !== 'undefined')
                             ? tokens[j]['symbol']
