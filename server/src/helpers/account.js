@@ -105,8 +105,7 @@ let AccountHelper = {
         // Get token.
         let token = null
         if (account.isToken) {
-            token = await db.Token.findOne(
-                { hash: account.hash, quantity: { $gte: 0 } })
+            token = await db.Token.findOne({ hash: account.hash })
         }
         account.token = token
 
