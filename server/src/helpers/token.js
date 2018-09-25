@@ -18,7 +18,6 @@ let TokenHelper = {
             let codeCheck = tokenFuncs[name]
             codeCheck = codeCheck.replace('0x', '')
             if (code.indexOf(codeCheck) >= 0) {
-                console.log(11111111)
                 isToken = true
             }
         }
