@@ -7,6 +7,7 @@ let TokenTransactionHelper = {
 
     async formatTokenTransaction (items) {
         // Append token for each TokenTx.
+        let res = []
         let tokenHashes = []
         for (let i = 0; i < items.length; i++) {
             tokenHashes.push(items[i]['address'])
@@ -16,9 +17,12 @@ let TokenTransactionHelper = {
             for (let i = 0; i < items.length; i++) {
                 for (let j = 0; j < tokens.length; j++) {
                     if (items[i]['address'] === tokens[j]['hash']) {
-                        items[i].symbol = (typeof tokens[j]['symbol'] !== 'undefined')
+                        console.log('kkkkk')
+                        let item = items[i].toJSON()
+                        item.symbol = (typeof tokens[j]['symbol'] !== 'undefined')
                             ? tokens[j]['symbol']
                             : null
+                        res.push(item)
                     }
                 }
             }
@@ -26,15 +30,15 @@ let TokenTransactionHelper = {
 
         // Append blockTime to TokenTx.
         let blockNumbers = []
-        for (let i = 0; i < items.length; i++) {
-            blockNumbers.push(items[i]['blockNumber'])
+        for (let i = 0; i < res.length; i++) {
+            blockNumbers.push(res[i]['blockNumber'])
         }
         if (blockNumbers.length) {
             let blocks = await Block.find({ number: { $in: blockNumbers } })
-            for (let i = 0; i < items.length; i++) {
+            for (let i = 0; i < res.length; i++) {
                 for (let j = 0; j < blocks.length; j++) {
-                    if (items[i]['blockNumber'] === blocks[j]['number']) {
-                        items[i].blockTime = (typeof blocks[j]['timestamp'] !==
+                    if (res[i]['blockNumber'] === blocks[j]['number']) {
+                        res[i].blockTime = (typeof blocks[j]['timestamp'] !==
                             'undefined')
                             ? blocks[j]['timestamp']
                             : null
@@ -43,7 +47,7 @@ let TokenTransactionHelper = {
             }
         }
 
-        return items
+        return res
     }
 }
 
