@@ -135,8 +135,14 @@ export default {
     },
     mixins: [mixin],
     head () {
-        return {
-            title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+        if (this.block) {
+            return {
+                title: 'Block ' + this.$route.params.slug + ' Info'
+            }
+        } else {
+            return {
+                title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+            }
         }
     },
     props: {
@@ -218,7 +224,6 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            const location = window.location
             let self = this
 
             // Show loading.
@@ -238,10 +243,10 @@ export default {
             if (self.address) {
                 params.address = self.address
             }
-            if (location.pathname.includes('txs/signTxs')) {
+            if (this.$route.name === 'txs-signTxs') {
                 params.typeOfTxs = 'signTxs'
             }
-            if (location.pathname.includes('txs/otherTxs')) {
+            if (this.$route.name === 'txs-otherTxs') {
                 params.typeOfTxs = 'otherTxs'
             }
             let query = this.serializeQuery(params)
@@ -253,7 +258,6 @@ export default {
             if (data.items.length === 0) {
                 self.loading = false
             }
-
             if (self.page) {
                 self.page.txsCount = self.total
             }

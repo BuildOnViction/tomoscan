@@ -42,6 +42,7 @@ export const trimWord = (word) => word
     .replace('\t', '')
     .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
     .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
+    .replace(/\u001a/g, '') // eslint-disable-line no-control-regex
     .trim()
 
 export const getSigner = (block) => {
