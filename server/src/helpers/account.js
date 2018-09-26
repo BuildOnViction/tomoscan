@@ -52,7 +52,12 @@ let AccountHelper = {
                 _account.balanceNumber = balance
             }
 
-            let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+            // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+            let fromCount = await db.Tx.count({ from: hash })
+            let toCount = await db.Tx.count({ to: hash })
+            let fromToCount = await db.Tx.count({ from: hash, to: hash })
+            let txCount = fromCount + toCount - fromToCount
+
             if (_account.transactionCount !== txCount) {
                 _account.transactionCount = txCount
             }
