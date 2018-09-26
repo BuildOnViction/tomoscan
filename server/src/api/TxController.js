@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import { paginate } from '../helpers/utils'
 import db from '../models'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
@@ -10,6 +9,10 @@ const contractAddress = require('../contracts/contractAddress')
 
 TxController.get('/txs', async (req, res) => {
     try {
+        let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+        perPage = Math.min(25, perPage)
+        let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
         let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
@@ -27,21 +30,15 @@ TxController.get('/txs', async (req, res) => {
 
         // Check type listing is pending.
         let type = req.query.type
-        let populates = [
-            { path: 'from_model' },
-            { path: 'to_model' }]
         switch (type) {
         case 'pending':
             params.query = { blockNumber: null, block: null }
             params.limit = 0
             break
         case 'token':
-            populates.push(
-                { path: 'from_model', match: { isToken: true } })
-            populates.push(
-                { path: 'to_model', match: { isToken: true } })
             break
         }
+
         let address = req.query.address
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
@@ -55,14 +52,12 @@ TxController.get('/txs', async (req, res) => {
                     { $or: [{ from: address }, { to: address }] })
             }
         }
-        params.populate = populates
-        if (!params.sort) {
-            params.sort = { blockNumber: -1 }
-        }
         // Check type of txs
         if (req.query.typeOfTxs) {
-            let condition = { to: contractAddress.BlockSigner }
-            if (req.query.typeOfTxs !== 'signTxs') {
+            let condition
+            if (req.query.typeOfTxs === 'signTxs') {
+                condition = { to: contractAddress.BlockSigner }
+            } else if (req.query.typeOfTxs === 'otherTxs') {
                 condition = { to: { $ne: contractAddress.BlockSigner } }
             }
             if (params.query) {
@@ -71,13 +66,26 @@ TxController.get('/txs', async (req, res) => {
                 params.query = condition || {}
             }
         }
-        let data = await paginate(req, 'Tx', params)
+
+        let total = await db.Tx.count(params.query)
+        let pages = Math.ceil(total / perPage)
+        let offset = page > 1 ? (page - 1) * perPage : 0
+
+        let items = await db.Tx.find(params.query)
+            .sort(params.sort)
+            .skip(offset).limit(perPage)
+            .lean().exec()
+
+        let data = {
+            total: total,
+            perPage: perPage,
+            currentPage: page,
+            pages: pages,
+            items: items
+        }
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
         if (blockNumber) {
             let block = await db.Block.findOne({ number: blockNumber })
-            let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-            perPage = Math.min(25, perPage)
-            const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
             const offset = page > 1 ? (page - 1) * perPage : 0
             if (block && data.items.length < block.e_tx) {
@@ -105,6 +113,34 @@ TxController.get('/txs', async (req, res) => {
                 }
             }
         }
+
+        let listAddress = []
+        for (let i = 0; i < data.items.length; i++) {
+            let item = data.items[i]
+            listAddress.push(item.from)
+            if (item.to) {
+                listAddress.push(item.to)
+            }
+        }
+        if (listAddress) {
+            let newItem = []
+            let accounts = await db.Account.find({ hash: { $in: listAddress } })
+            for (let i = 0; i < data.items.length; i++) {
+                let it = data.items[i]
+                for (let j = 0; j < accounts.length; j++) {
+                    if (it.from === accounts[j].hash) {
+                        it.from_model = accounts[j]
+                    }
+                    if (it.to === accounts[j].hash) {
+                        it.to_model = accounts[j]
+                    }
+                }
+                newItem.push(it)
+            }
+            data.items = newItem
+
+        }
+
         return res.json(data)
     } catch (e) {
         console.trace(e)
