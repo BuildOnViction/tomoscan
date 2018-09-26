@@ -6,10 +6,10 @@ import Web3Util from '../helpers/web3'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
 
 const TxController = Router()
+const contractAddress = require('../contracts/contractAddress')
 
 TxController.get('/txs', async (req, res) => {
     try {
-        const CONTRACT_ADDRESS = '0x0000000000000000000000000000000000000089'
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
         let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
@@ -61,9 +61,9 @@ TxController.get('/txs', async (req, res) => {
         }
         // Check type of txs
         if (req.query.typeOfTxs) {
-            let condition = { to: CONTRACT_ADDRESS }
+            let condition = { to: contractAddress.BlockSigner }
             if (req.query.typeOfTxs !== 'signTxs') {
-                condition = { to: { $ne: CONTRACT_ADDRESS } }
+                condition = { to: { $ne: contractAddress.BlockSigner } }
             }
             if (params.query) {
                 params.query = Object.assign({}, params.query, condition || {})
