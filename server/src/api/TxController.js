@@ -138,7 +138,6 @@ TxController.get('/txs', async (req, res) => {
                 newItem.push(it)
             }
             data.items = newItem
-
         }
 
         return res.json(data)
