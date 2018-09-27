@@ -262,11 +262,19 @@ export default {
                 self.page.txsCount = self.total
             }
 
+            let listHash = []
+            data.items.forEach(function (item) {
+                listHash.push(item.hash)
+            })
+            let listStatus = await self.$axios.get(`/api/txs/list/status?hash=${listHash.join(',')}`)
+            console.log(listStatus)
+
             data.items.forEach(async (item, index, array) => {
-                if (typeof item.status === 'undefined') {
-                    let status = await self.$axios.get(`/api/txs/status/${item.hash}`)
-                    item.status = status.data
-                }
+                Object.keys(listStatus.data).forEach(function (key) {
+                    if (key === item.hash) {
+                        item.status = listStatus.data[key]
+                    }
+                })
 
                 if (index === array.length - 1) {
                     self.items = array
