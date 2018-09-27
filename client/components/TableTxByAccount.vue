@@ -45,11 +45,14 @@
                 slot-scope="props">{{ formatNumber(props.item.gasUsed) }}</template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -75,6 +78,10 @@ export default {
             default: () => {
                 return {}
             }
+        },
+        parent: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -88,10 +95,16 @@ export default {
         pagination: {},
         total: 0,
         items: [],
-        currentPage: 1,
+        currentPage: 0,
         perPage: 15,
         pages: 1
     }),
+    watch: {
+        $route (to, from) {
+            const page = this.$route.query.page
+            this.onChangePaginate(page)
+        }
+    },
     async mounted () {
         this.getDataFromApi()
     },
@@ -102,8 +115,10 @@ export default {
             // Show loading.
             self.loading = true
 
+            self.currentPage = parseInt(this.$route.query.page)
+
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
 
@@ -131,6 +146,14 @@ export default {
             self.currentPage = page
 
             self.getDataFromApi()
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                },
+                hash: this.parent
+            }
         }
     }
 }

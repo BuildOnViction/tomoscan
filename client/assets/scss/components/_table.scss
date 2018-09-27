@@ -520,6 +520,11 @@
     }
   }
 
+  tbody td {
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
   .text-truncate {
     max-width: 18.75rem;
 
