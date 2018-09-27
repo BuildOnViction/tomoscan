@@ -178,4 +178,21 @@ TxController.get('/txs/status/:hash', async (req, res) => {
     }
 })
 
+TxController.get('/txs/list/status', async (req, res) => {
+    try {
+        let hash = req.query.hash
+        let listHash = hash.split(',')
+        let tx = await db.Tx.find({ hash: {$in: listHash} })
+        let resp = {}
+        for (let i = 0; i < tx.length; i++) {
+            resp[tx[i].hash] = tx[i].status
+        }
+        return res.json(resp)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(406).send()
+    }
+})
+
 export default TxController
