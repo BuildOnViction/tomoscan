@@ -182,7 +182,7 @@ TxController.get('/txs/list/status', async (req, res) => {
     try {
         let hash = req.query.hash
         let listHash = hash.split(',')
-        let tx = await db.Tx.find({ hash: {$in: listHash} })
+        let tx = await db.Tx.find({ hash: { $in: listHash } })
 
         let existHash = []
         let resp = {}
