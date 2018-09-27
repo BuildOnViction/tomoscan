@@ -183,10 +183,31 @@ TxController.get('/txs/list/status', async (req, res) => {
         let hash = req.query.hash
         let listHash = hash.split(',')
         let tx = await db.Tx.find({ hash: {$in: listHash} })
+
+        let existHash = []
         let resp = {}
         for (let i = 0; i < tx.length; i++) {
+            existHash.push(tx[i].hash)
             resp[tx[i].hash] = tx[i].status
         }
+        let notExistHash = []
+        for (let i = 0; i < listHash.length; i++) {
+            if (!existHash.includes(listHash[i])) {
+                notExistHash.push(listHash[i])
+            }
+        }
+        if (notExistHash) {
+            let web3 = await Web3Util.getWeb3()
+            for (let i = 0; i < notExistHash.length; i++) {
+                let receipt = await web3.eth.getTransactionReceipt(notExistHash[i])
+                if (receipt) {
+                    resp[notExistHash[i]] = receipt.status
+                } else {
+                    resp[notExistHash[i]] = false
+                }
+            }
+        }
+
         return res.json(resp)
     } catch (e) {
         console.trace(e)
