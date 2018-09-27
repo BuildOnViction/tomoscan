@@ -32,7 +32,7 @@ let watch = async () => {
                 nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
                 for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
                     q.create('BlockProcess', { block: i })
-                        .priority('normal').removeOnComplete(true).save()
+                        .priority('high').removeOnComplete(true).save()
 
                     minBlockCrawl = i
                 }
