@@ -89,7 +89,6 @@ consumer.task = async function (job, done) {
                     throw e
                 })
 
-
             let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
             ownerValidator = ownerValidator.toString().toLowerCase()
 

@@ -4,7 +4,6 @@ import Web3Util from './web3'
 import { getSigner, toAddress } from './utils'
 
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let BlockHelper = {
     crawlBlock:async (blockNumber, next) => {

@@ -3,7 +3,6 @@
 import Web3Util from './web3'
 
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let TransactionHelper = {
     parseLog: async (log) => {

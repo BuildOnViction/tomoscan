@@ -46,12 +46,12 @@ consumer.task = async function (job, done) {
             { $set: {
                 meta_value: parseInt(blockNumber) - 1 }
             }).then(() => {
-                emitter.emit('error', e)
-                done(e)
-            }).catch(e => {
-                emitter.emit('error', e)
-                done(e)
-            })
+            emitter.emit('error', e)
+            done(e)
+        }).catch(e => {
+            emitter.emit('error', e)
+            done(e)
+        })
     }
 
     done()

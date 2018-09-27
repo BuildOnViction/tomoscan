@@ -4,7 +4,6 @@ import Web3Util from './web3'
 import TokenHelper from './token'
 import ContractHelper from './contract'
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let AccountHelper = {
     getAccountDetail: async (hash) => {
