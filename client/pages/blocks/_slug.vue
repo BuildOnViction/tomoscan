@@ -172,22 +172,25 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs">
+            class="tomo-tabs"
+            @input="onSwitchTab">
             <b-tab
                 :title="'Transactions (' + formatNumber(txsCount) + ')'"
-                href="#transactions"
-                @click="onClick">
+                :active="hashTab === '#transactions'"
+                href="#transactions">
                 <table-tx
                     :block="number"
                     :block_timestamp="block.timestamp"
+                    :parent="'transactions'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 :title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"
-                href="#blockSigner"
-                @click="onClick">
+                :active="hashTab === '#blockSigner'"
+                href="#blockSigner">
                 <block-signer
                     :block="number"
+                    :parent="'blockSigner'"
                     :page="this"/>
             </b-tab>
         </b-tabs>
@@ -222,15 +225,10 @@ export default {
             tabIndex: 0
         }
     },
-    watch: {
-        $route (to, from) {
-            if (window.location.hash) {
-                this.updateHashChange()
-            }
+    computed: {
+        hashTab () {
+            return this.$route.hash
         }
-    },
-    updated () {
-        this.updateHashChange()
     },
     created () {
         let number = this.$route.params.slug
@@ -258,24 +256,18 @@ export default {
         self.loading = false
     },
     methods: {
-        updateHashChange () {
+        onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
-            if (this.$route.hash) {
-                allTabs.tabs.forEach((i, index) => {
-                    if (i.href === this.$route.hash) {
-                        this.tabIndex = index
-                        return
-                    }
-                    return true
-                })
-            }
-        },
-        onClick () {
-            const allTabs = this.$refs.allTabs
-            if (allTabs) {
+            const location = window.location
                 const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
+            if (allTabs) {
+                if (location.hash !== allTabs.tabs[value].href) {
+                    this.$router.replace({
+                        hash: allTabs.tabs[value].href
+                    })
+                } else {
+                    location.hash = allTabs.tabs[value].href
+                }
             }
         }
     }

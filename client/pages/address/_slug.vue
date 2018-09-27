@@ -110,33 +110,40 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs">
+            class="tomo-tabs"
+            @input="onSwitchTab">
             <b-tab
                 id="transactions"
+                :active="hashTab === '#transactions'"
                 :title="'Transactions (' + formatNumber(txsCount) + ')'"
-                href="#transactions"
-                @click="onClick">
+                href="#transactions">
                 <table-tx
                     :address="hash"
+                    :parent="'#transactions'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
+                :active="hashTab === '#minedBlocks'"
                 :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
-                href="#minedBlocks"
-                @click="onClick">
-                <table-tx-by-account :page="this"/>
+                href="#minedBlocks">
+                <table-tx-by-account
+                    :page="this"
+                    :parent="'minedBlocks'"/>
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
+                :active="hashTab === '#tokenHolding'"
                 :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
-                @click="onClick">
+                href="#tokenHolding">
                 <table-tokens-by-account
                     :address="hash"
+                    :parent="'tokenHolding'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="address && address.isContract"
+                :active="hashTab === '#code'"
                 title="Code"
                 href="#code"
                 @click="refreshCodeMirror">
@@ -148,27 +155,32 @@
             </b-tab>
             <b-tab
                 v-if="address && address.isContract && smartContract"
+                id="readContract"
+                :active="hashTab === '#readContract'"
                 title="Read Contract"
-                href="readContract"
-                @click="onClick">
+                href="#readContract">
                 <read-contract
                     :contract="hash"/>
             </b-tab>
             <b-tab
+                id="events"
+                :active="hashTab === '#events'"
                 :title="'Events (' + formatNumber(eventsCount) + ')'"
-                href="#events"
-                @click="onClick">
+                href="#events">
                 <table-event
                     :address="hash"
+                    :parent="'events'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="hasReward && !address.isContract"
+                id="rewards"
+                :active="hashTab === '#rewards'"
                 :title="'Rewards (' + formatNumber(rewardTime) + ')'"
-                href="#rewards"
-                @click="onClick">
+                href="#rewards">
                 <table-reward
                     :address="hash"
+                    :parent="'rewards'"
                     :page="this"/>
             </b-tab>
         </b-tabs>
@@ -227,24 +239,15 @@ export default {
                 this.$refs.tomoCmAbiCode.codemirror,
                 this.$refs.tomoCmCode.codemirror
             ]
-        }
-    },
-    watch: {
-        $route (to, from) {
-            if (window.location.hash) {
-                this.updateHashChange()
-            }
+        },
+        hashTab () {
+            return this.$route.hash
         }
     },
     created () {
         let hash = this.$route.params.slug
         if (hash) {
             this.hash = hash
-        }
-    },
-    updated () {
-        if (window.location.hash) {
-            this.updateHashChange()
         }
     },
     mounted () {
@@ -276,24 +279,18 @@ export default {
 
             self.$store.dispatch('app/getUSDPrice')
         },
-        updateHashChange () {
+        onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
-            if (this.$route.hash) {
-                allTabs.tabs.forEach((i, index) => {
-                    if (i.href === this.$route.hash) {
-                        this.tabIndex = index
-                        return
-                    }
-                    return true
-                })
-            }
-        },
-        onClick () {
-            const allTabs = this.$refs.allTabs
+            const location = window.location
+            const value = this.tabIndex
             if (allTabs) {
-                const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
+                if (location.hash !== allTabs.tabs[value].href) {
+                    this.$router.replace({
+                        hash: allTabs.tabs[value].href
+                    })
+                } else {
+                    location.hash = allTabs.tabs[value].href
+                }
             }
         }
     }

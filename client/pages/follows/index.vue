@@ -187,11 +187,14 @@
 
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -244,14 +247,16 @@ export default {
     },
     watch: {
         $route (to, from) {
-            const hash = window.location.hash
-            const page = hash.substring(1)
+            const page = this.$route.query.page
             this.onChangePaginate(page)
         }
     },
     mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'follows', to: { name: 'follows' } })
+        const query = this.$route.query
+
+        self.currentPage = parseInt(query.page)
         this.getDataFromApi()
     },
     methods: {
@@ -282,8 +287,6 @@ export default {
         onChangePaginate (page) {
             let self = this
             self.currentPage = page
-            // Set page
-            window.location.hash = page
 
             self.getDataFromApi()
         },
@@ -361,6 +364,13 @@ export default {
             this.formNotifyReceive = null
             this.formNotifySent = null
             this.errorMessage = ''
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                }
+            }
         }
     }
 }
