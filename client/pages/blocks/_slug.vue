@@ -259,7 +259,7 @@ export default {
         onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
             const location = window.location
-                const value = this.tabIndex
+            const value = this.tabIndex
             if (allTabs) {
                 if (location.hash !== allTabs.tabs[value].href) {
                     this.$router.replace({
