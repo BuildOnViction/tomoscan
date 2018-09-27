@@ -49,17 +49,20 @@
             </template>
 
             <template
-                slot="txCount"
+                slot="transactionCount"
                 slot-scope="props">
                 <span>{{ formatNumber(props.item.transactionCount) }}</span>
             </template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -94,10 +97,21 @@ export default {
         perPage: 15,
         pages: 1
     }),
+    watch: {
+        $route (to, from) {
+            const page = this.$route.query.page
+            this.onChangePaginate(page)
+        }
+    },
     async mounted () {
         let self = this
+
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'accounts', to: { name: 'accounts' } })
+
+        const query = this.$route.query
+
+        self.currentPage = parseInt(query.page)
 
         await self.getDataFromApi()
     },
@@ -109,7 +123,7 @@ export default {
             self.loading = true
 
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
 
@@ -129,20 +143,14 @@ export default {
         onChangePaginate (page) {
             let self = this
             self.currentPage = page
-
             self.getDataFromApi()
         },
 
-        linkGen (pageNumber) {
-            let self = this
-            let query = {
-                page: pageNumber,
-                limit: self.perPage
-            }
-
+        linkGen (pageNum) {
             return {
-                name: 'accounts',
-                query: query
+                query: {
+                    page: pageNum
+                }
             }
         }
     }

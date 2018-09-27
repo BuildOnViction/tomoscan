@@ -22,7 +22,7 @@ const Block = new Schema({
     gasUsed: Number,
     timestamp: Date,
     uncles: Array,
-    signer: String,
+    signer: { type: String, index: true },
     status: { type: Boolean, default: false, index: true },
     finality: { type: Number, default: 0 },
     e_tx: { type: Number, default: 0 }

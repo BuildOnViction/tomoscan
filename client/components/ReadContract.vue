@@ -87,6 +87,12 @@
 import mixin from '~/plugins/mixin'
 export default {
     mixins: [mixin],
+    props: {
+        contract: {
+            type: String,
+            default: ''
+        }
+    },
     data: () => ({
         loading: true,
         data: null
@@ -97,17 +103,15 @@ export default {
     methods: {
         async getDataFromApi () {
             let self = this
-            let hash = self.$route.params.slug
 
             self.loading = true
 
-            let { data } = await this.$axios.get('/api/contracts/' + hash + '/read')
+            let { data } = await this.$axios.get('/api/contracts/' + self.contract + '/read')
             self.data = data
 
             self.loading = false
         },
         async callFunction (functionName, signature, inputElement, outputElement) {
-            let hash = this.$route.params.slug
             let params = {
                 functionName: functionName,
                 signature: signature
@@ -133,7 +137,7 @@ export default {
             params.strParams = strParams
 
             let query = this.serializeQuery(params)
-            let output = await this.$axios.get('/api/contracts/' + hash + '/call/?' + query)
+            let output = await this.$axios.get('/api/contracts/' + this.contract + '/call/?' + query)
 
             document.getElementById(outputElement).innerHTML =
                 `<div class="tomo-contract-info__response">

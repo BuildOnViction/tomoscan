@@ -28,11 +28,12 @@
                 <b-tabs
                     ref="allTabs"
                     v-model="tabIndex"
-                    class="tomo-tabs">
+                    class="tomo-tabs"
+                    @input="onSwitchTab">
                     <b-tab
+                        :active="hashTab === 'overview'"
                         title="Overview"
-                        href="#overview"
-                        @click="onClick">
+                        href="#overview">
                         <div class="card tomo-card tomo-card--transaction">
                             <div class="tomo-card__body">
                                 <table
@@ -188,9 +189,9 @@
                     </b-tab>
                     <b-tab
                         v-if="eventsCount > 0"
-                        :title="'Events (' + eventsCount + ')'"
-                        href="#events"
-                        @click="onClick">
+                        :active="hashTab === '#events'"
+                        :title="'Events (' + formatNumber(eventsCount) + ')'"
+                        href="#events">
                         <table-event
                             :tx="hash"
                             :page="this"/>
@@ -225,16 +226,9 @@ export default {
             tabIndex: 0
         }
     },
-    watch: {
-        $route (to, from) {
-            if (window.location.hash) {
-                this.updateHashChange()
-            }
-        }
-    },
-    updated () {
-        if (window.location.hash) {
-            this.updateHashChange()
+    computed: {
+        hashTab () {
+            return this.$route.hash
         }
     },
     created () {
@@ -271,7 +265,7 @@ export default {
                 })
             }
         },
-        onClick () {
+        onSwitchTab () {
             const allTabs = this.$refs.allTabs
             if (allTabs) {
                 const value = this.tabIndex

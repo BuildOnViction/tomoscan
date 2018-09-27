@@ -41,7 +41,7 @@
                         <tr>
                             <td>Transactions</td>
                             <td>
-                                <span>{{ formatNumber(address.transactionCount) }}</span> txns
+                                <span>{{ formatNumber(txsCount) }}</span> txns
                             </td>
                         </tr>
                         <tr v-if="address && !address.isContract">
@@ -65,9 +65,8 @@
                             <td>Token Contract</td>
                             <td>
                                 <nuxt-link
-                                    :to="{name: 'tokens-slug', params: {slug: address.token.hash}}"
-                                    class="pull-right text-right">
-                                    {{ address.token.name }}({{ address.token.symbol }})
+                                    :to="{name: 'tokens-slug', params: {slug: address.token.hash}}">
+                                    {{ trimWord(address.token.name) }}({{ trimWord(address.token.symbol) }})
                                 </nuxt-link>
                             </td>
                         </tr>
@@ -111,152 +110,77 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs">
+            class="tomo-tabs"
+            @input="onSwitchTab">
             <b-tab
                 id="transactions"
-                :title="'Transactions (' + txsCount + ')'"
-                href="#transactions"
-                @click="onClick">
+                :active="hashTab === '#transactions'"
+                :title="'Transactions (' + formatNumber(txsCount) + ')'"
+                href="#transactions">
                 <table-tx
                     :address="hash"
+                    :parent="'#transactions'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
-                :title="'Mined Blocks (' + blocksCount + ')'"
-                href="#minedBlocks"
-                @click="onClick">
-                <table-tx-by-account :page="this"/>
+                :active="hashTab === '#minedBlocks'"
+                :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
+                href="#minedBlocks">
+                <table-tx-by-account
+                    :page="this"
+                    :parent="'minedBlocks'"/>
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
-                :title="'Token Holding (' + tokensCount + ')'"
-                @click="onClick">
+                :active="hashTab === '#tokenHolding'"
+                :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
+                href="#tokenHolding">
                 <table-tokens-by-account
                     :address="hash"
+                    :parent="'tokenHolding'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="address && address.isContract"
+                :active="hashTab === '#code'"
                 title="Code"
                 href="#code"
-                @click="refreshCodemirror">
-                <section v-if="smartContract">
-                    <h5 class="mb-4">
-                        <i class="fa fa-check-circle-o text-success mr-2"/>Contract Source Code Verified
-                    </h5>
-                    <b-row class="mb-3">
-                        <b-col sm="6">
-                            <b-table
-                                :items="[
-                                    {key: 'Contract Name', value: smartContract.contractName},
-                                    {key: 'Compiler Version', value: smartContract.compiler},
-                                ]"
-                                class="tomo-table tomo-table--verified-contract"
-                                thead-class="d-none"/>
-                        </b-col>
-
-                        <b-col sm="6">
-                            <b-table
-                                :items="[
-                                    {key: 'Verified At', value: $moment(smartContract.createdAt).format('lll')},
-                                    {key: 'Optimization Enabled', value: smartContract.optimization ? 'Yes' : 'No'},
-                                ]"
-                                class="tomo-table tomo-table--verified-contract"
-                                thead-class="d-none" />
-                        </b-col>
-                    </b-row>
-
-                    <b-form-group>
-                        <label>Contract Source Code<i class="fa fa-code ml-1"/></label>
-                        <div
-                            id="code-actions--source"
-                            class="code-actions">
-                            <button
-                                v-clipboard="smartContract.sourceCode"
-                                class="btn btn-sm mr-2 code-actions__copy"
-                                @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
-                            <button
-                                class="btn btn-sm code-actions__toggle"
-                                data-mode="light"
-                                @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
-                        </div>
-                        <no-ssr placeholder="Codemirror Loading...">
-                            <codemirror
-                                ref="tomoCmSourceCode"
-                                :value="smartContract.sourceCode" />
-                        </no-ssr>
-                    </b-form-group>
-
-                    <b-form-group>
-                        <label>Contract ABI<i class="fa fa-cogs ml-1"/></label>
-                        <div
-                            id="code-actions--abi"
-                            class="code-actions">
-                            <button
-                                v-clipboard="smartContract.abiCode"
-                                class="btn btn-sm mr-2 code-actions__copy"
-                                @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
-                            <button
-                                id="btn-abi-code"
-                                class="btn btn-sm code-actions__toggle"
-                                data-mode="light"
-                                @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
-                        </div>
-                        <no-ssr placeholder="Codemirror Loading...">
-                            <codemirror
-                                ref="tomoCmAbiCode"
-                                :value="smartContract.abiCode"
-                                :options="{mode:'application/ld+json',styleActiveLine:false}" />
-                        </no-ssr>
-                    </b-form-group>
-                </section>
-
-                <b-form-group>
-                    <label>Contract Creation Code</label>
-                    <div
-                        id="code-actions--creation"
-                        class="code-actions">
-                        <button
-                            v-clipboard="address.code"
-                            class="btn btn-sm mr-2 code-actions__copy"
-                            @success="copyCode"><i class="fa fa-copy mr-1" />Copy</button>
-                        <button
-                            id="btn-code"
-                            class="btn btn-sm code-actions__toggle"
-                            data-mode="light"
-                            @click="toggleMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
-                    </div>
-                    <no-ssr placeholder="Codemirror Loading...">
-                        <codemirror
-                            ref="tomoCmCode"
-                            :value="address.code"
-                            :options="{mode:'application/ld+json',styleActiveLine:false}" />
-                    </no-ssr>
-                </b-form-group>
+                @click="refreshCodeMirror">
+                <read-source-code
+                    ref="readSourceCode"
+                    :token="hash"
+                    :smartcontract="smartContract"
+                    :address="address"/>
             </b-tab>
             <b-tab
                 v-if="address && address.isContract && smartContract"
+                id="readContract"
+                :active="hashTab === '#readContract'"
                 title="Read Contract"
-                href="readContract"
-                @click="onClick">
-                <read-contract/>
+                href="#readContract">
+                <read-contract
+                    :contract="hash"/>
             </b-tab>
             <b-tab
-                :title="'Events (' + eventsCount + ')'"
-                href="#events"
-                @click="onClick">
+                id="events"
+                :active="hashTab === '#events'"
+                :title="'Events (' + formatNumber(eventsCount) + ')'"
+                href="#events">
                 <table-event
                     :address="hash"
+                    :parent="'events'"
                     :page="this"/>
             </b-tab>
             <b-tab
                 v-if="hasReward && !address.isContract"
-                :title="'Rewards (' + rewardTime + ')'"
-                href="#rewards"
-                @click="onClick">
+                id="rewards"
+                :active="hashTab === '#rewards'"
+                :title="'Rewards (' + formatNumber(rewardTime) + ')'"
+                href="#rewards">
                 <table-reward
                     :address="hash"
+                    :parent="'rewards'"
                     :page="this"/>
             </b-tab>
         </b-tabs>
@@ -272,9 +196,11 @@ import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
 import ReadContract from '~/components/ReadContract'
 import TableReward from '~/components/TableReward'
+import ReadSourceCode from '~/components/ReadSourceCode'
 
 export default {
     components: {
+        ReadSourceCode,
         TableTx,
         TableTokensByAccount,
         TableTxByAccount,
@@ -313,24 +239,15 @@ export default {
                 this.$refs.tomoCmAbiCode.codemirror,
                 this.$refs.tomoCmCode.codemirror
             ]
-        }
-    },
-    watch: {
-        $route (to, from) {
-            if (window.location.hash) {
-                this.updateHashChange()
-            }
+        },
+        hashTab () {
+            return this.$route.hash
         }
     },
     created () {
         let hash = this.$route.params.slug
         if (hash) {
             this.hash = hash
-        }
-    },
-    updated () {
-        if (window.location.hash) {
-            this.updateHashChange()
         }
     },
     mounted () {
@@ -362,74 +279,18 @@ export default {
 
             self.$store.dispatch('app/getUSDPrice')
         },
-        refreshCodemirror () {
-            this.$nextTick(() => {
-                for (const $ref in this.$refs) {
-                    if (this.$refs[$ref].hasOwnProperty('codemirror')) {
-                        this.$refs[$ref].codemirror.refresh()
-                    }
-                }
-            })
-            this.onClick()
-        },
-        copyCode (e) {
-            let id = e.trigger.parentNode.id
-            let msg = ''
-
-            if (id === 'code-actions--source') {
-                msg = 'Source code copied to clipboard'
-            }
-
-            if (id === 'code-actions--abi') {
-                msg = 'ABI code copied to clipboard'
-            }
-
-            if (id === 'code-actions--creation') {
-                msg = 'Contract creation code copied to clipboard'
-            }
-
-            this.$toast.show(msg)
-        },
-        toggleMode (e) {
-            let id = e.target.parentNode.id
-            let mode = e.target.getAttribute('data-mode')
-            let theme = mode === 'light' ? 'base16-dark' : 'eclipse'
-
-            if (id === 'code-actions--source') {
-                this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--abi') {
-                this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--creation') {
-                this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
-            }
-
-            e.target.innerHTML = (mode === 'light')
-                ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
-            mode = (mode === 'light') ? 'dark' : 'light'
-            e.target.setAttribute('data-mode', mode)
-        },
-        updateHashChange () {
+        onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
-            if (this.$route.hash) {
-                allTabs.tabs.forEach((i, index) => {
-                    if (i.href === this.$route.hash) {
-                        this.tabIndex = index
-                        return
-                    }
-                    return true
-                })
-            }
-        },
-        onClick () {
-            const allTabs = this.$refs.allTabs
+            const location = window.location
+            const value = this.tabIndex
             if (allTabs) {
-                const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
+                if (location.hash !== allTabs.tabs[value].href) {
+                    this.$router.replace({
+                        hash: allTabs.tabs[value].href
+                    })
+                } else {
+                    location.hash = allTabs.tabs[value].href
+                }
             }
         }
     }

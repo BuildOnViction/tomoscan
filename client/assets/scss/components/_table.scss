@@ -318,16 +318,16 @@
 
   tbody tr {
     padding: 40px 20px 0;
-    margin-bottom: 0;
+    margin-bottom: 10px;
 
     &:first-child {
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
+      border-top-left-radius: 0;
+      border-top-right-radius: 0;
     }
 
     &:last-child {
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
+      border-bottom-left-radius: 0;
+      border-bottom-right-radius: 0;
     }
   }
 
@@ -341,14 +341,9 @@
     }
 
     &:last-child {
-      border-bottom: 1px solid $color-text;
       margin-bottom: 0;
       padding-bottom: 20px;
     }
-  }
-
-  tr:last-child td:last-child {
-    border-bottom: none;
   }
 
   @include media-breakpoint-up(sm) {
@@ -379,7 +374,6 @@
     }
 
     td {
-      border-bottom: 1px solid $color-text;
       margin-bottom: 0;
       padding-bottom: 20px;
     }
@@ -524,6 +518,11 @@
     @include media-breakpoint-up(2xl) {
       grid-template-columns: 6% 25% 8% 10% 20% 12% 12%;
     }
+  }
+
+  tbody td {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .text-truncate {

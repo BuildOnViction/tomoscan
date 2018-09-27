@@ -20,11 +20,6 @@ let AccountHelper = {
             _account.balanceNumber = balance
         }
 
-        let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
-        if (_account.transactionCount !== txCount) {
-            _account.transactionCount = txCount
-        }
-
         let code = await web3.eth.getCode(hash)
         if (_account.code !== code) {
             _account.code = code
@@ -57,7 +52,12 @@ let AccountHelper = {
                 _account.balanceNumber = balance
             }
 
-            let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+            // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
+            let fromCount = await db.Tx.count({ from: hash })
+            let toCount = await db.Tx.count({ to: hash })
+            let fromToCount = await db.Tx.count({ from: hash, to: hash })
+            let txCount = fromCount + toCount - fromToCount
+
             if (_account.transactionCount !== txCount) {
                 _account.transactionCount = txCount
             }
@@ -110,8 +110,7 @@ let AccountHelper = {
         // Get token.
         let token = null
         if (account.isToken) {
-            token = await db.Token.findOne(
-                { hash: account.hash, quantity: { $gte: 0 } })
+            token = await db.Token.findOne({ hash: account.hash })
         }
         account.token = token
 
@@ -119,8 +118,7 @@ let AccountHelper = {
         let contract = await db.Contract.findOne({ hash: account.hash })
         account.contract = contract
         if (contract) {
-            let txCount = await ContractHelper.updateTxCount(account.hash)
-            account.transactionCount = txCount
+            await ContractHelper.updateTxCount(account.hash)
         }
         // console.log('account.contract:', account.hash, account.contract)
 

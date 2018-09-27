@@ -45,6 +45,8 @@ jobs:
         - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
         - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:latest
         - docker push tomochain/tomoscan-server:latest
+        - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:testnet
+        - docker push tomochain/tomoscan-server:testnet
         - docker tag tomochain/tomoscan-server tomochain/tomoscan-server:$TRAVIS_TAG
         - docker push tomochain/tomoscan-server:$TRAVIS_TAG
         - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:latest
@@ -62,4 +64,4 @@ stages:
   - name: Build and push image
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
   - name: Build and push image (tagged)
-    if: type != pull_request AND branch = master AND tag = true AND repo = tomochain/tomoscan
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan

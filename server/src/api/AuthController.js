@@ -166,15 +166,18 @@ AuthController.post('/reset-password', async (req, res) => {
             return res.json({ error: { message: 'New password cannot be the same as old' } })
         }
 
-        const hash = await user.encryptPassword(password)
-        // Update new password and latestResetToken
-        await db.User.update({ email: email }, { $set: { password: hash, latestResetToken: token } })
+        if (validation.email === email) {
+            const hash = await user.encryptPassword(password)
+            // Update new password and latestResetToken
+            await db.User.update({ email: email }, { $set: { password: hash, latestResetToken: token } })
 
-        // Send comfirmation email
-        let emailService = new EmailService()
-        emailService.resetEmailComfirmation(user)
-
-        return res.json({ message: 'Password successfuly changed' })
+            // Send comfirmation email
+            let emailService = new EmailService()
+            emailService.resetEmailComfirmation(user)
+            return res.json({ message: 'Password successfuly changed' })
+        } else {
+            return res.status(406).json({ message: 'Something went wrong' })
+        }
     } catch (error) {
         return res.status(404).json({ message: 'Something went wrong' })
     }

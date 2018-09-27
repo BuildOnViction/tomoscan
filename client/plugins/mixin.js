@@ -29,7 +29,9 @@ const mixin = {
         },
 
         toLongNumberString: (n) => {
-            let str; let str2 = ''; let data = n.toExponential().replace('.', '').split(/e/i)
+            let str
+            let str2 = ''
+            let data = n.toExponential().replace('.', '').split(/e/i)
             str = data[0]
             let mag = Number(data[1])
 
@@ -87,7 +89,7 @@ const mixin = {
             .trim(),
 
         formatUnit: (number, unit = null) => number + ' ' +
-      mixin.methods.baseUnit(unit),
+            mixin.methods.baseUnit(unit),
 
         toGwei: (wei) => wei ? mixin.methods.formatNumber(web3.utils.fromWei(wei,
             'gwei')) : '',
@@ -102,7 +104,7 @@ const mixin = {
             var parts = str.split('.')
             if (parts.length > 1) {
                 return parseInt(parts[0], radix) + parseInt(parts[1], radix) /
-          Math.pow(radix, parts[1].length)
+                    Math.pow(radix, parts[1].length)
             }
 
             return parseInt(parts[0], radix)
@@ -123,6 +125,67 @@ const mixin = {
             let str = mixin.methods.formatNumber(number) + ' '
             str += number > 1 ? plural : single
             return str
+        },
+
+        darkLightMode (e) {
+            let id = e.target.parentNode.id
+            let mode = e.target.getAttribute('data-mode')
+            let theme = mode === 'light' ? 'base16-dark' : 'eclipse'
+
+            if (id === 'code-actions--source') {
+                this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
+            }
+
+            if (id === 'code-actions--abi') {
+                this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
+            }
+
+            if (id === 'code-actions--creation') {
+                this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
+            }
+
+            e.target.innerHTML = (mode === 'light')
+                ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
+            mode = (mode === 'light') ? 'dark' : 'light'
+            e.target.setAttribute('data-mode', mode)
+        },
+
+        copySourceCode (e) {
+            let id = e.trigger.parentNode.id
+            let msg = ''
+
+            if (id === 'code-actions--source') {
+                msg = 'Source code copied to clipboard'
+            }
+
+            if (id === 'code-actions--abi') {
+                msg = 'ABI code copied to clipboard'
+            }
+
+            if (id === 'code-actions--creation') {
+                msg = 'Contract creation code copied to clipboard'
+            }
+
+            this.$toast.show(msg)
+        },
+        refreshCodeMirror () {
+            this.$nextTick(() => {
+                if (this.$refs['readSourceCode']) {
+                    let readSourceCode = this.$refs['readSourceCode']
+                    for (const $ref in readSourceCode.$refs) {
+                        if (readSourceCode.$refs[$ref].hasOwnProperty('codemirror')) {
+                            readSourceCode.$refs[$ref].codemirror.refresh()
+                        }
+                    }
+                }
+            })
+        },
+        async filterAddress (filter) {
+            if (filter) {
+                let search = filter.trim()
+                let to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
+                return this.$router.push(to)
+            }
         }
     }
 }

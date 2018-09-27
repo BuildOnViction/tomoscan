@@ -113,11 +113,14 @@
                 slot-scope="props">{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}</template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
+            :number-of-pages="pages"
             :per-page="perPage"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -135,8 +138,14 @@ export default {
     },
     mixins: [mixin],
     head () {
-        return {
-            title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+        if (this.block) {
+            return {
+                title: 'Block ' + this.$route.params.slug + ' Info'
+            }
+        } else {
+            return {
+                title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+            }
         }
     },
     props: {
@@ -159,6 +168,10 @@ export default {
             }
         },
         block_timestamp: {
+            type: String,
+            default: ''
+        },
+        parent: {
             type: String,
             default: ''
         }
@@ -193,6 +206,12 @@ export default {
         pages: 1,
         blockNumber: null
     }),
+    watch: {
+        $route (to, from) {
+            const page = this.$route.query.page
+            this.onChangePaginate(page)
+        }
+    },
     async mounted () {
         let self = this
         self.fields = self.isPending() ? self.fields_pending : self.fields_basic
@@ -216,8 +235,10 @@ export default {
             // Show loading.
             self.loading = true
 
+            self.currentPage = parseInt(this.$route.query.page)
+
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
             if (self.blockNumber) {
@@ -230,7 +251,12 @@ export default {
             if (self.address) {
                 params.address = self.address
             }
-
+            if (this.$route.name === 'txs-signTxs') {
+                params.typeOfTxs = 'signTxs'
+            }
+            if (this.$route.name === 'txs-otherTxs') {
+                params.typeOfTxs = 'otherTxs'
+            }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
             self.total = data.total
@@ -240,15 +266,28 @@ export default {
             if (data.items.length === 0) {
                 self.loading = false
             }
-
             if (self.page) {
                 self.page.txsCount = self.total
             }
 
-            data.items.forEach(async (item, index, array) => {
+            let listHash = []
+            data.items.forEach(function (item) {
                 if (typeof item.status === 'undefined') {
-                    let status = await self.$axios.get(`/api/txs/status/${item.hash}`)
-                    item.status = status.data
+                    listHash.push(item.hash)
+                }
+            })
+            let listStatus = null
+            if (listHash.length > 0) {
+                listStatus = await self.$axios.get(`/api/txs/list/status?hash=${listHash.join(',')}`)
+            }
+
+            data.items.forEach(async (item, index, array) => {
+                if (listStatus !== null) {
+                    Object.keys(listStatus.data).forEach(function (key) {
+                        if (key === item.hash) {
+                            item.status = listStatus.data[key]
+                        }
+                    })
                 }
 
                 if (index === array.length - 1) {
@@ -299,6 +338,14 @@ export default {
         },
         isPending () {
             return this.type === 'pending'
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                },
+                hash: this.parent
+            }
         }
     }
 }

@@ -98,16 +98,19 @@
             <template
                 slot="token"
                 slot-scope="props">
-                <span v-if="props.item.symbol">ERC20 ({{ props.item.symbol }})</span>
-                <i v-else>ERC20</i>
+                <span v-if="props.item.symbol">TRC20 ({{ props.item.symbol }})</span>
+                <i v-else>TRC20</i>
             </template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -125,6 +128,10 @@ export default {
     mixins: [mixin],
     props: {
         token: {
+            type: String,
+            default: ''
+        },
+        holder: {
             type: String,
             default: ''
         },
@@ -154,6 +161,12 @@ export default {
         pages: 1,
         address: null
     }),
+    watch: {
+        $route (to, from) {
+            const page = this.$route.query.page
+            this.onChangePaginate(page)
+        }
+    },
     async mounted () {
         let self = this
         // Init from router.
@@ -172,8 +185,10 @@ export default {
             // Show loading.
             self.loading = true
 
+            self.currentPage = parseInt(this.$route.query.page)
+
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
 
@@ -182,6 +197,9 @@ export default {
             }
             if (self.address) {
                 params.address = self.address
+            }
+            if (self.holder) {
+                params.address = self.holder
             }
 
             let query = this.serializeQuery(params)
@@ -225,6 +243,14 @@ export default {
             self.currentPage = page
 
             self.getDataFromApi()
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                },
+                hash: this.parent
+            }
         }
     }
 }

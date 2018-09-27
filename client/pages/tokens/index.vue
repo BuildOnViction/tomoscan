@@ -54,11 +54,14 @@
                 slot-scope="props">{{ formatNumber(props.item.tokenTxsCount) }}</template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -91,9 +94,20 @@ export default {
         perPage: 15,
         pages: 1
     }),
+    watch: {
+        $route (to, from) {
+            const page = this.$route.query.page
+            this.onChangePaginate(page)
+        }
+    },
     mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'tokens', to: { name: 'tokens' } })
+
+        const query = this.$route.query
+
+        self.currentPage = parseInt(query.page)
+
         this.getDataFromApi()
     },
     methods: {
@@ -104,7 +118,7 @@ export default {
             self.loading = true
 
             let params = {
-                page: self.currentPage,
+                page: self.currentPage || 1,
                 limit: self.perPage
             }
 
@@ -125,6 +139,13 @@ export default {
             self.currentPage = page
 
             self.getDataFromApi()
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                }
+            }
         }
     }
 }

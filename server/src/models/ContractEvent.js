@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 
 const ContractEvent = new Schema({
     address: { type: String, index: true },
-    blockNumber: Number,
+    blockNumber: { type: Number, index: true },
     transactionHash: { type: String, index: true },
     transactionIndex: Number,
     blockHash: String,
