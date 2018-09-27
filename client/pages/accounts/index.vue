@@ -49,7 +49,7 @@
             </template>
 
             <template
-                slot="txCount"
+                slot="transactionCount"
                 slot-scope="props">
                 <span>{{ formatNumber(props.item.transactionCount) }}</span>
             </template>
