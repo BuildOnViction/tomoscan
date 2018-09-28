@@ -3,7 +3,6 @@
 import Web3Util from './web3'
 
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let TransactionHelper = {
     parseLog: async (log) => {
@@ -18,14 +17,20 @@ let TransactionHelper = {
         const q = require('../queues')
         if (!token) {
             q.create('AccountProcess', { address: address })
-                .priority('low').removeOnComplete(true).save()
+                .priority('low').removeOnComplete(true).save().on('error', (e) => {
+                    throw e
+                })
             q.create('TokenProcess', { address: address })
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true).save().on('error', (e) => {
+                    throw e
+                })
         }
         q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
-            .priority('normal').removeOnComplete(true).save()
+            .priority('normal').removeOnComplete(true).save().on('error', (e) => {
+                throw e
+            })
     },
-    crawlTransaction: async (hash, timestamp) => {
+    crawlTransaction: async (hash, timestamp, next) => {
         hash = hash.toLowerCase()
 
         try {
@@ -45,12 +50,16 @@ let TransactionHelper = {
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
                 q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                    .priority('normal').removeOnComplete(true).save().on('error', e => {
+                        throw e
+                    })
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
                 q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                    .priority('normal').removeOnComplete(true).save().on('error', e => {
+                        throw e
+                    })
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
@@ -102,7 +111,7 @@ let TransactionHelper = {
 
             return trans
         } catch (e) {
-            emitter.emit('error', e)
+            return next(e)
         }
     },
     getTxDetail: async (hash) => {

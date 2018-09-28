@@ -4,10 +4,9 @@ import Web3Util from './web3'
 import { getSigner, toAddress } from './utils'
 
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let BlockHelper = {
-    crawlBlock:async (blockNumber) => {
+    crawlBlock:async (blockNumber, next) => {
         try {
             let block = await db.Block.findOne({ number: blockNumber })
             let countTx = await db.Tx.count({ blockNumber: blockNumber })
@@ -59,7 +58,7 @@ let BlockHelper = {
 
             return { txs, timestamp }
         } catch (e) {
-            emitter.emit('error', e)
+            return next(e)
         }
     },
     getBlockDetail: async (hashOrNumber) => {

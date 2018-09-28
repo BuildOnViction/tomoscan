@@ -4,7 +4,6 @@ import Web3Util from './web3'
 import TokenHelper from './token'
 import ContractHelper from './contract'
 const db = require('../models')
-const emitter = require('../helpers/errorHandler')
 
 let AccountHelper = {
     getAccountDetail: async (hash) => {
@@ -35,7 +34,7 @@ let AccountHelper = {
         let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return ac
     },
-    processAccount:async (hash) => {
+    processAccount:async (hash, next) => {
         hash = hash.toLowerCase()
         try {
             let _account = await db.Account.findOne({ hash: hash })
@@ -88,7 +87,7 @@ let AccountHelper = {
 
             return acc
         } catch (e) {
-            emitter.emit('error', e)
+            next(e)
         }
     },
     async formatAccount (account) {

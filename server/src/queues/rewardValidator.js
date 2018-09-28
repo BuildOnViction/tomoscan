@@ -85,6 +85,9 @@ consumer.task = async function (job, done) {
                 totalReward: reward4voter.toString()
             })
                 .priority('normal').removeOnComplete(true).save()
+                .on('error', e => {
+                    throw e
+                })
 
             let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
             ownerValidator = ownerValidator.toString().toLowerCase()
@@ -95,6 +98,9 @@ consumer.task = async function (job, done) {
                 balance: reward4validator.toString()
             })
                 .priority('normal').removeOnComplete(true).save()
+                .on('error', e => {
+                    throw e
+                })
 
             let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
             await rewardValidator.push({
@@ -126,6 +132,9 @@ consumer.task = async function (job, done) {
                 balance: reward4foundation
             })
                 .priority('normal').removeOnComplete(true).save()
+                .on('error', e => {
+                    throw e
+                })
         })
         await Promise.all(validatorFinal)
         if (rewardValidator.length > 0) {
