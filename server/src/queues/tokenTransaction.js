@@ -41,6 +41,16 @@ consumer.task = async function (job, done) {
             _log,
             { upsert: true, new: true })
 
+        let token = await db.Token.findOne({hash: _log.address})
+        if (token) {
+            if (token.txCount) {
+                token.txCount += 1
+            } else {
+                token.txCount = 1
+            }
+            await token.save()
+        }
+
         // Add token holder data.
         const q = require('./index')
         q.create('TokenHolderProcess', { token: JSON.stringify({
