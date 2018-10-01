@@ -45,6 +45,7 @@
                                             <td>
                                                 <read-more
                                                     :text="tx.hash"
+                                                    :max-chars="20"
                                                     class="d-sm-none" />
                                                 <read-more
                                                     :text="tx.hash"
