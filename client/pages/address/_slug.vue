@@ -118,6 +118,7 @@
                 :title="'Transactions (' + formatNumber(txsCount) + ')'"
                 href="#transactions">
                 <table-tx
+                    v-if="hashTab === '#transactions'"
                     :address="hash"
                     :parent="'#transactions'"
                     :page="this"/>
@@ -128,6 +129,7 @@
                 :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks">
                 <table-tx-by-account
+                    v-if="hashTab === '#minedBlocks'"
                     :page="this"
                     :parent="'minedBlocks'"/>
             </b-tab>
@@ -168,6 +170,7 @@
                 :title="'Events (' + formatNumber(eventsCount) + ')'"
                 href="#events">
                 <table-event
+                    v-if="hashTab === '#events'"
                     :address="hash"
                     :parent="'events'"
                     :page="this"/>
@@ -179,6 +182,7 @@
                 :title="'Rewards (' + formatNumber(rewardTime) + ')'"
                 href="#rewards">
                 <table-reward
+                    v-if="hashTab === '#rewards'"
                     :address="hash"
                     :parent="'rewards'"
                     :page="this"/>
@@ -241,7 +245,7 @@ export default {
             ]
         },
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#transactions'
         }
     },
     created () {
@@ -267,6 +271,27 @@ export default {
             let self = this
 
             self.loading = true
+            const params = {}
+
+            if (self.hash) {
+                params.address = self.hash
+            }
+
+            params.list = 'txes,minedBlocks,events,rewards,tokenHolders'
+
+            const query = this.serializeQuery(params)
+
+            const countingNum = await this.$axios.get('api/counting' + '?' + query)
+
+            self.blocksCount = countingNum.data.minedBlocks
+
+            self.eventsCount = countingNum.data.events
+
+            self.txsCount = countingNum.data.txes
+
+            self.rewardTime = countingNum.data.rewards
+
+            self.tokensCount = countingNum.data.tokenHolders
 
             let { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data

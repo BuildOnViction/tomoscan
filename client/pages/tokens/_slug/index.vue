@@ -237,6 +237,21 @@ export default {
             to: { name: 'tokens-slug', params: { slug: self.hash } }
         })
 
+        const params = {}
+
+        if (self.hash) {
+            params.block = self.number
+        }
+
+        params.list = 'tokenTxs,tokenHolders'
+        const query = this.serializeQuery(params)
+
+        const countingNum = await this.$axios.get('api/counting' + '?' + query)
+
+        self.tokenTxsCount = countingNum.data.tokenTxs
+
+        self.holdersCount = countingNum.data.tokenHolders
+
         let { data } = await self.$axios.get('/api/tokens/' + self.hash)
         self.token = data
         self.tokenName = data.name

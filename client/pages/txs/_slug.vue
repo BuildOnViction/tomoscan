@@ -31,10 +31,12 @@
                     class="tomo-tabs"
                     @input="onSwitchTab">
                     <b-tab
-                        :active="hashTab === 'overview'"
+                        :active="hashTab === '#overview'"
                         title="Overview"
                         href="#overview">
-                        <div class="card tomo-card tomo-card--transaction">
+                        <div
+                            v-if="hashTab === '#overview'"
+                            class="card tomo-card tomo-card--transaction">
                             <div class="tomo-card__body">
                                 <table
                                     v-if="tx"
@@ -193,6 +195,7 @@
                         :title="'Events (' + formatNumber(eventsCount) + ')'"
                         href="#events">
                         <table-event
+                            v-if="hashTab === '#events'"
                             :tx="hash"
                             :page="this"/>
                     </b-tab>
@@ -228,7 +231,7 @@ export default {
     },
     computed: {
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#overview'
         }
     },
     created () {
@@ -243,6 +246,19 @@ export default {
             name: 'txs-slug',
             to: { name: 'txs-slug', params: { slug: self.hash } }
         })
+
+        const params = {}
+
+        if (self.hash) {
+            params.address = self.hash
+        }
+        params.list = 'events'
+
+        const query = this.serializeQuery(params)
+
+        const countingNum = await this.$axios.get('api/counting' + '?' + query)
+
+        self.eventsCount = countingNum.data.events
 
         let { data } = await this.$axios.get('/api/txs/' + self.hash)
 
