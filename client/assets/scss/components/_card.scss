@@ -114,7 +114,7 @@
     .text-truncate {
       display: inline-block;
       vertical-align: bottom;
-      max-width: 9rem;
+      max-width: 12rem;
 
       @include media-breakpoint-up(lg) {
         max-width: 15rem;
