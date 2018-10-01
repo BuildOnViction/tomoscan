@@ -116,10 +116,6 @@ let AccountHelper = {
         // Inject contract to account object.
         let contract = await db.Contract.findOne({ hash: account.hash })
         account.contract = contract
-        if (contract) {
-            await ContractHelper.updateTxCount(account.hash)
-        }
-        // console.log('account.contract:', account.hash, account.contract)
 
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: account.hash })
