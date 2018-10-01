@@ -118,6 +118,7 @@
                 :title="'Transactions (' + formatNumber(txsCount) + ')'"
                 href="#transactions">
                 <table-tx
+                    v-if="hashTab === '#transactions'"
                     :address="hash"
                     :parent="'#transactions'"
                     :page="this"/>
@@ -128,6 +129,7 @@
                 :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks">
                 <table-tx-by-account
+                    v-if="hashTab === '#minedBlocks'"
                     :page="this"
                     :parent="'minedBlocks'"/>
             </b-tab>
@@ -168,6 +170,7 @@
                 :title="'Events (' + formatNumber(eventsCount) + ')'"
                 href="#events">
                 <table-event
+                    v-if="hashTab === '#events'"
                     :address="hash"
                     :parent="'events'"
                     :page="this"/>
@@ -179,6 +182,7 @@
                 :title="'Rewards (' + formatNumber(rewardTime) + ')'"
                 href="#rewards">
                 <table-reward
+                    v-if="hashTab === '#rewards'"
                     :address="hash"
                     :parent="'rewards'"
                     :page="this"/>
@@ -241,7 +245,7 @@ export default {
             ]
         },
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#transactions'
         }
     },
     created () {
@@ -267,10 +271,33 @@ export default {
             let self = this
 
             self.loading = true
+            let params = {}
 
-            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
-            self.address = data
-            self.smartContract = data.contract
+            if (self.hash) {
+                params.address = self.hash
+            }
+
+            params.list = 'transactions,minedBlocks,events,rewards,tokenHolders'
+
+            let query = this.serializeQuery(params)
+
+            let responses = await Promise.all([
+                this.$axios.get('/api/accounts/' + self.hash),
+                this.$axios.get('/api/counting' + '?' + query)
+            ])
+
+            self.address = responses[0].data
+            self.smartContract = responses[0].data.contract
+
+            self.blocksCount = responses[1].data.minedBlocks
+
+            self.eventsCount = responses[1].data.events
+
+            self.txsCount = responses[1].data.txes
+
+            self.rewardTime = responses[1].data.rewards
+
+            self.tokensCount = responses[1].data.tokenHolders
 
             self.loading = false
         },

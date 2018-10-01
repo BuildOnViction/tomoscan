@@ -237,13 +237,30 @@ export default {
             to: { name: 'tokens-slug', params: { slug: self.hash } }
         })
 
-        let { data } = await self.$axios.get('/api/tokens/' + self.hash)
-        self.token = data
-        self.tokenName = data.name
-        self.symbol = data.symbol
+        let params = {}
+
+        if (self.hash) {
+            params.block = self.number
+        }
+
+        params.list = 'tokenTxs,tokenHolders'
+        let query = this.serializeQuery(params)
+
+        let responses = await Promise.all([
+            self.$axios.get('/api/tokens/' + self.hash),
+            self.$axios.get('/api/counting' + '?' + query)
+        ])
+
+        self.token = responses[0].data
+        self.tokenName = responses[0].data.name
+        self.symbol = responses[0].data.symbol
+
+        self.tokenTxsCount = responses[1].data.tokenTxs
+
+        self.holdersCount = responses[1].data.tokenHolders
 
         self.loading = false
-        self.moreInfo = data.moreInfo
+        self.moreInfo = responses[0].data.moreInfo
         self.getAccountFromApi()
     },
     methods: {

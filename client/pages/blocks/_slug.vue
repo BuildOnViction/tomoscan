@@ -179,6 +179,7 @@
                 :active="hashTab === '#transactions'"
                 href="#transactions">
                 <table-tx
+                    v-if="hashTab === '#transactions'"
                     :block="number"
                     :block_timestamp="block.timestamp"
                     :parent="'transactions'"
@@ -189,6 +190,7 @@
                 :active="hashTab === '#blockSigner'"
                 href="#blockSigner">
                 <block-signer
+                    v-if="hashTab === '#blockSigner'"
                     :block="number"
                     :parent="'blockSigner'"
                     :page="this"/>
@@ -227,7 +229,7 @@ export default {
     },
     computed: {
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#transactions'
         }
     },
     created () {
@@ -247,11 +249,27 @@ export default {
             to: { name: 'blocks-slug', params: { slug: self.number } }
         })
 
-        let { data } = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
+        let params = {}
 
-        this.block = data
-        let moment = self.$moment(data.timestamp)
+        if (self.number) {
+            params.block = self.number
+        }
+        params.list = 'transactions,blockSigners'
+
+        let query = this.serializeQuery(params)
+
+        let responses = await Promise.all([
+            this.$axios.get('/api/blocks/' + this.$route.params.slug),
+            this.$axios.get('/api/counting' + '?' + query)
+        ])
+
+        this.block = responses[0].data
+        let moment = self.$moment(responses[0].data.timestamp)
         this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
+
+        self.txsCount = responses[1].data.txes
+
+        self.blockSignerCount = responses[1].data.blockSigners
 
         self.loading = false
     },
