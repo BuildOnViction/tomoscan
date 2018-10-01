@@ -26,7 +26,6 @@ let TokenHelper = {
     },
 
     formatToken: async (item) => {
-        item.tokenTxsCount = await db.TokenTx.find({ address: item.hash.toLowerCase() }).count()
         item.name = formatAscIIJSON(item.name)
         item.symbol = formatAscIIJSON(item.symbol)
 

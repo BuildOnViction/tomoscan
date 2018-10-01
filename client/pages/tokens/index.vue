@@ -51,7 +51,7 @@
 
             <template
                 slot="tokenTxsCount"
-                slot-scope="props">{{ formatNumber(props.item.tokenTxsCount) }}</template>
+                slot-scope="props">{{ formatNumber(props.item.txCount) }}</template>
         </table-base>
 
         <b-pagination-nav
