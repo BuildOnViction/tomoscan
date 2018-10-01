@@ -43,11 +43,10 @@ async function TokenProcess() {
         let token = tokens[i]
         console.log('Process token: ', token.hash, new Date())
 
-        let fromCount = await db.Tx.countDocuments({ from: token.hash })
-        let toCount = await db.Tx.countDocuments({ to: token.hash })
-        let contractCount = await db.Tx.countDocuments({ contractAddress: token.hash })
-        let fromToCount = await db.Tx.countDocuments({ from: token.hash, to: token.hash })
-        let txCount = fromCount + toCount + contractCount - fromToCount
+        let fromCount = await db.TokenTx.countDocuments({ from: token.hash })
+        let toCount = await db.TokenTx.countDocuments({ to: token.hash })
+        let fromToCount = await db.TokenTx.countDocuments({ from: token.hash, to: token.hash })
+        let txCount = fromCount + toCount - fromToCount
 
         await db.Token.findOneAndUpdate({hash: token.hash}, {txCount: txCount})
     }
