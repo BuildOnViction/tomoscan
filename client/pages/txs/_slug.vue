@@ -256,7 +256,7 @@ export default {
 
         const query = this.serializeQuery(params)
 
-        const countingNum = await this.$axios.get('api/counting' + '?' + query)
+        const countingNum = await this.$axios.get('/api/counting' + '?' + query)
 
         self.eventsCount = countingNum.data.events
 

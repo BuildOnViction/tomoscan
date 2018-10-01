@@ -246,7 +246,7 @@ export default {
         params.list = 'tokenTxs,tokenHolders'
         const query = this.serializeQuery(params)
 
-        const countingNum = await this.$axios.get('api/counting' + '?' + query)
+        const countingNum = await this.$axios.get('/api/counting' + '?' + query)
 
         self.tokenTxsCount = countingNum.data.tokenTxs
 
