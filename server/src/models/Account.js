@@ -11,6 +11,7 @@ const Account = new Schema({
     transactionCount: Number,
     minedBlock: Number,
     rewardCount: Number,
+    logCount: Number,
     contractCreation: String,
     isContract: { type: Boolean, index: true },
     storageAt: String,

@@ -10,15 +10,21 @@ TokenTxController.get('/token-txs', async (req, res) => {
         let address = req.query.address
         let params = {}
         params.query = {}
+        let total = null
         if (token) {
             params.query = { address: token.toLowerCase() }
+
+            let tk = await db.Token.findOne({ hash: token.toLowerCase()})
+            if (tk) {
+                total = tk.txCount
+            }
         }
         if (address) {
             params.query = Object.assign(params.query,
                 { $or: [{ from: address.toLowerCase() }, { to: address.toLowerCase() }] })
         }
         params.populate = [{ path: 'block' }]
-        let data = await paginate(req, 'TokenTx', params)
+        let data = await paginate(req, 'TokenTx', params, total)
 
         let items = data.items
         if (items.length) {

@@ -15,12 +15,14 @@ async function AccountProcess () {
 
         let minedBlock = await db.Block.countDocuments({ signer: account.hash })
         let rewardCount = await db.Reward.countDocuments({ address: account.hash })
+        let logCount = await db.Log.countDocuments({ address: account.hash })
 
         await db.Account.findOneAndUpdate({ hash: account.hash },
             {
                 transactionCount: txCount,
                 minedBlock: minedBlock,
-                rewardCount: rewardCount
+                rewardCount: rewardCount,
+                logCount: logCount
             })
     }
 }
