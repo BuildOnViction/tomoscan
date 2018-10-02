@@ -66,8 +66,22 @@ TxController.get('/txs', async (req, res) => {
                 params.query = condition || {}
             }
         }
-
-        let total = await db.Tx.count(params.query)
+        let total = null
+        if (typeof address !== 'undefined') {
+            address = address.toLowerCase()
+            let acc = await db.Account.findOne({hash: address})
+            if (acc) {
+                total = acc.transactionCount
+            }
+        } else if (req.query.typeOfTxs && req.query.typeOfTxs === 'signTxs') {
+            let acc = await db.Account.findOne({hash: contractAddress.BlockSigner})
+            if (acc) {
+                total = acc.transactionCount
+            }
+        }
+        if (total === null) {
+            total = await db.Tx.count(params.query)
+        }
         let pages = Math.ceil(total / perPage)
         let offset = page > 1 ? (page - 1) * perPage : 0
 
