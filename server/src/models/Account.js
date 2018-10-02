@@ -9,6 +9,8 @@ const Account = new Schema({
     balanceNumber: { type: Number, index: true },
     code: String,
     transactionCount: Number,
+    minedBlock: Number,
+    rewardCount: Number,
     contractCreation: String,
     isContract: { type: Boolean, index: true },
     storageAt: String,

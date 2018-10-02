@@ -13,7 +13,15 @@ async function AccountProcess () {
         let fromToCount = await db.Tx.countDocuments({ from: account.hash, to: account.hash })
         let txCount = fromCount + toCount + contractCount - fromToCount
 
-        await db.Account.findOneAndUpdate({ hash: account.hash }, { transactionCount: txCount })
+        let minedBlock = await db.Block.countDocuments({ signer: account.hash })
+        let rewardCount = await db.Reward.countDocuments({ address: account.hash })
+
+        await db.Account.findOneAndUpdate({ hash: account.hash },
+            {
+                transactionCount: txCount,
+                minedBlock: minedBlock,
+                rewardCount: rewardCount
+            })
     }
 }
 
