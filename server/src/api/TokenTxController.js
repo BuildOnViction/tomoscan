@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import db from '../models'
 import { paginate } from '../helpers/utils'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
 
@@ -14,7 +15,7 @@ TokenTxController.get('/token-txs', async (req, res) => {
         if (token) {
             params.query = { address: token.toLowerCase() }
 
-            let tk = await db.Token.findOne({ hash: token.toLowerCase()})
+            let tk = await db.Token.findOne({ hash: token.toLowerCase() })
             if (tk) {
                 total = tk.txCount
             }

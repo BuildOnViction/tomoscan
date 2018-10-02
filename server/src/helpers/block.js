@@ -27,7 +27,7 @@ let BlockHelper = {
             let signer = toAddress(getSigner(_block), 100)
             signer = signer.toLowerCase()
 
-            await db.Account.update({ hash: signer }, { $inc: { minedBlock: 1 }})
+            await db.Account.update({ hash: signer }, { $inc: { minedBlock: 1 } })
 
             // Update end tx count.
             let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)

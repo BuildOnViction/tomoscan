@@ -1,6 +1,5 @@
 'use strict'
 
-import AccountHelper from '../helpers/account'
 import db from '../models'
 import BigNumber from 'bignumber.js'
 

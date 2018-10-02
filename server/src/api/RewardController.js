@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
-import db from "../models";
+import db from '../models'
 
 const RewardController = Router()
 

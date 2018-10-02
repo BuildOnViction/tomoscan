@@ -41,14 +41,13 @@ consumer.task = async function (job, done) {
             _log,
             { upsert: true, new: true })
 
-        await db.Token.update({ hash: _log.address }, { $inc: { txCount: 1 }})
+        await db.Token.update({ hash: _log.address }, { $inc: { txCount: 1 } })
 
-        await db.Account.update({ hash: _log.address}, { $inc: { logCount: 1 }})
+        await db.Account.update({ hash: _log.address }, { $inc: { logCount: 1 } })
 
-        await db.Account.update({ hash: _log.from }, { $inc: { logCount: 1 }})
+        await db.Account.update({ hash: _log.from }, { $inc: { logCount: 1 } })
 
-        await db.Account.update({ hash: _log.to }, { $inc: { logCount: 1 }})
-
+        await db.Account.update({ hash: _log.to }, { $inc: { logCount: 1 } })
 
         // Add token holder data.
         const q = require('./index')

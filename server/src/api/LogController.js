@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import LogHelper from '../helpers/log'
-import db from "../models";
+import db from '../models'
 
 const LogController = Router()
 
