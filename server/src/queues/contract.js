@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
     let fromToCount = await db.Tx.countDocuments({ from: address, to: address })
     let txCount = fromCount + toCount + contractCount - fromToCount
 
-    await db.Contract.findOneAndUpdate({hash: address}, {txCount: txCount})
+    await db.Contract.findOneAndUpdate({ hash: address }, { txCount: txCount })
     done()
 }
 

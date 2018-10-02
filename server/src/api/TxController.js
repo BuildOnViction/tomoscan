@@ -69,12 +69,12 @@ TxController.get('/txs', async (req, res) => {
         let total = null
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
-            let acc = await db.Account.findOne({hash: address})
+            let acc = await db.Account.findOne({ hash: address })
             if (acc) {
                 total = acc.transactionCount
             }
         } else if (req.query.typeOfTxs && req.query.typeOfTxs === 'signTxs') {
-            let acc = await db.Account.findOne({hash: contractAddress.BlockSigner})
+            let acc = await db.Account.findOne({ hash: contractAddress.BlockSigner })
             if (acc) {
                 total = acc.transactionCount
             }

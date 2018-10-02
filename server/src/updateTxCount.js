@@ -1,7 +1,6 @@
 const db = require('./models')
 
-async function AccountProcess() {
-
+async function AccountProcess () {
     let accounts = await db.Account.find()
     console.log('accounts.length:', accounts.length)
     for (let i = 0; i < accounts.length; i++) {
@@ -14,12 +13,11 @@ async function AccountProcess() {
         let fromToCount = await db.Tx.countDocuments({ from: account.hash, to: account.hash })
         let txCount = fromCount + toCount + contractCount - fromToCount
 
-        await db.Account.findOneAndUpdate({hash: account.hash}, {transactionCount: txCount})
+        await db.Account.findOneAndUpdate({ hash: account.hash }, { transactionCount: txCount })
     }
 }
 
-async function ContractProcess() {
-
+async function ContractProcess () {
     let contracts = await db.Contract.find()
     console.log('contracts.length:', contracts.length)
     for (let i = 0; i < contracts.length; i++) {
@@ -32,11 +30,10 @@ async function ContractProcess() {
         let fromToCount = await db.Tx.countDocuments({ from: contract.hash, to: contract.hash })
         let txCount = fromCount + toCount + contractCount - fromToCount
 
-        await db.Contract.findOneAndUpdate({hash: contract.hash}, {txCount: txCount})
+        await db.Contract.findOneAndUpdate({ hash: contract.hash }, { txCount: txCount })
     }
 }
-async function TokenProcess() {
-
+async function TokenProcess () {
     let tokens = await db.Token.find()
     console.log('tokens.length:', tokens.length)
     for (let i = 0; i < tokens.length; i++) {
@@ -45,11 +42,11 @@ async function TokenProcess() {
 
         let txCount = await db.TokenTx.countDocuments({ address: token.hash })
 
-        await db.Token.findOneAndUpdate({hash: token.hash}, {txCount: txCount})
+        await db.Token.findOneAndUpdate({ hash: token.hash }, { txCount: txCount })
     }
 }
 
-async function run() {
+async function run () {
     console.log('Start process', new Date())
     console.log('------------------------------------------------------------------------')
     await AccountProcess()
@@ -63,4 +60,3 @@ async function run() {
 }
 
 run()
-

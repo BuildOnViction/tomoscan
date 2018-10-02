@@ -1,6 +1,5 @@
 'use strict'
 
-import db from '../models'
 import { formatAscIIJSON } from './utils'
 
 let TokenHelper = {

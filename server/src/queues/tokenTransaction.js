@@ -41,7 +41,7 @@ consumer.task = async function (job, done) {
             _log,
             { upsert: true, new: true })
 
-        let token = await db.Token.findOne({hash: _log.address})
+        let token = await db.Token.findOne({ hash: _log.address })
         if (token) {
             if (token.txCount) {
                 token.txCount += 1
