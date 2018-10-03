@@ -72,9 +72,9 @@ jobs:
       before_script:
         - openssl aes-256-cbc -K $encrypted_b7545dd42371_key -iv $encrypted_b7545dd42371_iv -in travis.pem.enc -out travis.pem -d
       script:
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:latest testnet_tomoscan
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest testnet_tomoscan_crawler
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest testnet_tomoscan_server
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:testnet testnet_tomoscan
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_crawler
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_server
       after_success:
         -  "curl -X POST --data-urlencode 'payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"text\": \"[testnet] Tomoscan has been deployed with success.\", \"icon_emoji\": \":truck:\"}' $SLACK_DEPLOY_URL"
       after_failure:
