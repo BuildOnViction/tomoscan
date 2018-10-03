@@ -31,8 +31,6 @@ jobs:
         - docker push tomochain/tomoscan-client:latest
         - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:$TRAVIS_BUILD_ID
         - docker push tomochain/tomoscan-client:$TRAVIS_BUILD_ID
-      after_success:
-        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
 
     - stage: Build and push image (tagged)
       services:
@@ -55,8 +53,32 @@ jobs:
         - docker push tomochain/tomoscan-client:testnet
         - docker tag tomochain/tomoscan-client tomochain/tomoscan-client:$TRAVIS_TAG
         - docker push tomochain/tomoscan-client:$TRAVIS_TAG
+
+    - stage: Deploy in devnet
+      install: skip
+      before_script:
+        - openssl aes-256-cbc -K $encrypted_b7545dd42371_key -iv $encrypted_b7545dd42371_iv -in travis.pem.enc -out travis.pem -d
+      script:
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-client:latest devnet_tomoscan
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_crawler
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_server
       after_success:
-        - curl -X POST $INFRA_IMAGE_REBUILD_HOOK
+        -  'curl -X POST --data-urlencode payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+      after_failure:
+        -  'curl -X POST --data-urlencode payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+
+    - stage: Deploy in testnet
+      install: skip
+      before_script:
+        - openssl aes-256-cbc -K $encrypted_b7545dd42371_key -iv $encrypted_b7545dd42371_iv -in travis.pem.enc -out travis.pem -d
+      script:
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:testnet testnet_tomoscan
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_crawler
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_server
+      after_success:
+        -  'curl -X POST --data-urlencode payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+      after_failure:
+        -  'curl -X POST --data-urlencode payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
 
 stages:
   - name: Lint
@@ -64,4 +86,8 @@ stages:
   - name: Build and push image
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
   - name: Build and push image (tagged)
+    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
+  - name: Deploy in devnet
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
+  - name: Deploy in testnet
     if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
