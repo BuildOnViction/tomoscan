@@ -58,6 +58,10 @@ jobs:
       install: skip
       before_script:
         - openssl aes-256-cbc -K $encrypted_b7545dd42371_key -iv $encrypted_b7545dd42371_iv -in travis.pem.enc -out travis.pem -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 ./travis.pem
+        - echo -e "Host $DEVNET_SSH_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - ssh-add ./travis.pem
       script:
         - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-client:latest devnet_tomoscan
         - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_crawler
@@ -71,6 +75,10 @@ jobs:
       install: skip
       before_script:
         - openssl aes-256-cbc -K $encrypted_b7545dd42371_key -iv $encrypted_b7545dd42371_iv -in travis.pem.enc -out travis.pem -d
+        - eval "$(ssh-agent -s)"
+        - chmod 600 ./travis.pem
+        - echo -e "Host $TESTNET_SSH_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
+        - ssh-add ./travis.pem
       script:
         - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:testnet testnet_tomoscan
         - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_crawler
