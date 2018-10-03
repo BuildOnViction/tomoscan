@@ -179,6 +179,7 @@
                 :active="hashTab === '#transactions'"
                 href="#transactions">
                 <table-tx
+                    v-if="hashTab === '#transactions'"
                     :block="number"
                     :block_timestamp="block.timestamp"
                     :parent="'transactions'"
@@ -189,6 +190,7 @@
                 :active="hashTab === '#blockSigner'"
                 href="#blockSigner">
                 <block-signer
+                    v-if="hashTab === '#blockSigner'"
                     :block="number"
                     :parent="'blockSigner'"
                     :page="this"/>
@@ -227,7 +229,7 @@ export default {
     },
     computed: {
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#transactions'
         }
     },
     created () {
@@ -246,6 +248,21 @@ export default {
             name: 'blocks-slug',
             to: { name: 'blocks-slug', params: { slug: self.number } }
         })
+
+        const params = {}
+
+        if (self.number) {
+            params.block = self.number
+        }
+        params.list = 'txes,blockSigners'
+
+        const query = this.serializeQuery(params)
+
+        const countingNum = await this.$axios.get('/api/counting' + '?' + query)
+
+        self.txsCount = countingNum.data.txes
+
+        self.blockSignerCount = countingNum.data.blockSigners
 
         let { data } = await this.$axios.get('/api/blocks/' + this.$route.params.slug)
 

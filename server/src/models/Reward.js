@@ -12,6 +12,7 @@ const Reward = new Schema({
     reason: { type: String, index: true },
     lockBalance: { type: String },
     reward: { type: String },
+    rewardTime: { type: Date },
     signNumber: { type: Number }
 }, {
     timestamps: true
