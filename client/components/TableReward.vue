@@ -56,9 +56,9 @@
             <template
                 slot="timestamp"
                 slot-scope="props">
-                <span :id="'timestamp__' + props.index">{{ $moment(props.item.createdAt).fromNow() }}</span>
+                <span :id="'timestamp__' + props.index">{{ $moment(props.item.rewardTime).fromNow() }}</span>
                 <b-tooltip :target="'timestamp__' + props.index">
-                    {{ $moment(props.item.createdAt).format('lll') }}
+                    {{ $moment(props.item.rewardTime).format('lll') }}
                 </b-tooltip>
             </template>
 

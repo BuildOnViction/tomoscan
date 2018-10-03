@@ -17,6 +17,10 @@ consumer.task = async function (job, done) {
     let validator = job.data.validator.toLowerCase()
     let validatorSignNumber = job.data.validatorSignNumber
     let totalReward = job.data.totalReward
+    let rewardTime = job.data.rewardTime
+    if (!rewardTime) {
+        rewardTime = new Date()
+    }
     totalReward = new BigNumber(totalReward)
     console.log('Process reward for voter of validator', validator, ' at epoch: ', epoch)
 
@@ -65,6 +69,7 @@ consumer.task = async function (job, done) {
                     reason: 'Voter',
                     lockBalance: voter.balance.toString(),
                     reward: reward.toString(),
+                    rewardTime: rewardTime,
                     signNumber: validatorSignNumber
                 })
             }
