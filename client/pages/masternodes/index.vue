@@ -29,11 +29,26 @@
                 slot="address"
                 slot-scope="props">
                 <div>
-                    <i
-                        class="tm tm-icon-contract mr-1 mr-lg-2" />
                     <nuxt-link
                         :to="{name: 'address-slug', params: {slug: props.item.address}}"
                         class="text-truncate">{{ props.item.address }}</nuxt-link>
+                </div>
+            </template>
+
+            <template
+                slot="latestSignedBlock"
+                slot-scope="props">
+                <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.latestSignedBlock}}">
+                    {{ props.item.latestSignedBlock }}</nuxt-link>
+            </template>
+
+            <template
+                slot="owner"
+                slot-scope="props">
+                <div>
+                    <nuxt-link
+                        :to="{name: 'address-slug', params: {slug: props.item.owner}}"
+                        class="text-truncate">{{ props.item.owner }}</nuxt-link>
                 </div>
             </template>
         </b-table>
@@ -72,6 +87,10 @@ export default {
             {
                 key: 'name',
                 label: 'Name'
+            },
+            {
+                key: 'owner',
+                label: 'Owner'
             },
             {
                 key: 'status',
@@ -115,20 +134,20 @@ export default {
 
             // Show loading.
             self.loading = true
-            console.log(self.currentPage)
 
             let { data } = await this.$axios.get('/api/masternodes')
+
             for (let i = 0; i < data.length; i++) {
                 if (data[i].isMasternode) {
                     self.items.push({
                         address: data[i].candidate,
                         status: 'MASTERNODE', // isMasternode = true
                         name: data[i].name || 'Anonymous',
+                        owner: data[i].owner,
                         latestSignedBlock: data[i].latestSignedBlock
                     })
                 }
             }
-            console.log(JSON.stringify(self.items))
             self.total = self.items.length
             self.pages = Math.ceil(data.length / self.perPage)
 
