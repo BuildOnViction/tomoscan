@@ -151,6 +151,10 @@ br.register('other-txs', (brs) => {
     brs.parent('txs')
     brs.push('Other Transactions', { name: 'txs-otherTxs' })
 })
+br.register('masternodes', (brs) => {
+    brs.parent('accounts')
+    brs.push('Masternodes', { name: 'masternodes' })
+})
 
 export const state = () => ({
     items: null
