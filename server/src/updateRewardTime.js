@@ -1,6 +1,6 @@
+import Web3Util from './helpers/web3'
 const db = require('./models')
 const config = require('config')
-import Web3Util from './helpers/web3'
 
 async function RewardProcess () {
     const web3 = await Web3Util.getWeb3()
@@ -25,12 +25,10 @@ async function RewardProcess () {
                 timestamp = block.timestamp
             }
             if (timestamp !== null) {
-                await db.Reward.update({ epoch: epoch}, { $set: { rewardTime: timestamp }}, { multi: true })
+                await db.Reward.update({ epoch: epoch }, { $set: { rewardTime: timestamp } }, { multi: true })
             }
             console.log('Update reward time of epoch: ', epoch, timestamp)
-
         }
-
     }
 }
 async function run () {
