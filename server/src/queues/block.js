@@ -48,7 +48,6 @@ consumer.task = async function (job, done) {
         done(e)
         return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
-
 }
 
 module.exports = consumer
