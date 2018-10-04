@@ -19,7 +19,7 @@ consumer.task = async function (job, done) {
         // Add holder to.
         await TokenHolderHelper.updateQuality(token.to, token.address, token.value)
     } catch (e) {
-        console.error(consumer.name, e)
+        console.error(consumer.name, token, e)
         done(e)
     }
 

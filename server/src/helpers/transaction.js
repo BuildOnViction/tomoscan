@@ -50,16 +50,12 @@ let TransactionHelper = {
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
                 q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save().on('error', e => {
-                        throw e
-                    })
+                    .priority('normal').removeOnComplete(true).save()
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
                 q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save().on('error', e => {
-                        throw e
-                    })
+                    .priority('normal').removeOnComplete(true).save()
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()

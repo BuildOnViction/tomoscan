@@ -1,13 +1,12 @@
 const EventEmitter = require('events').EventEmitter
 const emitter = new EventEmitter()
-const q = require('../queues')
 
-emitter.on('error', (e, blockNumber) => {
+emitter.on('errorCrawlBlock', (e, blockNumber) => {
     console.error('ERROR!!!', blockNumber, e)
     console.log('Re-crawl blockNumber', blockNumber)
+    const q = require('../queues')
     q.create('BlockProcess', { block: blockNumber })
-        .priority('high').removeOnComplete(true).save()
-
+        .priority('critical').removeOnComplete(true).save()
 })
 
 module.exports = emitter

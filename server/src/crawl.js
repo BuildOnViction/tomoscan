@@ -4,7 +4,6 @@ import Web3Util from './helpers/web3'
 const q = require('./queues')
 const db = require('./models')
 const events = require('events')
-const emitter = require('./helpers/errorHandler')
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000

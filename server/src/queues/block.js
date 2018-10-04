@@ -3,7 +3,6 @@
 import BlockHelper from '../helpers/block'
 const config = require('config')
 const emitter = require('../helpers/errorHandler')
-const db = require('../models')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
@@ -43,7 +42,7 @@ consumer.task = async function (job, done) {
         }
     } catch (e) {
         done(e)
-        return emitter.emit('error', e, blockNumber)
+        return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 
     done()
