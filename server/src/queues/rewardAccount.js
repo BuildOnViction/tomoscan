@@ -1,6 +1,6 @@
 'use strict'
 
-import AccountHelper from '../helpers/account'
+import db from '../models'
 import BigNumber from 'bignumber.js'
 
 const consumer = {}
@@ -14,11 +14,16 @@ consumer.task = async function (job, done) {
         if (balance !== 'NaN') {
             balance = new BigNumber(balance)
 
-            let account = await AccountHelper.processAccount(address, false)
+            let account = await db.Account.findOne({ hash: address })
             let newBalance = new BigNumber(account.balance).plus(balance)
 
             account.balance = newBalance.toString()
             account.balanceNumber = newBalance.toNumber()
+            if (account.rewardCount) {
+                account.rewardCount += 1
+            } else {
+                account.rewardCount = 1
+            }
 
             await account.save()
         }

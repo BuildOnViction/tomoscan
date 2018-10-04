@@ -11,7 +11,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = job.data.block
     try {
-        console.log('Process block: ', blockNumber)
+        console.log('Process block: ', blockNumber, new Date())
         let b = await BlockHelper.crawlBlock(blockNumber, (e) => {
             if (e) {
                 throw e
