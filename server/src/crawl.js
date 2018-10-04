@@ -49,7 +49,10 @@ let watch = async () => {
             }
         }
     } catch (e) {
-        emitter.emit('error', e)
+        console.error(e)
+        console.error('Sleep 2 seconds before going back to work')
+        await sleep(2000)
+        return watch()
     }
 }
 

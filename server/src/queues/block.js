@@ -42,16 +42,8 @@ consumer.task = async function (job, done) {
                 .priority('critical').removeOnComplete(true).save()
         }
     } catch (e) {
-        db.Setting.updateOne({ meta_key: 'min_block_crawl' },
-            { $set: {
-                meta_value: parseInt(blockNumber) - 1 }
-            }).then(() => {
-            emitter.emit('error', e)
-            done(e)
-        }).catch(e => {
-            emitter.emit('error', e)
-            done(e)
-        })
+        done(e)
+        return emitter.emit('error', e, blockNumber)
     }
 
     done()
