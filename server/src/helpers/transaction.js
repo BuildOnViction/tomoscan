@@ -112,11 +112,13 @@ let TransactionHelper = {
     },
     getTxDetail: async (hash) => {
         hash = hash.toLowerCase()
-        // let tx = await db.Tx.findOne({ hash: hash })
-        // if (tx) {
-        //     return tx
-        // }
-        let tx = { hash: hash }
+        let tx = await db.Tx.findOne({ hash: hash })
+        if (tx && tx.status) {
+            return tx
+        } else {
+            tx = { hash: hash }
+        }
+        // let tx = { hash: hash }
         let web3 = await Web3Util.getWeb3()
 
         let _tx = await web3.eth.getTransaction(hash)

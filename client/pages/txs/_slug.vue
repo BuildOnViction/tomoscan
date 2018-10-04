@@ -57,7 +57,7 @@
                                                 <span class="d-none d-lg-block">{{ tx.hash }}</span>
                                             </td>
                                         </tr>
-                                        <tr>
+                                        <tr v-if="tx.blockNumber">
                                             <td>TxReceipt Status</td>
                                             <td>
                                                 <span :class="tx.status ? 'text-success' : 'text-danger'">
@@ -67,18 +67,21 @@
                                         <tr>
                                             <td>Block</td>
                                             <td>
-                                                <nuxt-link
-                                                    v-if="tx.blockNumber"
-                                                    :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}"
-                                                    class="mr-1">{{ tx.blockNumber }}</nuxt-link>
+                                                <span v-if="tx.blockNumber">
+                                                    <nuxt-link
+                                                        :to="{name: 'blocks-slug', params: {slug:tx.blockNumber}}"
+                                                        class="mr-1">{{ tx.blockNumber }}</nuxt-link>
+                                                    <span>
+                                                        ({{ (tx.latestBlockNumber - tx.blockNumber > 0)
+                                                            ? tx.latestBlockNumber - tx.blockNumber
+                                                        : 0 }} block confirmation)
+                                                    </span>
+                                                </span>
+
                                                 <span
                                                     v-else
                                                     class="text-muted mr-1">Pending...</span>
-                                                <span>
-                                                    ({{ (tx.latestBlockNumber - tx.blockNumber > 0)
-                                                        ? tx.latestBlockNumber - tx.blockNumber
-                                                    : 0 }} block confirmation)
-                                                </span>
+
                                             </td>
                                         </tr>
                                         <tr>
@@ -138,7 +141,7 @@
                                             <td>Actual Tx Cost/Fee</td>
                                             <td>{{ formatUnit(toEther(tx.gasPrice * tx.gas)) }}</td>
                                         </tr>
-                                        <tr v-if="tx.tokenTxs.length">
+                                        <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
                                             <td>Token Transfer</td>
                                             <td>
                                                 <ul class="list-unstyled">
