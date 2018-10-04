@@ -40,12 +40,15 @@ consumer.task = async function (job, done) {
             q.create('VoterProcess', { epoch: epoch })
                 .priority('critical').removeOnComplete(true).save()
         }
+
+        done()
     } catch (e) {
+        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+        await sleep(2000)
         done(e)
         return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 
-    done()
 }
 
 module.exports = consumer
