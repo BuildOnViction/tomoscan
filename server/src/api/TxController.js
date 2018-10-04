@@ -177,7 +177,9 @@ TxController.get('/txs/:slug', async (req, res) => {
         if (!tx) {
             return res.status(404).send()
         }
-        tx = tx.toJSON()
+        if (tx._id) {
+            tx = tx.toJSON()
+        }
         tx.from_model = await db.Account.findOne({ hash: tx.from.toLowerCase() })
         let toModel
         if (tx.to) {
