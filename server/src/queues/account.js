@@ -11,7 +11,7 @@ consumer.task = async function (job, done) {
 
     await AccountHelper.processAccount(hash, (e) => {
         if (e) {
-            console.error(consumer.name, e)
+            console.error(consumer.name, hash, e)
             done(e)
         }
     })

@@ -58,12 +58,10 @@ consumer.task = async function (job, done) {
         if (epoch > 1) {
             const q = require('./index')
             q.create('RewardValidatorProcess', { epoch: epoch })
-                .priority('critical').removeOnComplete(true).save().on('error', e => {
-                    throw e
-                })
+                .priority('critical').removeOnComplete(true).save()
         }
     } catch (e) {
-        console.error(consumer.name, e)
+        console.error(consumer.name, epoch, e)
         done(e)
     }
 

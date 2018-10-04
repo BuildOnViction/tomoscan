@@ -44,7 +44,7 @@ consumer.task = async function (job, done) {
         token.status = true
         token.save()
     } catch (e) {
-        console.error(consumer.name, e)
+        console.error(consumer.name, address, e)
         done(e)
     }
 
