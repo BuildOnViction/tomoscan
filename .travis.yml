@@ -63,9 +63,9 @@ jobs:
         - echo -e "Host $DEVNET_SSH_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./travis.pem
       script:
-        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-client:latest devnet_tomoscan
-        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_crawler
-        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_server
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-client:latest devnet_tomoscan 1> /dev/null
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_crawler 1> /dev/null
+        - ssh -i ./travis.pem -l $DEVNET_SSH_USER $DEVNET_SSH_IP docker service update --image tomochain/tomoscan-server:latest devnet_tomoscan_server 1> /dev/null
       after_success:
         -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
       after_failure:
@@ -80,9 +80,9 @@ jobs:
         - echo -e "Host $TESTNET_SSH_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./travis.pem
       script:
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:testnet testnet_tomoscan
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_crawler
-        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_server
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-client:testnet testnet_tomoscan 1> /dev/null
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_crawler 1> /dev/null
+        - ssh -i ./travis.pem -l $TESTNET_SSH_USER $TESTNET_SSH_IP docker service update --image tomochain/tomoscan-server:testnet testnet_tomoscan_server 1> /dev/null
       after_success:
         -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
       after_failure:
