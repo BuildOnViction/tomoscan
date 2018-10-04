@@ -48,6 +48,7 @@
                             :class="(isAccounts || isContracts) ? 'active' : ''"
                             text="Accounts">
                             <b-dropdown-item :to="{name: 'accounts'}">All Accounts</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'masternodes'}">All Masternodes</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'contracts'}">Verified Contracts</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item-dropdown

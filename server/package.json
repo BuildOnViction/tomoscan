@@ -62,6 +62,7 @@
     "slack-notify": "^0.1.6",
     "socket.io": "^2.1.0",
     "solc": "^0.4.23",
+    "url-join": "^4.0.0",
     "web3": "^1.0.0-beta.34"
   },
   "devDependencies": {
