@@ -13,6 +13,7 @@ import SettingController from './SettingController'
 import ContractController from './ContractController'
 import LogController from './LogController'
 import RewardController from './RewardController'
+import MixController from './MixController'
 import MasternodeController from './MasternodeController'
 
 const router = Router()
@@ -31,6 +32,7 @@ router.use(SettingController)
 router.use(ContractController)
 router.use(LogController)
 router.use(RewardController)
+router.use(MixController)
 router.use(MasternodeController)
 
 export default router
