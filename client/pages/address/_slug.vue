@@ -41,7 +41,7 @@
                         <tr>
                             <td>Transactions</td>
                             <td>
-                                <span>{{ formatNumber(txsCount) }}</span> txns
+                                <span>{{ formatNumber(address.transactionCount) }}</span> txns
                             </td>
                         </tr>
                         <tr v-if="address && !address.isContract">

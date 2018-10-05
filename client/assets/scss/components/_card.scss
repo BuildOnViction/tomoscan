@@ -190,12 +190,21 @@
   }
 }
 
+.tomo-card--transaction .tomo-readmore--is-open {
+  width: 60%;
+
+  @include media-breakpoint-up(sm) {
+    width: 90%;
+  }
+}
+
 .tomo-card--transaction .tomo-card__table {
 
   .text-truncate {
+    max-width: 14rem;
 
     @include media-breakpoint-up(sm) {
-      max-width: 12rem;
+      max-width: 18rem;
     }
 
     @include media-breakpoint-up(md) {

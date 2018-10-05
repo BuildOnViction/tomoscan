@@ -2,7 +2,6 @@
 
 import Web3Util from './web3'
 import TokenHelper from './token'
-import ContractHelper from './contract'
 const db = require('../models')
 
 let AccountHelper = {
@@ -38,10 +37,9 @@ let AccountHelper = {
         hash = hash.toLowerCase()
         try {
             let _account = await db.Account.findOne({ hash: hash })
-            if (_account) {
-                return _account
+            if (!_account) {
+                _account = {}
             }
-            _account = {}
 
             let web3 = await Web3Util.getWeb3()
 
@@ -51,14 +49,10 @@ let AccountHelper = {
                 _account.balanceNumber = balance
             }
 
-            // let txCount = await db.Tx.count({ $or: [ { to: hash }, { from: hash } ] })
-            let fromCount = await db.Tx.count({ from: hash })
-            let toCount = await db.Tx.count({ to: hash })
-            let fromToCount = await db.Tx.count({ from: hash, to: hash })
-            let txCount = fromCount + toCount - fromToCount
-
-            if (_account.transactionCount !== txCount) {
-                _account.transactionCount = txCount
+            if (_account.transactionCount) {
+                _account.transactionCount += 1
+            } else {
+                _account.transactionCount = 1
             }
 
             let code = await web3.eth.getCode(hash)
@@ -67,9 +61,6 @@ let AccountHelper = {
 
                 let isToken = await TokenHelper.checkIsToken(code)
                 if (isToken) {
-                    // Insert token pending.
-                    await db.Token.findOneAndUpdate({ hash: hash },
-                        { hash: hash }, { upsert: true, new: true })
                     const q = require('../queues')
                     q.create('TokenProcess', { address: hash })
                         .priority('normal').removeOnComplete(true).save()
@@ -78,6 +69,11 @@ let AccountHelper = {
             }
 
             _account.isContract = (_account.code !== '0x')
+            if (_account.isContract) {
+                const queue = require('../queues')
+                queue.create('ContractProcess', { address: hash })
+                    .priority('normal').removeOnComplete(true).save()
+            }
             _account.status = true
 
             delete _account['_id']
@@ -116,10 +112,6 @@ let AccountHelper = {
         // Inject contract to account object.
         let contract = await db.Contract.findOne({ hash: account.hash })
         account.contract = contract
-        if (contract) {
-            await ContractHelper.updateTxCount(account.hash)
-        }
-        // console.log('account.contract:', account.hash, account.contract)
 
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: account.hash })

@@ -78,16 +78,27 @@ consumer.task = async function (job, done) {
             let reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
             let reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
 
+            let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
+
+            let block = await db.Block.findOne({ number: blockRewardCalculate })
+            let timestamp = new Date()
+            if (!block) {
+                let _block = await web3.eth.getBlock(blockRewardCalculate)
+                if (_block) {
+                    timestamp = _block.timestamp * 1000
+                }
+            } else {
+                timestamp = block.timestamp
+            }
+
             q.create('RewardVoterProcess', {
                 epoch: epoch,
                 validator: validator.address,
                 validatorSignNumber: validator.signNumber,
-                totalReward: reward4voter.toString()
+                totalReward: reward4voter.toString(),
+                rewardTime: timestamp
             })
                 .priority('normal').removeOnComplete(true).save()
-                .on('error', e => {
-                    throw e
-                })
 
             let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
             ownerValidator = ownerValidator.toString().toLowerCase()
@@ -98,9 +109,6 @@ consumer.task = async function (job, done) {
                 balance: reward4validator.toString()
             })
                 .priority('normal').removeOnComplete(true).save()
-                .on('error', e => {
-                    throw e
-                })
 
             let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
             await rewardValidator.push({
@@ -112,6 +120,7 @@ consumer.task = async function (job, done) {
                 reason: 'MasterNode',
                 lockBalance: new BigNumber(lockBalance).toString(),
                 reward: reward4validator.toString(),
+                rewardTime: timestamp,
                 signNumber: validator.signNumber
             })
 
@@ -125,6 +134,7 @@ consumer.task = async function (job, done) {
                 reason: 'Foundation',
                 lockBalance: 0,
                 reward: reward4foundation.toString(),
+                rewardTime: timestamp,
                 signNumber: validator.signNumber
             })
             q.create('AddRewardToAccount', {
@@ -132,9 +142,6 @@ consumer.task = async function (job, done) {
                 balance: reward4foundation
             })
                 .priority('normal').removeOnComplete(true).save()
-                .on('error', e => {
-                    throw e
-                })
         })
         await Promise.all(validatorFinal)
         if (rewardValidator.length > 0) {
