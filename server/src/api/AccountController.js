@@ -1,4 +1,5 @@
 import { Router } from 'express'
+import db from '../models'
 import { paginate } from '../helpers/utils'
 import AccountHelper from '../helpers/account'
 
@@ -54,8 +55,13 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
         if (hash) {
             params.query = { signer: hash }
         }
+        let acc = await db.Account.findOne({ hash: hash })
+        let total = null
+        if (acc) {
+            total = acc.minedBlock
+        }
         params.sort = { number: -1 }
-        let data = await paginate(req, 'Block', params)
+        let data = await paginate(req, 'Block', params, total)
 
         return res.json(data)
     } catch (e) {

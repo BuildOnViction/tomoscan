@@ -50,16 +50,12 @@ let TransactionHelper = {
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
                 q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save().on('error', e => {
-                        throw e
-                    })
+                    .priority('normal').removeOnComplete(true).save()
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
                 q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save().on('error', e => {
-                        throw e
-                    })
+                    .priority('normal').removeOnComplete(true).save()
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
@@ -116,11 +112,13 @@ let TransactionHelper = {
     },
     getTxDetail: async (hash) => {
         hash = hash.toLowerCase()
-        // let tx = await db.Tx.findOne({ hash: hash })
-        // if (tx) {
-        //     return tx
-        // }
-        let tx = { hash: hash }
+        let tx = await db.Tx.findOne({ hash: hash })
+        if (tx && tx.status) {
+            return tx
+        } else {
+            tx = { hash: hash }
+        }
+        // let tx = { hash: hash }
         let web3 = await Web3Util.getWeb3()
 
         let _tx = await web3.eth.getTransaction(hash)

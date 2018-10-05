@@ -3,7 +3,6 @@
 import BlockHelper from '../helpers/block'
 const config = require('config')
 const emitter = require('../helpers/errorHandler')
-const db = require('../models')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
@@ -11,7 +10,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = job.data.block
     try {
-        console.log('Process block: ', blockNumber)
+        console.log('Process block: ', blockNumber, new Date())
         let b = await BlockHelper.crawlBlock(blockNumber, (e) => {
             if (e) {
                 throw e
@@ -41,20 +40,14 @@ consumer.task = async function (job, done) {
             q.create('VoterProcess', { epoch: epoch })
                 .priority('critical').removeOnComplete(true).save()
         }
-    } catch (e) {
-        db.Setting.updateOne({ meta_key: 'min_block_crawl' },
-            { $set: {
-                meta_value: parseInt(blockNumber) - 1 }
-            }).then(() => {
-            emitter.emit('error', e)
-            done(e)
-        }).catch(e => {
-            emitter.emit('error', e)
-            done(e)
-        })
-    }
 
-    done()
+        done()
+    } catch (e) {
+        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+        await sleep(2000)
+        done(e)
+        return emitter.emit('errorCrawlBlock', e, blockNumber)
+    }
 }
 
 module.exports = consumer

@@ -23,6 +23,7 @@
   "SENDER_EMAIL": "contact@tomochain.com",
 
   "CLIENT_URL": "http://localhost:3000/",
+  "TOMOMASTER_URL": "https://master.testnet.tomochain.com",
   "CMC_ID": 2570,
   "SLACK_WEBHOOK_URL": "",
 

@@ -4,7 +4,6 @@ import Web3Util from './helpers/web3'
 const q = require('./queues')
 const db = require('./models')
 const events = require('events')
-const emitter = require('./helpers/errorHandler')
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000
@@ -49,7 +48,10 @@ let watch = async () => {
             }
         }
     } catch (e) {
-        emitter.emit('error', e)
+        console.error(e)
+        console.error('Sleep 2 seconds before going back to work')
+        await sleep(2000)
+        return watch()
     }
 }
 
