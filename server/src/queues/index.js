@@ -18,6 +18,7 @@ const q = kue.createQueue({
     }
 })
 q.setMaxListeners(1000)
+q.watchStuckJobs()
 
 fs.readdirSync(__dirname)
     .filter(function (file) {
