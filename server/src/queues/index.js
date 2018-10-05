@@ -13,10 +13,12 @@ const q = kue.createQueue({
     redis: {
         port: config.get('redis.port'),
         host: config.get('redis.host'),
-        auth: config.get('redis.password')
+        auth: config.get('redis.password'),
+        'socket_keepalive': true
     }
 })
 q.setMaxListeners(1000)
+q.watchStuckJobs()
 
 fs.readdirSync(__dirname)
     .filter(function (file) {

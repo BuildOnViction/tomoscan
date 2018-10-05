@@ -2,7 +2,6 @@ import { Router } from 'express'
 import mongoose from 'mongoose'
 import db from '../models'
 import Web3Util from '../helpers/web3'
-const contractAddress = require('../contracts/contractAddress')
 
 const MixController = Router()
 
