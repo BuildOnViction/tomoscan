@@ -9,14 +9,13 @@ consumer.task = async function (job, done) {
     let hash = job.data.address.toLowerCase()
     console.log('Process account: ', hash)
 
-    await AccountHelper.processAccount(hash, (e) => {
-        if (e) {
-            console.error(consumer.name, hash, e)
-            done(e)
-        }
-    })
+    try {
+        await AccountHelper.processAccount(hash)
+    } catch (e) {
+        return done(e)
+    }
 
-    done()
+    return done()
 }
 
 module.exports = consumer

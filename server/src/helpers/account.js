@@ -33,7 +33,7 @@ let AccountHelper = {
         let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return ac
     },
-    processAccount:async (hash, next) => {
+    processAccount:async (hash) => {
         hash = hash.toLowerCase()
         try {
             let _account = await db.Account.findOne({ hash: hash })
@@ -83,7 +83,7 @@ let AccountHelper = {
 
             return acc
         } catch (e) {
-            next(e)
+            console.error(e)
         }
     },
     async formatAccount (account) {

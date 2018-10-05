@@ -30,7 +30,7 @@ let TransactionHelper = {
                 throw e
             })
     },
-    crawlTransaction: async (hash, timestamp, next) => {
+    crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
 
         try {
@@ -107,7 +107,7 @@ let TransactionHelper = {
 
             return trans
         } catch (e) {
-            return next(e)
+            console.error(e)
         }
     },
     getTxDetail: async (hash) => {

@@ -11,11 +11,7 @@ consumer.task = async function (job, done) {
     let blockNumber = job.data.block
     try {
         console.log('Process block: ', blockNumber, new Date())
-        let b = await BlockHelper.crawlBlock(blockNumber, (e) => {
-            if (e) {
-                throw e
-            }
-        })
+        let b = await BlockHelper.crawlBlock(blockNumber)
         const q = require('./index')
 
         if (b) {
@@ -45,7 +41,7 @@ consumer.task = async function (job, done) {
     } catch (e) {
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
-        done(e)
+        done()
         return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 }
