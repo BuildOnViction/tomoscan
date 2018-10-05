@@ -16,4 +16,8 @@ if [[ ! -z $RE_CAPTCHA_SECRET_FILE ]]; then
   export RE_CAPTCHA_SECRET=$(cat $RE_CAPTCHA_SECRET_FILE)
 fi
 
+if [[ ! -z $SLACK_WEBHOOK_URL_FILE ]]; then
+  export SLACK_WEBHOOK_URL=$(cat $SLACK_WEBHOOK_URL_FILE)
+fi
+
 exec npm "$@"
