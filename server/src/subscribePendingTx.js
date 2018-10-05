@@ -8,8 +8,6 @@ const events = require('events')
 events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-
 let processTransaction = async (hash) => {
     let web3 = await Web3Util.getWeb3()
 
