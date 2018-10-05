@@ -255,7 +255,7 @@ export default {
         if (self.hash) {
             params.address = self.hash
         }
-        params.list = 'events'
+        params.list = 'txs'
 
         let query = this.serializeQuery(params)
 

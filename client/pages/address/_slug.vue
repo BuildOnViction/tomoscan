@@ -139,6 +139,7 @@
                 :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
                 href="#tokenHolding">
                 <table-tokens-by-account
+                    v-if="hashTab === '#tokenHolding'"
                     :address="hash"
                     :parent="'tokenHolding'"
                     :page="this"/>
@@ -277,7 +278,7 @@ export default {
                 params.address = self.hash
             }
 
-            params.list = 'transactions,minedBlocks,events,rewards,tokenHolders'
+            params.list = 'address'
 
             let query = this.serializeQuery(params)
 

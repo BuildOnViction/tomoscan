@@ -136,20 +136,21 @@
                 <b-tabs
                     ref="allTabs"
                     v-model="tabIndex"
-                    class="tomo-tabs">
+                    class="tomo-tabs"
+                    @input="onSwitchTab">
                     <b-tab
                         :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
-                        href="#tokenTransfers"
-                        @click="onClick">
+                        href="#tokenTransfers">
                         <table-token-tx
+                            v-if="hashTab === '#tokenTransfers'"
                             :token="hash"
                             :page="this"/>
                     </b-tab>
                     <b-tab
                         :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
-                        href="#tokenHolders"
-                        @click="onClick">
+                        href="#tokenHolders">
                         <table-token-holder
+                            v-if="hashTab === '#tokenHolders'"
                             :address="hash"
                             :page="this"/>
                     </b-tab>
@@ -211,6 +212,11 @@ export default {
             tabIndex: 0
         }
     },
+    computed: {
+        hashTab () {
+            return this.$route.hash || '#tokenTransfers'
+        }
+    },
     watch: {
         $route (to, from) {
             if (window.location.hash) {
@@ -240,10 +246,10 @@ export default {
         let params = {}
 
         if (self.hash) {
-            params.block = self.number
+            params.token = self.hash
         }
 
-        params.list = 'tokenTxs,tokenHolders'
+        params.list = 'token'
         let query = this.serializeQuery(params)
 
         let responses = await Promise.all([
@@ -283,12 +289,18 @@ export default {
                 })
             }
         },
-        onClick () {
+        onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
+            const location = window.location
+            const value = this.tabIndex
             if (allTabs) {
-                const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
+                if (location.hash !== allTabs.tabs[value].href) {
+                    this.$router.replace({
+                        hash: allTabs.tabs[value].href
+                    })
+                } else {
+                    location.hash = allTabs.tabs[value].href
+                }
             }
         }
     }

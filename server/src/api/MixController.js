@@ -6,58 +6,43 @@ const contractAddress = require('../contracts/contractAddress')
 
 const MixController = Router()
 
-async function getTotalMinedBlocks (address) {
-    let result
-    if (address === contractAddress.BlockSigner) {
-        result = 0
-    } else {
-        result = await mongoose.model('Block').countDocuments({ signer: address }).lean().exec()
+/**
+ * get tx, log, mined block reward count
+ * @param {String} address hash
+ * @returns address information
+ */
+const getAccount = async (address) => {
+    const { transactionCount,
+        logCount,
+        minedBlock,
+        rewardCount } = await mongoose.model('Account').findOne({ hash: address })
+    return {
+        txCount: transactionCount,
+        logCount: logCount,
+        minedBlocks: minedBlock,
+        rewardCount: rewardCount
     }
-    return result
 }
 
-async function getTotalLogs (address) {
-    const result = await mongoose.model('Log').countDocuments({ address: address }).lean().exec()
-    return result
-}
-
-async function getTotalRewards (address) {
-    let result
-    if (address === contractAddress.BlockSigner) {
-        result = 0
-    } else {
-        result = await mongoose.model('Reward').countDocuments({ address: address }).lean().exec()
-    }
-    return result
-}
-
-async function getTotalTokenHolders (address, hash) {
-    const params = {}
-    if (address) {
-        params.query = { token: address }
-    }
+async function getTotalTokenHolders (hash, token) {
+    let params = {}
     if (hash) {
         params.query = { hash: hash }
     }
+    if (token) {
+        params.query = { token: token }
+    }
     params.query = Object.assign(params.query, { quantityNumber: { $gte: 0 } })
+
     const result = await mongoose.model('TokenHolder').countDocuments(params.query).lean().exec()
+
     return result
 }
 
 async function getTotalTokenTx (address, token) {
-    let result
-    if (token) {
-        result = await mongoose.model('TokenTx').countDocuments({ address: token }).lean().exec()
-    }
-    if (address) {
-        const fromCOunt = await mongoose.model('TokenTx').countDocuments({ from: address }).lean().exec()
-        const toCount = await mongoose.model('TokenTx').countDocuments({ to: address }).lean().exec()
-        const fromToCount = await mongoose.model('TokenTx').countDocuments({ from: address, to: address }).lean().exec()
+    const { txCount } = await mongoose.model('Token').findOne({ hash: address || token })
 
-        result = fromCOunt + toCount - fromToCount
-    }
-
-    return result
+    return txCount
 }
 
 async function getTotalBlockSigners (blockNumber) {
@@ -94,31 +79,8 @@ async function getTotalTransactions (address, block) {
         total = await db.Tx.count({ blockNumber: blockNumber })
     }
 
-    if (typeof address !== 'undefined') {
-        let account = await db.Account.findOne({ hash: address })
-        // if account is contract, has more condition
-        if (account && account.isContract) {
-            let fromCount = await mongoose.model('Tx').countDocuments({ from: address }).lean().exec()
-
-            let toCount = await mongoose.model('Tx').countDocuments({ to: address }).lean().exec()
-
-            let contractCount = await mongoose.model('Tx')
-                .countDocuments({ contractAddress: address }).lean().exec()
-
-            let fromToAddressCount = await mongoose.model('Tx')
-                .countDocuments({ from: address, to: address, contractAddress: address }).lean().exec()
-
-            total = fromCount + toCount + contractCount - fromToAddressCount
-        } else {
-            let fromCount = await mongoose.model('Tx').countDocuments({ from: address }).lean().exec()
-
-            let toCount = await mongoose.model('Tx').countDocuments({ to: address }).lean().exec()
-
-            let fromToCount = await mongoose.model('Tx')
-                .countDocuments({ from: address, to: address }).lean().exec()
-
-            total = fromCount + toCount - fromToCount
-        }
+    if (address) {
+        total = await getAccount(address).txCount
     }
 
     // If exist blockNumber & not found txs on db (or less than) will get txs on chain
@@ -160,26 +122,33 @@ MixController.get('/counting', async (req, res) => {
 
         for (let i = 0; i < list.length; i++) {
             switch (list[i]) {
-            case 'minedBlocks':
-                result.minedBlocks = await getTotalMinedBlocks(address)
-                break
-            case 'events':
-                result.events = await getTotalLogs(address)
-                break
-            case 'rewards':
-                result.rewards = await getTotalRewards(address)
-                break
-            case 'tokenHolders':
+            case 'address':
+                const acc = await getAccount(address)
+                result.minedBlocks = acc.minedBlocks
+                result.txes = acc.txCount
+                result.rewards = acc.rewardCount
+                result.events = acc.logCount
                 result.tokenHolders = await getTotalTokenHolders(address, hash)
                 break
-            case 'tokenTxs':
-                result.tokenTxs = await getTotalTokenTx(address, token)
+            case 'blocks':
+                let blockData = await Promise.all([
+                    getTotalTransactions(address, block),
+                    getTotalBlockSigners(block)
+                ])
+                result.txes = blockData[0]
+                result.blockSigners = blockData[1]
                 break
-            case 'blockSigners':
-                result.blockSigners = await getTotalBlockSigners(block)
+            case 'token':
+                let tokenData = await Promise.all([
+                    getTotalTokenHolders(address, token),
+                    getTotalTokenTx(address, token)
+                ])
+                result.tokenHolders = tokenData[0]
+                result.tokenTxs = tokenData[1]
                 break
-            case 'transactions':
-                result.txes = await getTotalTransactions(address, block)
+            case 'txes':
+                const { logCount } = await getAccount(address)
+                result.events = logCount
                 break
             default:
                 break

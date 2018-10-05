@@ -254,7 +254,7 @@ export default {
         if (self.number) {
             params.block = self.number
         }
-        params.list = 'transactions,blockSigners'
+        params.list = 'blocks'
 
         let query = this.serializeQuery(params)
 
