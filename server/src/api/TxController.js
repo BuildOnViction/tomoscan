@@ -32,8 +32,7 @@ TxController.get('/txs', async (req, res) => {
         let type = req.query.type
         switch (type) {
         case 'pending':
-            params.query = { blockNumber: null, block: null }
-            params.limit = 0
+            params.query = { blockNumber: null }
             break
         case 'token':
             break
