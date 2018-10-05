@@ -43,6 +43,8 @@ BlockController.get('/blocks', async (req, res, next) => {
             if (e) throw e
 
             let params = { query: { number: { $in: blockNumbers } }, sort: { number: -1 } }
+            let total = await db.Block.countDocuments()
+
             if (maxBlockNumber) {
                 params.total = maxBlockNumber
             }
@@ -58,7 +60,7 @@ BlockController.get('/blocks', async (req, res, next) => {
             if (req.query.to) {
                 params.query = {}
             }
-            let data = await paginate(req, 'Block', params, null, true)
+            let data = await paginate(req, 'Block', params, total, true)
 
             return res.json(data)
         })
