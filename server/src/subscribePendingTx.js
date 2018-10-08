@@ -18,6 +18,7 @@ let processTransaction = async (hash) => {
     if (tx.to) {
         tx.to = tx.to.toLowerCase()
     }
+    tx.isPending = true
     await db.Tx.findOneAndUpdate({ hash: hash }, tx,
         { upsert: true, new: true })
 }
