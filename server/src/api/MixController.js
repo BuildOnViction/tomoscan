@@ -1,5 +1,4 @@
 import { Router } from 'express'
-import mongoose from 'mongoose'
 import db from '../models'
 import Web3Util from '../helpers/web3'
 
@@ -11,15 +10,21 @@ const MixController = Router()
  * @returns address information
  */
 const getAccount = async (address) => {
-    const { transactionCount,
-        logCount,
-        minedBlock,
-        rewardCount } = await mongoose.model('Account').findOne({ hash: address })
+    let acc = await db.Account.findOne({ hash: address })
+    if (acc) {
+        return {
+            txCount: acc.transactionCount,
+            logCount: acc.logCount,
+            minedBlocks: acc.minedBlock,
+            rewardCount: acc.rewardCount
+        }
+    }
+
     return {
-        txCount: transactionCount,
-        logCount: logCount,
-        minedBlocks: minedBlock,
-        rewardCount: rewardCount
+        txCount: 0,
+        logCount: 0,
+        minedBlocks: 0,
+        rewardCount: 0
     }
 }
 
@@ -33,47 +38,51 @@ async function getTotalTokenHolders (hash, token) {
     }
     params.query = Object.assign(params.query, { quantityNumber: { $gte: 0 } })
 
-    const result = await mongoose.model('TokenHolder').countDocuments(params.query).lean().exec()
+    const result = await db.TokenHolder.countDocuments(params.query).lean().exec()
 
     return result
 }
 
 async function getTotalTokenTx (address, token) {
-    const { txCount } = await mongoose.model('Token').findOne({ hash: address || token })
-
-    return txCount
+    let tk = await db.Token.findOne({ hash: address || token })
+    if (tk) {
+        return tk.txCount
+    }
+    return 0
 }
 
 async function getTotalBlockSigners (blockNumber) {
     let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
 
-    let signers
-    let checkInChain = false
     if (blockSigner) {
-        if (blockSigner.signers) {
-            signers = blockSigner.signers
+        let signers = []
+        let checkInChain = false
+        if (blockSigner) {
+            if (blockSigner.signers) {
+                signers = blockSigner.signers
+            } else {
+                checkInChain = true
+            }
         } else {
             checkInChain = true
         }
-    } else {
-        checkInChain = true
-    }
 
-    if (checkInChain) {
-        let web3 = await Web3Util.getWeb3()
+        if (checkInChain) {
+            let web3 = await Web3Util.getWeb3()
 
-        let block = await web3.eth.getBlock(blockNumber)
-        signers = []
-        if (block.signers) {
-            signers = block.signers
+            let block = await web3.eth.getBlock(blockNumber)
+            if (block.signers) {
+                signers = block.signers
+            }
         }
+        return signers.length
     }
-    return signers.length
+    return 0
 }
 
 async function getTotalTransactions (address, block) {
     let blockNumber = !isNaN(block) ? block : null
-    let total
+    let total = 0
     if (blockNumber) {
         total = await db.Tx.count({ blockNumber: blockNumber })
     }
