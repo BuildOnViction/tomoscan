@@ -27,6 +27,18 @@ let AccountHelper = {
 
         _account.isContract = (_account.code !== '0x')
         _account.status = true
+        if (!_account.transactionCount) {
+            _account.transactionCount = 0
+        }
+        if (!_account.minedBlock) {
+            _account.minedBlock = 0
+        }
+        if (!_account.rewardCount) {
+            _account.rewardCount = 0
+        }
+        if (!_account.logCount) {
+            _account.logCount = 0
+        }
 
         delete _account['_id']
 
