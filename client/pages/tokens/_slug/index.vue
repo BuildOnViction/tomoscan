@@ -136,20 +136,21 @@
                 <b-tabs
                     ref="allTabs"
                     v-model="tabIndex"
-                    class="tomo-tabs">
+                    class="tomo-tabs"
+                    @input="onSwitchTab">
                     <b-tab
                         :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
-                        href="#tokenTransfers"
-                        @click="onClick">
+                        href="#tokenTransfers">
                         <table-token-tx
+                            v-if="hashTab === '#tokenTransfers'"
                             :token="hash"
                             :page="this"/>
                     </b-tab>
                     <b-tab
                         :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
-                        href="#tokenHolders"
-                        @click="onClick">
+                        href="#tokenHolders">
                         <table-token-holder
+                            v-if="hashTab === '#tokenHolders'"
                             :address="hash"
                             :page="this"/>
                     </b-tab>
@@ -211,6 +212,11 @@ export default {
             tabIndex: 0
         }
     },
+    computed: {
+        hashTab () {
+            return this.$route.hash || '#tokenTransfers'
+        }
+    },
     watch: {
         $route (to, from) {
             if (window.location.hash) {
@@ -237,13 +243,30 @@ export default {
             to: { name: 'tokens-slug', params: { slug: self.hash } }
         })
 
-        let { data } = await self.$axios.get('/api/tokens/' + self.hash)
-        self.token = data
-        self.tokenName = data.name
-        self.symbol = data.symbol
+        let params = {}
+
+        if (self.hash) {
+            params.token = self.hash
+        }
+
+        params.list = 'token'
+        let query = this.serializeQuery(params)
+
+        let responses = await Promise.all([
+            self.$axios.get('/api/tokens/' + self.hash),
+            self.$axios.get('/api/counting' + '?' + query)
+        ])
+
+        self.token = responses[0].data
+        self.tokenName = responses[0].data.name
+        self.symbol = responses[0].data.symbol
+
+        self.tokenTxsCount = responses[1].data.tokenTxs
+
+        self.holdersCount = responses[1].data.tokenHolders
 
         self.loading = false
-        self.moreInfo = data.moreInfo
+        self.moreInfo = responses[0].data.moreInfo
         self.getAccountFromApi()
     },
     methods: {
@@ -266,12 +289,18 @@ export default {
                 })
             }
         },
-        onClick () {
+        onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
+            const location = window.location
+            const value = this.tabIndex
             if (allTabs) {
-                const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
+                if (location.hash !== allTabs.tabs[value].href) {
+                    this.$router.replace({
+                        hash: allTabs.tabs[value].href
+                    })
+                } else {
+                    location.hash = allTabs.tabs[value].href
+                }
             }
         }
     }

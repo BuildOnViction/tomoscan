@@ -15,7 +15,7 @@ SignMessageController.get('/verifySignedMess', async (req, res, next) => {
 
         let result = await web3.eth.accounts.recover(signedMessage, signature)
 
-        if (acc.contractCreation === result) {
+        if (acc.contractCreation === result.toLowerCase()) {
             res.send('OK')
         } else {
             res.send({

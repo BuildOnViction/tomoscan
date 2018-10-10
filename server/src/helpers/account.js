@@ -27,13 +27,25 @@ let AccountHelper = {
 
         _account.isContract = (_account.code !== '0x')
         _account.status = true
+        if (!_account.transactionCount) {
+            _account.transactionCount = 0
+        }
+        if (!_account.minedBlock) {
+            _account.minedBlock = 0
+        }
+        if (!_account.rewardCount) {
+            _account.rewardCount = 0
+        }
+        if (!_account.logCount) {
+            _account.logCount = 0
+        }
 
         delete _account['_id']
 
         let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return ac
     },
-    processAccount:async (hash, next) => {
+    processAccount:async (hash) => {
         hash = hash.toLowerCase()
         try {
             let _account = await db.Account.findOne({ hash: hash })
@@ -83,7 +95,7 @@ let AccountHelper = {
 
             return acc
         } catch (e) {
-            next(e)
+            console.error(e)
         }
     },
     async formatAccount (account) {

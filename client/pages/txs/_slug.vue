@@ -31,10 +31,12 @@
                     class="tomo-tabs"
                     @input="onSwitchTab">
                     <b-tab
-                        :active="hashTab === 'overview'"
+                        :active="hashTab === '#overview'"
                         title="Overview"
                         href="#overview">
-                        <div class="card tomo-card tomo-card--transaction">
+                        <div
+                            v-if="hashTab === '#overview'"
+                            class="card tomo-card tomo-card--transaction">
                             <div class="tomo-card__body">
                                 <table
                                     v-if="tx"
@@ -196,6 +198,7 @@
                         :title="'Events (' + formatNumber(eventsCount) + ')'"
                         href="#events">
                         <table-event
+                            v-if="hashTab === '#events'"
                             :tx="hash"
                             :page="this"/>
                     </b-tab>
@@ -231,7 +234,7 @@ export default {
     },
     computed: {
         hashTab () {
-            return this.$route.hash
+            return this.$route.hash || '#overview'
         }
     },
     created () {
@@ -247,11 +250,25 @@ export default {
             to: { name: 'txs-slug', params: { slug: self.hash } }
         })
 
-        let { data } = await this.$axios.get('/api/txs/' + self.hash)
+        let params = {}
 
-        this.tx = data
-        let moment = self.$moment(data.timestamp)
+        if (self.hash) {
+            params.address = self.hash
+        }
+        params.list = 'txs'
+
+        let query = this.serializeQuery(params)
+
+        let responses = await Promise.all([
+            this.$axios.get('/api/txs/' + self.hash),
+            this.$axios.get('/api/counting' + '?' + query)
+        ])
+
+        this.tx = responses[0].data
+        let moment = self.$moment(responses[0].data.timestamp)
         this.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
+
+        self.eventsCount = responses[1].data.events
 
         self.loading = false
     },

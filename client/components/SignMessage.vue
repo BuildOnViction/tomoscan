@@ -194,7 +194,7 @@ export default {
                     self.error = true
                 }
             }
-            if (self.error) {
+            if (!self.error) {
                 self.step = 0
                 self.page.authen = true
             }
