@@ -1,7 +1,7 @@
+import TokenHolderHelper from './helpers/tokenHolder'
+import BigNumber from 'bignumber.js'
 const db = require('./models')
 const config = require('config')
-import TokenHolderHelper from './helpers/tokenHolder'
-import BigNumber from "bignumber.js";
 
 async function RemoveProcess (revertToBlock) {
     let lastBlockOnDb = await db.Block.find().sort({ number: -1 }).limit(1)
@@ -15,7 +15,7 @@ async function RemoveProcess (revertToBlock) {
 
             // Delete reward
             if (b % config.get('BLOCK_PER_EPOCH') === 0) {
-                await db.Reward.deleteMany({ epoch: ( b / config.get('BLOCK_PER_EPOCH')) })
+                await db.Reward.deleteMany({ epoch: (b / config.get('BLOCK_PER_EPOCH')) })
             }
 
             // Delete block
@@ -23,26 +23,25 @@ async function RemoveProcess (revertToBlock) {
 
             let txIdes = []
 
-            let txes = await db.Tx.find({blockNumber: b})
+            let txes = await db.Tx.find({ blockNumber: b })
             for (let i = 0; i < txes.length; i++) {
                 let tx = txes[i]
                 // Delete everything about token create in this block
                 if (tx.contractAddress) {
-                    await db.Account.findOneAndDelete({hash: tx.contractAddress})
-                    await db.Contract.findOneAndDelete({hash: tx.contractAddress})
-                    await db.Token.findOneAndDelete({hash: tx.contractAddress})
-                    await db.TokenHolder.findOneAndDelete({hash: tx.contractAddress})
-                    await db.TokenHolder.findOneAndDelete({token: tx.contractAddress})
-                    await db.TokenInfo.findOneAndDelete({hash: tx.contractAddress})
-                    await db.TokenTx.findOneAndDelete({address: tx.contractAddress})
+                    await db.Account.findOneAndDelete({ hash: tx.contractAddress })
+                    await db.Contract.findOneAndDelete({ hash: tx.contractAddress })
+                    await db.Token.findOneAndDelete({ hash: tx.contractAddress })
+                    await db.TokenHolder.findOneAndDelete({ hash: tx.contractAddress })
+                    await db.TokenHolder.findOneAndDelete({ token: tx.contractAddress })
+                    await db.TokenInfo.findOneAndDelete({ hash: tx.contractAddress })
+                    await db.TokenTx.findOneAndDelete({ address: tx.contractAddress })
                 }
                 txIdes.push(tx.hash)
-
             }
 
             // Modify token holder amount
-            if (txIdes){
-                let tokenTx = await db.TokenTx.find({transactionHash: {$in: txIdes}})
+            if (txIdes) {
+                let tokenTx = await db.TokenTx.find({ transactionHash: { $in: txIdes } })
                 for (let i = 0; i < tokenTx.length; i++) {
                     let tx = tokenTx[i]
                     await TokenHolderHelper.updateQuality(tx.to, tx.address, new BigNumber(tx.value).multipliedBy(-1))
