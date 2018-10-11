@@ -36,6 +36,10 @@ consumer.task = async function (job, done) {
             token.decimals = decimals
         }
 
+        if (!token.txCount) {
+            token.txCount = 0
+        }
+
         let totalSupply = await web3.eth.call({ to: token.hash, data: tokenFuncs['totalSupply'] })
         totalSupply = await web3.utils.hexToNumberString(totalSupply).trim()
         token.totalSupply = totalSupply
