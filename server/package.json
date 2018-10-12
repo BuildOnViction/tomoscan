@@ -6,10 +6,11 @@
     "dev": "nodemon --exec \"babel-node ./src/crawl.js --presets es2015,stage-0\" & nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-0\"",
     "server-dev": "nodemon --inspect -w src --exec \"babel-node src --presets es2015,stage-0\"",
     "crawl-dev": "nodemon --exec \"babel-node ./src/crawl.js --presets es2015,stage-0\"",
-    "pending-tx": "nodemon --exec \"babel-node ./src/subscribePendingTx.js --presets es2015,stage-0\"",
+    "subscribe-pending-tx-dev": "nodemon --exec \"babel-node ./src/subscribePendingTx.js --presets es2015,stage-0\"",
     "build": "babel src -s -D -d dist --presets es2015,stage-0",
     "start": "node dist",
     "crawl": "node dist/crawl.js",
+    "subscribe-pending-tx": "node dist/subscribePendingTx.js",
     "build-prod": "npm run -s build",
     "test": "eslint src"
   },
