@@ -173,9 +173,9 @@
                     <b-col
                         md="6"
                         class="tomo-footer__copyright">
-                        <p>Tomoscan 2018 - Running on Tomochain
+                        <p>TomoScan 2018 - Running on TomoChain
                             <code class="text-muted copyright__code">
-                                tomo/v0.1.0-alpha/linux-amd64/go1.10.3
+                                tomo/v0.2.2-alpha/linux-amd64/go1.10.3
                             </code>
                         </p>
                     </b-col>
