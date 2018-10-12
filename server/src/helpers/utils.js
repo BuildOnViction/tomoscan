@@ -41,12 +41,12 @@ const utils = {
         }
     },
     trimWord: async (word) => {
-    return word
-        .replace('\t', '')
-        .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
-        .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
-        .replace(/\u001a/g, '') // eslint-disable-line no-control-regex
-        .trim()
+        return word
+            .replace('\t', '')
+            .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
+            .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
+            .replace(/\u001a/g, '') // eslint-disable-line no-control-regex
+            .trim()
     },
     getSigner: async (block) => {
         let signer = null

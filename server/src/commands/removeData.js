@@ -24,7 +24,6 @@ const revert = async (revertToBlock) => {
                 await db.Reward.deleteMany({ epoch: epoch })
             }
 
-
             let txIdes = []
 
             let txes = await db.Tx.find({ blockNumber: b })
@@ -63,4 +62,3 @@ const revert = async (revertToBlock) => {
 }
 
 module.exports = { revert }
-

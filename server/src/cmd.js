@@ -8,7 +8,6 @@ program
     .version('0.1.0')
     .description('Data command')
 
-
 program
     .command('revert <blockNumber>')
     .alias('rv')
