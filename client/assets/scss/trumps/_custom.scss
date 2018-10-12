@@ -88,3 +88,29 @@
   color: violet;
   text-decoration: underline
 }
+
+.wrapper { 
+  overflow:hidden;
+}
+
+#one {
+  float:left; 
+  width: 70%;
+  margin-top: 18px;
+}
+#two {
+  float: left;
+  text-align: center;
+  width: 30%;
+}
+
+@media screen and (max-width: 1100px) {
+   #one { 
+    float: none;
+    width:auto;
+  }
+  #two { 
+    float: none;
+    width:auto;
+  }
+}

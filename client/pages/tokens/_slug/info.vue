@@ -19,7 +19,12 @@
                         :key="index">{{ error }}</li>
                 </ul>
                 <b-row>
-                    <table class="tomo-card__table">
+                    <sign-message-step
+                        :address="hash"
+                        :page="this"/>
+                    <table
+                        v-if="authen"
+                        class="tomo-card__table">
                         <tbody>
                             <tr>
                                 <td>Contract</td>
@@ -142,9 +147,11 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
+import SignMessageStep from '~/components/SignMessage'
 
 export default {
     components: {
+        SignMessageStep
     },
     mixins: [mixin],
     head () {
@@ -189,7 +196,9 @@ export default {
             },
             website: '',
             overview: '',
-            icoInfo: ''
+            icoInfo: '',
+            signMessage: '',
+            authen: false
         }
     },
     created () {
