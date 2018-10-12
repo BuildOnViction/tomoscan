@@ -16,8 +16,7 @@ export const paginate = async (
 
     if (total === null) {
         total = await mongoose.model(modelName).countDocuments(params.query)
-    }console.log(params.query)
-    console.log(total)
+    }
 
     let pages = Math.ceil(total / perPage)
 
