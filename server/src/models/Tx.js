@@ -23,6 +23,7 @@ const Tx = new Schema({
     from_model: { type: Schema.Types.ObjectId, ref: 'Account' },
     to_model: { type: Schema.Types.ObjectId, ref: 'Account' },
     status: { type: Boolean, default: false },
+    isPending: { type: Boolean, index: true, default: false },
     timestamp: Date
 }, {
     timestamps: true,

@@ -32,10 +32,13 @@ TxController.get('/txs', async (req, res) => {
         let type = req.query.type
         switch (type) {
         case 'pending':
-            params.query = { blockNumber: null, block: null }
-            params.limit = 0
+            params.query = { isPending: true }
+            params.sort = { createdAt: -1 }
             break
         case 'token':
+            break
+        default:
+            params.query = { isPending: false }
             break
         }
 
@@ -80,7 +83,7 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         if (total === null) {
-            total = await db.Tx.count(params.query)
+            total = await db.Tx.count(params.query).lean().exec()
         }
         let pages = Math.ceil(total / perPage)
         let offset = page > 1 ? (page - 1) * perPage : 0

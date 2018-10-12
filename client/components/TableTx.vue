@@ -29,7 +29,7 @@
                     :to="{name: 'txs-slug', params: {slug: props.item.hash}}"
                     class="text-truncate">
                     <i
-                        v-if="!props.item.status"
+                        v-if="type !== 'pending' && !props.item.status"
                         class="fa fa-exclamation mr-1 text-danger tx-failed"/>
                     {{ props.item.hash }}</nuxt-link>
             </template>
