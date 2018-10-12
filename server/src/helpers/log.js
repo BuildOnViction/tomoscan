@@ -34,4 +34,4 @@ let LogHelper = {
     }
 }
 
-export default LogHelper
+module.exports = LogHelper

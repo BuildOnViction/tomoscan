@@ -171,4 +171,4 @@ let TransactionHelper = {
     }
 }
 
-export default TransactionHelper
+module.exports = TransactionHelper

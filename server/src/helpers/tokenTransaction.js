@@ -56,4 +56,4 @@ let TokenTransactionHelper = {
     }
 }
 
-export default TokenTransactionHelper
+module.exports = TokenTransactionHelper

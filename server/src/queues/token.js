@@ -1,8 +1,8 @@
 'use strict'
 
-import Web3Util from '../helpers/web3'
-import TokenHelper from '../helpers/token'
-import { trimWord } from '../helpers/utils'
+const Web3Util = require('../helpers/web3')
+const TokenHelper = require('../helpers/token')
+const utils = require('../helpers/utils')
 const db = require('../models')
 const BigNumber = require('bignumber.js')
 
@@ -20,13 +20,13 @@ consumer.task = async function (job, done) {
 
         if (!token.name) {
             let name = await web3.eth.call({ to: token.hash, data: tokenFuncs['name'] })
-            name = await trimWord(await web3.utils.hexToUtf8(name))
+            name = await utils.trimWord(await web3.utils.hexToUtf8(name))
             token.name = name
         }
 
         if (!token.symbol) {
             let symbol = await web3.eth.call({ to: token.hash, data: tokenFuncs['symbol'] })
-            symbol = await trimWord(await web3.utils.hexToUtf8(symbol))
+            symbol = await utils.trimWord(await web3.utils.hexToUtf8(symbol))
             token.symbol = symbol
         }
 
