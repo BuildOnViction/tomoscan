@@ -32,4 +32,4 @@ let TokenHelper = {
     }
 }
 
-export default TokenHelper
+module.exports = TokenHelper

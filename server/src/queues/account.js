@@ -1,6 +1,6 @@
 'use strict'
 
-import AccountHelper from '../helpers/account'
+const AccountHelper = require('../helpers/account')
 
 const consumer = {}
 consumer.name = 'AccountProcess'

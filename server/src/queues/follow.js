@@ -1,6 +1,6 @@
 'use strict'
 
-import EmailService from '../services/Email'
+const EmailService = require('../services/Email')
 const db = require('../models')
 
 const consumer = {}

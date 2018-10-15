@@ -35,4 +35,4 @@ let FollowHelper = {
     }
 }
 
-export default FollowHelper
+module.exports = FollowHelper

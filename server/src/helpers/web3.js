@@ -1,5 +1,5 @@
-import Web3 from 'web3'
-import config from 'config'
+const Web3 = require('web3')
+const config = require('config')
 // const config = require('config')
 
 let Web3Http = null
@@ -21,4 +21,4 @@ let Web3Util = {
     }
 }
 
-export default Web3Util
+module.exports = Web3Util

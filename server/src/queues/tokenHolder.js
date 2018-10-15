@@ -1,6 +1,6 @@
 'use strict'
 
-import TokenHolderHelper from '../helpers/tokenHolder'
+const TokenHolderHelper = require('../helpers/tokenHolder')
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
