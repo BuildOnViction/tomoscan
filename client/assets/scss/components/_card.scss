@@ -31,6 +31,11 @@
     }
   }
 
+  i.token-status {
+    color: $color-primary;
+    font-size: 16px;
+  }
+
   &__headline {
     font-size: 24px;
     font-weight: 500;
