@@ -99,16 +99,20 @@
                     </tbody>
                 </table>
                 <div class="text-center text-lg-right tomo-qrcode">
-                    <button
-                        v-clipboard="hash"
-                        type="button"
-                        class="btn btn-sm mr-2 code-actions__copy"
-                        @success="copyAddress">
-                    <i class="fa fa-clipboard" />Copy</button>
-                    <vue-qrcode
-                        :value="hash"
-                        :options="{size: 250}"
-                        class="img-fluid"/>
+                    <div>
+                        <button
+                            v-clipboard="hash"
+                            type="button"
+                            class="btn btn-sm mr-2 code-actions__copy"
+                            @success="copyAddress">
+                        <i class="fa fa-clipboard" /> Copy</button>
+                    </div>
+                    <div>
+                        <vue-qrcode
+                            :value="hash"
+                            :options="{size: 250}"
+                            class="img-fluid"/>
+                    </div>
                 </div>
             </div>
         </div>
