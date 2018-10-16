@@ -25,8 +25,8 @@ let TokenHelper = {
     },
 
     formatToken: async (item) => {
-        item.name = formatAscIIJSON(item.name)
-        item.symbol = formatAscIIJSON(item.symbol)
+        item.name = await formatAscIIJSON(item.name)
+        item.symbol = await formatAscIIJSON(item.symbol)
 
         return item
     }
