@@ -8,7 +8,7 @@ const TokenController = Router()
 TokenController.get('/tokens', async (req, res) => {
     try {
         let data = await paginate(req, 'Token',
-            { sort: { totalSupplyNumber: -1 } })
+            { sort: { createdAt: -1 } })
 
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]
