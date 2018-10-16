@@ -99,6 +99,7 @@ let TransactionHelper = {
                 }
             }
             tx.status = receipt.status
+            tx.isPending = false
 
             delete tx['_id']
 
@@ -144,6 +145,7 @@ let TransactionHelper = {
             tx.blockNumber = receipt.blockNumber
         }
         tx.status = receipt.status
+        tx.isPending = false
         tx.from = tx.from.toLowerCase()
         if (tx.to) {
             tx.to = tx.to.toLowerCase()
