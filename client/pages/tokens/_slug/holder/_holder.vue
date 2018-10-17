@@ -66,12 +66,6 @@
                         <table
                             v-if="token"
                             class="tomo-card__table">
-                            <thead>
-                                <tr>
-                                    <td/>
-                                    <th class="text-md-right">Reputation</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 <tr>
                                     <td>Contract</td>
