@@ -61,6 +61,11 @@ let TransactionHelper = {
                     let contractAddress = receipt.contractAddress.toLowerCase()
                     tx.contractAddress = contractAddress
 
+                    q.create('TokenProcess', { address: contractAddress })
+                        .priority('normal').removeOnComplete(true).save().on('error', (e) => {
+                            throw e
+                        })
+
                     await db.Account.findOneAndUpdate(
                         { hash: contractAddress },
                         {
