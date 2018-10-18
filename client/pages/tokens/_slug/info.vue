@@ -160,46 +160,46 @@ export default {
         }
     },
     data: () => ({
-            hash: null,
-            token: null,
-            tokenName: null,
-            symbol: null,
-            loading: true,
-            address: null,
-            errors: [],
-            socialValue: [{
-                type: '',
-                value: ''
-            }],
-            socialIcon: {
-                facebook: 'fa fa-facebook',
-                email: 'fa fa-envelope',
-                medium: 'fa fa-pencil-square-o',
-                twitter: 'fa fa-twitter',
-                bitcointalk: 'fa fa-btc',
-                github: 'fa fa-github',
-                telegram: 'fa fa-telegram',
-                whitepaper: 'fa fa-file-text-o',
-                coinmarketcap: 'fa fa-bar-chart'
-            },
-            social: {
-                facebook: 'Facebook',
-                email: 'Email',
-                medium: 'Medium',
-                twitter: 'Twitter',
-                bitcointalk: 'BitcoinTalk',
-                github: 'Github',
-                telegram: 'Telegram',
-                whitepaper: 'WhitePager',
-                coinmarketcap: 'CoinMarketCap'
-            },
-            website: '',
-            overview: '',
-            icoInfo: '',
-            signMessage: '',
-            authen: false,
-            signHash: '',
-            sigMessage: ''
+        hash: null,
+        token: null,
+        tokenName: null,
+        symbol: null,
+        loading: true,
+        address: null,
+        errors: [],
+        socialValue: [{
+            type: '',
+            value: ''
+        }],
+        socialIcon: {
+            facebook: 'fa fa-facebook',
+            email: 'fa fa-envelope',
+            medium: 'fa fa-pencil-square-o',
+            twitter: 'fa fa-twitter',
+            bitcointalk: 'fa fa-btc',
+            github: 'fa fa-github',
+            telegram: 'fa fa-telegram',
+            whitepaper: 'fa fa-file-text-o',
+            coinmarketcap: 'fa fa-bar-chart'
+        },
+        social: {
+            facebook: 'Facebook',
+            email: 'Email',
+            medium: 'Medium',
+            twitter: 'Twitter',
+            bitcointalk: 'BitcoinTalk',
+            github: 'Github',
+            telegram: 'Telegram',
+            whitepaper: 'WhitePager',
+            coinmarketcap: 'CoinMarketCap'
+        },
+        website: '',
+        overview: '',
+        icoInfo: '',
+        signMessage: '',
+        authen: false,
+        signHash: '',
+        sigMessage: ''
     }),
     created () {
         this.hash = this.$route.params.slug

@@ -177,18 +177,16 @@ export default {
         },
         async verifySignedMessage () {
             let self = this
-            let params = {}
+            let body = {}
             if (self.message) {
-                params.message = self.message
+                body.message = self.message
             }
             if (!self.sigHash) {
                 self.error = true
             } else {
-                params.signature = self.sigHash
-                params.hash = self.address
-                params.message = self.message
-                const query = self.serializeQuery(params)
-                let { data } = await self.$axios.get('/api/verifySignedMess' + '?' + query)
+                body.signature = self.sigHash
+                body.hash = self.address
+                let { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
                     self.error = true

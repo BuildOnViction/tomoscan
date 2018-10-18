@@ -4,14 +4,18 @@ import Web3Util from '../helpers/web3'
 
 const SignMessageController = Router()
 
-SignMessageController.get('/verifySignedMess', async (req, res, next) => {
+SignMessageController.post('/verifySignedMess', async (req, res, next) => {
     try {
         let web3 = await Web3Util.getWeb3()
-        const signedMessage = req.query.message || ''
-        const signature = req.query.signature || ''
-        const hash = req.query.hash || ''
+        const signedMessage = req.body.message || ''
+        const signature = req.body.signature || ''
+        const hash = req.body.hash || ''
 
         let acc = await db.Account.findOne({ hash: hash })
+
+        if (!acc) {
+            return res.status(404).send()
+        }
 
         let result = await web3.eth.accounts.recover(signedMessage, signature)
 
