@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHelper from '../helpers/token'
+import Web3Util from '../helpers/web3'
 
 const TokenController = Router()
 
@@ -67,11 +68,24 @@ TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
         if (!token) {
             return res.status(404).send()
         }
-        let body = req.body
+        // verify sign message second time
+        let web3 = await Web3Util.getWeb3()
+        const signedMessage = req.body.signData.sigMessage || ''
+        const signature = req.body.signData.sigHash || ''
 
-        await db.TokenInfo.findOneAndUpdate({ hash: hash }, body, { upsert: true, new: true })
+        let acc = await db.Account.findOne({ hash: hash })
 
-        res.json({ message: 'Update successful' })
+        let result = await web3.eth.accounts.recover(signedMessage, signature)
+
+        if (acc.contractCreation === result.toLowerCase()) {
+            let body = req.body.data
+
+            await db.TokenInfo.findOneAndUpdate({ hash: hash }, body, { upsert: true, new: true })
+
+            res.json({ message: 'Update successful' })
+        } else {
+            return res.status(406).send('Unacceptable sign message')
+        }
     } catch (e) {
         console.trace(e)
         console.log(e)

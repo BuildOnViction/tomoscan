@@ -159,48 +159,48 @@ export default {
             title: 'Token ' + this.$route.params.slug + ' Info'
         }
     },
-    data () {
-        return {
-            hash: null,
-            token: null,
-            tokenName: null,
-            symbol: null,
-            loading: true,
-            address: null,
-            errors: [],
-            socialValue: [{
-                type: '',
-                value: ''
-            }],
-            socialIcon: {
-                facebook: 'fa fa-facebook',
-                email: 'fa fa-envelope',
-                medium: 'fa fa-pencil-square-o',
-                twitter: 'fa fa-twitter',
-                bitcointalk: 'fa fa-btc',
-                github: 'fa fa-github',
-                telegram: 'fa fa-telegram',
-                whitepaper: 'fa fa-file-text-o',
-                coinmarketcap: 'fa fa-bar-chart'
-            },
-            social: {
-                facebook: 'Facebook',
-                email: 'Email',
-                medium: 'Medium',
-                twitter: 'Twitter',
-                bitcointalk: 'BitcoinTalk',
-                github: 'Github',
-                telegram: 'Telegram',
-                whitepaper: 'WhitePager',
-                coinmarketcap: 'CoinMarketCap'
-            },
-            website: '',
-            overview: '',
-            icoInfo: '',
-            signMessage: '',
-            authen: false
-        }
-    },
+    data: () => ({
+        hash: null,
+        token: null,
+        tokenName: null,
+        symbol: null,
+        loading: true,
+        address: null,
+        errors: [],
+        socialValue: [{
+            type: '',
+            value: ''
+        }],
+        socialIcon: {
+            facebook: 'fa fa-facebook',
+            email: 'fa fa-envelope',
+            medium: 'fa fa-pencil-square-o',
+            twitter: 'fa fa-twitter',
+            bitcointalk: 'fa fa-btc',
+            github: 'fa fa-github',
+            telegram: 'fa fa-telegram',
+            whitepaper: 'fa fa-file-text-o',
+            coinmarketcap: 'fa fa-bar-chart'
+        },
+        social: {
+            facebook: 'Facebook',
+            email: 'Email',
+            medium: 'Medium',
+            twitter: 'Twitter',
+            bitcointalk: 'BitcoinTalk',
+            github: 'Github',
+            telegram: 'Telegram',
+            whitepaper: 'WhitePager',
+            coinmarketcap: 'CoinMarketCap'
+        },
+        website: '',
+        overview: '',
+        icoInfo: '',
+        signMessage: '',
+        authen: false,
+        signHash: '',
+        sigMessage: ''
+    }),
     created () {
         this.hash = this.$route.params.slug
     },
@@ -252,11 +252,17 @@ export default {
                 }
             }
             let body = {
-                hash: this.hash,
-                website: this.website,
-                communities: communities,
-                overview: this.overview,
-                icoInfo: this.icoInfo
+                signData: {
+                    sigMessage: this.signMessage,
+                    sigHash: this.signHash
+                },
+                data: {
+                    hash: this.hash,
+                    website: this.website,
+                    communities: communities,
+                    overview: this.overview,
+                    icoInfo: this.icoInfo
+                }
             }
             let { data } = await this.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
             if (data.errors) {
