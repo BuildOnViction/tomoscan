@@ -1,6 +1,6 @@
 'use strict'
 
-import BlockHelper from '../helpers/block'
+const BlockHelper = require('../helpers/block')
 const config = require('config')
 const emitter = require('../helpers/errorHandler')
 

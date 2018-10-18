@@ -1,8 +1,7 @@
 'use strict'
 
-import Web3Util from './web3'
-import { getSigner, toAddress } from './utils'
-
+const Web3Util = require('./web3')
+const utils = require('./utils')
 const db = require('../models')
 
 let BlockHelper = {
@@ -23,7 +22,7 @@ let BlockHelper = {
         let timestamp = _block.timestamp * 1000
 
         // Get signer.
-        let signer = toAddress(getSigner(_block), 100)
+        let signer = await utils.toAddress(await utils.getSigner(_block), 100)
         signer = signer.toLowerCase()
 
         await db.Account.update({ hash: signer }, { $inc: { minedBlock: 1 } })
@@ -75,7 +74,7 @@ let BlockHelper = {
                 return null
             }
             // Get signer.
-            let signer = toAddress(getSigner(_block), 100)
+            let signer = await utils.toAddress(await utils.getSigner(_block), 100)
             _block.signer = signer.toLowerCase()
 
             // Update end tx count.
@@ -112,4 +111,4 @@ let BlockHelper = {
     }
 }
 
-export default BlockHelper
+module.exports = BlockHelper

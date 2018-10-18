@@ -1,7 +1,7 @@
 'use strict'
 
-import db from '../models'
-import BigNumber from 'bignumber.js'
+const db = require('../models')
+const BigNumber = require('bignumber.js')
 
 const consumer = {}
 consumer.name = 'AddRewardToAccount'

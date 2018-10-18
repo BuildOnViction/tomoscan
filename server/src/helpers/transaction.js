@@ -61,6 +61,11 @@ let TransactionHelper = {
                     let contractAddress = receipt.contractAddress.toLowerCase()
                     tx.contractAddress = contractAddress
 
+                    q.create('AccountProcess', { address: contractAddress })
+                        .priority('normal').removeOnComplete(true).save().on('error', (e) => {
+                            throw e
+                        })
+
                     await db.Account.findOneAndUpdate(
                         { hash: contractAddress },
                         {
@@ -99,6 +104,7 @@ let TransactionHelper = {
                 }
             }
             tx.status = receipt.status
+            tx.isPending = false
 
             delete tx['_id']
 
@@ -144,6 +150,7 @@ let TransactionHelper = {
             tx.blockNumber = receipt.blockNumber
         }
         tx.status = receipt.status
+        tx.isPending = false
         tx.from = tx.from.toLowerCase()
         if (tx.to) {
             tx.to = tx.to.toLowerCase()
@@ -171,4 +178,4 @@ let TransactionHelper = {
     }
 }
 
-export default TransactionHelper
+module.exports = TransactionHelper

@@ -136,8 +136,7 @@
                                         </tr>
                                         <tr>
                                             <td>Gas Price</td>
-                                            <td>{{ formatUnit(toEther(tx.gasPrice)) }}
-                                                ({{ toGwei(tx.gasPrice) }} Gwei)</td>
+                                            <td>{{ formatUnit(toEther(tx.gasPrice)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
@@ -156,9 +155,10 @@
                                                             :to="{
                                                                 name: 'tokens-slug',
                                                                 params: {slug: tokenTx.address}}">
+                                                            &nbsp;
                                                             <span
                                                                 v-if="tokenTx.symbol"
-                                                                v-html="'&nbsp;TRC20 (' + tokenTx.symbol + ')'"/>
+                                                                v-html="'TRC20 (' + tokenTx.symbol + ')'"/>
                                                         </nuxt-link>
                                                         <span>&nbsp;from&nbsp;</span>
                                                         <nuxt-link

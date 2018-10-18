@@ -1,7 +1,7 @@
 'use strict'
 
 import web3 from 'web3'
-import { unformatAddress } from '../helpers/utils'
+const utils = require('../helpers/utils')
 const db = require('../models')
 
 const consumer = {}
@@ -19,10 +19,10 @@ consumer.task = async function (job, done) {
         }
 
         if (log.topics[1]) {
-            _log.from = unformatAddress(log.topics[1])
+            _log.from = await utils.unformatAddress(log.topics[1])
         }
         if (log.topics[2]) {
-            _log.to = unformatAddress(log.topics[2])
+            _log.to = await utils.unformatAddress(log.topics[2])
         }
         _log.value = web3.utils.hexToNumberString(log.data)
         _log.valueNumber = _log.value

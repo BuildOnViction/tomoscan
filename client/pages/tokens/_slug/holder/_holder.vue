@@ -8,6 +8,10 @@
                 <h2
                     class="tomo-card__headline"
                     v-html="tokenName"/>&nbsp;
+                <i
+                    v-if="moreInfo"
+                    class="fa fa-check-circle token-status"
+                    aria-hidden="true"/>
                 <h6 class="mb-0">{{ symbol }}</h6>
             </div>
             <div class="tomo-card__body">
@@ -62,12 +66,6 @@
                         <table
                             v-if="token"
                             class="tomo-card__table">
-                            <thead>
-                                <tr>
-                                    <td/>
-                                    <th class="text-md-right">Reputation</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 <tr>
                                     <td>Contract</td>

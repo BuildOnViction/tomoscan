@@ -1,4 +1,4 @@
-const db = require('./models')
+const db = require('../models')
 
 async function AccountProcess () {
     let accounts = await db.Account.find()
@@ -56,7 +56,7 @@ async function TokenProcess () {
     }
 }
 
-async function run () {
+const updateTxCount = async () => {
     console.log('Start process', new Date())
     console.log('------------------------------------------------------------------------')
     await AccountProcess()
@@ -69,4 +69,4 @@ async function run () {
     process.exit(1)
 }
 
-run()
+module.exports = { updateTxCount }

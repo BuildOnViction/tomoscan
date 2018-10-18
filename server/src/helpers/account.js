@@ -1,7 +1,7 @@
 'use strict'
 
-import Web3Util from './web3'
-import TokenHelper from './token'
+const Web3Util = require('./web3')
+const TokenHelper = require('./token')
 const db = require('../models')
 
 let AccountHelper = {
@@ -152,4 +152,4 @@ let AccountHelper = {
     }
 }
 
-export default AccountHelper
+module.exports = AccountHelper

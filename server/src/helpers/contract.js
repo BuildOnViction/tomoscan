@@ -1,5 +1,5 @@
 import axios from 'axios'
-import db from '../models'
+const db = require('../models')
 
 let ContractHelper = {
     async getVersions () {
@@ -63,4 +63,4 @@ let ContractHelper = {
     }
 }
 
-export default ContractHelper
+module.exports = ContractHelper

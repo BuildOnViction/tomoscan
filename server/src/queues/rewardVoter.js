@@ -1,7 +1,7 @@
 'use strict'
 
-import Web3Util from '../helpers/web3'
-import BigNumber from 'bignumber.js'
+const Web3Util = require('../helpers/web3')
+const BigNumber = require('bignumber.js')
 
 const db = require('../models')
 const config = require('config')
