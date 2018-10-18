@@ -196,6 +196,8 @@ export default {
             }
             if (!self.error) {
                 self.step = 0
+                self.page.signHash = self.sigHash
+                self.page.signMessage = self.message
                 self.page.authen = true
             }
         },

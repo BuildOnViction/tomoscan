@@ -159,8 +159,7 @@ export default {
             title: 'Token ' + this.$route.params.slug + ' Info'
         }
     },
-    data () {
-        return {
+    data: () => ({
             hash: null,
             token: null,
             tokenName: null,
@@ -198,9 +197,10 @@ export default {
             overview: '',
             icoInfo: '',
             signMessage: '',
-            authen: false
-        }
-    },
+            authen: false,
+            signHash: '',
+            sigMessage: ''
+    }),
     created () {
         this.hash = this.$route.params.slug
     },
@@ -252,11 +252,17 @@ export default {
                 }
             }
             let body = {
-                hash: this.hash,
-                website: this.website,
-                communities: communities,
-                overview: this.overview,
-                icoInfo: this.icoInfo
+                signData: {
+                    sigMessage: this.signMessage,
+                    sigHash: this.signHash
+                },
+                data: {
+                    hash: this.hash,
+                    website: this.website,
+                    communities: communities,
+                    overview: this.overview,
+                    icoInfo: this.icoInfo
+                }
             }
             let { data } = await this.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
             if (data.errors) {
