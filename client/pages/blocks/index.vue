@@ -51,16 +51,8 @@
             </template>
 
             <template
-                slot="gasUsed"
-                slot-scope="props">
-                <p><span>{{ formatNumber(props.item.gasUsed) }}</span>
-                    <small>({{ (100 * props.item.gasUsed / props.item.gasLimit).toFixed(2) }} %)</small>
-                </p>
-            </template>
-
-            <template
-                slot="gasLimit"
-                slot-scope="props">{{ formatNumber(props.item.gasLimit) }}</template>
+                slot="finality"
+                slot-scope="props">{{ formatNumber(props.item.finality) }}</template>
         </table-base>
 
         <b-pagination-nav
@@ -99,7 +91,7 @@ export default {
             e_tx: { label: 'txn' },
             miner: { label: 'Miner' },
             gasUsed: { label: 'GasUsed' },
-            gasLimit: { label: 'GasLimit' }
+            finality: { label: 'Finality' }
         },
         loading: true,
         pagination: {},
