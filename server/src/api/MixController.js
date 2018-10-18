@@ -54,30 +54,27 @@ async function getTotalTokenTx (address, token) {
 async function getTotalBlockSigners (blockNumber) {
     let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
 
+    let signers = []
+    let checkInChain = false
     if (blockSigner) {
-        let signers = []
-        let checkInChain = false
-        if (blockSigner) {
-            if (blockSigner.signers) {
-                signers = blockSigner.signers
-            } else {
-                checkInChain = true
-            }
+        if (blockSigner.signers) {
+            signers = blockSigner.signers
         } else {
             checkInChain = true
         }
-
-        if (checkInChain) {
-            let web3 = await Web3Util.getWeb3()
-
-            let block = await web3.eth.getBlock(blockNumber)
-            if (block.signers) {
-                signers = block.signers
-            }
-        }
-        return signers.length
+    } else {
+        checkInChain = true
     }
-    return 0
+
+    if (checkInChain) {
+        let web3 = await Web3Util.getWeb3()
+
+        let block = await web3.eth.getBlock(blockNumber)
+        if (block.signers) {
+            signers = block.signers
+        }
+    }
+    return signers.length
 }
 
 async function getTotalTransactions (address, block) {
