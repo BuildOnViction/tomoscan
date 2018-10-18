@@ -16,7 +16,7 @@ TxController.get('/txs', async (req, res) => {
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
         let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
-            params.query = { blockNumber: blockNumber }
+            params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
         }
 
         // Check filter type.
@@ -32,13 +32,13 @@ TxController.get('/txs', async (req, res) => {
         let type = req.query.type
         switch (type) {
         case 'pending':
-            params.query = { isPending: true }
+            params.query = Object.assign({}, params.query, { isPending: true })
             params.sort = { createdAt: -1 }
             break
         case 'token':
             break
         default:
-            params.query = { isPending: false }
+            params.query = Object.assign({}, params.query, { isPending: false })
             break
         }
 
