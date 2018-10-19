@@ -53,7 +53,7 @@
                     <div
                         id="two">
                         <vue-qrcode
-                            :value="message"
+                            :value="qrCode"
                             :options="{size: 250 }"
                             class="img-fluid text-center text-lg-right tomo-qrcode"/>
                     </div>
@@ -161,7 +161,8 @@ export default {
         message: '',
         sigHash: '',
         step: 1,
-        error: false
+        error: false,
+        qrCode: ''
     }),
     mounted () {
         let self = this
@@ -170,6 +171,10 @@ export default {
             ' I, hereby verify that the information provided is accurate and ' +
             'I am the owner/creator of the token contract address ' +
             '[' + self.address + ']'
+        const objSign = {
+            message: self.message
+        }
+        self.qrCode = JSON.stringify(objSign)
     },
     methods: {
         next () {
