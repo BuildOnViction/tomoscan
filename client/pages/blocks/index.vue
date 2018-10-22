@@ -58,14 +58,12 @@
         <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
-            :total-rows="total"
             :per-page="perPage"
             :number-of-pages="pages"
             :link-gen="linkGen"
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
         />
     </section>
 </template>
@@ -107,15 +105,15 @@ export default {
             this.onChangePaginate(page)
         }
     },
-    mounted () {
+    async mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'blocks', to: { name: 'blocks' } })
 
         const query = this.$route.query
 
-        self.currentPage = parseInt(query.page)
+        this.currentPage = parseInt(query.page)
 
-        this.getDataFromApi()
+        await this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {

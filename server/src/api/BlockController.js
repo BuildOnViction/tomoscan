@@ -10,6 +10,10 @@ const BlockController = Router()
 
 BlockController.get('/blocks', async (req, res, next) => {
     try {
+        console.log(`
+        
+        
+        query: ${JSON.stringify(req.query)}`)
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         perPage = Math.min(25, perPage)
@@ -61,6 +65,11 @@ BlockController.get('/blocks', async (req, res, next) => {
                 params.query = {}
             }
             let data = await paginate(req, 'Block', params, total, true)
+
+            await Promise.all(data.items.map(async (block) => {
+                const blockData = await BlockHelper.getBlockDetail(block.number)
+                block.finality = blockData.finality
+            }))
 
             return res.json(data)
         })
