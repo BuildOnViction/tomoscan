@@ -35,4 +35,18 @@ SignMessageController.post('/verifySignedMess', async (req, res, next) => {
     }
 })
 
+SignMessageController.post('/generateId', async (req, res, next) => {
+    try {
+        let web3 = await Web3Util.getWeb3()
+
+        const message = req.body.message || ''
+        const id = await web3.utils.sha3(message)
+        res.send(id)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 export default SignMessageController

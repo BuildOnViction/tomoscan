@@ -164,17 +164,18 @@ export default {
         error: false,
         qrCode: ''
     }),
-    mounted () {
+    async mounted () {
         let self = this
 
-        self.message = '[Tomoscan ' + (new Date().toLocaleString().replace(/['"]+/g, '')) + ']' +
+        self.message = '[Tomoscan ' + (new Date().toLocaleString().replace(/['"]+/g, '')) +
+            ' ' + (new Date()).getTime() + ']' +
             ' I, hereby verify that the information provided is accurate and ' +
             'I am the owner/creator of the token contract address ' +
             '[' + self.address + ']'
-        const objSign = {
-            message: self.message
-        }
-        self.qrCode = JSON.stringify(objSign)
+        const idHash = await self.$axios.post('/api/generateId', { message: self.message })
+
+        self.qrCode = 'tomochain:sign?message=' + self.message + '&' +
+            'submitURL=https://example.com/api/signMessage/verify/' + idHash.data
     },
     methods: {
         next () {
