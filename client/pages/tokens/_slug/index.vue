@@ -138,6 +138,7 @@
                     @input="onSwitchTab">
                     <b-tab
                         :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
+                        :active="hashTab === '#tokenTransfers'"
                         href="#tokenTransfers">
                         <table-token-tx
                             v-if="hashTab === '#tokenTransfers'"
@@ -146,6 +147,7 @@
                     </b-tab>
                     <b-tab
                         :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
+                        :active="hashTab === '#tokenHolders'"
                         href="#tokenHolders">
                         <table-token-holder
                             v-if="hashTab === '#tokenHolders'"
@@ -154,9 +156,12 @@
                     </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
+                        :active="hashTab === '#code'"
                         title="Code"
+                        href="#code"
                         @click="refreshCodeMirror">
                         <read-source-code
+                            v-if="hashTab === '#code'"
                             ref="readSourceCode"
                             :token="hash"
                             :smartcontract="smartContract"
@@ -164,8 +169,11 @@
                     </b-tab>
                     <b-tab
                         v-if="smartContract"
-                        title="Read Contract">
+                        :active="hashTab === '#readContract'"
+                        title="Read Contract"
+                        href="#readContract">
                         <read-contract
+                            v-if="hashTab === '#readContract'"
                             :contract="hash"/>
                     </b-tab>
                 </b-tabs>
@@ -215,20 +223,8 @@ export default {
             return this.$route.hash || '#tokenTransfers'
         }
     },
-    watch: {
-        $route (to, from) {
-            if (window.location.hash) {
-                this.updateHashChange()
-            }
-        }
-    },
     created () {
         this.hash = this.$route.params.slug
-    },
-    updated () {
-        if (window.location.hash) {
-            this.updateHashChange()
-        }
     },
     async mounted () {
         let self = this
@@ -274,18 +270,6 @@ export default {
             let { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
-        },
-        updateHashChange () {
-            const allTabs = this.$refs.allTabs
-            if (this.$route.hash) {
-                allTabs.tabs.forEach((i, index) => {
-                    if (i.href === this.$route.hash) {
-                        this.tabIndex = index
-                        return
-                    }
-                    return true
-                })
-            }
         },
         onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
