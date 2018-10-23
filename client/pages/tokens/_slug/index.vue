@@ -20,11 +20,6 @@
                         <table
                             v-if="token"
                             class="tomo-card__table">
-                            <thead>
-                                <tr>
-                                    <th>Summary</th>
-                                </tr>
-                            </thead>
                             <tbody>
                                 <tr>
                                     <td>Total Supply</td>
