@@ -75,10 +75,10 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
             'I am the owner/creator of the token contract address ' +
             '[' + address + ']'
 
-        const id = await web3.utils.sha3(message + (new Date()).getTime() + Math.random().toString())
+        const id = await web3.utils.soliditySha3(message + (new Date()).getTime() + Math.random().toString())
         res.send({
             message,
-            url: `${config.get('WEB3_URI')}api/signMessage/verify?id=`,
+            url: `${config.get('BASE_URL')}api/signMessage/verify?id=`,
             id
         })
     } catch (e) {
