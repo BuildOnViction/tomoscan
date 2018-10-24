@@ -162,22 +162,55 @@ export default {
         sigHash: '',
         step: 1,
         error: false,
-        qrCode: ''
+        qrCode: '',
+        messId: '',
+        processingMess: true,
+        internal: null
     }),
     async mounted () {
         let self = this
 
         let { data } = await self.$axios.post('/api/generateSignMess', { address: self.address })
-        console.log(data.url)
 
         self.message = data.message
+        self.messId = data.id
 
         self.qrCode = encodeURI('tomochain:sign?message=' + data.message + '&' +
-            'submitURL=' + data.url)
+            'submitURL=' + data.url + data.id)
+
+        if (self.processingMess) {
+            self.interval = setInterval(async () => {
+                await this.verifyScannedQR()
+            }, 10000)
+        }
     },
     methods: {
         next () {
             this.step++
+        },
+        async verifyScannedQR () {
+            let self = this
+            let body = {}
+            if (self.message) {
+                body.message = self.message
+            }
+            body.signature = self.sigHash
+            body.hash = self.address
+            body.messId = self.messId
+            let { data } = await self.$axios.post('/api/verifyScanedMess', body)
+
+            if (data.error) {
+                self.processingMess = false
+            }
+            if (data === 'OK') {
+                if (self.interval) {
+                    clearInterval(self.interval)
+                }
+                self.step = 0
+                self.page.signHash = self.sigHash
+                self.page.signMessage = self.message
+                self.page.authen = true
+            }
         },
         async verifySignedMessage () {
             let self = this
@@ -193,14 +226,18 @@ export default {
                 let { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
+                    self.processingMess = false
                     self.error = true
                 }
-            }
-            if (!self.error) {
-                self.step = 0
-                self.page.signHash = self.sigHash
-                self.page.signMessage = self.message
-                self.page.authen = true
+                if (data === 'OK') {
+                    if (self.interval) {
+                        clearInterval(self.interval)
+                    }
+                    self.step = 0
+                    self.page.signHash = self.sigHash
+                    self.page.signMessage = self.message
+                    self.page.authen = true
+                }
             }
         },
         onSuccess () {

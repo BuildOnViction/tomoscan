@@ -12,15 +12,44 @@ SignMessageController.post('/verifySignedMess', async (req, res, next) => {
         const signature = req.body.signature || ''
         const hash = req.body.hash || ''
 
-        let acc = await db.Account.findOne({ hash: hash })
+        const acc = await db.Account.findOne({ hash: hash })
 
         if (!acc) {
             return res.status(404).send()
         }
-
-        let result = await web3.eth.accounts.recover(signedMessage, signature)
+        const result = await web3.eth.accounts.recover(signedMessage, signature)
 
         if (acc.contractCreation === result.toLowerCase()) {
+            res.send('OK')
+        } else {
+            res.send({
+                error: {
+                    message: 'Not match'
+                }
+            })
+        }
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
+SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
+    try {
+        const hash = req.body.hash || ''
+        const messId = req.body.messId || ''
+
+        const acc = await db.Account.findOne({ hash: hash })
+
+        if (!acc) {
+            return res.status(404).send()
+        }
+        const signature = await db.Signature.findOne({ signedAddress: acc.contractCreation })
+        // let result = await web3.eth.accounts.recover(signedMessage, signature)
+
+        if (signature && acc.contractCreation === signature.signedAddress.toLowerCase() &&
+            messId === signature.signedAddressId) {
             res.send('OK')
         } else {
             res.send({
@@ -49,7 +78,8 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
         const id = await web3.utils.sha3(message + (new Date()).getTime() + Math.random().toString())
         res.send({
             message,
-            url: config.get('WEB3_URI') + 'api/signMessage/verify?id=' + id + '&address=' + address
+            url: `${config.get('WEB3_URI')}api/signMessage/verify?id=`,
+            id
         })
     } catch (e) {
         console.trace(e)
@@ -65,7 +95,7 @@ SignMessageController.post('/signMessage/verify', async (req, res, next) => {
         const signature = req.body.signature.toLowerCase() || ''
         const id = req.query.id || ''
 
-        const signedAddress = await web3.eth.accounts.recover(message, signature)
+        const signedAddress = await web3.eth.accounts.recover(message, signature).toLowerCase()
 
         // Store id, address, msg, signature
         let sign = await db.Signature.findOne({ signedAddress: signedAddress })
