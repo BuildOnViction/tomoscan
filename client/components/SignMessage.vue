@@ -181,7 +181,7 @@ export default {
         if (self.processingMess) {
             self.interval = setInterval(async () => {
                 await this.verifyScannedQR()
-            }, 10000)
+            }, 2000)
         }
     },
     methods: {
