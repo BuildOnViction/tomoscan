@@ -62,6 +62,17 @@ BlockController.get('/blocks', async (req, res, next) => {
             }
             let data = await paginate(req, 'Block', params, total, true)
 
+            await Promise.all(data.items.map(async (block) => {
+                if (block.finality < 100) {
+                    const blockData = await web3.eth.getBlock(block.number)
+                    if (blockData.finality) {
+                        block.finality = parseInt(blockData.finality)
+                    } else {
+                        block.finality = 0
+                    }
+                }
+            }))
+
             return res.json(data)
         })
     } catch (e) {

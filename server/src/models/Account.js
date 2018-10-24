@@ -4,7 +4,7 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Account = new Schema({
-    hash: { type: String, index: true },
+    hash: { type: String, unique: true, index: true },
     balance: { type: String },
     balanceNumber: { type: Number, index: true },
     code: String,

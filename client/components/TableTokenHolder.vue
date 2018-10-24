@@ -72,7 +72,7 @@ export default {
             rank: { label: 'Rank' },
             hash: { label: 'Address' },
             quantity: { label: 'Quantity' },
-            percentAge: { label: 'Percentage' }
+            percentage: { label: 'Percentage' }
         },
         loading: true,
         pagination: {},
