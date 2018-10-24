@@ -11,10 +11,10 @@ let TokenHolderHelper = {
             let quantity = new BigNumber(await utils.convertHexToFloat(tokenHolder.quantity, 16))
             tokenHolder.balance = tokenHolder.balance || quantity.toString(10)
 
-            let percentAge = quantity.div(10 ** decimals).div(totalSupply) * 100
-            percentAge = percentAge.toFixed(4)
-            percentAge = (percentAge.toString() === '0.0000') ? '0.0001' : percentAge
-            tokenHolder.percentAge = percentAge
+            let percentage = await quantity.div(totalSupply) * 100
+            percentage = percentage.toFixed(4)
+            percentage = (percentage.toString() === '0.0000') ? '0.0001' : percentage
+            tokenHolder.percentage = percentage
         }
 
         return tokenHolder
