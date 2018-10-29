@@ -6,7 +6,7 @@ const db = require('../models')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
-consumer.processNumber = 6
+consumer.processNumber = 12
 consumer.task = async function (job, done) {
     try {
         let log = JSON.parse(job.data.log)
