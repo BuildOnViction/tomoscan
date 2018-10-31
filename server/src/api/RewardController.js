@@ -60,4 +60,19 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res
     }
 })
 
+RewardController.get('/expose/rewards/:slug', async (req, res) => {
+    try {
+        const address = req.params.slug.toLowerCase() || ''
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 0
+
+        const reward = await db.Reward.find({ address: address }).sort({ _id: -1 }).limit(limit)
+
+        res.send(reward)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 export default RewardController
