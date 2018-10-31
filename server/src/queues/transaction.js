@@ -4,7 +4,7 @@ import TransactionHelper from '../helpers/transaction'
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
-consumer.processNumber = 3
+consumer.processNumber = 12
 consumer.task = async function (job, done) {
     let hash = job.data.hash.toLowerCase()
     let timestamp = job.data.timestamp
