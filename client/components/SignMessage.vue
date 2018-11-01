@@ -19,7 +19,7 @@
                         type="radio"
                         checked>
                     <b>
-                        Contract Owner/Creator: {{ address }}
+                        Contract Owner/address: {{ creator }}
                     </b>
                 </div>
                 <div
@@ -53,7 +53,7 @@
                     <div
                         id="two">
                         <vue-qrcode
-                            :value="message"
+                            :value="qrCode"
                             :options="{size: 250 }"
                             class="img-fluid text-center text-lg-right tomo-qrcode"/>
                     </div>
@@ -80,11 +80,11 @@
             <div style="margin-left: 15px; margin-top: 15px">
                 <div>
                     <div>
-                        <b>Contract Owner/Creator Address *</b>
+                        <b>Contract Owner/address Address *</b>
                     </div>
                     <div>
                         <input
-                            :value="address"
+                            :value="creator"
                             class="form-control"
                             type="text"
                             disabled
@@ -161,19 +161,58 @@ export default {
         message: '',
         sigHash: '',
         step: 1,
-        error: false
+        error: false,
+        qrCode: '',
+        messId: '',
+        processingMess: true,
+        internal: null,
+        creator: ''
     }),
-    mounted () {
+    async mounted () {
         let self = this
+        let acc = await this.$axios.get('/api/contractCreator/' + self.address)
+        self.creator = acc.data.contractCreation || self.address
+        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.creator })
 
-        self.message = '[Tomoscan ' + (new Date().toLocaleString().replace(/['"]+/g, '')) + ']' +
-            ' I, hereby verify that the information provided is accurate and ' +
-            'I am the owner/creator of the token contract address ' +
-            '[' + self.address + ']'
+        self.message = data.message
+        self.messId = data.id
+
+        self.qrCode = encodeURI('tomochain:sign?message=' + data.message + '&' +
+            'submitURL=' + data.url + data.id)
+
+        if (self.processingMess) {
+            self.interval = setInterval(async () => {
+                await this.verifyScannedQR()
+            }, 2000)
+        }
     },
     methods: {
         next () {
             this.step++
+        },
+        async verifyScannedQR () {
+            let self = this
+            let body = {}
+            if (self.message) {
+                body.message = self.message
+            }
+            body.signature = self.sigHash
+            body.hash = self.address
+            body.messId = self.messId
+            let { data } = await self.$axios.post('/api/verifyScanedMess', body)
+
+            if (data.error) {
+                self.processingMess = false
+            }
+            if (data === 'OK') {
+                if (self.interval) {
+                    clearInterval(self.interval)
+                }
+                self.step = 0
+                self.page.signHash = self.sigHash
+                self.page.signMessage = self.message
+                self.page.authen = true
+            }
         },
         async verifySignedMessage () {
             let self = this
@@ -189,14 +228,18 @@ export default {
                 let { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
+                    self.processingMess = false
                     self.error = true
                 }
-            }
-            if (!self.error) {
-                self.step = 0
-                self.page.signHash = self.sigHash
-                self.page.signMessage = self.message
-                self.page.authen = true
+                if (data === 'OK') {
+                    if (self.interval) {
+                        clearInterval(self.interval)
+                    }
+                    self.step = 0
+                    self.page.signHash = self.sigHash
+                    self.page.signMessage = self.message
+                    self.page.authen = true
+                }
             }
         },
         onSuccess () {

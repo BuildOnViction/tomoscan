@@ -22,6 +22,7 @@
   "SENDGRID_API_KEY": "",
   "SENDER_EMAIL": "contact@tomochain.com",
 
+  "BASE_URL": "https://scan.testnet.tomochain.com/",
   "CLIENT_URL": "http://localhost:3000/",
   "TOMOMASTER_URL": "https://master.testnet.tomochain.com",
   "CMC_ID": 2570,
