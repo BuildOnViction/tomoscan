@@ -60,4 +60,32 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res
     }
 })
 
+RewardController.post('/expose/rewards', async (req, res) => {
+    try {
+        const address = req.body.address || null
+        const owner = req.body.owner || null
+        const limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 0
+        let params = {}
+
+        if (owner) {
+            params = {
+                validator: address.toLowerCase(),
+                address: owner.toLowerCase()
+            }
+        } else {
+            params = {
+                address: address.toLowerCase()
+            }
+        }
+
+        const reward = await db.Reward.find(params).sort({ _id: -1 }).limit(limit)
+
+        res.send(reward)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 export default RewardController

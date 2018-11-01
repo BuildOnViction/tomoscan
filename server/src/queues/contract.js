@@ -4,7 +4,7 @@ const db = require('../models')
 
 const consumer = {}
 consumer.name = 'ContractProcess'
-consumer.processNumber = 6
+consumer.processNumber = 8
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     console.log('Process contract: ', address)

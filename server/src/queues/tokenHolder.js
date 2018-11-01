@@ -4,7 +4,7 @@ const TokenHolderHelper = require('../helpers/tokenHolder')
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
-consumer.processNumber = 12
+consumer.processNumber = 24
 consumer.task = async function (job, done) {
     let token = JSON.parse(job.data.token)
     console.log('Process token holder: ', token.from, token.to, token.value)
