@@ -65,6 +65,7 @@ RewardController.post('/expose/rewards', async (req, res) => {
         const address = req.body.address || null
         const owner = req.body.owner || null
         const limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 0
+        const reason = req.body.reason || null
         let params = {}
 
         if (owner) {
@@ -76,6 +77,10 @@ RewardController.post('/expose/rewards', async (req, res) => {
             params = {
                 address: address.toLowerCase()
             }
+        }
+
+        if (reason) {
+            params = Object.assign(params, { reason: reason })
         }
 
         const reward = await db.Reward.find(params).sort({ _id: -1 }).limit(limit)
