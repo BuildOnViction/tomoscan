@@ -296,4 +296,19 @@ ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
     return res.json(result)
 })
 
+ContractController.get('/contractCreator/:slug', async (req, res, next) => {
+    try {
+        let hash = req.params.slug
+        hash = hash.toLowerCase()
+        let account
+        account = await db.Account.findOne({ hash: hash })
+
+        return res.json(account)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(404).send()
+    }
+})
+
 export default ContractController

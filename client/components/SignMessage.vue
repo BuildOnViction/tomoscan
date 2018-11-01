@@ -19,7 +19,7 @@
                         type="radio"
                         checked>
                     <b>
-                        Contract Owner/Creator: {{ address }}
+                        Contract Owner/address: {{ creator }}
                     </b>
                 </div>
                 <div
@@ -80,11 +80,11 @@
             <div style="margin-left: 15px; margin-top: 15px">
                 <div>
                     <div>
-                        <b>Contract Owner/Creator Address *</b>
+                        <b>Contract Owner/address Address *</b>
                     </div>
                     <div>
                         <input
-                            :value="address"
+                            :value="creator"
                             class="form-control"
                             type="text"
                             disabled
@@ -165,12 +165,14 @@ export default {
         qrCode: '',
         messId: '',
         processingMess: true,
-        internal: null
+        internal: null,
+        creator: ''
     }),
     async mounted () {
         let self = this
-
-        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.address })
+        let acc = await this.$axios.get('/api/contractCreator/' + self.address)
+        self.creator = acc.data.contractCreation || self.address
+        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.creator })
 
         self.message = data.message
         self.messId = data.id
