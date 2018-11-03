@@ -21,7 +21,7 @@ const epochReward = async (epoch) => {
 
     // Delete old reward
     console.log('Remove old reward')
-    await db.Reward.remove({epoch: epoch})
+    await db.Reward.remove({ epoch: epoch })
 
     let totalReward = new BigNumber(config.get('REWARD')).multipliedBy(10 ** 18)
     let validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
@@ -34,7 +34,6 @@ const epochReward = async (epoch) => {
     // verify block was on chain
     console.log('Begin get block signer')
     for (let i = startBlock; i <= endBlock; i++) {
-
         let blockHash = (await web3.eth.getBlock(i)).hash
         let ss = await bs.methods.getSigners(blockHash).call()
         db.BlockSigner.updateOne({
@@ -103,7 +102,6 @@ const epochReward = async (epoch) => {
         let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
         ownerValidator = ownerValidator.toString().toLowerCase()
 
-
         let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
         await rewardValidator.push({
             epoch: epoch,
@@ -138,10 +136,9 @@ const epochReward = async (epoch) => {
     }
     console.log('End process', new Date())
     process.exit(1)
-
 }
 
-async function rewardVoterProcess(epoch, validator, validatorSignNumber, totalReward, rewardTime) {
+async function rewardVoterProcess (epoch, validator, validatorSignNumber, totalReward, rewardTime) {
     if (!rewardTime) {
         rewardTime = new Date()
     }
@@ -207,4 +204,4 @@ async function rewardVoterProcess(epoch, validator, validatorSignNumber, totalRe
     }
 }
 
-module.exports = {epochReward}
+module.exports = { epochReward }
