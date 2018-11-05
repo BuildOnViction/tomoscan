@@ -2,6 +2,7 @@ import { Router } from 'express'
 import db from '../models'
 import Web3Util from '../helpers/web3'
 const config = require('config')
+const uuidv4 = require('uuid/v4')
 
 const SignMessageController = Router()
 
@@ -67,7 +68,6 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
 
 SignMessageController.post('/generateSignMess', async (req, res, next) => {
     try {
-        const web3 = await Web3Util.getWeb3()
         const address = req.body.address || ''
 
         const message = '[Tomoscan ' + (new Date().toLocaleString().replace(/['"]+/g, '')) + ']' +
@@ -75,11 +75,10 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
             'I am the owner/creator of the token contract address ' +
             '[' + address + ']'
 
-        const id = await web3.utils.soliditySha3(message + (new Date()).getTime() + Math.random().toString())
         res.send({
             message,
             url: `${config.get('BASE_URL')}api/signMessage/verify?id=`,
-            id
+            id: uuidv4()
         })
     } catch (e) {
         console.trace(e)
