@@ -51,7 +51,10 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
 
         if (signature && acc.contractCreation === signature.signedAddress.toLowerCase() &&
             messId === signature.signedAddressId) {
-            res.send('OK')
+            res.json({
+                signHash: signature.signature,
+                message: signature.message
+            })
         } else {
             res.send({
                 error: {

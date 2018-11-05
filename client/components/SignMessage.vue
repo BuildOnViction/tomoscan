@@ -204,13 +204,13 @@ export default {
             if (data.error) {
                 self.processingMess = false
             }
-            if (data === 'OK') {
+            if (!data.error) {
                 if (self.interval) {
                     clearInterval(self.interval)
                 }
                 self.step = 0
-                self.page.signHash = self.sigHash
-                self.page.signMessage = self.message
+                self.page.signHash = data.signHash
+                self.page.signMessage = data.message
                 self.page.authen = true
             }
         },
