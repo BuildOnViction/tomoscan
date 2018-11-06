@@ -33,12 +33,12 @@
             <template
                 slot="lockBalance"
                 slot-scope="props">
-                {{ formatUnit(toEther(parseFloat(props.item.lockBalance))) }}
+                {{ formatUnit(parseFloat(props.item.lockBalance)) }}
             </template>
             <template
                 slot="reward"
                 slot-scope="props">
-                {{ formatUnit(toEther(parseFloat(props.item.reward))) }}
+                {{ formatUnit(parseFloat(props.item.reward)) }}
             </template>
             <template
                 slot="validator"
