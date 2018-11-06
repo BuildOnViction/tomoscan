@@ -165,9 +165,14 @@ export default {
         qrCode: '',
         messId: '',
         processingMess: true,
-        internal: null,
+        interval: null,
         creator: ''
     }),
+    destroyed () {
+        if (this.interval) {
+            clearInterval(this.interval)
+        }
+    },
     async mounted () {
         let self = this
         let acc = await this.$axios.get('/api/contractCreator/' + self.address)
@@ -201,13 +206,11 @@ export default {
             body.messId = self.messId
             let { data } = await self.$axios.post('/api/verifyScanedMess', body)
 
-            if (data.error) {
-                self.processingMess = false
-            }
             if (!data.error) {
                 if (self.interval) {
                     clearInterval(self.interval)
                 }
+                self.processingMess = false
                 self.step = 0
                 self.page.signHash = data.signHash
                 self.page.signMessage = data.message
@@ -228,13 +231,13 @@ export default {
                 let { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
-                    self.processingMess = false
                     self.error = true
                 }
                 if (data === 'OK') {
                     if (self.interval) {
                         clearInterval(self.interval)
                     }
+                    self.processingMess = false
                     self.step = 0
                     self.page.signHash = self.sigHash
                     self.page.signMessage = self.message
