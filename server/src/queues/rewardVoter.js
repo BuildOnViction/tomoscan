@@ -35,11 +35,13 @@ consumer.task = async function (job, done) {
 
         let totalVoterCap = await validatorContract.methods.getCandidateCap(validator).call()
         totalVoterCap = new BigNumber(totalVoterCap)
+        totalVoterCap = totalVoterCap.dividedBy(10 ** 18)
         let listVoters = []
         let voterMap = voters.map(async (voter) => {
             voter = voter.toString().toLowerCase()
             let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
             voterCap = new BigNumber(voterCap)
+            voterCap = voterCap.dividedBy(10 ** 18)
             listVoters.push({
                 address: voter,
                 balance: voterCap
