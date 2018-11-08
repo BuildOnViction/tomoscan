@@ -3,7 +3,7 @@
         <div
             v-if="step === 1">
             <div>
-                <strong>STEP 1 - Copy message below and sign the message using
+                <strong>Method 1: Copy message below and sign the message using
                     <a
                         href="https://www.mycrypto.com/signmsg.html"
                         style="color: #3498db">MyCrypto</a>
@@ -13,8 +13,20 @@
                 </strong>
             </div>
             <div
+                style="margin-top: 10px">
+                <strong>
+                    Method 2(easier):Using QR code scanning feature in TomoWallet to sign
+                </strong>
+            </div>
+            <div
+                v-if="error">
+                <div style="float:left"><b>Result</b>:&nbsp;</div>
+                <div><span style="color:red;">Sorry! The
+                Message Signature Verification Failed.<br></span></div>
+            </div>
+            <div
                 style="margin-left: 15px">
-                <div style="margin-top: 20px">
+                <div style="margin-top: 15px">
                     <input
                         type="radio"
                         checked>
@@ -23,8 +35,7 @@
                     </b>
                 </div>
                 <div
-                    class="wrapper"
-                    style="margin-top:10px">
+                    class="wrapper">
                     <div
                         id="one">
                         <label>
@@ -49,85 +60,29 @@
                                 class="form-control"
                                 style="width: 100%"/>
                         </label>
+                        <div
+                            style="margin-top: 10px">
+                            <input
+                                v-model="sigHash"
+                                class="form-control"
+                                type="text"
+                                style="box-sizing: border-box; width: 100%"
+                                placeholder="Enter the message signature hash">
+                        </div>
                     </div>
                     <div
                         id="two">
                         <vue-qrcode
                             :value="qrCode"
-                            :options="{size: 250 }"
-                            class="img-fluid text-center text-lg-right tomo-qrcode"/>
+                            :options="{size: 200 }"
+                            tag="img"/>
                     </div>
                 </div>
                 <div
                     style="margin-top: 20px">
-                    <button
+                    <!-- <button
                         class="btn btn-primary"
-                        @click.prevent="next">Next</button>
-                </div>
-            </div>
-        </div>
-        <div
-            v-if="step === 2">
-            <div>
-                <div><strong>STEP 2 - Verify your signed Ethereum message</strong></div>
-                <div
-                    v-if="error">
-                    <div style="float:left"><b>Result</b>:&nbsp;</div>
-                    <div><span style="color:red;">Sorry! The
-                    Message Signature Verification Failed.<br></span></div>
-                </div>
-            </div>
-            <div style="margin-left: 15px; margin-top: 15px">
-                <div>
-                    <div>
-                        <b>Contract Owner/address Address *</b>
-                    </div>
-                    <div>
-                        <input
-                            :value="creator"
-                            class="form-control"
-                            type="text"
-                            disabled
-                            style="box-sizing: border-box; width: 50%">
-                    </div>
-                </div>
-                <div
-                    style="margin-top: 20px">
-                    <section>
-                        <div>
-                            <label>
-                                <b>Signed message</b>
-                            </label>
-                        </div>
-                        <div>
-                            <textarea
-                                :value="message"
-                                class="form-control"
-                                disabled
-                                cols="10"
-                                rows="3"
-                                style="box-sizing: border-box; width: 100%"/>
-                        </div>
-                    </section>
-                </div>
-                <div
-                    style="margin-top: 20px">
-                    <div>
-                        <label>
-                            <b>Message signature hash *</b>
-                        </label>
-                    </div>
-                    <div>
-                        <input
-                            v-model="sigHash"
-                            class="form-control"
-                            type="text"
-                            style="box-sizing: border-box; width: 100%"
-                            placeholder="Enter the message signature hash">
-                    </div>
-                </div>
-                <div
-                    style="margin-top: 20px">
+                        @click.prevent="next">Next</button> -->
                     <button
                         class="btn btn-primary"
                         @click.prevent="verifySignedMessage">Verify</button>
@@ -165,9 +120,14 @@ export default {
         qrCode: '',
         messId: '',
         processingMess: true,
-        internal: null,
+        interval: null,
         creator: ''
     }),
+    destroyed () {
+        if (this.interval) {
+            clearInterval(this.interval)
+        }
+    },
     async mounted () {
         let self = this
         let acc = await this.$axios.get('/api/contractCreator/' + self.address)
@@ -176,6 +136,7 @@ export default {
 
         self.message = data.message
         self.messId = data.id
+        console.log(data.url + data.id)
 
         self.qrCode = encodeURI('tomochain:sign?message=' + data.message + '&' +
             'submitURL=' + data.url + data.id)
@@ -188,6 +149,9 @@ export default {
     },
     methods: {
         next () {
+            if (this.interval) {
+                clearInterval(this.interval)
+            }
             this.step++
         },
         async verifyScannedQR () {
@@ -201,16 +165,14 @@ export default {
             body.messId = self.messId
             let { data } = await self.$axios.post('/api/verifyScanedMess', body)
 
-            if (data.error) {
-                self.processingMess = false
-            }
-            if (data === 'OK') {
+            if (!data.error) {
                 if (self.interval) {
                     clearInterval(self.interval)
                 }
+                self.processingMess = false
                 self.step = 0
-                self.page.signHash = self.sigHash
-                self.page.signMessage = self.message
+                self.page.signHash = data.signHash
+                self.page.signMessage = data.message
                 self.page.authen = true
             }
         },
@@ -228,13 +190,13 @@ export default {
                 let { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
-                    self.processingMess = false
                     self.error = true
                 }
                 if (data === 'OK') {
                     if (self.interval) {
                         clearInterval(self.interval)
                     }
+                    self.processingMess = false
                     self.step = 0
                     self.page.signHash = self.sigHash
                     self.page.signMessage = self.message

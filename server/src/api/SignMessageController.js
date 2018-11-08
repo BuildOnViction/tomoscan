@@ -2,6 +2,7 @@ import { Router } from 'express'
 import db from '../models'
 import Web3Util from '../helpers/web3'
 const config = require('config')
+const uuidv4 = require('uuid/v4')
 
 const SignMessageController = Router()
 
@@ -50,7 +51,10 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
 
         if (signature && acc.contractCreation === signature.signedAddress.toLowerCase() &&
             messId === signature.signedAddressId) {
-            res.send('OK')
+            res.json({
+                signHash: signature.signature,
+                message: signature.message
+            })
         } else {
             res.send({
                 error: {
@@ -67,7 +71,6 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
 
 SignMessageController.post('/generateSignMess', async (req, res, next) => {
     try {
-        const web3 = await Web3Util.getWeb3()
         const address = req.body.address || ''
 
         const message = '[Tomoscan ' + (new Date().toLocaleString().replace(/['"]+/g, '')) + ']' +
@@ -75,11 +78,10 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
             'I am the owner/creator of the token contract address ' +
             '[' + address + ']'
 
-        const id = await web3.utils.soliditySha3(message + (new Date()).getTime() + Math.random().toString())
         res.send({
             message,
             url: `${config.get('BASE_URL')}api/signMessage/verify?id=`,
-            id
+            id: uuidv4()
         })
     } catch (e) {
         console.trace(e)
@@ -91,11 +93,21 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
 SignMessageController.post('/signMessage/verify', async (req, res, next) => {
     try {
         const web3 = await Web3Util.getWeb3()
-        const message = req.body.message || ''
-        const signature = req.body.signature.toLowerCase() || ''
-        const id = req.query.id || ''
+        const message = req.body.message
+        const signature = req.body.signature
+        const id = req.query.id
+        let signer = req.body.signer
+
+        if (!message || !signature || !id || !signer) {
+            return res.status(406).send('id, message, signature and signer are required')
+        }
+        signer = signer.toLowerCase()
 
         const signedAddress = await web3.eth.accounts.recover(message, signature).toLowerCase()
+
+        if (signer !== signedAddress) {
+            return res.status(401).send('The Signature Message Verification Failed')
+        }
 
         // Store id, address, msg, signature
         let sign = await db.Signature.findOne({ signedAddress: signedAddress })

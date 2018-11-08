@@ -95,13 +95,13 @@
 
 #one {
   float:left; 
-  width: 70%;
+  width: 75%;
   margin-top: 18px;
 }
 #two {
   float: left;
   text-align: center;
-  width: 30%;
+  width: 25%;
 }
 
 @media screen and (max-width: 1100px) {
@@ -109,7 +109,8 @@
     float: none;
     width:auto;
   }
-  #two { 
+  #two {
+    margin-top: 10px;
     float: none;
     width:auto;
   }
