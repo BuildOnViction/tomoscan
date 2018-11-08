@@ -23,21 +23,20 @@ consumer.task = async function (job, done) {
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     try {
-        let voteEpoch = await db.UserVoteAmount.find({epoch: epoch, candidate: validator})
+        let voteEpoch = await db.UserVoteAmount.find({ epoch: epoch, candidate: validator })
         let totalVoterCap = 0
-        for (let i=0; i< voteEpoch.length; i++) {
+        for (let i = 0; i < voteEpoch.length; i++) {
             totalVoterCap += voteEpoch[i].voteAmount
         }
         // console.log('total voter cap', totalVoterCap, validator)
         totalVoterCap = new BigNumber(totalVoterCap)
 
         let rewardVoter = []
-        for (let i=0; i< voteEpoch.length; i++) {
+        for (let i = 0; i < voteEpoch.length; i++) {
             let voterAddress = voteEpoch[i].voter
             let voterAmount = new BigNumber(voteEpoch[i].voteAmount)
             if (String(voterAmount) !== '0') {
                 let reward = totalReward.multipliedBy(voterAmount).dividedBy(totalVoterCap)
-                // console.log('voter %s vote for validator %s has reward %s', voterAddress, validator, reward.toString())
 
                 const q = require('./index')
                 q.create('AddRewardToAccount', { address: voterAddress, balance: reward.toString() })
@@ -60,7 +59,6 @@ consumer.task = async function (job, done) {
                     rewardVoter = []
                 }
             }
-
         }
 
         if (rewardVoter.length > 0) {

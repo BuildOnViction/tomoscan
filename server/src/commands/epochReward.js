@@ -36,7 +36,7 @@ const epochReward = async (epoch) => {
     for (let i = startBlock; i <= endBlock; i++) {
         let blockHash = (await web3.eth.getBlock(i)).hash
         let ss = await bs.methods.getSigners(blockHash).call()
-        db.BlockSigner.updateOne({
+        await db.BlockSigner.updateOne({
             blockHash: blockHash,
             blockNumber: i
         }, {

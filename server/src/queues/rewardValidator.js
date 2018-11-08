@@ -33,7 +33,7 @@ consumer.task = async function (job, done) {
         const q = require('./index')
 
         let validators = []
-        let voteHistory = await db.UserVoteAmount.find({epoch: epoch})
+        let voteHistory = await db.UserVoteAmount.find({ epoch: epoch })
         for (let i = 0; i < voteHistory.length; i++) {
             if (validators.indexOf(voteHistory[i].candidate) < 0) {
                 validators.push(voteHistory[i].candidate)

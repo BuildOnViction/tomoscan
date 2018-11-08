@@ -12,8 +12,8 @@ consumer.task = async function (job, done) {
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     let histories = await db.VoteHistory.find({
-        blockNumber: {$gte: startBlock, $lte: endBlock}
-    }).sort({blockNumber: 1})
+        blockNumber: { $gte: startBlock, $lte: endBlock }
+    }).sort({ blockNumber: 1 })
 
     console.log('There are %s histories in epoch %s', histories.length, epoch)
     for (let i = 0; i < histories.length; i++) {
@@ -23,7 +23,7 @@ consumer.task = async function (job, done) {
             let data = {
                 voter: history.owner,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber/900),
+                epoch: Math.ceil(history.blockNumber / 900),
                 voteAmount: history.cap
             }
             await db.UserVoteAmount.create(data)
@@ -31,37 +31,35 @@ consumer.task = async function (job, done) {
             let h = await db.UserVoteAmount.findOne({
                 voter: history.voter,
                 candidate: history.candidate
-            }).sort({epoch: -1})
+            }).sort({ epoch: -1 })
             await db.UserVoteAmount.findOneAndUpdate({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber/900)
+                epoch: Math.floor(history.blockNumber / 900)
             }, {
                 voteAmount: (h ? h.voteAmount : 0) + history.cap
             }, { upsert: true, new: true })
-
         } else if (history.event === 'Unvote') {
             let h = await db.UserVoteAmount.findOne({
                 voter: history.voter,
                 candidate: history.candidate
-            }).sort({epoch: -1})
+            }).sort({ epoch: -1 })
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber/900)
+                epoch: Math.floor(history.blockNumber / 900)
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })
-
         } else if (history.event === 'Resign') {
             let h = await db.UserVoteAmount.findOne({
                 voter: history.voter,
                 candidate: history.candidate
-            }).sort({epoch: -1})
+            }).sort({ epoch: -1 })
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber/900)
+                epoch: Math.ceil(history.blockNumber / 900)
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })
@@ -70,7 +68,7 @@ consumer.task = async function (job, done) {
 
     console.log('Duplicate vote amount')
     // Find in history and duplicate to this epoch if not found
-    let voteInEpoch = await db.UserVoteAmount.find({epoch: epoch - 1})
+    let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
     let data = []
     for (let j = 0; j < voteInEpoch.length; j++) {
         let nextEpoch = await db.UserVoteAmount.findOne({
@@ -86,7 +84,6 @@ consumer.task = async function (job, done) {
                 candidate: voteInEpoch[j].candidate
             })
         }
-
     }
     if (data.length > 0) {
         console.log('Duplicate data to epoch %s', epoch)
@@ -97,7 +94,6 @@ consumer.task = async function (job, done) {
     q.create('RewardValidatorProcess', { epoch: epoch })
         .priority('normal').removeOnComplete(true).save()
     done()
-
 }
 
 module.exports = consumer

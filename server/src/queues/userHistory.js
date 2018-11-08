@@ -17,7 +17,7 @@ consumer.task = async function (job, done) {
     let q = require('./index')
 
     const web3 = await Web3Util.getWeb3()
-    await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock }})
+    await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
     const tomoValidator = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
     try {
         await tomoValidator.getPastEvents('allEvents', {
