@@ -20,7 +20,7 @@ consumer.task = async function (job, done) {
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
-    let totalReward = new BigNumber(config.get('REWARD')).multipliedBy(10 ** 18)
+    let totalReward = new BigNumber(config.get('REWARD'))
     let validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
     let foundationRewardPercent = new BigNumber(config.get('FOUNDATION_REWARD_PERCENT'))
     let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
@@ -111,6 +111,7 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true).save()
 
             let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
+            lockBalance = new BigNumber(lockBalance)
             await rewardValidator.push({
                 epoch: epoch,
                 startBlock: startBlock,
@@ -118,7 +119,7 @@ consumer.task = async function (job, done) {
                 address: ownerValidator,
                 validator: validator.address,
                 reason: 'MasterNode',
-                lockBalance: new BigNumber(lockBalance).toString(),
+                lockBalance: lockBalance.dividedBy(10 ** 18).toString(),
                 reward: reward4validator.toString(),
                 rewardTime: timestamp,
                 signNumber: validator.signNumber

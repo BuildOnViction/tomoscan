@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
             balance = new BigNumber(balance)
 
             let account = await db.Account.findOne({ hash: address })
-            let newBalance = new BigNumber(account.balance).plus(balance)
+            let newBalance = new BigNumber(account.balance).plus(balance.multipliedBy(10 ** 18))
 
             account.balance = newBalance.toString()
             account.balanceNumber = newBalance.toNumber()

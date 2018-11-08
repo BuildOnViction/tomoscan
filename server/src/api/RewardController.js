@@ -30,6 +30,22 @@ RewardController.get('/rewards/:slug', async (req, res) => {
     }
 })
 
+RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
+    try {
+        let epochNumber = req.params.epochNumber || 0
+        let params = {}
+        params.query = { epoch: epochNumber }
+        params.sort = { rewardTime: -1 }
+        let data = await paginate(req, 'Reward', params)
+
+        return res.json(data)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res) => {
     try {
         let address = req.params.slug
