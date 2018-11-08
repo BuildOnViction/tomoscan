@@ -23,6 +23,23 @@ ContractController.get('/contracts', async (req, res, next) => {
     }
 })
 
+ContractController.get('/contracts/:slug', async (req, res, next) => {
+    try {
+        let hash = req.params.slug
+        hash = hash ? hash.toLowerCase() : hash
+        let contract = await db.Contract.findOne({ hash: hash })
+        if (!contract) {
+            return res.status(404).send()
+        }
+
+        return res.json(contract)
+    } catch (e) {
+        console.trace(e)
+        console.log(e)
+        return res.status(500).send()
+    }
+})
+
 ContractController.get('/contracts/soljsons', async (req, res, next) => {
     try {
         const versions = await ContractHelper.getVersions()
