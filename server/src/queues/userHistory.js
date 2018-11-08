@@ -3,6 +3,7 @@
 const db = require('../models')
 const BigNumber = require('bignumber.js')
 const Web3Util = require('../helpers/web3')
+const config = require('config')
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
 
@@ -10,14 +11,16 @@ const consumer = {}
 consumer.name = 'UserHistoryProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let startBlock = job.data.startBlock
-    let endBlock = job.data.endBlock
+    let epoch = job.data.epoch
+    let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+    let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
     let q = require('./index')
 
     const web3 = await Web3Util.getWeb3()
-    const tomoValidator = await web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
+    await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock }})
+    const tomoValidator = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
     try {
-        tomoValidator.getPastEvents('allEvents', {
+        await tomoValidator.getPastEvents('allEvents', {
             filter: {},
             fromBlock: startBlock,
             toBlock: endBlock
@@ -25,7 +28,7 @@ consumer.task = async function (job, done) {
             if (error) {
                 console.error(error)
                 done()
-                q.create('UserVoteProcess', { startBlock: startBlock, endBlock: endBlock })
+                q.create('UserHistoryProcess', { epoch: epoch })
                     .priority('normal').removeOnComplete(true).save()
             }
             let listUser = []
@@ -54,8 +57,17 @@ consumer.task = async function (job, done) {
                     listUser = []
                 }
             }
+
             if (listUser.length > 0) {
-                db.VoteHistory.insertMany(listUser)
+                db.VoteHistory.insertMany(listUser).then(function () {
+                    q.create('UserVoteProcess', { epoch: epoch })
+                        .priority('normal').removeOnComplete(true).save()
+                    done()
+                })
+            } else {
+                q.create('UserVoteProcess', { epoch: epoch })
+                    .priority('normal').removeOnComplete(true).save()
+                done()
             }
         })
 
@@ -64,7 +76,7 @@ consumer.task = async function (job, done) {
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
         done()
-        q.create('UserVoteProcess', { startBlock: startBlock, endBlock: endBlock })
+        q.create('UserHistoryProcess', { epoch: epoch })
             .priority('normal').removeOnComplete(true).save()
     }
 }

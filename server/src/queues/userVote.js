@@ -7,16 +7,17 @@ const consumer = {}
 consumer.name = 'UserVoteProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let startBlock = job.data.startBlock
-    let endBlock = job.data.endBlock
+    let epoch = job.data.epoch
+    let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+    let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+
     let histories = await db.VoteHistory.find({
         blockNumber: {$gte: startBlock, $lte: endBlock}
     }).sort({blockNumber: 1})
 
-    console.log('There are %s histories', histories.length)
+    console.log('There are %s histories in epoch %s', histories.length, epoch)
     for (let i = 0; i < histories.length; i++) {
         let history = histories[i]
-        console.log('process item %s event %s, voter %s, amount %s', i, history.event, history.voter, history.cap)
 
         if (history.event === 'Propose') {
             let data = {
@@ -68,36 +69,34 @@ consumer.task = async function (job, done) {
     }
 
     console.log('Duplicate vote amount')
-    let lastRow = await db.UserVoteAmount.findOne().sort({epoch: -1})
-    if (lastRow) {
-        let lastEpoch = lastRow.epoch
-        for (let i = 0; i<= lastEpoch; i++) {
-            let voteInEpoch = await db.UserVoteAmount.find({epoch: i})
-            let data = []
-            for (let j = 0; j < voteInEpoch.length; j++) {
-                if (i < lastEpoch) {
-                    let nextEpoch = await db.UserVoteAmount.findOne({
-                        voter: voteInEpoch[j].voter,
-                        epoch: voteInEpoch[j].epoch + 1,
-                        candidate: voteInEpoch[j].candidate
-                    })
-                    if (!nextEpoch) {
-                        data.push({
-                            voter: voteInEpoch[j].voter,
-                            epoch: voteInEpoch[j].epoch + 1,
-                            voteAmount: voteInEpoch[j].voteAmount,
-                            candidate: voteInEpoch[j].candidate
-                        })
-                    }
-                }
-
-            }
-            if (data.length > 0) {
-                console.log('Process epoch %s to duplicate in epoch %s', i, i + 1)
-                await db.UserVoteAmount.insertMany(data)
-            }
+    // Find in history and duplicate to this epoch if not found
+    let voteInEpoch = await db.UserVoteAmount.find({epoch: epoch - 1})
+    let data = []
+    for (let j = 0; j < voteInEpoch.length; j++) {
+        let nextEpoch = await db.UserVoteAmount.findOne({
+            voter: voteInEpoch[j].voter,
+            epoch: epoch,
+            candidate: voteInEpoch[j].candidate
+        })
+        if (!nextEpoch) {
+            data.push({
+                voter: voteInEpoch[j].voter,
+                epoch: voteInEpoch[j].epoch + 1,
+                voteAmount: epoch,
+                candidate: voteInEpoch[j].candidate
+            })
         }
+
     }
+    if (data.length > 0) {
+        console.log('Duplicate data to epoch %s', epoch)
+        await db.UserVoteAmount.insertMany(data)
+    }
+
+    const q = require('./index')
+    q.create('RewardValidatorProcess', { epoch: epoch })
+        .priority('normal').removeOnComplete(true).save()
+    done()
 
 }
 

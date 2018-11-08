@@ -1,13 +1,8 @@
 'use strict'
 
-const Web3Util = require('../helpers/web3')
 const BigNumber = require('bignumber.js')
-
 const db = require('../models')
 const config = require('config')
-
-const TomoValidatorABI = require('../contracts/abi/TomoValidator')
-const contractAddress = require('../contracts/contractAddress')
 
 const consumer = {}
 consumer.name = 'RewardVoterProcess'
@@ -28,38 +23,24 @@ consumer.task = async function (job, done) {
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
     try {
-        let web3 = await Web3Util.getWeb3()
-        let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-
-        let voters = await validatorContract.methods.getVoters(validator).call()
-
-        let totalVoterCap = await validatorContract.methods.getCandidateCap(validator).call()
+        let voteEpoch = await db.UserVoteAmount.find({epoch: epoch, candidate: validator})
+        let totalVoterCap = 0
+        for (let i=0; i< voteEpoch.length; i++) {
+            totalVoterCap += voteEpoch[i].voteAmount
+        }
+        // console.log('total voter cap', totalVoterCap, validator)
         totalVoterCap = new BigNumber(totalVoterCap)
-        totalVoterCap = totalVoterCap.dividedBy(10 ** 18)
-        let listVoters = []
-        let voterMap = voters.map(async (voter) => {
-            voter = voter.toString().toLowerCase()
-            let voterCap = await validatorContract.methods.getVoterCap(validator, voter).call()
-            voterCap = new BigNumber(voterCap)
-            voterCap = voterCap.dividedBy(10 ** 18)
-            listVoters.push({
-                address: voter,
-                balance: voterCap
-            })
-        })
-        await Promise.all(voterMap)
 
         let rewardVoter = []
-        const q = require('./index')
+        for (let i=0; i< voteEpoch.length; i++) {
+            let voterAddress = voteEpoch[i].voter
+            let voterAmount = new BigNumber(voteEpoch[i].voteAmount)
+            if (String(voterAmount) !== '0') {
+                let reward = totalReward.multipliedBy(voterAmount).dividedBy(totalVoterCap)
+                // console.log('voter %s vote for validator %s has reward %s', voterAddress, validator, reward.toString())
 
-        let listVoterMap = listVoters.map(async (voter) => {
-            if (voter.balance.toString() !== '0') {
-                let voterAddress = voter.address.toString().toLowerCase()
-                let reward = totalReward.multipliedBy(voter.balance).dividedBy(totalVoterCap)
-                q.create('AddRewardToAccount', {
-                    address: voterAddress,
-                    balance: reward.toString()
-                })
+                const q = require('./index')
+                q.create('AddRewardToAccount', { address: voterAddress, balance: reward.toString() })
                     .priority('normal').removeOnComplete(true).save()
 
                 await rewardVoter.push({
@@ -69,19 +50,19 @@ consumer.task = async function (job, done) {
                     address: voterAddress,
                     validator: validator,
                     reason: 'Voter',
-                    lockBalance: voter.balance.toString(),
+                    lockBalance: voterAmount.toString(),
                     reward: reward.toString(),
                     rewardTime: rewardTime,
                     signNumber: validatorSignNumber
                 })
+                if (rewardVoter.length === 5000) {
+                    await db.Reward.insertMany(rewardVoter)
+                    rewardVoter = []
+                }
             }
 
-            if (rewardVoter.length === 5000) {
-                await db.Reward.insertMany(rewardVoter)
-                rewardVoter = []
-            }
-        })
-        await Promise.all(listVoterMap)
+        }
+
         if (rewardVoter.length > 0) {
             await db.Reward.insertMany(rewardVoter)
         }

@@ -2,6 +2,7 @@
 
 const db = require('../models')
 const BigNumber = require('bignumber.js')
+const AccountHelper = require('../helpers/account')
 
 const consumer = {}
 consumer.name = 'AddRewardToAccount'
@@ -15,6 +16,9 @@ consumer.task = async function (job, done) {
             balance = new BigNumber(balance)
 
             let account = await db.Account.findOne({ hash: address })
+            if (!account) {
+                account = await AccountHelper.getAccountDetail(address)
+            }
             let newBalance = new BigNumber(account.balance).plus(balance.multipliedBy(10 ** 18))
 
             account.balance = newBalance.toString()

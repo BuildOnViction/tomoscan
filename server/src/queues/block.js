@@ -33,8 +33,15 @@ consumer.task = async function (job, done) {
 
         if (parseInt(blockNumber) % config.get('BLOCK_PER_EPOCH') === 0) {
             let epoch = parseInt(blockNumber) / config.get('BLOCK_PER_EPOCH')
-            q.create('VoterProcess', { epoch: epoch })
-                .priority('critical').removeOnComplete(true).save()
+            q.create('UserHistoryProcess', { epoch: epoch - 1 })
+                .priority('normal').removeOnComplete(true).save()
+        }
+
+        if (parseInt(blockNumber) % 100 === 0) {
+            let endBlock = parseInt(blockNumber) - config.get('BLOCK_PER_EPOCH')
+            let startBlock = endBlock - 100 + 1
+            q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
+                .priority('normal').removeOnComplete(true).save()
         }
 
         done()

@@ -11,9 +11,10 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let startBlock = job.data.startBlock
     let endBlock = job.data.endBlock
+    console.log('Get block signer from block %s to %s', startBlock, endBlock)
 
     const web3 = await Web3Util.getWeb3()
-    const blockSigner = await web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
+    const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
 
     try {
         for (let i = startBlock; i <= endBlock; i++) {
@@ -23,7 +24,7 @@ consumer.task = async function (job, done) {
                 break
             }
             let blockHash = block.hash
-            let signers = await blockSigner.methods.getSigner(blockHash).call()
+            let signers = await blockSigner.methods.getSigners(blockHash).call()
             console.log('Get signer of block ', i)
             await db.BlockSigner.updateOne({
                 blockHash: blockHash,
@@ -38,6 +39,7 @@ consumer.task = async function (job, done) {
         }
         done()
     } catch (e) {
+        console.error(e)
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
         done()

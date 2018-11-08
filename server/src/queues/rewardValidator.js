@@ -7,7 +7,6 @@ const db = require('../models')
 const config = require('config')
 
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
-const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
 
 const consumer = {}
@@ -28,31 +27,19 @@ consumer.task = async function (job, done) {
     try {
         let web3 = await Web3Util.getWeb3()
         let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-        let bs = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
-
-        // verify block was on chain
-        for (let i = startBlock; i <= endBlock; i++) {
-            let blockHash = (await web3.eth.getBlock(i)).hash
-            let ss = await bs.methods.getSigners(blockHash).call()
-            await db.BlockSigner.updateOne({
-                blockHash: blockHash,
-                blockNumber: i
-            }, {
-                $set: {
-                    blockHash: blockHash,
-                    blockNumber: i,
-                    signers: ss.map(it => (it || '').toLowerCase())
-                }
-            }, {
-                upsert: true
-            })
-        }
 
         let totalSignNumber = 0
 
         const q = require('./index')
 
-        let validators = await validatorContract.methods.getCandidates().call()
+        let validators = []
+        let voteHistory = await db.UserVoteAmount.find({epoch: epoch})
+        for (let i = 0; i < voteHistory.length; i++) {
+            if (validators.indexOf(voteHistory[i].candidate) < 0) {
+                validators.push(voteHistory[i].candidate)
+            }
+        }
+
         let rewardValidator = []
         let validatorSigners = []
         let validatorMap = validators.map(async (validator) => {
@@ -104,14 +91,13 @@ consumer.task = async function (job, done) {
             ownerValidator = ownerValidator.toString().toLowerCase()
 
             // Add reward for validator
-            q.create('AddRewardToAccount', {
-                address: ownerValidator,
-                balance: reward4validator.toString()
-            })
+            q.create('AddRewardToAccount', { address: ownerValidator, balance: reward4validator.toString() })
                 .priority('normal').removeOnComplete(true).save()
-
-            let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
-            lockBalance = new BigNumber(lockBalance)
+            let voteEpoch = await db.UserVoteAmount.findOne({
+                epoch: epoch,
+                candidate: validator.address,
+                voter: ownerValidator
+            })
             await rewardValidator.push({
                 epoch: epoch,
                 startBlock: startBlock,
@@ -119,7 +105,7 @@ consumer.task = async function (job, done) {
                 address: ownerValidator,
                 validator: validator.address,
                 reason: 'MasterNode',
-                lockBalance: lockBalance.dividedBy(10 ** 18).toString(),
+                lockBalance: String(voteEpoch ? voteEpoch.voteAmount : 50000),
                 reward: reward4validator.toString(),
                 rewardTime: timestamp,
                 signNumber: validator.signNumber
@@ -138,10 +124,7 @@ consumer.task = async function (job, done) {
                 rewardTime: timestamp,
                 signNumber: validator.signNumber
             })
-            q.create('AddRewardToAccount', {
-                address: contractAddress.foundation,
-                balance: reward4foundation
-            })
+            q.create('AddRewardToAccount', { address: contractAddress.foundation, balance: reward4foundation })
                 .priority('normal').removeOnComplete(true).save()
         })
         await Promise.all(validatorFinal)
