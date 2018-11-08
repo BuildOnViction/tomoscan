@@ -93,11 +93,21 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
 SignMessageController.post('/signMessage/verify', async (req, res, next) => {
     try {
         const web3 = await Web3Util.getWeb3()
-        const message = req.body.message || ''
-        const signature = req.body.signature.toLowerCase() || ''
-        const id = req.query.id || ''
+        const message = req.body.message
+        const signature = req.body.signature
+        const id = req.query.id
+        let signer = req.body.signer
+
+        if (!message || !signature || !id || !signer) {
+            return res.status(406).send('id, message, signature and signer are required')
+        }
+        signer = signer.toLowerCase()
 
         const signedAddress = await web3.eth.accounts.recover(message, signature).toLowerCase()
+
+        if (signer !== signedAddress) {
+            return res.status(401).send('The Signature Message Verification Failed')
+        }
 
         // Store id, address, msg, signature
         let sign = await db.Signature.findOne({ signedAddress: signedAddress })
