@@ -32,7 +32,7 @@ const epochReward = async (epoch) => {
     let bs = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
 
     // verify block was on chain
-    let epochSignNumber = await db.BlockSigner.countDocuments({ blockNumber: { $gte: startBlock, $lte: endBlock }})
+    let epochSignNumber = await db.BlockSigner.countDocuments({ blockNumber: { $gte: startBlock, $lte: endBlock } })
     if (epochSignNumber < config.get('BLOCK_PER_EPOCH')) {
         console.log('Begin get block signer')
         for (let i = startBlock; i <= endBlock; i++) {
@@ -78,7 +78,7 @@ const epochReward = async (epoch) => {
                 let candidate = String(event.returnValues._candidate || '').toLowerCase()
                 let cap = new BigNumber(event.returnValues._cap || 0)
                 let capTomo = cap.dividedBy(10 ** 18)
-                BigNumber.config({EXPONENTIAL_AT: [-100, 100]})
+                BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
                 let item = {
                     txHash: event.transactionHash,
                     blockNumber: event.blockNumber,
@@ -184,7 +184,6 @@ const epochReward = async (epoch) => {
         console.log('Duplicate data to epoch %s', epoch)
         await db.UserVoteAmount.insertMany(data)
     }
-
 
     let totalSignNumber = 0
 
