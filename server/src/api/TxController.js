@@ -93,8 +93,13 @@ TxController.get('/txs', async (req, res) => {
             .skip(offset).limit(perPage)
             .lean().exec()
 
+        pages > 100 ? pages = 100 : null
+        let newTotal
+        total > 1500 ? newTotal = 1500 : newTotal = total
+
         let data = {
-            total: total,
+            realTotal: total,
+            total: newTotal,
             perPage: perPage,
             currentPage: page,
             pages: pages,

@@ -121,9 +121,15 @@ const mixin = {
             return decodeURIComponent(results[2].replace(/\+/g, ' '))
         },
 
-        _nFormatNumber: (single, plural, number) => {
-            let str = mixin.methods.formatNumber(number) + ' '
-            str += number > 1 ? plural : single
+        _nFormatNumber: (single, plural, number, realNumber) => {
+            let str
+            if (realNumber > number) {
+                str = 'Total ' + mixin.methods.formatNumber(realNumber) + ' ' + plural +
+                    ' found (Showing the last 1,500 records)'
+            } else {
+                str = 'Total ' + mixin.methods.formatNumber(number) + ' '
+                str += number > 1 ? plural : single + ' found'
+            }
             return str
         },
 
