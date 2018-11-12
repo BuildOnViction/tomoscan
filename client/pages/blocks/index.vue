@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">Total {{ _nFormatNumber('block', 'blocks', total) }} found</p>
+            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', lastBlock, realTotal) }} found</p>
 
         <table-base
             v-if="total > 0"
@@ -39,7 +39,7 @@
             <template
                 slot="e_tx"
                 slot-scope="props">
-                <nuxt-link :to="`/txs?block=${props.item.number}`">{{ props.item.e_tx }}</nuxt-link>
+                <nuxt-link :to="`/txs?block=${props.item.number}`">{{ formatNumber(props.item.e_tx) }}</nuxt-link>
             </template>
 
             <template
@@ -49,6 +49,10 @@
                     :to="{name: 'address-slug', params: {slug: props.item.signer}}"
                     class="text-truncate">{{ props.item.signer }}</nuxt-link>
             </template>
+
+            <template
+                slot="gasUsed"
+                slot-scope="props">{{ formatNumber(props.item.gasUsed) }}</template>
 
             <template
                 slot="finality"
@@ -94,6 +98,8 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
+        lastBlock: 0,
+        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 15,
@@ -131,6 +137,8 @@ export default {
             let { data } = await this.$axios.get('/api/blocks' + '?' + query)
             self.items = data.items
             self.total = data.total
+            self.lastBlock = data.items[0].number
+            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
 

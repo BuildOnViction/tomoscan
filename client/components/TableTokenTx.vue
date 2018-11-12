@@ -13,7 +13,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">Total {{ _nFormatNumber('transaction', 'transactions', total) }}  found</p>
+            class="tomo-total-items">{{ _nFormatNumber('transaction', 'transactions', total, realTotal) }} </p>
 
         <table-base
             v-if="total > 0"
@@ -155,6 +155,7 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
+        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 15,
@@ -206,6 +207,7 @@ export default {
             let { data } = await this.$axios.get('/api/token-txs' + '?' + query)
             self.items = data.items
             self.total = data.total
+            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
 

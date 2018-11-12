@@ -32,8 +32,13 @@ const utils = {
         builder = builder.populate(params.populate)
         let items = await builder.lean().exec()
 
+        pages > 100 ? pages = 100 : pages = parseInt(pages)
+        let newTotal
+        total > 1500 ? newTotal = 1500 : newTotal = total
+
         return {
-            total: total,
+            realTotal: total,
+            total: newTotal,
             perPage: perPage,
             currentPage: page,
             pages: pages,
