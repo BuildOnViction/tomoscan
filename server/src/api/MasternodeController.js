@@ -7,7 +7,7 @@ const MasternodeController = Router()
 
 MasternodeController.get('/masternodes', async (req, res) => {
     try {
-        const tomomasterUrl = config.get('TOMOMASTER_URL')
+        const tomomasterUrl = config.get('TOMOMASTER_API_URL')
         const { data } = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
         return res.json(data)
     } catch (e) {
