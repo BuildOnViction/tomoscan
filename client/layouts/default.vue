@@ -58,7 +58,12 @@
                             <b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
                         </b-nav-item-dropdown>
-                        <b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
+                        <b-nav-item-dropdown
+                            :class="(isBlocks || isEpochs) ? 'active' : ''"
+                            text="Blocks">
+                            <b-dropdown-item :to="{name: 'blocks'}">Blocks</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'epochs'}">Epochs</b-dropdown-item>
+                        </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">
                         <b-nav-item
@@ -277,6 +282,12 @@ export default {
         isHomePage () {
             let name = this.$route.name
             return name ? name.indexOf(['index']) >= 0 : false
+        },
+        isBlocks () {
+            return this.$route.fullPath.startsWith('/blocks')
+        },
+        isEpochs () {
+            return this.$route.fullPath.startsWith('/epochs')
         }
     },
     watch: {
