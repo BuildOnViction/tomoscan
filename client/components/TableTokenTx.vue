@@ -145,7 +145,7 @@ export default {
     data: () => ({
         fields: {
             transactionHash: { label: 'TxHash' },
-            timestamp: { label: 'LastSeen' },
+            timestamp: { label: 'Age' },
             from: { label: 'From' },
             arrow: { class: 'text-center' },
             to: { label: 'To' },
