@@ -158,7 +158,7 @@ export default {
         realTotal: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1,
         address: null
     }),
