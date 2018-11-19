@@ -140,7 +140,7 @@
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
-                                            <td>{{ formatUnit(toEther(tx.gasPrice * tx.gas)) }}</td>
+                                            <td>{{ formatUnit(toEther(tx.gasPrice * tx.gasUsed)) }}</td>
                                         </tr>
                                         <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
                                             <td>Token Transfer</td>
