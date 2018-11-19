@@ -10,7 +10,7 @@ const contractAddress = require('../contracts/contractAddress')
 TxController.get('/txs', async (req, res) => {
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-        perPage = Math.min(25, perPage)
+        perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null

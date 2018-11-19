@@ -12,7 +12,7 @@ BlockController.get('/blocks', async (req, res, next) => {
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        perPage = Math.min(25, perPage)
+        perPage = Math.min(100, perPage)
         let calcPage = page * perPage
 
         let web3 = await Web3Util.getWeb3()

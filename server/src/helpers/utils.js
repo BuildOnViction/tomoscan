@@ -7,7 +7,7 @@ const utils = {
     paginate: async (
         req, modelName, params = {}, total = null, manualPaginate = false) => {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-        perPage = Math.min(25, perPage)
+        perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
         params.query = params.hasOwnProperty('query') ? params.query : {}
