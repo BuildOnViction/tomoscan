@@ -135,7 +135,7 @@ export default {
             self.perPage = data.perPage
 
             if (self.page) {
-                self.page.blocksCount = self.total
+                self.page.blocksCount = self.realTotal
             }
 
             // Hide loading.

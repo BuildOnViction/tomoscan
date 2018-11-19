@@ -128,7 +128,7 @@ export default {
             self.pages = data.pages
 
             if (self.page) {
-                self.page.tokensCount = self.total
+                self.page.tokensCount = self.realTotal
             }
 
             // Hide loading.

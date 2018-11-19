@@ -267,7 +267,7 @@ export default {
                 self.loading = false
             }
             if (self.page) {
-                self.page.txsCount = self.total
+                self.page.txsCount = self.realTotal
             }
 
             let listHash = []
