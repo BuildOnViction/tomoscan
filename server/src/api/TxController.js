@@ -3,14 +3,14 @@ import db from '../models'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
-
+const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
 
 TxController.get('/txs', async (req, res) => {
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-        perPage = Math.min(25, perPage)
+        perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
@@ -83,7 +83,7 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         if (total === null) {
-            total = await db.Tx.count(params.query).lean().exec()
+            total = await db.Tx.estimatedDocumentCount(params.query)
         }
         let pages = Math.ceil(total / perPage)
         let offset = page > 1 ? (page - 1) * perPage : 0
@@ -93,9 +93,11 @@ TxController.get('/txs', async (req, res) => {
             .skip(offset).limit(perPage)
             .lean().exec()
 
-        pages > 100 ? pages = 100 : pages = parseInt(pages)
-        let newTotal
-        total > 1500 ? newTotal = 1500 : newTotal = total
+        if (pages > 500) {
+            pages = 500
+        }
+        let limitedRecords = config.get('LIMITED_RECORDS')
+        let newTotal = total > limitedRecords ? limitedRecords : total
 
         let data = {
             realTotal: total,

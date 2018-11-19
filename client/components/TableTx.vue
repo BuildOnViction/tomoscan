@@ -201,7 +201,7 @@ export default {
         realTotal: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1,
         blockNumber: null
     }),
@@ -267,7 +267,7 @@ export default {
                 self.loading = false
             }
             if (self.page) {
-                self.page.txsCount = self.total
+                self.page.txsCount = self.realTotal
             }
 
             let listHash = []

@@ -125,7 +125,7 @@ const mixin = {
             let str
             if (realNumber > number) {
                 str = 'Total ' + mixin.methods.formatNumber(realNumber) + ' ' + plural +
-                    ' found (Showing the last 1,500 records)'
+                    ' found (Showing the last 10,000 records)'
             } else {
                 str = 'Total ' + mixin.methods.formatNumber(number) + ' '
                 str += number > 1 ? plural : single + ' found'

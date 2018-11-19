@@ -91,7 +91,7 @@ export default {
         total: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1
     }),
     watch: {

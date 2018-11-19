@@ -97,7 +97,7 @@ export default {
         realTotal: 0,
         items: [],
         currentPage: 0,
-        perPage: 15,
+        perPage: 20,
         pages: 1
     }),
     watch: {
@@ -135,7 +135,7 @@ export default {
             self.perPage = data.perPage
 
             if (self.page) {
-                self.page.blocksCount = self.total
+                self.page.blocksCount = self.realTotal
             }
 
             // Hide loading.
