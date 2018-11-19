@@ -83,7 +83,7 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         if (total === null) {
-            total = await db.Tx.count(params.query).lean().exec()
+            total = await db.Tx.estimatedDocumentCount(params.query)
         }
         let pages = Math.ceil(total / perPage)
         let offset = page > 1 ? (page - 1) * perPage : 0
