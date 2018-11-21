@@ -1,7 +1,7 @@
 'use strict'
 
 import Web3Util from './web3'
-
+const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 
 let TransactionHelper = {
@@ -49,14 +49,14 @@ let TransactionHelper = {
 
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                if (tx.to !== '0x0000000000000000000000000000000000000089') {
+                if (tx.to !== contractAddress.BlockSigner) {
                     q.create('AccountProcess', { address: tx.from.toLowerCase() })
                         .priority('normal').removeOnComplete(true).save()
                 }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
-                if (tx.to !== '0x0000000000000000000000000000000000000089') {
+                if (tx.to !== contractAddress.BlockSigner) {
                     q.create('AccountProcess', { address: tx.to.toLowerCase() })
                         .priority('normal').removeOnComplete(true).save()
                 }
