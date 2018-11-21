@@ -27,11 +27,13 @@ TxController.get('/txs', async (req, res) => {
                 break
             }
         }
+        let specialAccount = null
 
         // Check type listing is pending.
         let type = req.query.type
         switch (type) {
         case 'pending':
+            specialAccount = 'pendingTransaction'
             params.query = Object.assign({}, params.query, { isPending: true })
             params.sort = { createdAt: -1 }
             break
@@ -54,13 +56,16 @@ TxController.get('/txs', async (req, res) => {
                 params.query = Object.assign({}, params.query,
                     { $or: [{ from: address }, { to: address }] })
             }
+            specialAccount = address
         }
         // Check type of txs
         if (req.query.typeOfTxs) {
             let condition
             if (req.query.typeOfTxs === 'signTxs') {
+                specialAccount = 'signTransaction'
                 condition = { to: contractAddress.BlockSigner }
             } else if (req.query.typeOfTxs === 'otherTxs') {
+                specialAccount = 'otherTransaction'
                 condition = { to: { $ne: contractAddress.BlockSigner } }
             }
             if (params.query) {
@@ -69,21 +74,18 @@ TxController.get('/txs', async (req, res) => {
                 params.query = condition || {}
             }
         }
+        if (Object.keys(params.query).length === 1 && params.query.isPending === false) {
+            specialAccount = 'allTransaction'
+        }
         let total = null
-        if (typeof address !== 'undefined') {
-            address = address.toLowerCase()
-            let acc = await db.Account.findOne({ hash: address })
-            if (acc) {
-                total = acc.transactionCount
-            }
-        } else if (req.query.typeOfTxs && req.query.typeOfTxs === 'signTxs') {
-            let acc = await db.Account.findOne({ hash: contractAddress.BlockSigner })
-            if (acc) {
-                total = acc.transactionCount
+        if (specialAccount != null) {
+            let sa = await db.SpecialAccount.findOne({ hash: specialAccount })
+            if (sa) {
+                total = sa.transactionCount
             }
         }
         if (total === null) {
-            total = await db.Tx.estimatedDocumentCount(params.query)
+            total = await db.Tx.countDocuments(params.query)
         }
         let pages = Math.ceil(total / perPage)
         let offset = page > 1 ? (page - 1) * perPage : 0

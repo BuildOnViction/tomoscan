@@ -49,13 +49,17 @@ let TransactionHelper = {
 
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                if (tx.to !== '0x0000000000000000000000000000000000000089') {
+                    q.create('AccountProcess', { address: tx.from.toLowerCase() })
+                        .priority('normal').removeOnComplete(true).save()
+                }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
-                q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                if (tx.to !== '0x0000000000000000000000000000000000000089') {
+                    q.create('AccountProcess', { address: tx.to.toLowerCase() })
+                        .priority('normal').removeOnComplete(true).save()
+                }
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
@@ -66,7 +70,7 @@ let TransactionHelper = {
                             throw e
                         })
 
-                    await db.Account.findOneAndUpdate(
+                    await db.Account.updateOne(
                         { hash: contractAddress },
                         {
                             hash: contractAddress,
@@ -99,7 +103,7 @@ let TransactionHelper = {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
                     // Save log into db.
-                    await db.Log.findOneAndUpdate({ id: log.id }, log,
+                    await db.Log.updateOne({ id: log.id }, log,
                         { upsert: true, new: true })
                 }
             }
@@ -108,10 +112,8 @@ let TransactionHelper = {
 
             delete tx['_id']
 
-            let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
+            await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
-
-            return trans
         } catch (e) {
             console.error(e)
         }

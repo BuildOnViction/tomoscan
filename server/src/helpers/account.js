@@ -12,38 +12,29 @@ let AccountHelper = {
 
         let web3 = await Web3Util.getWeb3()
 
-        let balance = await web3.eth.getBalance(hash)
-        if (_account.balance !== balance) {
-            _account.balance = balance
-            _account.balanceNumber = balance
-        }
+        web3.eth.getBalance(hash, function (err, balance) {
+            if (err) {
+                console.error(err)
+            } else {
+                _account.balance = balance
+                _account.balanceNumber = balance
+            }
+        })
 
-        let code = await web3.eth.getCode(hash)
-        if (_account.code !== code) {
+        if (!_account.hasOwnProperty('code')) {
+            let code = await web3.eth.getCode(hash)
+            if (code !== '0x') {
+                _account.isContract = true
+            }
             _account.code = code
-
             _account.isToken = await TokenHelper.checkIsToken(code)
         }
-
-        _account.isContract = (_account.code !== '0x')
         _account.status = true
-        if (!_account.transactionCount) {
-            _account.transactionCount = 0
-        }
-        if (!_account.minedBlock) {
-            _account.minedBlock = 0
-        }
-        if (!_account.rewardCount) {
-            _account.rewardCount = 0
-        }
-        if (!_account.logCount) {
-            _account.logCount = 0
-        }
 
         delete _account['_id']
 
-        let ac = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
-        return ac
+        let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
+        return acc
     },
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
@@ -55,45 +46,39 @@ let AccountHelper = {
 
             let web3 = await Web3Util.getWeb3()
 
-            let balance = await web3.eth.getBalance(hash)
-            if (_account.balance !== balance) {
-                _account.balance = balance
-                _account.balanceNumber = balance
-            }
+            web3.eth.getBalance(hash, function (err, balance) {
+                if (err) {
+                    console.error(err)
+                } else {
+                    _account.balance = balance
+                    _account.balanceNumber = balance
+                }
+            })
 
-            if (_account.transactionCount) {
-                _account.transactionCount += 1
-            } else {
-                _account.transactionCount = 1
-            }
-
-            let code = await web3.eth.getCode(hash)
-            if (_account.code !== code) {
+            if (!_account.hasOwnProperty('code')) {
+                let code = await web3.eth.getCode(hash)
+                const q = require('../queues')
+                if (code !== '0x') {
+                    _account.isContract = true
+                    // q.create('ContractProcess', { address: hash })
+                    //     .priority('normal').removeOnComplete(true).save()
+                }
                 _account.code = code
 
                 let isToken = await TokenHelper.checkIsToken(code)
                 if (isToken) {
-                    const q = require('../queues')
                     q.create('TokenProcess', { address: hash })
                         .priority('normal').removeOnComplete(true).save()
                 }
                 _account.isToken = isToken
             }
 
-            _account.isContract = (_account.code !== '0x')
-            if (_account.isContract) {
-                const queue = require('../queues')
-                queue.create('ContractProcess', { address: hash })
-                    .priority('normal').removeOnComplete(true).save()
-            }
             _account.status = true
 
             delete _account['_id']
 
-            let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account,
+            await db.Account.updateOne({ hash: hash }, _account,
                 { upsert: true, new: true })
-
-            return acc
         } catch (e) {
             console.error(e)
         }
@@ -122,8 +107,7 @@ let AccountHelper = {
         account.token = token
 
         // Inject contract to account object.
-        let contract = await db.Contract.findOne({ hash: account.hash })
-        account.contract = contract
+        account.contract = await db.Contract.findOne({ hash: account.hash })
 
         // Check has token holders.
         let hasTokens = await db.TokenHolder.findOne({ hash: account.hash })
