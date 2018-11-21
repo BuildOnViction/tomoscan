@@ -39,7 +39,7 @@ consumer.task = async function (job, done) {
             let startBlock = endBlock - blockStep + 1
             q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
                 .priority('normal').removeOnComplete(true).save()
-            q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
+            q.create('updateSpecialAccount', {})
                 .priority('low').removeOnComplete(true).save()
         }
 
