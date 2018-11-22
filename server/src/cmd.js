@@ -4,6 +4,7 @@ const { revert } = require('./commands/removeData')
 const { RewardProcess } = require('./commands/updateRewardTime')
 const { updateTxCount } = require('./commands/updateTxCount')
 const { epochReward } = require('./commands/epochReward')
+const { updateSpecialAccount } = require('./commands/updateSpecialAccount')
 
 program
     .version('0.1.0')
@@ -37,6 +38,13 @@ program
     .description('Re-calculate reward of an epoch')
     .action((epoch) => {
         epochReward(epoch)
+    })
+program
+    .command('updateSpecialAccount')
+    .alias('usa')
+    .description('Update special account')
+    .action(() => {
+        updateSpecialAccount()
     })
 
 program.parse(process.argv)

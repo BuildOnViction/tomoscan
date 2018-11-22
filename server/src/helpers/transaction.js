@@ -1,7 +1,7 @@
 'use strict'
 
 import Web3Util from './web3'
-
+const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 
 let TransactionHelper = {
@@ -49,13 +49,17 @@ let TransactionHelper = {
 
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                if (tx.to !== contractAddress.BlockSigner) {
+                    q.create('AccountProcess', { address: tx.from.toLowerCase() })
+                        .priority('normal').removeOnComplete(true).save()
+                }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
-                q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                    .priority('normal').removeOnComplete(true).save()
+                if (tx.to !== contractAddress.BlockSigner) {
+                    q.create('AccountProcess', { address: tx.to.toLowerCase() })
+                        .priority('normal').removeOnComplete(true).save()
+                }
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
@@ -66,7 +70,7 @@ let TransactionHelper = {
                             throw e
                         })
 
-                    await db.Account.findOneAndUpdate(
+                    await db.Account.updateOne(
                         { hash: contractAddress },
                         {
                             hash: contractAddress,
@@ -99,7 +103,7 @@ let TransactionHelper = {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
                     // Save log into db.
-                    await db.Log.findOneAndUpdate({ id: log.id }, log,
+                    await db.Log.updateOne({ id: log.id }, log,
                         { upsert: true, new: true })
                 }
             }
@@ -108,10 +112,8 @@ let TransactionHelper = {
 
             delete tx['_id']
 
-            let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
+            await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
-
-            return trans
         } catch (e) {
             console.error(e)
         }
@@ -138,7 +140,7 @@ let TransactionHelper = {
         let receipt = await web3.eth.getTransactionReceipt(hash)
 
         if (!receipt) {
-            await db.Tx.findOneAndUpdate({ hash: hash }, tx)
+            await db.Tx.updateOne({ hash: hash }, tx)
             return tx
         }
         let block = await web3.eth.getBlock(_tx.blockNumber)
@@ -159,7 +161,7 @@ let TransactionHelper = {
                 let contractAddress = receipt.contractAddress.toLowerCase()
                 tx.contractAddress = contractAddress
 
-                await db.Account.findOneAndUpdate(
+                await db.Account.updateOne(
                     { hash: contractAddress },
                     {
                         hash: contractAddress,

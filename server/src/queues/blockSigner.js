@@ -4,6 +4,7 @@ const db = require('../models')
 const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
 const Web3Util = require('../helpers/web3')
+const config = require('config')
 
 const consumer = {}
 consumer.name = 'BlockSignerProcess'
@@ -36,6 +37,12 @@ consumer.task = async function (job, done) {
                     signers: signers.map(signer => (signer || '').toLowerCase())
                 }
             }, { upsert: true })
+        }
+        if (parseInt(endBlock) % config.get('BLOCK_PER_EPOCH') === 0) {
+            let q = require('./index')
+            let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
+            q.create('UserHistoryProcess', { epoch: epoch })
+                .priority('normal').removeOnComplete(true).save()
         }
         done()
     } catch (e) {

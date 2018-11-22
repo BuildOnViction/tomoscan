@@ -7,7 +7,7 @@ const db = require('../models')
 let BlockHelper = {
     crawlBlock:async (blockNumber) => {
         let block = await db.Block.findOne({ number: blockNumber })
-        let countTx = await db.Tx.count({ blockNumber: blockNumber })
+        let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
             console.log('Block already processed', blockNumber)
             return null
@@ -24,8 +24,6 @@ let BlockHelper = {
         // Get signer.
         let signer = await utils.toAddress(await utils.getSigner(_block), 100)
         signer = signer.toLowerCase()
-
-        await db.Account.update({ hash: signer }, { $inc: { minedBlock: 1 } })
 
         // Update end tx count.
         let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
@@ -53,7 +51,7 @@ let BlockHelper = {
         delete _block['_id']
         delete _block['signers']
 
-        await db.Block.findOneAndUpdate({ number: _block.number }, _block,
+        await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
 
         return { txs, timestamp }
