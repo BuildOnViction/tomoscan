@@ -80,7 +80,7 @@ TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
         if (acc.contractCreation === result.toLowerCase()) {
             let body = req.body.data
 
-            await db.TokenInfo.findOneAndUpdate({ hash: hash }, body, { upsert: true, new: true })
+            await db.TokenInfo.updateOne({ hash: hash }, body, { upsert: true, new: true })
 
             res.json({ message: 'Update successful' })
         } else {

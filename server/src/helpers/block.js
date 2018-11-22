@@ -51,7 +51,7 @@ let BlockHelper = {
         delete _block['_id']
         delete _block['signers']
 
-        await db.Block.findOneAndUpdate({ number: _block.number }, _block,
+        await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
 
         return { txs, timestamp }

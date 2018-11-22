@@ -17,7 +17,7 @@ async function AccountProcess () {
         let rewardCount = await db.Reward.countDocuments({ address: account.hash })
         let logCount = await db.Log.countDocuments({ address: account.hash })
 
-        await db.Account.findOneAndUpdate({ hash: account.hash },
+        await db.Account.updateOne({ hash: account.hash },
             {
                 transactionCount: txCount,
                 minedBlock: minedBlock,
@@ -40,7 +40,7 @@ async function ContractProcess () {
         let fromToCount = await db.Tx.countDocuments({ from: contract.hash, to: contract.hash })
         let txCount = fromCount + toCount + contractCount - fromToCount
 
-        await db.Contract.findOneAndUpdate({ hash: contract.hash }, { txCount: txCount })
+        await db.Contract.updateOne({ hash: contract.hash }, { txCount: txCount })
     }
 }
 async function TokenProcess () {
@@ -52,7 +52,7 @@ async function TokenProcess () {
 
         let txCount = await db.TokenTx.countDocuments({ address: token.hash })
 
-        await db.Token.findOneAndUpdate({ hash: token.hash }, { txCount: txCount })
+        await db.Token.updateOne({ hash: token.hash }, { txCount: txCount })
     }
 }
 

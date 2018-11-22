@@ -118,7 +118,7 @@ SignMessageController.post('/signMessage/verify', async (req, res, next) => {
         sign.message = message
         sign.signature = signature
 
-        await db.Signature.findOneAndUpdate({ signedAddress: signedAddress }, sign, { upsert: true, new: true })
+        await db.Signature.updateOne({ signedAddress: signedAddress }, sign, { upsert: true, new: true })
 
         res.send('Done')
     } catch (e) {

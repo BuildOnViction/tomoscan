@@ -127,7 +127,7 @@ const epochReward = async (epoch) => {
                 voter: history.voter,
                 candidate: history.candidate
             }).sort({ epoch: -1 })
-            await db.UserVoteAmount.findOneAndUpdate({
+            await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
                 epoch: Math.floor(history.blockNumber / 900)

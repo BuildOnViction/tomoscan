@@ -140,7 +140,7 @@ let TransactionHelper = {
         let receipt = await web3.eth.getTransactionReceipt(hash)
 
         if (!receipt) {
-            await db.Tx.findOneAndUpdate({ hash: hash }, tx)
+            await db.Tx.updateOne({ hash: hash }, tx)
             return tx
         }
         let block = await web3.eth.getBlock(_tx.blockNumber)
@@ -161,7 +161,7 @@ let TransactionHelper = {
                 let contractAddress = receipt.contractAddress.toLowerCase()
                 tx.contractAddress = contractAddress
 
-                await db.Account.findOneAndUpdate(
+                await db.Account.updateOne(
                     { hash: contractAddress },
                     {
                         hash: contractAddress,
