@@ -40,7 +40,7 @@ ContractController.get('/contracts/:slug', async (req, res, next) => {
     }
 })
 
-ContractController.get('/contracts/soljsons', async (req, res, next) => {
+ContractController.get('/soljsons', async (req, res, next) => {
     try {
         const versions = await ContractHelper.getVersions()
 
