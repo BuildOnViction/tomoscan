@@ -26,13 +26,25 @@ const updateSpecialAccount = async () => {
         console.log('process candidate', hash)
         let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }] })
         let minedBlock = await db.Block.countDocuments({ signer: hash })
-        let rewardCount = await db.Reward.countDocuments({ address: candidate.owner.toLowerCase() })
+        let rewardCount = await db.Reward.countDocuments({ address: hash })
+        let logCount = await db.Log.countDocuments({ address: hash })
         await db.SpecialAccount.updateOne({ hash: hash }, {
             transactionCount: txCount,
-            minedBlock: minedBlock
+            minedBlock: minedBlock,
+            rewardCount: rewardCount,
+            logCount: logCount
         }, { upsert: true })
-        await db.SpecialAccount.updateOne({ hash: candidate.owner.toLowerCase() }, {
-            rewardCount: rewardCount
+
+        let owner = candidate.owner.toLowerCase()
+        let txCountOwner = await db.Tx.countDocuments({ $or: [{ from: owner }, { to: owner }] })
+        let minedBlockOwner = await db.Block.countDocuments({ signer: owner })
+        let rewardCountOwner = await db.Reward.countDocuments({ address: owner })
+        let logCountOwner = await db.Log.countDocuments({ address: owner })
+        await db.SpecialAccount.updateOne({ hash: owner }, {
+            transactionCount: txCountOwner,
+            minedBlock: minedBlockOwner,
+            rewardCount: rewardCountOwner,
+            logCount: logCountOwner
         }, { upsert: true })
     })
     await Promise.all(map1)

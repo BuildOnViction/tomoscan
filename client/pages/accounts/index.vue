@@ -47,12 +47,6 @@
                     class="d-none d-lg-block"
                     v-html="formatUnit(toEther(props.item.balance))"/>
             </template>
-
-            <template
-                slot="transactionCount"
-                slot-scope="props">
-                <span>{{ formatNumber(props.item.transactionCount) }}</span>
-            </template>
         </table-base>
 
         <b-pagination-nav
@@ -86,8 +80,7 @@ export default {
         fields: {
             rank: { label: 'Rank' },
             hash: { label: 'Address' },
-            balance: { label: 'Balance' },
-            transactionCount: { label: 'TxCount' }
+            balance: { label: 'Balance' }
         },
         loading: true,
         pagination: {},
