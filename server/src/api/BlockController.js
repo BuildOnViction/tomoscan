@@ -1,8 +1,5 @@
 import { Router } from 'express'
-import _ from 'lodash'
-import async from 'async'
 import db from '../models'
-import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import BlockHelper from '../helpers/block'
 const config = require('config')
@@ -26,7 +23,7 @@ BlockController.get('/blocks', async (req, res, next) => {
             listBlkNum.push(i)
         }
         let items = []
-        let blocks = await db.Block.find({ number: { $in: listBlkNum }})
+        let blocks = await db.Block.find({ number: { $in: listBlkNum } })
 
         if (blocks.length === perPage) {
             items = blocks
@@ -62,7 +59,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         }
 
         let limitedRecords = config.get('LIMITED_RECORDS')
-        let newTotal = maxBlockNumber > limitedRecords ? limitedRecords : total
+        let newTotal = maxBlockNumber > limitedRecords ? limitedRecords : maxBlockNumber
         let pages = Math.ceil(maxBlockNumber / perPage)
         if (pages > 500) {
             pages = 500

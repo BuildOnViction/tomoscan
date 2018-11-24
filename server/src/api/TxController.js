@@ -166,6 +166,7 @@ TxController.get('/txs', async (req, res) => {
                         d.to_model = ac
                     }
                 })
+                await Promise.all(map2)
                 newItem.push(d)
             })
             await Promise.all(map1)
