@@ -106,6 +106,43 @@ let BlockHelper = {
             console.error(e)
             return {}
         }
+    },
+    getBlockOnChain: async (number) => {
+        try {
+            let web3 = await Web3Util.getWeb3()
+            let _block = await web3.eth.getBlock(number)
+            if (!_block) {
+                return null
+            }
+            // Get signer.
+            let signer = await utils.toAddress(await utils.getSigner(_block), 100)
+            _block.signer = signer.toLowerCase()
+
+            // Update end tx count.
+            let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
+            _block.timestamp = _block.timestamp * 1000
+            _block.e_tx = endTxCount
+
+            let finalityNumber
+            if (_block.finality) {
+                finalityNumber = parseInt(_block.finality)
+            } else {
+                finalityNumber = 0
+            }
+
+            // blockNumber = 0 is genesis block
+            if (parseInt(_block.number) === 0) {
+                finalityNumber = 100
+            }
+
+            _block.finality = finalityNumber
+            _block.status = true
+
+            return _block
+        } catch (e) {
+            console.error(e)
+            return {}
+        }
     }
 }
 

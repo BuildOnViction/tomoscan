@@ -5,6 +5,7 @@ import db from '../models'
 import { paginate } from '../helpers/utils'
 import Web3Util from '../helpers/web3'
 import BlockHelper from '../helpers/block'
+const config = require('config')
 
 const BlockController = Router()
 
@@ -12,69 +13,69 @@ BlockController.get('/blocks', async (req, res, next) => {
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        perPage = Math.min(100, perPage)
+        perPage = Math.min(20, perPage)
         let calcPage = page * perPage
 
         let web3 = await Web3Util.getWeb3()
         // Get latest block number count.
         let maxBlockNumber = await web3.eth.getBlockNumber()
         let offset = maxBlockNumber - calcPage
-        let blockNumbers = []
-        let remainNumbers = []
 
-        if (calcPage - maxBlockNumber < perPage) {
-            let max = offset + perPage
-            max = max < maxBlockNumber ? max : maxBlockNumber
-            blockNumbers = _.range(offset, max)
-            let existNumbers = await db.Block.distinct('number',
-                { number: { $in: blockNumbers } })
-            remainNumbers = _.xor(blockNumbers, existNumbers)
+        let listBlkNum = []
+        for (let i= maxBlockNumber; i > maxBlockNumber - perPage; i--) {
+            listBlkNum.push(i)
         }
+        let items = []
+        let blocks = await db.Block.find({ number: { $in: listBlkNum }})
 
-        // Insert blocks remain.
-        async.each(remainNumbers, async (number, next) => {
-            if (number) {
-                let e = await BlockHelper.getBlockDetail(number)
-                if (!e) next(e)
-
-                next()
+        if (blocks.length === perPage) {
+            items = blocks
+        } else {
+            let existBlock = []
+            for (let i = 0; i < blocks.length; i++) {
+                items.push(blocks[i])
+                existBlock.push(blocks[i].number)
             }
-        }, async (e) => {
-            if (e) throw e
-
-            let params = { query: { number: { $in: blockNumbers } }, sort: { number: -1 } }
-            let total = await db.Block.countDocuments()
-
-            if (maxBlockNumber) {
-                params.total = maxBlockNumber
-            }
-            // Check filter type.
-            if (req.query.filter) {
-                switch (req.query.filter) {
-                case 'latest':
-                    params.sort = { number: -1 }
-                    break
-                }
-            }
-            // Check specific latest block number in request.
-            if (req.query.to) {
-                params.query = {}
-            }
-            let data = await paginate(req, 'Block', params, total, true)
-
-            await Promise.all(data.items.map(async (block) => {
-                if (block.finality < 100) {
-                    const blockData = await web3.eth.getBlock(block.number)
-                    if (blockData.finality) {
-                        block.finality = parseInt(blockData.finality)
-                    } else {
-                        block.finality = 0
+            let notExistBlock = []
+            if (existBlock.length === 0) {
+                notExistBlock = listBlkNum
+            } else {
+                for (let i = 0; i < listBlkNum.length; i++) {
+                    if (!existBlock.includes(listBlkNum[i])) {
+                        notExistBlock.push(listBlkNum[i])
                     }
                 }
-            }))
+            }
+            let map = notExistBlock.map(async function (num) {
+                let bl = await BlockHelper.getBlockOnChain(num)
+                items.push(bl)
+            })
+            await Promise.all(map)
+        }
+        let result = []
+        for (let i = 0; i < listBlkNum.length; i++) {
+            for (let j = 0; j < items.length; j++) {
+                if (listBlkNum[i] === items[j].number) {
+                    result.push(items[j])
+                }
+            }
+        }
 
-            return res.json(data)
-        })
+        let limitedRecords = config.get('LIMITED_RECORDS')
+        let newTotal = maxBlockNumber > limitedRecords ? limitedRecords : total
+        let pages = Math.ceil(maxBlockNumber / perPage)
+        if (pages > 500) {
+            pages = 500
+        }
+        let data = {
+            realTotal: maxBlockNumber,
+            total: newTotal,
+            perPage: perPage,
+            currentPage: page,
+            pages: pages,
+            items: result
+        }
+        return res.json(data)
     } catch (e) {
         console.trace(e)
         console.log(e)
