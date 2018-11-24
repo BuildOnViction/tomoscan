@@ -56,7 +56,7 @@
 
             <template
                 slot="finality"
-                slot-scope="props">{{ formatNumber(props.item.finality) }}</template>
+                slot-scope="props">{{ formatNumber(props.item.finality) }} %</template>
         </table-base>
 
         <b-pagination-nav

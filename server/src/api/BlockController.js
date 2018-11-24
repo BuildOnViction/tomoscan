@@ -22,7 +22,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         let offset = maxBlockNumber - calcPage
 
         let listBlkNum = []
-        for (let i= maxBlockNumber; i > maxBlockNumber - perPage; i--) {
+        for (let i = offset; i > offset - perPage; i--) {
             listBlkNum.push(i)
         }
         let items = []
