@@ -17,7 +17,7 @@ const utils = {
         params.populate = params.hasOwnProperty('populate') ? params.populate : []
 
         if (total === null) {
-            total = await mongoose.model(modelName).estimatedDocumentCount(params.query)
+            total = await mongoose.model(modelName).countDocuments(params.query)
         }
 
         let pages = Math.ceil(total / perPage)
