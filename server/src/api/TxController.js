@@ -112,26 +112,32 @@ TxController.get('/txs', async (req, res) => {
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
         if (blockNumber) {
             let block = await db.Block.findOne({ number: blockNumber })
+            let blockTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
 
             const offset = page > 1 ? (page - 1) * perPage : 0
-            if (block && data.items.length < block.e_tx) {
+            if (block.e_tx > blockTx) {
                 const web3 = await Web3Util.getWeb3()
 
                 const _block = await web3.eth.getBlock(blockNumber)
 
                 const trans = _block.transactions
                 const items = []
+                let txids = []
                 for (let i = offset; i < (offset + perPage); i++) {
                     if (i < trans.length) {
-                        items.push(await web3.eth.getTransaction(trans[i]))
+                        txids.push(trans[i])
                     } else {
                         break
                     }
                 }
-
+                let map = txids.map(async function (tx) {
+                    items.push(await web3.eth.getTransaction(tx))
+                })
+                await Promise.all(map)
                 const pages = Math.ceil(trans.length / perPage)
                 data = {
-                    total: trans.length,
+                    realTotal: block.e_tx,
+                    total: block.e_tx > limitedRecords ? limitedRecords : block.e_tx,
                     perPage: perPage,
                     currentPage: page,
                     pages: pages,
@@ -151,18 +157,18 @@ TxController.get('/txs', async (req, res) => {
         if (listAddress) {
             let newItem = []
             let accounts = await db.Account.find({ hash: { $in: listAddress } })
-            for (let i = 0; i < data.items.length; i++) {
-                let it = data.items[i]
-                for (let j = 0; j < accounts.length; j++) {
-                    if (it.from === accounts[j].hash) {
-                        it.from_model = accounts[j]
+            let map1 = data.items.map(async function (d) {
+                let map2 = accounts.map(async function (ac) {
+                    if (d.from === ac.hash) {
+                        d.from_model = ac
                     }
-                    if (it.to === accounts[j].hash) {
-                        it.to_model = accounts[j]
+                    if (d.to === ac.hash) {
+                        d.to_model = ac
                     }
-                }
-                newItem.push(it)
-            }
+                })
+                newItem.push(d)
+            })
+            await Promise.all(map1)
             data.items = newItem
         }
 
@@ -261,14 +267,15 @@ TxController.get('/txs/list/status', async (req, res) => {
         }
         if (notExistHash) {
             let web3 = await Web3Util.getWeb3()
-            for (let i = 0; i < notExistHash.length; i++) {
-                let receipt = await web3.eth.getTransactionReceipt(notExistHash[i])
+            let map = notExistHash.map(async function (tx) {
+                let receipt = await web3.eth.getTransactionReceipt(tx)
                 if (receipt) {
-                    resp[notExistHash[i]] = receipt.status
+                    resp[tx] = receipt.status
                 } else {
-                    resp[notExistHash[i]] = false
+                    resp[tx] = false
                 }
-            }
+            })
+            await Promise.all(map)
         }
 
         return res.json(resp)
