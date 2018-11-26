@@ -225,7 +225,7 @@ TxController.get('/txs/:slug', async (req, res) => {
                 params.push(stringParams.substr(i * 64, 64))
             }
             let inputData = ''
-            if (toModel && toModel.isContract) {
+            if (tx.to && toModel.isContract) {
                 let contract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
                 let functionString = ''
                 if (contract) {
@@ -259,11 +259,14 @@ TxController.get('/txs/:slug', async (req, res) => {
                 inputData += functionString === '' ? '' : functionString + '\n'
             }
 
-            inputData += 'MethodID: ' + method
-            for (let i = 0; i < params.length; i++) {
-                inputData += `\n[${i}]: ${params[i]}`
+            if (tx.to !== null) {
+                inputData += 'MethodID: ' + method
+                for (let i = 0; i < params.length; i++) {
+                    inputData += `\n[${i}]: ${params[i]}`
+                }
+                tx.inputData = inputData
+
             }
-            tx.inputData = inputData
         }
 
         return res.json(tx)
