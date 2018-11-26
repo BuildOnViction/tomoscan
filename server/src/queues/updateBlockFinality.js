@@ -8,7 +8,7 @@ consumer.name = 'BlockFinalityProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let web3 = await Web3.getWeb3()
-    let blocks = await db.Block.find({ finality: { $lt: 50 } })
+    let blocks = await db.Block.find({ finality: { $lt: 50 } }).limit(100)
     console.log('Update finality %s blocks', blocks.length)
     let map = blocks.map(async function (block) {
         let b = await web3.eth.getBlock(block.number)
