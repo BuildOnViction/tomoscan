@@ -178,7 +178,7 @@
                                                 <span class="text-danger">
                                                     <no-ssr placeholder="Codemirror Loading...">
                                                         <codemirror
-                                                            :value="tx.input"
+                                                            :value="inputData"
                                                             :options="{
                                                                 mode:'application/ld+json',
                                                                 gutters:[],
@@ -264,9 +264,10 @@ export default {
             this.$axios.get('/api/counting' + '?' + query)
         ])
 
-        this.tx = responses[0].data
+        self.tx = responses[0].data
+        self.inputData = self.tx.inputData ? self.tx.inputData : self.tx.input
         let moment = self.$moment(responses[0].data.timestamp)
-        this.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
+        self.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
         self.eventsCount = responses[1].data.events
 
