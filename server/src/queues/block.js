@@ -42,6 +42,10 @@ consumer.task = async function (job, done) {
             q.create('updateSpecialAccount', {})
                 .priority('low').removeOnComplete(true).save()
         }
+        if (blockNumber % 20 === 0) {
+            q.create('BlockFinalityProcess', {})
+                .priority('low').removeOnComplete(true).save()
+        }
 
         done()
     } catch (e) {

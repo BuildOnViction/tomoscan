@@ -17,9 +17,10 @@ BlockController.get('/blocks', async (req, res, next) => {
         // Get latest block number count.
         let maxBlockNumber = await web3.eth.getBlockNumber()
         let offset = maxBlockNumber - calcPage
+        let last = offset + perPage
 
         let listBlkNum = []
-        for (let i = offset; i > offset - perPage; i--) {
+        for (let i = last; i > offset; i--) {
             listBlkNum.push(i)
         }
         let items = []
