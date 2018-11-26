@@ -190,7 +190,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         try {
             tx = await TransactionHelper.getTxDetail(hash)
         } catch (e) {
-            console.log(e)
+            console.error(e)
             return res.status(404).json({ message: 'Transaction is not found!' })
         }
         if (!tx) {
@@ -216,10 +216,55 @@ TxController.get('/txs/:slug', async (req, res) => {
         let web3 = await Web3Util.getWeb3()
         let blk = await web3.eth.getBlock('latest')
         tx.latestBlockNumber = (blk || {}).number || tx.blockNumber
+        let input = tx.input
+        if (input !== '0x') {
+            let method = input.substr(0, 10)
+            let stringParams = input.substr(10, input.length - 1)
+            let params = []
+            for (let i = 0; i < stringParams.length / 64; i++) {
+                params.push(stringParams.substr(i * 64, 64))
+            }
+            let inputData = ''
+            if (toModel && toModel.isContract) {
+                let contract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
+                let functionString = ''
+                if (contract) {
+                    inputData += 'Function: '
+                    let functionHashes = contract.functionHashes
+                    let abiCode = JSON.parse(contract.abiCode)
+                    Object.keys(functionHashes).map(function (key) {
+                        if (method === '0x' + functionHashes[key]) {
+                            let methodName = key.indexOf('(') < 0 ? key : key.split('(')[0]
+                            functionString += methodName + '('
+                            abiCode.map(function (fnc) {
+                                if (fnc.name === methodName) {
+                                    for (let i = 0; i < fnc.inputs.length; i++) {
+                                        let input = fnc.inputs[i]
+                                        functionString += input.type + ' ' + input.name
+                                    }
+                                }
+                            })
+                            functionString += ')'
+                        }
+                    })
+                } else {
+                    if (method === '0xa9059cbb') {
+                        functionString = 'Function: transfer(address _to, uint256 _value) ***'
+                    }
+                }
+                inputData += functionString === '' ? '' : functionString + '\n'
+            }
+
+            inputData += 'MethodID: ' + method
+            for (let i = 0; i < params.length; i++) {
+                inputData += '\n' + '[' + i + ']: ' + params[i]
+            }
+            tx.inputData = inputData
+        }
 
         return res.json(tx)
     } catch (e) {
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
