@@ -64,16 +64,11 @@ const mixin = {
             BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
 
             let weiNumber = new BigNumber(wei)
-            let sfx = ''
             let divided = 10 ** 18
-            if (weiNumber.gte(10 ** 30)) {
-                sfx = '<strong>T</strong>'
-                divided = 10 ** 30
-            }
 
             weiNumber = weiNumber.dividedBy(divided).toString()
 
-            return mixin.methods.formatNumber(weiNumber) + ' ' + sfx
+            return mixin.methods.formatNumber(weiNumber)
         },
 
         toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
