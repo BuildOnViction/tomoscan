@@ -265,7 +265,6 @@ TxController.get('/txs/:slug', async (req, res) => {
                     inputData += `\n[${i}]: ${params[i]}`
                 }
                 tx.inputData = inputData
-
             }
         }
 
