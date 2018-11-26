@@ -176,7 +176,7 @@ TxController.get('/txs', async (req, res) => {
         return res.json(data)
     } catch (e) {
         console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
@@ -240,7 +240,11 @@ TxController.get('/txs/:slug', async (req, res) => {
                                 if (fnc.name === methodName) {
                                     for (let i = 0; i < fnc.inputs.length; i++) {
                                         let input = fnc.inputs[i]
-                                        functionString += input.type + ' ' + input.name
+                                        if (i === 0) {
+                                            functionString += `${input.type} ${input.name}`
+                                        } else {
+                                            functionString += `, ${input.type} ${input.name}`
+                                        }
                                     }
                                 }
                             })
@@ -257,7 +261,7 @@ TxController.get('/txs/:slug', async (req, res) => {
 
             inputData += 'MethodID: ' + method
             for (let i = 0; i < params.length; i++) {
-                inputData += '\n' + '[' + i + ']: ' + params[i]
+                inputData += `\n[${i}]: ${params[i]}`
             }
             tx.inputData = inputData
         }
@@ -288,7 +292,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
         return res.json(status)
     } catch (e) {
         console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
@@ -327,7 +331,7 @@ TxController.get('/txs/list/status', async (req, res) => {
         return res.json(resp)
     } catch (e) {
         console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
