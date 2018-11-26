@@ -37,8 +37,8 @@
                         class="tomo-contract-info__result">
                         <nuxt-link
                             v-if="func.outputs[0].type === 'address'"
-                            :to="{name: 'address-slug', params: {slug: func.result.toLowerCase()}}"
-                            class="text-truncate">{{ func.result.toLowerCase() }}
+                            :to="{name: 'address-slug', params: {slug: func.result}}"
+                            class="text-truncate">{{ func.result }}
                         </nuxt-link>
                         <span v-else>
                             {{ func.result === '' ? '\'\'' : func.result }}
