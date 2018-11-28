@@ -4,6 +4,7 @@ import cors from 'cors'
 import AccountController from './AccountController'
 import TxController from './TxController'
 import BlockController from './BlockController'
+import EpochController from './EpochController'
 import TokenController from './TokenController'
 import TokenTxController from './TokenTxController'
 import TokenHolderController from './TokenHolderController'
@@ -23,6 +24,7 @@ const router = Router()
 router.all('*', cors())
 router.use(AuthController)
 router.use(BlockController)
+router.use(EpochController)
 router.use(AccountController)
 router.use(TxController)
 router.use(TokenController)
