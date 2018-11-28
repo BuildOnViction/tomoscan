@@ -189,7 +189,7 @@ export default {
         },
         async getVersions () {
             let self = this
-            let { data } = await self.$axios.get('/api/contracts/soljsons')
+            let { data } = await self.$axios.get('/api/soljsons')
 
             self.compilers = data.map((version, i) => ({
                 value: i,

@@ -270,7 +270,7 @@ export default {
 
             // Hide loading.
             self.loading = false
-            self.page.eventsCount = self.total
+            self.page.eventsCount = self.realTotal
 
             return data
         },

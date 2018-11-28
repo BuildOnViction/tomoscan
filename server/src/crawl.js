@@ -66,8 +66,8 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                console.log('Sleep 0.5 seconds')
-                await sleep(500)
+                console.log('Sleep 0.1 seconds')
+                await sleep(100)
             }
         }
     } catch (e) {

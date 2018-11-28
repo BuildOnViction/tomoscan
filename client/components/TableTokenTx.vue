@@ -145,7 +145,7 @@ export default {
     data: () => ({
         fields: {
             transactionHash: { label: 'TxHash' },
-            timestamp: { label: 'LastSeen' },
+            timestamp: { label: 'Age' },
             from: { label: 'From' },
             arrow: { class: 'text-center' },
             to: { label: 'To' },
@@ -158,7 +158,7 @@ export default {
         realTotal: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1,
         address: null
     }),
@@ -212,7 +212,7 @@ export default {
             self.pages = data.pages
 
             if (self.page) {
-                self.page.tokenTxsCount = self.total
+                self.page.tokenTxsCount = self.realTotal
             }
 
             // Hide loading.

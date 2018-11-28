@@ -117,7 +117,7 @@ export default {
             self.pages = data.pages
 
             if (self.page) {
-                self.page.holdersCount = self.total
+                self.page.holdersCount = self.realTotal
             }
 
             // Hide loading.

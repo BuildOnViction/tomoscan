@@ -8,7 +8,7 @@ const revert = async (revertToBlock) => {
     let lastBlock = lastBlockOnDb[0].number || null
     console.log('last block: ', lastBlock, 'revert to block: ', revertToBlock)
 
-    await db.Setting.findOneAndUpdate({ meta_key: 'min_block_crawl' }, { meta_value: revertToBlock })
+    await db.Setting.updateOne({ meta_key: 'min_block_crawl' }, { meta_value: revertToBlock })
 
     if (lastBlock !== null && lastBlock > revertToBlock) {
         console.log('Total block:', parseFloat(lastBlock) - parseFloat(revertToBlock))

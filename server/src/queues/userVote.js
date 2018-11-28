@@ -32,7 +32,7 @@ consumer.task = async function (job, done) {
                 voter: history.voter,
                 candidate: history.candidate
             }).sort({ epoch: -1 })
-            await db.UserVoteAmount.findOneAndUpdate({
+            await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
                 epoch: Math.floor(history.blockNumber / 900)

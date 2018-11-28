@@ -31,12 +31,6 @@ consumer.task = async function (job, done) {
             })
         }
 
-        if (blockNumber % config.get('BLOCK_PER_EPOCH') === 0) {
-            let epoch = parseInt(blockNumber) / config.get('BLOCK_PER_EPOCH')
-            q.create('UserHistoryProcess', { epoch: epoch - 1 })
-                .priority('normal').removeOnComplete(true).save()
-        }
-
         // Get signers for 100 blocks per time
         let blockStep = 100
         // Begin from epoch 2
@@ -45,6 +39,12 @@ consumer.task = async function (job, done) {
             let startBlock = endBlock - blockStep + 1
             q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
                 .priority('normal').removeOnComplete(true).save()
+            q.create('updateSpecialAccount', {})
+                .priority('low').removeOnComplete(true).save()
+        }
+        if (blockNumber % 20 === 0) {
+            q.create('BlockFinalityProcess', {})
+                .priority('low').removeOnComplete(true).save()
         }
 
         done()

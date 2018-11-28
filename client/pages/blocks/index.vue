@@ -56,7 +56,7 @@
 
             <template
                 slot="finality"
-                slot-scope="props">{{ formatNumber(props.item.finality) }}</template>
+                slot-scope="props">{{ formatNumber(props.item.finality) }} %</template>
         </table-base>
 
         <b-pagination-nav
@@ -102,7 +102,7 @@ export default {
         realTotal: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1
     }),
     watch: {

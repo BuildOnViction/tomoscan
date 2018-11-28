@@ -12,16 +12,15 @@ let TokenHelper = {
 
     checkIsToken:async (code) => {
         let tokenFuncs = await TokenHelper.getTokenFuncs()
-        let isToken = false
         for (let name in tokenFuncs) {
             let codeCheck = tokenFuncs[name]
             codeCheck = codeCheck.replace('0x', '')
             if (code.indexOf(codeCheck) >= 0) {
-                isToken = true
+                return true
             }
         }
 
-        return isToken
+        return false
     },
 
     formatToken: async (item) => {

@@ -38,9 +38,9 @@ consumer.task = async function (job, done) {
             if (String(voterAmount) !== '0') {
                 let reward = totalReward.multipliedBy(voterAmount).dividedBy(totalVoterCap)
 
-                const q = require('./index')
-                q.create('AddRewardToAccount', { address: voterAddress, balance: reward.toString() })
-                    .priority('normal').removeOnComplete(true).save()
+                // const q = require('./index')
+                // q.create('AddRewardToAccount', { address: voterAddress, balance: reward.toString() })
+                //     .priority('normal').removeOnComplete(true).save()
 
                 await rewardVoter.push({
                     epoch: epoch,

@@ -48,10 +48,6 @@
             <template
                 slot="decimals"
                 slot-scope="props">{{ formatNumber(props.item.decimals) }}</template>
-
-            <template
-                slot="tokenTxsCount"
-                slot-scope="props">{{ formatNumber(props.item.txCount) }}</template>
         </table-base>
 
         <b-pagination-nav
@@ -83,15 +79,14 @@ export default {
             name: { label: 'Name' },
             symbol: { label: 'Symbol' },
             totalSupply: { label: 'Total Supply' },
-            decimals: { label: 'Decimals' },
-            tokenTxsCount: { label: 'TxCount' }
+            decimals: { label: 'Decimals' }
         },
         loading: true,
         pagination: {},
         total: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1
     }),
     watch: {
