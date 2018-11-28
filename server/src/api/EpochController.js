@@ -34,15 +34,17 @@ const bytesToAddress = bytes => {
 
 const getAllLists = block => {
     const { extraData, validators, penalties } = block._doc
+
     const m1m2Buff = Buffer.from(extraData.substring(2), 'hex')
     const m1m2Byte = m1m2Buff.slice(EXTRA_SEAL, m1m2Buff.length - EXTRA_VANITY)
 
     const m1m2List = bytesToAddress(m1m2Byte)
-    const validatorList = bytesToAddress(Buffer.from(validators, 'hex'))
-    const penaltyList = bytesToAddress(Buffer.from(penalties, 'hex'))
+    const validatorList = bytesToAddress(Buffer.from(validators || '', 'hex'))
+    const penaltyList = bytesToAddress(Buffer.from(penalties || '', 'hex'))
     const rewardList = [] // where to get this???
+    const epocData = { m1m2List, validatorList, penaltyList, rewardList }
 
-    return { ...block._doc, m1m2List, validatorList, penaltyList, rewardList }
+    return { ...block._doc, epocData }
 }
 
 // API
