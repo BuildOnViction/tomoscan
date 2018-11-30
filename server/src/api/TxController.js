@@ -225,7 +225,7 @@ TxController.get('/txs/:slug', async (req, res) => {
                 params.push(stringParams.substr(i * 64, 64))
             }
             let inputData = ''
-            if (tx.to && toModel.isContract) {
+            if (tx.to && (toModel || {}).isContract) {
                 let contract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
                 let functionString = ''
                 if (contract) {
