@@ -42,6 +42,7 @@ module.exports = {
         '@nuxtjs/moment',
         '@nuxtjs/font-awesome',
         '@nuxtjs/toast',
+        '@nuxtjs/proxy',
         [
             '@nuxtjs/google-analytics', {
                 id: process.env.GA_ID || '',
@@ -60,7 +61,11 @@ module.exports = {
     ],
     env: process.env,
     axios: {
-        baseURL: process.env.API_URL
+        // baseURL: process.env.API_URL,
+        proxy: true
+    },
+    proxy: {
+        '/api/': process.env.API_URL
     },
     loading: {
         color: '#34a1ff',
