@@ -25,6 +25,7 @@ const Block = new Schema({
     signer: { type: String, index: true },
     status: { type: Boolean, default: false, index: true },
     finality: { type: Number, default: 0, index: true },
+    updateFinalityTime: { type: Number, index: true },
     e_tx: { type: Number, default: 0 }
 }, {
     timestamps: true,
