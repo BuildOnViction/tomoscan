@@ -12,7 +12,6 @@ consumer.task = async function (job, done) {
     console.log('Update finality %s blocks', blocks.length, (blocks[0] || {}).number)
     let map = blocks.map(async function (block) {
         let b = await web3.eth.getBlock(block.number)
-        console.log('finality block', block.number, b.finality)
         block.finality = b.hasOwnProperty('finality') ? parseInt(b.finality) : 0
         block.save()
     })
