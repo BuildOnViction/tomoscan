@@ -22,10 +22,7 @@ const mixin = {
         },
 
         formatNumber: (number) => {
-            let seps = number.toString().split('.')
-            seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
-
-            return seps.join('.')
+            return Number(number).toLocaleString('en', { useGrouping: true })
         },
 
         toLongNumberString: (n) => {
