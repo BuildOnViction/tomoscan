@@ -23,18 +23,18 @@ consumer.task = async function (job, done) {
     }
     try {
         let map = numbers.map(async function (number) {
-            let block = await web3.eth.getBlock(i)
+            let block = await web3.eth.getBlock(number)
             if (block) {
                 let blockHash = block.hash
                 let signers = await blockSigner.methods.getSigners(blockHash).call()
-                console.log('Get signer of block ', i)
+                console.log('Get signer of block ', number)
                 await db.BlockSigner.updateOne({
                     blockHash: blockHash,
-                    blockNumber: i
+                    blockNumber: number
                 }, {
                     $set: {
                         blockHash: blockHash,
-                        blockNumber: i,
+                        blockNumber: number,
                         signers: signers.map(signer => (signer || '').toLowerCase())
                     }
                 }, { upsert: true })

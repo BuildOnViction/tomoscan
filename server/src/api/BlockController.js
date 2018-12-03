@@ -134,4 +134,27 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
     }
 })
 
+BlockController.get('/blocks/list/finality', async (req, res) => {
+    try {
+        let numbers = req.query.numbers
+        let listNumber = numbers.split(',')
+        let resp = {}
+
+        if (listNumber) {
+            let web3 = await Web3Util.getWeb3()
+            let map = listNumber.map(async function (number) {
+                let block = await web3.eth.getBlock(number)
+                resp[number] = block.finality
+            })
+            await Promise.all(map)
+        }
+
+        return res.json(resp)
+    } catch (e) {
+        console.trace(e)
+        console.error(e)
+        return res.status(406).send()
+    }
+})
+
 export default BlockController
