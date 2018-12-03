@@ -14,7 +14,7 @@ RewardController.get('/rewards/:slug', async (req, res) => {
             params.query = { address: address }
         }
 
-        let acc = await db.Account.findOne({ hash: address })
+        let acc = await db.SpecialAccount.findOne({ hash: address })
         let total = null
         if (acc) {
             total = acc.rewardCount
