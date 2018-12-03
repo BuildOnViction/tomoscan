@@ -20,12 +20,11 @@ const getAccount = async (address) => {
         }
     } else {
         return {
-            txCount: await db.Tx.countDocuments({ $or: [{ from: address }, { to : address }]}),
+            txCount: await db.Tx.countDocuments({ $or: [{ from: address }, { to : address }] }),
             logCount: await db.Log.countDocuments({ address: address }),
-            minedBlocks: await db.Block.countDocuments({ signer: address}),
+            minedBlocks: await db.Block.countDocuments({ signer: address }),
             rewardCount: await db.Reward.countDocuments({ address: address })
         }
-
     }
 }
 
