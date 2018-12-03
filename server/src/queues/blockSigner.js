@@ -17,27 +17,31 @@ consumer.task = async function (job, done) {
     const web3 = await Web3Util.getWeb3()
     const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
 
+    let numbers = []
+    for (let i = startBlock; i <= endBlock; i++) {
+        numbers.push(i)
+    }
     try {
-        for (let i = startBlock; i <= endBlock; i++) {
-            let block = await web3.eth.getBlock(i)
-            if (!block) {
-                console.error('Block %s does not exist', i)
-                break
-            }
-            let blockHash = block.hash
-            let signers = await blockSigner.methods.getSigners(blockHash).call()
-            console.log('Get signer of block ', i)
-            await db.BlockSigner.updateOne({
-                blockHash: blockHash,
-                blockNumber: i
-            }, {
-                $set: {
+        let map = numbers.map(async function (number) {
+            let block = await web3.eth.getBlock(number)
+            if (block) {
+                let blockHash = block.hash
+                let signers = await blockSigner.methods.getSigners(blockHash).call()
+                console.log('Get signer of block ', number)
+                await db.BlockSigner.updateOne({
                     blockHash: blockHash,
-                    blockNumber: i,
-                    signers: signers.map(signer => (signer || '').toLowerCase())
-                }
-            }, { upsert: true })
-        }
+                    blockNumber: number
+                }, {
+                    $set: {
+                        blockHash: blockHash,
+                        blockNumber: number,
+                        signers: signers.map(signer => (signer || '').toLowerCase())
+                    }
+                }, { upsert: true })
+            }
+        })
+        await Promise.all(map)
+
         if (parseInt(endBlock) % config.get('BLOCK_PER_EPOCH') === 0) {
             let q = require('./index')
             let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
