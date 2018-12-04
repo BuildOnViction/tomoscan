@@ -9,8 +9,8 @@ const RewardProcess = async () => {
     if (lastReward) {
         lastEpoch = lastReward[0].epoch
     }
-    console.log('Total epoch:', lastEpoch)
-    console.log('Process at', new Date())
+    console.info('Total epoch:', lastEpoch)
+    console.info('Process at', new Date())
     if (lastEpoch !== null) {
         for (let epoch = 1; epoch <= lastEpoch; epoch++) {
             let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
@@ -28,11 +28,11 @@ const RewardProcess = async () => {
             if (timestamp !== null) {
                 await db.Reward.update({ epoch: epoch }, { $set: { rewardTime: timestamp } }, { multi: true })
             }
-            console.log('Update reward time of epoch: ', epoch, timestamp)
+            console.info('Update reward time of epoch: ', epoch, timestamp)
         }
     }
 
-    console.log('Finish at', new Date())
+    console.info('Finish at', new Date())
     process.exit(1)
 }
 

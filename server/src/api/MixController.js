@@ -160,8 +160,7 @@ MixController.get('/counting', async (req, res) => {
 
         return res.json(result)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })

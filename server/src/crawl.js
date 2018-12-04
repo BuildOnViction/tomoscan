@@ -54,7 +54,7 @@ let watch = async () => {
                 // send notification after 2 minutes
                 if (isOver2Minutes >= 240 && isSend) {
                     let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                    console.log('Slack Notification - There is no new block in last 2 minutes')
+                    console.info('Slack Notification - There is no new block in last 2 minutes')
                     await slack.send({
                         attachments: [
                             {
@@ -67,7 +67,7 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                console.log('Sleep 0.5 seconds')
+                console.info('Sleep 0.5 seconds')
                 await sleep(500)
             }
         }

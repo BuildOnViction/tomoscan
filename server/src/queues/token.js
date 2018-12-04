@@ -11,7 +11,7 @@ consumer.name = 'TokenProcess'
 consumer.processNumber = 6
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
-    console.log('Process token: ', address)
+    console.info('Process token: ', address)
     try {
         let token = await db.Token.findOneAndUpdate({ hash: address }, { hash: address }, { upsert: true, new: true })
         let tokenFuncs = await TokenHelper.getTokenFuncs()

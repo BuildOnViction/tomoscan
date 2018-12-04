@@ -9,7 +9,7 @@ let BlockHelper = {
         let block = await db.Block.findOne({ number: blockNumber })
         let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
-            console.log('Block already processed', blockNumber)
+            console.info('Block already processed', blockNumber)
             return null
         }
 

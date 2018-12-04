@@ -12,7 +12,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let startBlock = job.data.startBlock
     let endBlock = job.data.endBlock
-    console.log('Get block signer from block %s to %s', startBlock, endBlock)
+    console.info('Get block signer from block %s to %s', startBlock, endBlock)
 
     const web3 = await Web3Util.getWeb3()
     const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
@@ -27,7 +27,7 @@ consumer.task = async function (job, done) {
             if (block) {
                 let blockHash = block.hash
                 let signers = await blockSigner.methods.getSigners(blockHash).call()
-                console.log('Get signer of block ', number)
+                console.info('Get signer of block ', number)
                 await db.BlockSigner.updateOne({
                     blockHash: blockHash,
                     blockNumber: number

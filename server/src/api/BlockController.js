@@ -75,8 +75,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         }
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
@@ -93,8 +92,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 
         return res.json(block)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
@@ -128,8 +126,7 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
 
         return res.json({ signers: signers })
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })
