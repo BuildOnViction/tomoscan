@@ -57,7 +57,8 @@ consumer.task = async function (job, done) {
             address: _log.address,
             value: _log.value
         }) })
-            .priority('normal').removeOnComplete(true).save()
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
         console.error(consumer.name, e)
         done(e)

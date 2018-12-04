@@ -19,7 +19,8 @@ consumer.task = async function (job, done) {
             let map = txs.map(tx => {
                 return new Promise((resolve, reject) => {
                     q.create('TransactionProcess', { hash: tx.toLowerCase(), timestamp: timestamp })
-                        .priority('high').removeOnComplete(true).save().on('complete', () => {
+                        .priority('high').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save().on('complete', () => {
                             return resolve()
                         }).on('error', (e) => {
                             return reject(e)
@@ -38,20 +39,23 @@ consumer.task = async function (job, done) {
             let endBlock = blockNumber - config.get('BLOCK_PER_EPOCH')
             let startBlock = endBlock - blockStep + 1
             q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             q.create('updateSpecialAccount', {})
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
         if (blockNumber % 20 === 0) {
             q.create('BlockFinalityProcess', {})
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
 
         done()
     } catch (e) {
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
-        done()
+        done(e)
         return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 }

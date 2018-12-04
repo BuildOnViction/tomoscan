@@ -92,7 +92,8 @@ consumer.task = async function (job, done) {
 
     const q = require('./index')
     q.create('RewardValidatorProcess', { epoch: epoch })
-        .priority('normal').removeOnComplete(true).save()
+        .priority('normal').removeOnComplete(true)
+        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     done()
 }
 

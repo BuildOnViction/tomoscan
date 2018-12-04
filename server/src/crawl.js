@@ -34,7 +34,8 @@ let watch = async () => {
                 nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
                 for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
                     q.create('BlockProcess', { block: i })
-                        .priority('high').removeOnComplete(true).save()
+                        .priority('high').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
                     minBlockCrawl = i
                 }
@@ -66,8 +67,8 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                console.log('Sleep 0.1 seconds')
-                await sleep(100)
+                console.log('Sleep 0.5 seconds')
+                await sleep(500)
             }
         }
     } catch (e) {

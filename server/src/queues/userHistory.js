@@ -24,12 +24,10 @@ consumer.task = async function (job, done) {
             filter: {},
             fromBlock: startBlock,
             toBlock: endBlock
-        }, function (error, events) {
+        }, async function (error, events) {
             if (error) {
                 console.error(error)
-                done()
-                q.create('UserHistoryProcess', { epoch: epoch })
-                    .priority('normal').removeOnComplete(true).save()
+                done(error)
             }
             let listUser = []
 
@@ -59,25 +57,19 @@ consumer.task = async function (job, done) {
             }
 
             if (listUser.length > 0) {
-                db.VoteHistory.insertMany(listUser).then(function () {
-                    q.create('UserVoteProcess', { epoch: epoch })
-                        .priority('normal').removeOnComplete(true).save()
-                    done()
-                })
-            } else {
-                q.create('UserVoteProcess', { epoch: epoch })
-                    .priority('normal').removeOnComplete(true).save()
-                done()
+                await db.VoteHistory.insertMany(listUser)
             }
+            q.create('UserVoteProcess', { epoch: epoch })
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            done()
         })
 
         done()
     } catch (e) {
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
-        done()
-        q.create('UserHistoryProcess', { epoch: epoch })
-            .priority('normal').removeOnComplete(true).save()
+        done(e)
     }
 }
 

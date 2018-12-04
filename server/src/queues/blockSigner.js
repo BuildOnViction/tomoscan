@@ -46,17 +46,13 @@ consumer.task = async function (job, done) {
             let q = require('./index')
             let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
             q.create('UserHistoryProcess', { epoch: epoch })
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
         done()
     } catch (e) {
         console.error(e)
-        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-        await sleep(2000)
-        done()
-        let q = require('./index')
-        q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
-            .priority('normal').removeOnComplete(true).save()
+        done(e)
     }
 }
 
