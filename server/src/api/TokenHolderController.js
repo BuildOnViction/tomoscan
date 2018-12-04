@@ -67,8 +67,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })

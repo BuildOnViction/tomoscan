@@ -7,7 +7,7 @@ consumer.name = 'TokenHolderProcess'
 consumer.processNumber = 24
 consumer.task = async function (job, done) {
     let token = JSON.parse(job.data.token)
-    console.log('Process token holder: ', token.from, token.to, token.value)
+    console.info('Process token holder: ', token.from, token.to, token.value)
     if (!token) {
         done()
         return false

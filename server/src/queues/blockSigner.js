@@ -12,7 +12,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let startBlock = job.data.startBlock
     let endBlock = job.data.endBlock
-    console.log('Get block signer from block %s to %s', startBlock, endBlock)
+    console.info('Get block signer from block %s to %s', startBlock, endBlock)
 
     const web3 = await Web3Util.getWeb3()
     const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
@@ -27,7 +27,7 @@ consumer.task = async function (job, done) {
             if (block) {
                 let blockHash = block.hash
                 let signers = await blockSigner.methods.getSigners(blockHash).call()
-                console.log('Get signer of block ', number)
+                console.info('Get signer of block ', number)
                 await db.BlockSigner.updateOne({
                     blockHash: blockHash,
                     blockNumber: number
@@ -46,17 +46,13 @@ consumer.task = async function (job, done) {
             let q = require('./index')
             let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
             q.create('UserHistoryProcess', { epoch: epoch })
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
         done()
     } catch (e) {
         console.error(e)
-        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-        await sleep(2000)
-        done()
-        let q = require('./index')
-        q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
-            .priority('normal').removeOnComplete(true).save()
+        done(e)
     }
 }
 

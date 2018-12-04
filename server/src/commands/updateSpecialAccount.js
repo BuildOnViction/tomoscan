@@ -4,7 +4,7 @@ const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 
 const updateSpecialAccount = async () => {
-    console.log('Count list transaction')
+    console.info('Count list transaction')
     await db.SpecialAccount.updateOne({ hash: 'allTransaction' }, {
         transactionCount: await db.Tx.countDocuments({ isPending: false })
     }, { upsert: true })
@@ -20,10 +20,10 @@ const updateSpecialAccount = async () => {
 
     const tomomasterUrl = config.get('TOMOMASTER_API_URL')
     const candidates = await axios.get(tomomasterUrl + '/api/candidates')
-    console.log('there are %s candidates need process', candidates.data.length)
+    console.info('there are %s candidates need process', candidates.data.length)
     let map1 = candidates.data.map(async (candidate) => {
         let hash = candidate.candidate.toLowerCase()
-        console.log('process candidate', hash)
+        console.info('process candidate', hash)
         let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }] })
         let minedBlock = await db.Block.countDocuments({ signer: hash })
         let rewardCount = await db.Reward.countDocuments({ address: hash })
@@ -50,10 +50,10 @@ const updateSpecialAccount = async () => {
     await Promise.all(map1)
 
     let accounts = await db.Account.find({ isContract: true })
-    console.log('there are %s contract accounts', accounts.length)
+    console.info('there are %s contract accounts', accounts.length)
     let map2 = accounts.map(async (acc) => {
         let hash = acc.hash.toLowerCase()
-        console.log('process account', hash)
+        console.info('process account', hash)
         let txCount = await db.Tx.countDocuments({ from: hash })
         txCount += await db.Tx.countDocuments({ to: hash })
         txCount += await db.Tx.countDocuments({ contractAddress: hash })

@@ -8,7 +8,7 @@ consumer.processNumber = 32
 consumer.task = async function (job, done) {
     let hash = job.data.hash.toLowerCase()
     let timestamp = job.data.timestamp
-    console.log('Process Transaction: ', hash)
+    console.info('Process Transaction: ', hash)
     try {
         await TransactionHelper.crawlTransaction(hash, timestamp)
     } catch (e) {

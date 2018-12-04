@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
         blockNumber: { $gte: startBlock, $lte: endBlock }
     }).sort({ blockNumber: 1 })
 
-    console.log('There are %s histories in epoch %s', histories.length, epoch)
+    console.info('There are %s histories in epoch %s', histories.length, epoch)
     for (let i = 0; i < histories.length; i++) {
         let history = histories[i]
 
@@ -66,7 +66,7 @@ consumer.task = async function (job, done) {
         }
     }
 
-    console.log('Duplicate vote amount')
+    console.info('Duplicate vote amount')
     // Find in history and duplicate to this epoch if not found
     let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
     let data = []
@@ -80,19 +80,20 @@ consumer.task = async function (job, done) {
             data.push({
                 voter: voteInEpoch[j].voter,
                 epoch: voteInEpoch[j].epoch + 1,
-                voteAmount: epoch,
+                voteAmount: voteInEpoch[j].voteAmount,
                 candidate: voteInEpoch[j].candidate
             })
         }
     }
     if (data.length > 0) {
-        console.log('Duplicate data to epoch %s', epoch)
+        console.info('Duplicate data to epoch %s', epoch)
         await db.UserVoteAmount.insertMany(data)
     }
 
     const q = require('./index')
     q.create('RewardValidatorProcess', { epoch: epoch })
-        .priority('normal').removeOnComplete(true).save()
+        .priority('normal').removeOnComplete(true)
+        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     done()
 }
 
