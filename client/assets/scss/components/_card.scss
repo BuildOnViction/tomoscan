@@ -4,7 +4,7 @@
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
   margin-bottom: 50px;
-  
+
 
   @include media-breakpoint-up(md) {
     padding: 40px;
@@ -76,7 +76,7 @@
       display: block;
       margin-bottom: 15px;
     }
-    
+
     td {
       display: block;
 
@@ -150,19 +150,19 @@
         grid-gap: 15px;
         margin-bottom: 15px;
       }
-  
+
       td {
         word-break: break-word;
-  
+
         &:first-child {
           text-align: right;
         }
-  
+
         &:last-child {
           color: $color-text-2;
         }
       }
-  
+
     }
 
     @include media-breakpoint-up(md) {
@@ -192,6 +192,43 @@
 
   .form-group {
     margin-bottom: 30px;
+  }
+}
+
+table.reward__table {
+  > thead {
+    tr {
+      grid-template-columns: 43% 43% 14%;
+      margin-bottom: 2px;
+
+      &:last-child {
+        text-align: center;
+      }
+    }
+    th {
+      padding: 10px;
+      background: grey;
+      color: white;
+    }
+  }
+
+  > tbody {
+    tr {
+      grid-template-columns: 43% 43% 14%;
+      margin-bottom: 2px;
+      td:last-child {
+        text-align: center;
+      }
+    }
+  }
+
+  tr, th { grid-gap: 1px; }
+  td {
+    background: #f8f8fa;
+    padding: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 
