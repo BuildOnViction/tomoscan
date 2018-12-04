@@ -74,7 +74,6 @@ consumer.task = async function (job, done) {
         console.error(e)
         done(e)
     }
-
 }
 
 module.exports = consumer
