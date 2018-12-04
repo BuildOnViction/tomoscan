@@ -80,7 +80,7 @@ consumer.task = async function (job, done) {
             data.push({
                 voter: voteInEpoch[j].voter,
                 epoch: voteInEpoch[j].epoch + 1,
-                voteAmount: epoch,
+                voteAmount: voteInEpoch[j].voteAmount,
                 candidate: voteInEpoch[j].candidate
             })
         }
