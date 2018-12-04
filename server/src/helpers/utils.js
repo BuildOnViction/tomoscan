@@ -40,6 +40,13 @@ const utils = {
         let limitedRecords = config.get('LIMITED_RECORDS')
         let newTotal = total > limitedRecords ? limitedRecords : total
 
+        if (total === 0) {
+            total = items.length
+        }
+        if (newTotal === 0) {
+            newTotal = items.length
+        }
+
         return {
             realTotal: total,
             total: newTotal,

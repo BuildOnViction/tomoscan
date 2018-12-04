@@ -10,7 +10,7 @@ const MixController = Router()
  * @returns address information
  */
 const getAccount = async (address) => {
-    let acc = await db.Account.findOne({ hash: address })
+    let acc = await db.SpecialAccount.findOne({ hash: address })
     if (acc) {
         return {
             txCount: acc.transactionCount,
@@ -18,13 +18,13 @@ const getAccount = async (address) => {
             minedBlocks: acc.minedBlock,
             rewardCount: acc.rewardCount
         }
-    }
-
-    return {
-        txCount: 0,
-        logCount: 0,
-        minedBlocks: 0,
-        rewardCount: 0
+    } else {
+        return {
+            txCount: await db.Tx.countDocuments({ $or: [{ from: address }, { to : address }] }),
+            logCount: await db.Log.countDocuments({ address: address }),
+            minedBlocks: await db.Block.countDocuments({ signer: address }),
+            rewardCount: await db.Reward.countDocuments({ address: address })
+        }
     }
 }
 
@@ -38,9 +38,7 @@ async function getTotalTokenHolders (hash, token) {
     }
     params.query = Object.assign(params.query, { quantityNumber: { $gte: 0 } })
 
-    const result = await db.TokenHolder.countDocuments(params.query).lean().exec()
-
-    return result
+    return db.TokenHolder.countDocuments(params.query).lean().exec()
 }
 
 async function getTotalTokenTx (address, token) {
@@ -162,8 +160,7 @@ MixController.get('/counting', async (req, res) => {
 
         return res.json(result)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })

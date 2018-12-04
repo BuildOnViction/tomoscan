@@ -9,7 +9,7 @@ let BlockHelper = {
         let block = await db.Block.findOne({ number: blockNumber })
         let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
-            console.log('Block already processed', blockNumber)
+            console.info('Block already processed', blockNumber)
             return null
         }
 
@@ -47,6 +47,7 @@ let BlockHelper = {
         let txs = _block.transactions
         delete _block['transactions']
         _block.status = true
+        _block.updateFinalityTime = 0
 
         delete _block['_id']
         delete _block['signers']
@@ -94,6 +95,13 @@ let BlockHelper = {
 
             _block.finality = finalityNumber
             _block.status = true
+            if (block) {
+                if (!block.hasOwnProperty('updateFinalityTime')) {
+                    _block.updateFinalityTime = 0
+                }
+            } else {
+                _block.updateFinalityTime = 0
+            }
 
             delete _block['_id']
             delete _block['signers']

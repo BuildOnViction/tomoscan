@@ -15,7 +15,7 @@ TokenTxController.get('/token-txs', async (req, res) => {
         if (token) {
             params.query = { address: token.toLowerCase() }
 
-            let tk = await db.Token.findOne({ hash: token.toLowerCase() })
+            let tk = await db.SpecialAccount.findOne({ hash: token.toLowerCase() })
             if (tk) {
                 total = tk.txCount
             }

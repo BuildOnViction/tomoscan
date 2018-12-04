@@ -7,20 +7,20 @@ const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
 
 const epochReward = async (epoch) => {
-    console.log('Start process', new Date())
+    console.info('Start process', new Date())
     let startBlock = (epoch - 1) * config.get('BLOCK_PER_EPOCH') + 1
     let endBlock = (epoch) * config.get('BLOCK_PER_EPOCH')
     const web3 = await Web3Util.getWeb3()
 
     let maxBlockNum = await web3.eth.getBlockNumber()
     if (maxBlockNum - config.get('BLOCK_PER_EPOCH') < endBlock) {
-        console.log('Epoch is waiting for calculate')
+        console.info('Epoch is waiting for calculate')
         return
     }
-    console.log('Re-calculate reward from block %s to block %s', startBlock, endBlock)
+    console.info('Re-calculate reward from block %s to block %s', startBlock, endBlock)
 
     // Delete old reward
-    console.log('Remove old reward')
+    console.info('Remove old reward')
     await db.Reward.remove({ epoch: epoch })
 
     let totalReward = new BigNumber(config.get('REWARD'))
@@ -34,7 +34,7 @@ const epochReward = async (epoch) => {
     // verify block was on chain
     let epochSignNumber = await db.BlockSigner.countDocuments({ blockNumber: { $gte: startBlock, $lte: endBlock } })
     if (epochSignNumber < config.get('BLOCK_PER_EPOCH')) {
-        console.log('Begin get block signer')
+        console.info('Begin get block signer')
         for (let i = startBlock; i <= endBlock; i++) {
             let blockHash = (await web3.eth.getBlock(i)).hash
             let ss = await bs.methods.getSigners(blockHash).call()
@@ -51,7 +51,7 @@ const epochReward = async (epoch) => {
                 upsert: true
             }).then(function () {
                 if (i % 50 === 0) {
-                    console.log('Update block signer block', i, new Date())
+                    console.info('Update block signer block', i, new Date())
                 }
             })
         }
@@ -110,7 +110,7 @@ const epochReward = async (epoch) => {
         blockNumber: { $gte: startBlock, $lte: endBlock }
     }).sort({ blockNumber: 1 })
 
-    console.log('There are %s histories in epoch %s', histories.length, epoch)
+    console.info('There are %s histories in epoch %s', histories.length, epoch)
     for (let i = 0; i < histories.length; i++) {
         let history = histories[i]
 
@@ -161,7 +161,7 @@ const epochReward = async (epoch) => {
         }
     }
 
-    console.log('Duplicate vote amount')
+    console.info('Duplicate vote amount')
     // Find in history and duplicate to this epoch if not found
     let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
     let data = []
@@ -181,7 +181,7 @@ const epochReward = async (epoch) => {
         }
     }
     if (data.length > 0) {
-        console.log('Duplicate data to epoch %s', epoch)
+        console.info('Duplicate data to epoch %s', epoch)
         await db.UserVoteAmount.insertMany(data)
     }
 
@@ -214,7 +214,7 @@ const epochReward = async (epoch) => {
     })
     await Promise.all(validatorMap)
 
-    console.log('calculate reward for list validator ', new Date())
+    console.info('calculate reward for list validator ', new Date())
     let validatorFinal = validatorSigners.map(async (validator) => {
         let reward4group = totalReward.multipliedBy(validator.signNumber).dividedBy(totalSignNumber)
         let reward4validator = reward4group.multipliedBy(validatorRewardPercent).dividedBy(100)
@@ -271,7 +271,7 @@ const epochReward = async (epoch) => {
     if (rewardValidator.length > 0) {
         await db.Reward.insertMany(rewardValidator)
     }
-    console.log('End process', new Date())
+    console.info('End process', new Date())
     process.exit(1)
 }
 
@@ -280,7 +280,7 @@ async function rewardVoterProcess (epoch, validator, validatorSignNumber, totalR
         rewardTime = new Date()
     }
     totalReward = new BigNumber(totalReward)
-    console.log('Process reward for voter of validator', validator)
+    console.info('Process reward for voter of validator', validator)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1

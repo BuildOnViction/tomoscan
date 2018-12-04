@@ -85,14 +85,12 @@ consumer.task = async function (job, done) {
                 totalReward: reward4voter.toString(),
                 rewardTime: timestamp
             })
-                .priority('normal').removeOnComplete(true).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
             let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
             ownerValidator = ownerValidator.toString().toLowerCase()
 
-            // Add reward for validator
-            // q.create('AddRewardToAccount', { address: ownerValidator, balance: reward4validator.toString() })
-            //     .priority('normal').removeOnComplete(true).save()
             let voteEpoch = await db.UserVoteAmount.findOne({
                 epoch: epoch,
                 candidate: validator.address,
@@ -124,8 +122,6 @@ consumer.task = async function (job, done) {
                 rewardTime: timestamp,
                 signNumber: validator.signNumber
             })
-            // q.create('AddRewardToAccount', { address: contractAddress.foundation, balance: reward4foundation })
-            //     .priority('normal').removeOnComplete(true).save()
         })
         await Promise.all(validatorFinal)
         if (rewardValidator.length > 0) {

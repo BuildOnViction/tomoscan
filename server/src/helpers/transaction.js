@@ -17,18 +17,15 @@ let TransactionHelper = {
         const q = require('../queues')
         if (!token) {
             q.create('AccountProcess', { address: address })
-                .priority('low').removeOnComplete(true).save().on('error', (e) => {
-                    throw e
-                })
+                .priority('low').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             q.create('TokenProcess', { address: address })
-                .priority('normal').removeOnComplete(true).save().on('error', (e) => {
-                    throw e
-                })
+                .priority('low').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
         q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
-            .priority('normal').removeOnComplete(true).save().on('error', (e) => {
-                throw e
-            })
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
@@ -51,14 +48,16 @@ let TransactionHelper = {
                 tx.from = tx.from.toLowerCase()
                 if (tx.to !== contractAddress.BlockSigner) {
                     q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                        .priority('normal').removeOnComplete(true).save()
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
                 if (tx.to !== contractAddress.BlockSigner) {
                     q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                        .priority('normal').removeOnComplete(true).save()
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
@@ -66,9 +65,8 @@ let TransactionHelper = {
                     tx.contractAddress = contractAddress
 
                     q.create('AccountProcess', { address: contractAddress })
-                        .priority('normal').removeOnComplete(true).save().on('error', (e) => {
-                            throw e
-                        })
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
                     await db.Account.updateOne(
                         { hash: contractAddress },
@@ -93,7 +91,9 @@ let TransactionHelper = {
                 blockNumber: tx.blockNumber,
                 fromAccount: tx.from,
                 toAccount: tx.to
-            }).priority('low').removeOnComplete(true).save()
+            })
+                .priority('low').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
             // Parse log.
             let logs = receipt.logs

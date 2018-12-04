@@ -136,7 +136,7 @@
             <b-tab
                 v-if="!address.isContract"
                 :active="hashTab === '#minedBlocks'"
-                :title="'Mined Blocks (' + formatNumber(blocksCount) + ')'"
+                :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks">
                 <table-tx-by-account
                     v-if="hashTab === '#minedBlocks'"

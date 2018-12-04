@@ -18,8 +18,7 @@ TokenController.get('/tokens', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })
@@ -38,8 +37,7 @@ TokenController.get('/tokens/:slug', async (req, res) => {
 
         res.json(token)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })
@@ -55,8 +53,7 @@ TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
 
         res.json(tokenHolder)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(500).send()
     }
 })
@@ -87,8 +84,7 @@ TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
             return res.status(406).send('Unacceptable sign message')
         }
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        console.error(e)
         return res.status(406).send()
     }
 })

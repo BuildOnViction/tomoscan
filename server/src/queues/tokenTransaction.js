@@ -10,7 +10,7 @@ consumer.processNumber = 12
 consumer.task = async function (job, done) {
     try {
         let log = JSON.parse(job.data.log)
-        console.log('Process token transaction: ')
+        console.info('Process token transaction: ')
         let _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
@@ -26,11 +26,6 @@ consumer.task = async function (job, done) {
         }
         _log.value = web3.utils.hexToNumberString(log.data)
         _log.valueNumber = _log.value
-        // // Find block by blockNumber.
-        // let block = await db.Block.findOne({ number: _log.blockNumber })
-        // if (block) {
-        //     _log.block = block
-        // }
         _log.address = _log.address.toLowerCase()
         let transactionHash = _log.transactionHash.toLowerCase()
 
@@ -41,14 +36,6 @@ consumer.task = async function (job, done) {
             _log,
             { upsert: true, new: true })
 
-        // await db.Token.update({ hash: _log.address }, { $inc: { txCount: 1 } })
-        //
-        // await db.Account.update({ hash: _log.address }, { $inc: { logCount: 1 } })
-        //
-        // await db.Account.update({ hash: _log.from }, { $inc: { logCount: 1 } })
-        //
-        // await db.Account.update({ hash: _log.to }, { $inc: { logCount: 1 } })
-
         // Add token holder data.
         const q = require('./index')
         q.create('TokenHolderProcess', { token: JSON.stringify({
@@ -57,7 +44,8 @@ consumer.task = async function (job, done) {
             address: _log.address,
             value: _log.value
         }) })
-            .priority('normal').removeOnComplete(true).save()
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
         console.error(consumer.name, e)
         done(e)

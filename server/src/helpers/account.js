@@ -60,15 +60,14 @@ let AccountHelper = {
                 const q = require('../queues')
                 if (code !== '0x') {
                     _account.isContract = true
-                    // q.create('ContractProcess', { address: hash })
-                    //     .priority('normal').removeOnComplete(true).save()
                 }
                 _account.code = code
 
                 let isToken = await TokenHelper.checkIsToken(code)
                 if (isToken) {
                     q.create('TokenProcess', { address: hash })
-                        .priority('normal').removeOnComplete(true).save()
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
                 _account.isToken = isToken
             }
