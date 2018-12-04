@@ -120,14 +120,6 @@
                             <td>Finality</td>
                             <td>{{ block.finality }} %</td>
                         </tr>
-                        <!--tr>
-                            <td>Difficulty</td>
-                            <td>{{ formatNumber(block.difficulty) }}</td>
-                        </tr-->
-                        <!--tr>
-                            <td>Total Difficulty</td>
-                            <td>{{ formatNumber(block.totalDifficulty) }}</td>
-                        </tr-->
                         <tr>
                             <td>Gas Used</td>
                             <td>{{ formatNumber(block.gasUsed) }}</td>
@@ -136,18 +128,6 @@
                             <td>Gas Limit</td>
                             <td>{{ formatNumber(block.gasLimit) }}</td>
                         </tr>
-                        <!--tr>
-                            <td>Nonce</td>
-                            <td>
-                                <read-more
-                                    :text="block.nonce"
-                                    class="d-sm-none"/>
-                                <read-more
-                                    :text="block.nonce"
-                                    :max-chars="20"
-                                    class="d-none d-sm-block"/>
-                            </td>
-                        </tr-->
                         <tr>
                             <td>Extra Data</td>
                             <td>
@@ -163,6 +143,59 @@
                                     :max-chars="40"
                                     class="d-none d-md-block"/>
                             </td>
+                        </tr>
+                        <tr>
+                            <td>Masternodes</td>
+                            <b-list-group>
+                                <b-list-group-item
+                                    v-for="(masternode, index) in epocDetail.m1m2"
+                                    :key="index">
+                                    <nuxt-link :to="{name: 'address-slug', params: {slug: masternode}}" >
+                                        {{ masternode }}
+                                    </nuxt-link>
+                                </b-list-group-item>
+                            </b-list-group>
+                        </tr>
+                        <tr>
+                            <td>Rewards</td>
+                            <div role="tablist">
+                                <b-card
+                                    v-for="(receiver, idx) in Object.keys(epocDetail.rewards)"
+                                    :key="idx"
+                                    style="border: none;"
+                                    no-body>
+                                    <b-btn
+                                        v-b-toggle="receiver"
+                                        size="sm p-0"
+                                        style="max-width:5rem;text-align:left;"
+                                        variant="link">
+                                        + {{ receiver }}
+                                    </b-btn>
+                                    <b-collapse
+                                        :id="receiver"
+                                        accordion="rewards-accordion"
+                                        class="mb-1"
+                                        role="tabpanel">
+                                        <b-table
+                                            :items="epocDetail.rewards[receiver]"
+                                            :fields="['address', 'validator', 'reward']"
+                                            class="reward__table mt-2 mb-2">
+                                            <template slot="address" slot-scope="data">
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug', params: {slug: data.item.address}}" >
+                                                    {{ data.item.address }}
+                                                </nuxt-link>
+                                            </template>
+                                            <template slot="validator" slot-scope="data">
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug', params: {slug: data.item.validator}}" >
+                                                    {{ data.item.validator }}
+                                                </nuxt-link>
+                                            </template>
+                                        </b-table>
+                                    </b-collapse>
+                                </b-card>
+                            </div>
                         </tr>
                     </tbody>
                 </table>
@@ -224,7 +257,8 @@ export default {
             loading: true,
             txsCount: 0,
             blockSignerCount: 0,
-            tabIndex: 0
+            tabIndex: 0,
+            epocDetail: null
         }
     },
     computed: {
@@ -259,7 +293,7 @@ export default {
         let query = this.serializeQuery(params)
 
         let responses = await Promise.all([
-            this.$axios.get('/api/blocks/' + this.$route.params.slug),
+            this.$axios.get('/api/epochs/' + this.$route.params.slug),
             this.$axios.get('/api/counting' + '?' + query)
         ])
 
@@ -270,7 +304,7 @@ export default {
         self.txsCount = responses[1].data.txes
 
         self.blockSignerCount = responses[1].data.blockSigners
-
+        self.epocDetail = responses[0].data.epocDetail
         self.loading = false
     },
     methods: {
