@@ -77,9 +77,17 @@ br.register('blocks', (brs) => {
     brs.parent('index')
     brs.push('Blocks', { name: 'blocks' })
 })
+br.register('epochs', (brs) => {
+    brs.parent('index')
+    brs.push('Epochs', { name: 'epochs' })
+})
 br.register('blocks-slug', (brs, location) => {
     brs.parent('blocks')
     brs.push('Block #' + location.params.slug, location)
+})
+br.register('epochs-slug', (brs, location) => {
+    brs.parent('epochs')
+    brs.push('Epoch #' + location.params.slug, location)
 })
 br.register('accounts', (brs) => {
     brs.parent('index')

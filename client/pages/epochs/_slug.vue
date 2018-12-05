@@ -7,7 +7,7 @@
             <div class="tomo-card__header">
                 <h3
                     v-if="block"
-                    class="tomo-card__headline">Block
+                    class="tomo-card__headline">Epoc
                     <span class="d-none d-lg-inline-block headline__block-number">#{{ block.number }}</span>
                 </h3>
                 <div
@@ -291,8 +291,8 @@ export default {
 
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', {
-            name: 'blocks-slug',
-            to: { name: 'blocks-slug', params: { slug: self.number } }
+            name: 'epochs-slug',
+            to: { name: 'epochs-slug', params: { slug: self.number } }
         })
 
         let params = {}

@@ -113,7 +113,7 @@ export default {
     },
     async mounted () {
         // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'blocks', to: { name: 'blocks' } })
+        this.$store.commit('breadcrumb/setItems', { name: 'epochs', to: { name: 'epochs' } })
 
         const query = this.$route.query
 
