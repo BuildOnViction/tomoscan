@@ -30,7 +30,7 @@ consumer.task = async function (job, done) {
             let hash = candidate.candidate.toLowerCase()
 
             console.info('process candidate', hash)
-            let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }] })
+            let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }], isPending: false })
             let minedBlock = await db.Block.countDocuments({ signer: hash })
             let rewardCount = await db.Reward.countDocuments({ address: hash })
             let logCount = await db.Log.countDocuments({ address: hash })
@@ -42,7 +42,7 @@ consumer.task = async function (job, done) {
             }, { upsert: true })
 
             let owner = candidate.owner.toLowerCase()
-            let txCountOwner = await db.Tx.countDocuments({ $or: [{ from: owner }, { to: owner }] })
+            let txCountOwner = await db.Tx.countDocuments({ $or: [{ from: owner }, { to: owner }], isPending: false })
             let minedBlockOwner = await db.Block.countDocuments({ signer: owner })
             let rewardCountOwner = await db.Reward.countDocuments({ address: owner })
             let logCountOwner = await db.Log.countDocuments({ address: owner })
@@ -59,9 +59,9 @@ consumer.task = async function (job, done) {
         console.info('there are %s contract accounts', accounts.length)
         let map2 = accounts.map(async (acc) => {
             let hash = acc.hash.toLowerCase()
-            let txCount = await db.Tx.countDocuments({ from: hash })
-            txCount += await db.Tx.countDocuments({ to: hash })
-            txCount += await db.Tx.countDocuments({ contractAddress: hash })
+            let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
+            txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
+            txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
             let logCount = await db.Log.countDocuments({ address: hash })
             await db.SpecialAccount.updateOne({ hash: hash }, {
                 transactionCount: txCount,

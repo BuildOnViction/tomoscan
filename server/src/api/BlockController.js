@@ -25,6 +25,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         }
         let items = []
         let blocks = await db.Block.find({ number: { $in: listBlkNum } })
+        let finalityBlock = []
 
         if (blocks.length === perPage) {
             items = blocks
@@ -33,6 +34,9 @@ BlockController.get('/blocks', async (req, res, next) => {
             for (let i = 0; i < blocks.length; i++) {
                 items.push(blocks[i])
                 existBlock.push(blocks[i].number)
+                if (blocks[i].finality < 50) {
+                    finalityBlock.push(blocks[i].number)
+                }
             }
             let notExistBlock = []
             if (existBlock.length === 0) {
@@ -50,11 +54,31 @@ BlockController.get('/blocks', async (req, res, next) => {
             })
             await Promise.all(map)
         }
+        let finality = []
+        let map2 = finalityBlock.map(async function (number) {
+            let b = await web3.eth.getBlock(number)
+            if (b) {
+                finality.push({
+                    block: number,
+                    finality: b.finality
+                })
+            }
+        })
+
         let result = []
         for (let i = 0; i < listBlkNum.length; i++) {
             for (let j = 0; j < items.length; j++) {
                 if (listBlkNum[i] === items[j].number) {
                     result.push(items[j])
+                }
+            }
+        }
+
+        for (let i = 0; i < finality.length; i++) {
+            for (let j = 0; j < result.length; j++) {
+                if (finality[i].block === result[j].number) {
+                    result[j].finality = finality[i].finality
+                    break
                 }
             }
         }
@@ -65,6 +89,8 @@ BlockController.get('/blocks', async (req, res, next) => {
         if (pages > 500) {
             pages = 500
         }
+        await Promise.all(map2)
+
         let data = {
             realTotal: maxBlockNumber,
             total: newTotal,
