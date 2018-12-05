@@ -23,7 +23,7 @@
         padding: 0 20px;
       }
     }
-  
+
     @include media-breakpoint-up(xl) {
       tr {
         padding: 0 30px;
@@ -40,7 +40,7 @@
       box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
       padding: 17px 20px 16px;
       margin-bottom: 20px;
-  
+
       @include media-breakpoint-up(lg) {
         display: grid;
         align-items: center;
@@ -245,7 +245,7 @@
   i.tx-failed {
     vertical-align: middle;
   }
-  
+
   thead tr,
   tbody tr {
 
@@ -264,15 +264,15 @@
 
   .text-truncate {
     max-width: 8.75rem;
-    
+
     @include media-breakpoint-up(lg) {
       max-width: 7rem;
     }
-    
+
     @include media-breakpoint-up(xl) {
       max-width: 9rem;
     }
-    
+
     @include media-breakpoint-up(2xl) {
       max-width: 11rem;
     }
@@ -280,6 +280,10 @@
     @include media-breakpoint-up(3xl) {
       max-width: 14rem;
     }
+  }
+
+  &__reward {
+    grid-template-columns: 40% 40% 10% 20%;
   }
 }
 
@@ -299,15 +303,15 @@
 
   .text-truncate {
     max-width: 8.75rem;
-    
+
     @include media-breakpoint-up(lg) {
       max-width: 7rem;
     }
-    
+
     @include media-breakpoint-up(xl) {
       max-width: 9rem;
     }
-    
+
     @include media-breakpoint-up(2xl) {
       max-width: 11rem;
     }
@@ -391,7 +395,7 @@
 
   thead tr,
   tbody tr {
-    
+
     @include media-breakpoint-up(lg) {
       grid-template-columns: 10% 40% 40% 10%;
     }
@@ -413,16 +417,16 @@
 }
 
 .tomo-table--follow {
-  
+
   thead tr,
   tbody tr {
-    
+
     @include media-breakpoint-up(lg) {
       grid-template-columns: 30% 30% 30% 10%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 31% 33% 30% 6%; 
+      grid-template-columns: 31% 33% 30% 6%;
     }
   }
 

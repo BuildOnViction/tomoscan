@@ -156,51 +156,55 @@
                                 </b-list-group-item>
                             </b-list-group>
                         </tr>
-                        <tr>
-                            <td>Rewards</td>
-                            <div role="tablist">
-                                <b-card
-                                    v-for="(receiver, idx) in Object.keys(epocDetail.rewards)"
-                                    :key="idx"
-                                    style="border: none;"
-                                    no-body>
-                                    <b-btn
-                                        v-b-toggle="receiver"
-                                        size="sm p-0"
-                                        style="max-width:5rem;text-align:left;"
-                                        variant="link">
-                                        + {{ receiver }}
-                                    </b-btn>
-                                    <b-collapse
-                                        :id="receiver"
-                                        accordion="rewards-accordion"
-                                        class="mb-1"
-                                        role="tabpanel">
-                                        <b-table
-                                            :items="epocDetail.rewards[receiver]"
-                                            :fields="['address', 'validator', 'reward']"
-                                            class="reward__table mt-2 mb-2">
-                                            <template slot="address" slot-scope="data">
-                                                <nuxt-link
-                                                    :to="{name: 'address-slug', params: {slug: data.item.address}}" >
-                                                    {{ data.item.address }}
-                                                </nuxt-link>
-                                            </template>
-                                            <template slot="validator" slot-scope="data">
-                                                <nuxt-link
-                                                    :to="{name: 'address-slug', params: {slug: data.item.validator}}" >
-                                                    {{ data.item.validator }}
-                                                </nuxt-link>
-                                            </template>
-                                        </b-table>
-                                    </b-collapse>
-                                </b-card>
-                            </div>
-                        </tr>
                     </tbody>
                 </table>
             </div>
         </div>
+
+        <b-tabs
+            ref="allTabs"
+            class="tomo-tabs">
+            <b-tab
+                v-for="(receiver, idx) in Object.keys(epocDetail.rewards)"
+                :key="idx"
+                :title="`${receiver} Reward (${epocDetail.rewards[receiver].length})`">
+                <table-base
+                    :pagination="8"
+                    :current="1"
+                    :fields="rewardTableFields"
+                    :items="epocDetail.rewards[receiver]"
+                    class="tomo-table--transactions__reward">
+                    <template
+                        slot="address"
+                        slot-scope="data">
+                        <nuxt-link
+                            v-if="data.item.address"
+                            :to="{name: 'address-slug', params: {slug: data.item.address}}"
+                            class="text-truncate">
+                            {{ data.item.address }}</nuxt-link>
+                    </template>
+                    <template
+                        slot="validator"
+                        slot-scope="data">
+                        <nuxt-link
+                            v-if="data.item.validator"
+                            :to="{name: 'address-slug', params: {slug: data.item.validator}}"
+                            class="text-truncate">
+                            {{ data.item.validator }}</nuxt-link>
+                    </template>
+                    <template
+                        slot="reward"
+                        slot-scope="data">
+                        {{ data.item.reward }} TOMO
+                    </template>
+                    <template
+                        slot="lockBalance"
+                        slot-scope="data">
+                        {{ formatNumber(data.item.lockBalance) }} TOMO
+                    </template>
+                </table-base>
+            </b-tab>
+        </b-tabs>
 
         <b-tabs
             ref="allTabs"
@@ -234,12 +238,14 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
+import TableBase from '~/components/TableBase'
 import ReadMore from '~/components/ReadMore'
 import BlockSigner from '~/components/BlockSigner'
 
 export default {
     components: {
         TableTx,
+        TableBase,
         ReadMore,
         BlockSigner
     },
@@ -258,7 +264,13 @@ export default {
             txsCount: 0,
             blockSignerCount: 0,
             tabIndex: 0,
-            epocDetail: null
+            epocDetail: null,
+            rewardTableFields: {
+                address: { label: 'Address' },
+                validator: { label: 'Validator' },
+                reward: { label: 'Reward' },
+                lockBalance: { label: 'Lock Balance' }
+            }
         }
     },
     computed: {
