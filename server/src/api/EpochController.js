@@ -3,6 +3,7 @@ import express from 'express'
 import _ from 'lodash'
 import db from '../models'
 import BlockHelper from '../helpers/block'
+import Web3Util from '../helpers/web3'
 
 // Constants, should also be globally-available
 const ADDR_LENGTH = 20
@@ -32,7 +33,18 @@ const bytesToAddress = bytes => {
 }
 
 const getM1M2List = async block => {
-    const signers = _.get(await db.BlockSigner.findOne({ blockNumber: block.number }), '_doc.signers')
+    let signers = _.get(await db.BlockSigner.findOne({ blockNumber: block.number }), '_doc.signers')
+    if (!signers) {
+        const BlockSignerABI = require('../contracts/abi/BlockSigner')
+        const contractAddress = require('../contracts/contractAddress')
+        const web3 = await Web3Util.getWeb3()
+        const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
+        signers = _.map(await blockSigner.methods.getSigners(block.hash).call(), _.toLower)
+
+        const updateSigner = { blockHash: block.hash, blockNumber: block.number }
+        const $set = { ...updateSigner, signers }
+        await db.BlockSigner.updateOne(updateSigner, { $set }, { upsert: true })
+    }
     return signers
 }
 

@@ -33,6 +33,15 @@
                             <td>Height</td>
                             <td>{{ block.number }}</td>
                         </tr>
+                        <tr>
+                            <td>Epoc</td>
+                            <td>
+                                <nuxt-link
+                                    :to="{name: 'epochs-slug', params: {slug: Math.floor(block.number / 900) + 1}}">
+                                    {{ Math.floor(block.number / 900) + 1 }}
+                                </nuxt-link>
+                            </td>
+                        </tr>
                         <tr v-if="timestamp_moment">
                             <td>TimeStamp</td>
                             <td v-html="timestamp_moment"/>
