@@ -50,7 +50,7 @@ const getM1M2List = async block => {
 
 const getRewardList = async epocBlock => {
     const fields = 'epoch endBlock address validator reason lockBalance reward'
-    const rewards = _.map(await db.Reward.find({ endBlock: epocBlock.number }, fields), q => q._doc)
+    let rewards = _.map(await db.Reward.find({ endBlock: epocBlock.number }, fields), q => q._doc)
     const grouping = _.groupBy(rewards, 'reason')
     return grouping
 }
@@ -60,13 +60,14 @@ const GET_EPOCS = async (req, res, next) => {
     const blocksPerPage = Math.min(25, _.toInteger(req.query.limit)) || 10
     const currentPage = _.toInteger(req.query.page) || 1
 
-    const latestBlockInDB = await db.Block.findOne({}).sort({ field: 'asc', _id: -1 }).limit(1)
-    const realTotal = _.get(latestBlockInDB, 'number')
-    const allEpochs = _.range(EPOC, realTotal, EPOC).reverse()
+    const web3 = await Web3Util.getWeb3()
+    const totalBlock = await web3.eth.getBlockNumber()
+    const allEpochs = _.range(EPOC, totalBlock, EPOC).reverse()
     const paging = _.slice(allEpochs, (currentPage - 1) * blocksPerPage, currentPage * blocksPerPage)
     const epocBlockList = paging.map(BlockHelper.getBlockDetail)
     const pages = _.ceil(allEpochs.length / blocksPerPage)
     const total = allEpochs.length
+    const realTotal = Math.floor(totalBlock / EPOC)
     await Promise.all(epocBlockList).then(items => res.json({ items, pages, currentPage, realTotal, total }))
 }
 

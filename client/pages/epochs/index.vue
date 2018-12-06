@@ -7,12 +7,12 @@
             v-if="total == 0"
             class="tomo-empty">
             <i class="fa fa-cubes tomo-empty__icon"/>
-            <p class="tomo-empty__description">No block found</p>
+            <p class="tomo-empty__description">No Epoc found</p>
         </div>
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', lastBlock, realTotal) }} found</p>
+            class="tomo-total-items">Total {{ formatNumber(realTotal) }} epoch(s) found</p>
 
         <table-base
             v-if="total > 0"

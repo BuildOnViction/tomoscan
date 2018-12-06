@@ -195,43 +195,6 @@
   }
 }
 
-table.plain__table {
-  > thead {
-    tr {
-      grid-template-columns: 43% 43% 14%;
-      margin-bottom: 2px;
-
-      &:last-child {
-        text-align: center;
-      }
-    }
-    th {
-      padding: 10px;
-      background: grey;
-      color: white;
-    }
-  }
-
-  > tbody {
-    tr {
-      grid-template-columns: 43% 43% 14%;
-      margin-bottom: 2px;
-      td:last-child {
-        text-align: center;
-      }
-    }
-  }
-
-  tr, th { grid-gap: 1px; }
-  td {
-    background: #f8f8fa;
-    padding: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
 .tomo-card--transaction .tomo-readmore--is-open {
   width: 60%;
 
