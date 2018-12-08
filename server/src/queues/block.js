@@ -17,20 +17,21 @@ consumer.task = async function (job, done) {
 
         if (b) {
             let { txs, timestamp } = b
-            let map = txs.map(tx => {
-                return new Promise((resolve, reject) => {
-                    q.create('TransactionProcess', { hash: tx.toLowerCase(), timestamp: timestamp })
+            let listHash = []
+            for (let i = 0; i < txs.length; i++) {
+                listHash.push(txs[i])
+                if (listHash.length === 500) {
+                    q.create('TransactionProcess', { txs: JSON.stringify(listHash), timestamp: timestamp })
                         .priority('high').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save().on('complete', () => {
-                            return resolve()
-                        }).on('error', (e) => {
-                            return reject(e)
-                        })
-                })
-            })
-            await Promise.all(map).catch(e => {
-                throw e
-            })
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                    listHash = []
+                }
+            }
+            if (listHash.length > 0) {
+                q.create('TransactionProcess', { txs: JSON.stringify(txs), timestamp: timestamp })
+                    .priority('high').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
         }
 
         // Get signers for 100 blocks per time

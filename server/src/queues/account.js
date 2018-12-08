@@ -6,14 +6,18 @@ const consumer = {}
 consumer.name = 'AccountProcess'
 consumer.processNumber = 24
 consumer.task = async function (job, done) {
-    let hash = job.data.address.toLowerCase()
-    logger.info('Process account: %s', hash)
+    let listHash = JSON.parse(job.data.listHash)
+    let map = listHash.map(async function (hash) {
+        hash = hash.toLowerCase()
+        logger.info('Process account: %s', hash)
 
-    try {
-        await AccountHelper.processAccount(hash)
-    } catch (e) {
-        return done(e)
-    }
+        try {
+            await AccountHelper.processAccount(hash)
+        } catch (e) {
+            return done(e)
+        }
+    })
+    await Promise.all(map)
 
     return done()
 }
