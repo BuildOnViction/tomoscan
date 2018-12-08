@@ -1,6 +1,7 @@
 'use strict'
 
 import TransactionHelper from '../helpers/transaction'
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
@@ -8,7 +9,7 @@ consumer.processNumber = 32
 consumer.task = async function (job, done) {
     let hash = job.data.hash.toLowerCase()
     let timestamp = job.data.timestamp
-    console.info('Process Transaction: ', hash)
+    logger.info('Process Transaction: %s', hash)
     try {
         await TransactionHelper.crawlTransaction(hash, timestamp)
     } catch (e) {

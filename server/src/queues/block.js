@@ -1,5 +1,6 @@
 'use strict'
 
+const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
 const config = require('config')
 const emitter = require('../helpers/errorHandler')
@@ -10,7 +11,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = parseInt(job.data.block)
     try {
-        console.info('Process block: ', blockNumber, new Date())
+        logger.info('Process block: %s at %s', blockNumber, new Date())
         let b = await BlockHelper.crawlBlock(blockNumber)
         const q = require('./index')
 

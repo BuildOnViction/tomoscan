@@ -3,13 +3,14 @@
 const Web3Util = require('./web3')
 const utils = require('./utils')
 const db = require('../models')
+const logger = require('./logger')
 
 let BlockHelper = {
     crawlBlock:async (blockNumber) => {
         let block = await db.Block.findOne({ number: blockNumber })
         let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
-            console.info('Block already processed', blockNumber)
+            logger.info('Block already processed %s', blockNumber)
             return null
         }
 
@@ -111,7 +112,7 @@ let BlockHelper = {
 
             return block
         } catch (e) {
-            console.error(e)
+            logger.error(e)
             return {}
         }
     },
@@ -148,7 +149,7 @@ let BlockHelper = {
 
             return _block
         } catch (e) {
-            console.error(e)
+            logger.error(e)
             return {}
         }
     }

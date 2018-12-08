@@ -3,13 +3,14 @@ const config = require('config')
 const axios = require('axios')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'updateSpecialAccount'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     try {
-        console.info('Count list transaction')
+        logger.info('Count list transaction')
         await db.SpecialAccount.updateOne({ hash: 'allTransaction' }, {
             transactionCount: await db.Tx.countDocuments({ isPending: false })
         }, { upsert: true })
@@ -25,11 +26,11 @@ consumer.task = async function (job, done) {
 
         const tomomasterUrl = config.get('TOMOMASTER_API_URL')
         const candidates = await axios.get(tomomasterUrl + '/api/candidates')
-        console.info('there are %s candidates need process', candidates.data.length)
+        logger.info('there are %s candidates need process', candidates.data.length)
         let map1 = candidates.data.map(async (candidate) => {
             let hash = candidate.candidate.toLowerCase()
 
-            console.info('process candidate', hash)
+            logger.info('process candidate %s', hash)
             let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }], isPending: false })
             let minedBlock = await db.Block.countDocuments({ signer: hash })
             let rewardCount = await db.Reward.countDocuments({ address: hash })
@@ -56,7 +57,7 @@ consumer.task = async function (job, done) {
         await Promise.all(map1)
 
         let accounts = await db.Account.find({ isContract: true })
-        console.info('there are %s contract accounts', accounts.length)
+        logger.info('there are %s contract accounts', accounts.length)
         let map2 = accounts.map(async (acc) => {
             let hash = acc.hash.toLowerCase()
             let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
@@ -71,7 +72,7 @@ consumer.task = async function (job, done) {
         await Promise.all(map2)
         done()
     } catch (e) {
-        console.error(e)
+        logger.error(e)
         done(e)
     }
 }

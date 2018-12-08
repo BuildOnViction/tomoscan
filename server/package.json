@@ -66,7 +66,8 @@
     "solc": "^0.4.23",
     "url-join": "^4.0.0",
     "uuid": "^3.3.2",
-    "web3": "^1.0.0-beta.34"
+    "web3": "^1.0.0-beta.34",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

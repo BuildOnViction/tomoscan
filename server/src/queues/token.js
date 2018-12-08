@@ -5,13 +5,14 @@ const TokenHelper = require('../helpers/token')
 const utils = require('../helpers/utils')
 const db = require('../models')
 const BigNumber = require('bignumber.js')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
 consumer.processNumber = 6
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
-    console.info('Process token: ', address)
+    logger.info('Process token: %s', address)
     try {
         let token = await db.Token.findOneAndUpdate({ hash: address }, { hash: address }, { upsert: true, new: true })
         let tokenFuncs = await TokenHelper.getTokenFuncs()
@@ -48,7 +49,7 @@ consumer.task = async function (job, done) {
         token.status = true
         token.save()
     } catch (e) {
-        console.error(consumer.name, address, e)
+        logger.error(e)
         done(e)
     }
 

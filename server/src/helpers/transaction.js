@@ -3,6 +3,7 @@
 import Web3Util from './web3'
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
+const logger = require('./logger')
 
 let TransactionHelper = {
     parseLog: async (log) => {
@@ -115,7 +116,7 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
     },
     getTxDetail: async (hash) => {
