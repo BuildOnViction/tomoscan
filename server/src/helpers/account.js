@@ -3,6 +3,7 @@
 const Web3Util = require('./web3')
 const TokenHelper = require('./token')
 const db = require('../models')
+const logger = require('./logger')
 
 let AccountHelper = {
     getAccountDetail: async (hash) => {
@@ -14,7 +15,7 @@ let AccountHelper = {
 
         web3.eth.getBalance(hash, function (err, balance) {
             if (err) {
-                console.error(err)
+                logger.error(err)
             } else {
                 _account.balance = balance
                 _account.balanceNumber = balance
@@ -48,7 +49,7 @@ let AccountHelper = {
 
             web3.eth.getBalance(hash, function (err, balance) {
                 if (err) {
-                    console.error(err)
+                    logger.error(err)
                 } else {
                     _account.balance = balance
                     _account.balanceNumber = balance
@@ -79,7 +80,7 @@ let AccountHelper = {
             await db.Account.updateOne({ hash: hash }, _account,
                 { upsert: true, new: true })
         } catch (e) {
-            console.error(e)
+            logger.error(e)
         }
     },
     async formatAccount (account) {
@@ -129,7 +130,7 @@ let AccountHelper = {
 
             return code
         } catch (e) {
-            console.trace(e)
+            logger.trace(e)
             throw e
         }
     }

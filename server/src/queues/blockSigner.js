@@ -1,5 +1,6 @@
 'use strict'
 
+const logger = require('../helpers/logger')
 const db = require('../models')
 const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
@@ -12,7 +13,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let startBlock = job.data.startBlock
     let endBlock = job.data.endBlock
-    console.info('Get block signer from block %s to %s', startBlock, endBlock)
+    logger.info('Get block signer from block %s to %s', startBlock, endBlock)
 
     const web3 = await Web3Util.getWeb3()
     const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
@@ -27,7 +28,7 @@ consumer.task = async function (job, done) {
             if (block) {
                 let blockHash = block.hash
                 let signers = await blockSigner.methods.getSigners(blockHash).call()
-                console.info('Get signer of block ', number)
+                logger.info('Get signer of block %s', number)
                 await db.BlockSigner.updateOne({
                     blockHash: blockHash,
                     blockNumber: number
@@ -51,7 +52,7 @@ consumer.task = async function (job, done) {
         }
         done()
     } catch (e) {
-        console.error(e)
+        logger.error(e)
         done(e)
     }
 }

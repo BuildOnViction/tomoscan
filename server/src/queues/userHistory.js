@@ -6,6 +6,7 @@ const Web3Util = require('../helpers/web3')
 const config = require('config')
 const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'UserHistoryProcess'
@@ -26,7 +27,7 @@ consumer.task = async function (job, done) {
             toBlock: endBlock
         }, async function (error, events) {
             if (error) {
-                console.error(error)
+                logger.error(error)
                 done(error)
             }
             let listUser = []

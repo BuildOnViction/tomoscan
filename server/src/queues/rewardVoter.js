@@ -3,6 +3,7 @@
 const BigNumber = require('bignumber.js')
 const db = require('../models')
 const config = require('config')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'RewardVoterProcess'
@@ -17,7 +18,7 @@ consumer.task = async function (job, done) {
         rewardTime = new Date()
     }
     totalReward = new BigNumber(totalReward)
-    console.log('Process reward for voter of validator', validator, ' at epoch: ', epoch)
+    logger.log('Process reward for voter of validator %s at epoch %s', validator, epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -28,7 +29,6 @@ consumer.task = async function (job, done) {
         for (let i = 0; i < voteEpoch.length; i++) {
             totalVoterCap += voteEpoch[i].voteAmount
         }
-        // console.log('total voter cap', totalVoterCap, validator)
         totalVoterCap = new BigNumber(totalVoterCap)
 
         let rewardVoter = []
@@ -61,7 +61,7 @@ consumer.task = async function (job, done) {
             await db.Reward.insertMany(rewardVoter)
         }
     } catch (e) {
-        console.error(consumer.name, e)
+        logger.error(e)
         done(e)
     }
 

@@ -2,6 +2,7 @@
 
 const db = require('../models')
 const Web3 = require('../helpers/web3')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'BlockFinalityProcess'
@@ -10,7 +11,7 @@ consumer.task = async function (job, done) {
     let web3 = await Web3.getWeb3()
     let blocks = await db.Block.find({ finality: { $lt: 50 }, updateFinalityTime: { $lt: 10 } })
         .sort({ number: -1 }).limit(500)
-    console.info('Update finality %s blocks', blocks.length, (blocks[0] || {}).number)
+    logger.info('Update finality %s blocks', blocks.length)
     try {
         let map = blocks.map(async function (block) {
             let b = await web3.eth.getBlock(block.number)
@@ -21,7 +22,7 @@ consumer.task = async function (job, done) {
         await Promise.all(map)
         done()
     } catch (e) {
-        console.error(e)
+        logger.error(e)
         done(e)
     }
 }

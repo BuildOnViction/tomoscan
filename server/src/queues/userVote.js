@@ -2,6 +2,7 @@
 
 const config = require('config')
 const db = require('../models')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'UserVoteProcess'
@@ -15,7 +16,7 @@ consumer.task = async function (job, done) {
         blockNumber: { $gte: startBlock, $lte: endBlock }
     }).sort({ blockNumber: 1 })
 
-    console.info('There are %s histories in epoch %s', histories.length, epoch)
+    logger.info('There are %s histories in epoch %s', histories.length, epoch)
     for (let i = 0; i < histories.length; i++) {
         let history = histories[i]
 
@@ -66,7 +67,7 @@ consumer.task = async function (job, done) {
         }
     }
 
-    console.info('Duplicate vote amount')
+    logger.info('Duplicate vote amount')
     // Find in history and duplicate to this epoch if not found
     let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
     let data = []
@@ -86,7 +87,7 @@ consumer.task = async function (job, done) {
         }
     }
     if (data.length > 0) {
-        console.info('Duplicate data to epoch %s', epoch)
+        logger.info('Duplicate data to epoch %s', epoch)
         await db.UserVoteAmount.insertMany(data)
     }
 

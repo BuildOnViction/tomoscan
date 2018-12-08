@@ -2,7 +2,7 @@
 
 const Web3Util = require('../helpers/web3')
 const BigNumber = require('bignumber.js')
-
+const logger = require('../helpers/logger')
 const db = require('../models')
 const config = require('config')
 
@@ -14,7 +14,7 @@ consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    console.log('Process reward for validator at epoch: ', epoch)
+    logger.log('Process reward for validator at epoch: %s', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -128,7 +128,7 @@ consumer.task = async function (job, done) {
             await db.Reward.insertMany(rewardValidator)
         }
     } catch (e) {
-        console.error(consumer.name, e)
+        logger.error(e)
         done(e)
     }
 
