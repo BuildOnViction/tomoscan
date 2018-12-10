@@ -14,7 +14,7 @@ consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    logger.log('Process reward for validator at epoch: %s', epoch)
+    logger.info('Process reward for validator at epoch: %s', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1

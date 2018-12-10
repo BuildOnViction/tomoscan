@@ -13,12 +13,33 @@ consumer.name = 'UserHistoryProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
+    if (parseInt(epoch) === 1) {
+        let defaultCandidate = config.get('defaultCandidate')
+        let candidates = []
+        let map = defaultCandidate.map(candidate => {
+            candidates.push({
+                txHash: null,
+                blockNumber: 1,
+                event: 'Propose',
+                blockHash: null,
+                voter: candidate.owner,
+                owner: candidate.owner,
+                candidate: candidate.candidate,
+                cap: candidate.cap
+            })
+        })
+        await Promise.all(map)
+        console.log(candidates)
+        await db.VoteHistory.insertMany(candidates)
+    }
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
     let q = require('./index')
 
     const web3 = await Web3Util.getWeb3()
-    await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
+    if (parseInt(epoch) !== 1) {
+        await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
+    }
     const tomoValidator = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
     try {
         await tomoValidator.getPastEvents('allEvents', {
