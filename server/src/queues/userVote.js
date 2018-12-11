@@ -24,7 +24,7 @@ consumer.task = async function (job, done) {
             let data = {
                 voter: history.owner,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber / 900),
+                epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH')),
                 voteAmount: history.cap
             }
             await db.UserVoteAmount.create(data)
@@ -36,7 +36,7 @@ consumer.task = async function (job, done) {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber / 900)
+                epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) + history.cap
             }, { upsert: true, new: true })
@@ -48,7 +48,7 @@ consumer.task = async function (job, done) {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber / 900)
+                epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })
@@ -60,7 +60,7 @@ consumer.task = async function (job, done) {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber / 900)
+                epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })

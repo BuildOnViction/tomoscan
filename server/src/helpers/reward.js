@@ -3,11 +3,13 @@ const config = require('config')
 const db = require('../models')
 const logger = require('./logger')
 const BigNumber = require('bignumber.js')
+const Web3Util = require('./web3')
 
 let RewardHelper = {
     updateVoteHistory: async (epoch, hasQueue = false, done = null) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+        logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
         await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
         if (parseInt(epoch) === 1) {
@@ -66,9 +68,11 @@ let RewardHelper = {
                 }
                 return true
             }).catch(async (e) => {
-                logger.error('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more')
+                logger.error('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more',
+                    startBlock, endBlock)
                 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                 await sleep(2000)
+                await Web3Util.reconnectWeb3Socket()
                 return RewardHelper.updateVoteHistory(epoch, hasQueue, done)
             })
 

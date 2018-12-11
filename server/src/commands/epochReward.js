@@ -70,7 +70,7 @@ const epochReward = async (epoch) => {
             let data = {
                 voter: history.owner,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber / 900),
+                epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH')),
                 voteAmount: history.cap
             }
             await db.UserVoteAmount.create(data)
@@ -82,7 +82,7 @@ const epochReward = async (epoch) => {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber / 900)
+                epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) + history.cap
             }, { upsert: true, new: true })
@@ -94,7 +94,7 @@ const epochReward = async (epoch) => {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.floor(history.blockNumber / 900)
+                epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })
@@ -106,7 +106,7 @@ const epochReward = async (epoch) => {
             await db.UserVoteAmount.updateOne({
                 voter: history.voter,
                 candidate: history.candidate,
-                epoch: Math.ceil(history.blockNumber / 900)
+                epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
             }, {
                 voteAmount: (h ? h.voteAmount : 0) - history.cap
             }, { upsert: true, new: true })
