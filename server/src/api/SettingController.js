@@ -3,8 +3,6 @@ import axios from 'axios'
 import db from '../models'
 import Web3Util from '../helpers/web3'
 const config = require('config')
-const contractAddress = require('../contracts/contractAddress')
-const BigNumber = require('bignumber.js')
 
 const SettingController = Router()
 
