@@ -1,12 +1,12 @@
 'use strict'
 
-const Web3Util = require('../helpers/web3')
+const { tomoValidator } = require('../helpers/tomo')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const db = require('../models')
 const config = require('config')
+const BlockHelper = require('../helpers/block')
 
-const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
 
 const consumer = {}
@@ -14,7 +14,7 @@ consumer.name = 'RewardValidatorProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let epoch = job.data.epoch
-    logger.log('Process reward for validator at epoch: %s', epoch)
+    logger.info('Process reward for validator at epoch: %s', epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -25,9 +25,6 @@ consumer.task = async function (job, done) {
     let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
 
     try {
-        let web3 = await Web3Util.getWeb3()
-        let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-
         let totalSignNumber = 0
 
         const q = require('./index')
@@ -70,7 +67,7 @@ consumer.task = async function (job, done) {
             let block = await db.Block.findOne({ number: blockRewardCalculate })
             let timestamp = new Date()
             if (!block) {
-                let _block = await web3.eth.getBlock(blockRewardCalculate)
+                let _block = await BlockHelper.getBlock(blockRewardCalculate)
                 if (_block) {
                     timestamp = _block.timestamp * 1000
                 }
@@ -88,7 +85,7 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
-            let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
+            let ownerValidator = await tomoValidator.getCandidateOwner(validator.address)
             ownerValidator = ownerValidator.toString().toLowerCase()
 
             let voteEpoch = await db.UserVoteAmount.findOne({

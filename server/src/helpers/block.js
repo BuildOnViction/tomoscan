@@ -4,6 +4,7 @@ const Web3Util = require('./web3')
 const utils = require('./utils')
 const db = require('../models')
 const logger = require('./logger')
+let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let BlockHelper = {
     crawlBlock:async (blockNumber) => {
@@ -69,7 +70,7 @@ let BlockHelper = {
             }
 
             let web3 = await Web3Util.getWeb3()
-            let _block = await web3.eth.getBlock(hashOrNumber)
+            let _block = await BlockHelper.getBlock(hashOrNumber)
             if (!_block) {
                 return null
             }
@@ -119,7 +120,7 @@ let BlockHelper = {
     getBlockOnChain: async (number) => {
         try {
             let web3 = await Web3Util.getWeb3()
-            let _block = await web3.eth.getBlock(number)
+            let _block = await BlockHelper.getBlock(number)
             if (!_block) {
                 return null
             }
@@ -152,6 +153,16 @@ let BlockHelper = {
             logger.error(e)
             return {}
         }
+    },
+    getBlock: async (number) => {
+        let web3 = await Web3Util.getWeb3()
+        return web3.eth.getBlock(number).catch(e => {
+            logger.error('Cannot get block %s detail', number)
+            logger.info('Sleep 2 seconds and re-getBlock until done')
+            return sleep(2000).then(() => {
+                return BlockHelper.getBlock(number)
+            })
+        })
     }
 }
 

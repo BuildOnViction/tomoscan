@@ -18,7 +18,7 @@ consumer.task = async function (job, done) {
         rewardTime = new Date()
     }
     totalReward = new BigNumber(totalReward)
-    logger.log('Process reward for voter of validator %s at epoch %s', validator, epoch)
+    logger.info('Process reward for voter of validator %s at epoch %s', validator, epoch)
 
     let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
     let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1

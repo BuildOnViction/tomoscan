@@ -37,7 +37,7 @@ consumer.task = async function (job, done) {
         // Get signers for 100 blocks per time
         let blockStep = 100
         // Begin from epoch 2
-        if ((blockNumber > config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % blockStep === 0)) {
+        if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % blockStep === 0)) {
             let endBlock = blockNumber - config.get('BLOCK_PER_EPOCH')
             let startBlock = endBlock - blockStep + 1
             q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
