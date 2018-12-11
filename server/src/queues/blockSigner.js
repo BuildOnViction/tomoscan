@@ -2,9 +2,8 @@
 
 const logger = require('../helpers/logger')
 const db = require('../models')
-const BlockSignerABI = require('../contracts/abi/BlockSigner')
-const contractAddress = require('../contracts/contractAddress')
-const Web3Util = require('../helpers/web3')
+const { blockSigner } = require('../helpers/tomo')
+const BlockHelper = require('../helpers/block')
 const config = require('config')
 
 const consumer = {}
@@ -15,19 +14,16 @@ consumer.task = async function (job, done) {
     let endBlock = job.data.endBlock
     logger.info('Get block signer from block %s to %s', startBlock, endBlock)
 
-    const web3 = await Web3Util.getWeb3()
-    const blockSigner = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
-
     let numbers = []
     for (let i = startBlock; i <= endBlock; i++) {
         numbers.push(i)
     }
     try {
         let map = numbers.map(async function (number) {
-            let block = await web3.eth.getBlock(number)
+            let block = await BlockHelper.getBlock(number)
             if (block) {
                 let blockHash = block.hash
-                let signers = await blockSigner.methods.getSigners(blockHash).call()
+                let signers = await blockSigner.getSigners(blockHash)
                 logger.info('Get signer of block %s', number)
                 await db.BlockSigner.updateOne({
                     blockHash: blockHash,

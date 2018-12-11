@@ -1,15 +1,13 @@
 'use strict'
 
-const Web3Util = require('../helpers/web3')
+const { tomoValidator } = require('../helpers/tomo')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const db = require('../models')
 const config = require('config')
+const BlockHelper = require('../helpers/block')
 
-const TomoValidatorABI = require('../contracts/abi/TomoValidator')
 const contractAddress = require('../contracts/contractAddress')
-
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const consumer = {}
 consumer.name = 'RewardValidatorProcess'
@@ -69,7 +67,7 @@ consumer.task = async function (job, done) {
             let block = await db.Block.findOne({ number: blockRewardCalculate })
             let timestamp = new Date()
             if (!block) {
-                let _block = await getBlock(blockRewardCalculate)
+                let _block = await BlockHelper.getBlock(blockRewardCalculate)
                 if (_block) {
                     timestamp = _block.timestamp * 1000
                 }
@@ -87,7 +85,7 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
-            let ownerValidator = await getOwner(validator.address)
+            let ownerValidator = await tomoValidator.getCandidateOwner(validator.address)
             ownerValidator = ownerValidator.toString().toLowerCase()
 
             let voteEpoch = await db.UserVoteAmount.findOne({
@@ -132,32 +130,6 @@ consumer.task = async function (job, done) {
     }
 
     done()
-}
-
-const web3 = Web3Util.getWeb3()
-const contract = web3.then(w3 => {
-    return new w3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-})
-async function getBlock (number) {
-    return web3.then(w3 => {
-        return w3.eth.getBlock(number).catch(e => {
-            console.error('cannot get block', number)
-            return sleep(2000).then(() => {
-                return getBlock(number)
-            })
-        })
-    })
-}
-
-async function getOwner (candidate) {
-    return contract.then(c => {
-        return c.methods.getCandidateOwner(candidate).call().catch(e => {
-            console.error('cannot get candidate owner', candidate)
-            return sleep(2000).then(() => {
-                return getOwner(candidate)
-            })
-        })
-    })
 }
 
 module.exports = consumer

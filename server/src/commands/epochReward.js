@@ -2,9 +2,9 @@ const BigNumber = require('bignumber.js')
 const Web3Util = require('../helpers/web3')
 const db = require('../models')
 const config = require('config')
-const TomoValidatorABI = require('../contracts/abi/TomoValidator')
-const BlockSignerABI = require('../contracts/abi/BlockSigner')
 const contractAddress = require('../contracts/contractAddress')
+const { tomoValidator, blockSigner } = require('../helpers/tomo')
+const RewardHelper = require('../helpers/reward')
 
 const epochReward = async (epoch) => {
     console.info('Start process', new Date())
@@ -28,16 +28,13 @@ const epochReward = async (epoch) => {
     let foundationRewardPercent = new BigNumber(config.get('FOUNDATION_REWARD_PERCENT'))
     let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
 
-    let validatorContract = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-    let bs = await new web3.eth.Contract(BlockSignerABI, contractAddress.BlockSigner)
-
     // verify block was on chain
     let epochSignNumber = await db.BlockSigner.countDocuments({ blockNumber: { $gte: startBlock, $lte: endBlock } })
     if (epochSignNumber < config.get('BLOCK_PER_EPOCH')) {
         console.info('Begin get block signer')
         for (let i = startBlock; i <= endBlock; i++) {
             let blockHash = (await web3.eth.getBlock(i)).hash
-            let ss = await bs.methods.getSigners(blockHash).call()
+            let ss = await blockSigner.getSigners(blockHash)
             await db.BlockSigner.updateOne({
                 blockHash: blockHash,
                 blockNumber: i
@@ -58,52 +55,7 @@ const epochReward = async (epoch) => {
     }
 
     // Get list event in range start - end block
-    await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
-    const tomoValidator = await new web3.eth.Contract(TomoValidatorABI, contractAddress.TomoValidator)
-    try {
-        let pastEvent = await tomoValidator.getPastEvents('allEvents', {
-            filter: {},
-            fromBlock: startBlock,
-            toBlock: endBlock
-        }, function (error, events) {
-            if (error) {
-                console.error(error)
-            }
-            let listUser = []
-
-            for (let i = 0; i < events.length; i++) {
-                let event = events[i]
-                let voter = String(event.returnValues._voter || '').toLowerCase()
-                let owner = String(event.returnValues._owner || '').toLowerCase()
-                let candidate = String(event.returnValues._candidate || '').toLowerCase()
-                let cap = new BigNumber(event.returnValues._cap || 0)
-                let capTomo = cap.dividedBy(10 ** 18)
-                BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
-                let item = {
-                    txHash: event.transactionHash,
-                    blockNumber: event.blockNumber,
-                    event: event.event,
-                    blockHash: event.blockHash,
-                    voter: voter,
-                    owner: owner,
-                    candidate: candidate,
-                    cap: capTomo.toNumber()
-                }
-                listUser.push(item)
-                if (listUser.length >= 5000) {
-                    db.VoteHistory.insertMany(listUser)
-                    listUser = []
-                }
-            }
-
-            if (listUser.length > 0) {
-                db.VoteHistory.insertMany(listUser)
-            }
-        })
-        await Promise.all(pastEvent)
-    } catch (e) {
-        console.error(e)
-    }
+    await RewardHelper.updateVoteHistory(epoch)
 
     // Calculate user vote for validator
     let histories = await db.VoteHistory.find({
@@ -236,10 +188,10 @@ const epochReward = async (epoch) => {
 
         await rewardVoterProcess(epoch, validator.address, validator.signNumber, reward4voter.toString(), timestamp)
 
-        let ownerValidator = await validatorContract.methods.getCandidateOwner(validator.address).call()
+        let ownerValidator = await tomoValidator.getCandidateOwner(validator.address)
         ownerValidator = ownerValidator.toString().toLowerCase()
 
-        let lockBalance = await validatorContract.methods.getVoterCap(validator.address, ownerValidator).call()
+        let lockBalance = await tomoValidator.getVoterCapacity(validator.address, ownerValidator)
         await rewardValidator.push({
             epoch: epoch,
             startBlock: startBlock,

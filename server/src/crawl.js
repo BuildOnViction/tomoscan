@@ -5,6 +5,7 @@ const q = require('./queues')
 const db = require('./models')
 const events = require('events')
 const config = require('config')
+const logger = require('./helpers/logger')
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000
@@ -54,7 +55,7 @@ let watch = async () => {
                 // send notification after 2 minutes
                 if (isOver2Minutes >= 240 && isSend) {
                     let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                    console.info('Slack Notification - There is no new block in last 2 minutes')
+                    logger.info('Slack Notification - There is no new block in last 2 minutes')
                     await slack.send({
                         attachments: [
                             {
@@ -67,13 +68,13 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                console.info('Sleep 0.5 seconds')
+                logger.info('Sleep 0.5 seconds')
                 await sleep(500)
             }
         }
     } catch (e) {
-        console.error(e)
-        console.error('Sleep 2 seconds before going back to work')
+        logger.error(e)
+        logger.error('Sleep 2 seconds before going back to work')
         await sleep(2000)
         return watch()
     }
