@@ -128,19 +128,19 @@
                                         </tr>
                                         <tr>
                                             <td>Value</td>
-                                            <td>{{ formatUnit(toEther(tx.value)) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.value)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Gas Used By Txn</td>
-                                            <td>{{ tx.gasUsed }}</td>
+                                            <td>{{ formatNumber(tx.gasUsed) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Gas Price</td>
-                                            <td>{{ formatUnit(toEther(tx.gasPrice)) }}</td>
+                                            <td>{{ formatNumber(tx.gasPrice) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
-                                            <td>{{ formatUnit(toEther(tx.gasPrice * tx.gasUsed)) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed)) }}</td>
                                         </tr>
                                         <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
                                             <td>Token Transfer</td>
@@ -150,7 +150,7 @@
                                                         v-for="(tokenTx, index) in tx.tokenTxs"
                                                         :key="index"
                                                         class="mb-3">
-                                                        <span>{{ toEther(tokenTx.value) }}</span>
+                                                        <span>{{ toTomo(tokenTx.value) }}</span>
                                                         <nuxt-link
                                                             :to="{
                                                                 name: 'tokens-slug',

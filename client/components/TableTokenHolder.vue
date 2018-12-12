@@ -30,7 +30,7 @@
 
             <template
                 slot="quantity"
-                slot-scope="props">{{ toEther(convertHexToFloat(props.item.quantity, 16)) }}</template>
+                slot-scope="props">{{ toTomo(convertHexToFloat(props.item.quantity, 16)) }}</template>
         </table-base>
 
         <b-pagination

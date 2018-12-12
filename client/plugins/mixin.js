@@ -51,7 +51,7 @@ const mixin = {
             return str + str2
         },
 
-        toEther: (wei) => {
+        toTomo: (wei) => {
             if (isNaN(wei)) {
                 return '0'
             }

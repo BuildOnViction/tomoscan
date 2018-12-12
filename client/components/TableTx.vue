@@ -104,11 +104,11 @@
 
             <template
                 slot="value"
-                slot-scope="props">{{ formatUnit(toEther(props.item.value)) }}</template>
+                slot-scope="props">{{ formatUnit(toTomo(props.item.value)) }}</template>
 
             <template
                 slot="txFee"
-                slot-scope="props">{{ formatUnit(toEther(props.item.gasPrice * props.item.gas)) }}</template>
+                slot-scope="props">{{ formatUnit(toTomo(props.item.gasPrice * props.item.gas)) }}</template>
         </table-base>
 
         <b-pagination-nav
