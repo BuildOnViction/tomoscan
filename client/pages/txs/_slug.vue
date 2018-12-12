@@ -136,7 +136,7 @@
                                         </tr>
                                         <tr>
                                             <td>Gas Price</td>
-                                            <td>{{ formatNumber(tx.gasPrice) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
