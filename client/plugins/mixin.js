@@ -116,14 +116,13 @@ const mixin = {
             return decodeURIComponent(results[2].replace(/\+/g, ' '))
         },
 
-        _nFormatNumber: (single, plural, number, realNumber) => {
+        _nFormatNumber: (single, plural, number, realNumber = 0) => {
             let str
             if (realNumber > number) {
-                str = 'Total ' + mixin.methods.formatNumber(realNumber) + ' ' + plural +
-                    ' found (Showing the last 10,000 records)'
+                str = `Total ${mixin.methods.formatNumber(realNumber)} ${plural} 
+                found (Showing the last 10,000 records)`
             } else {
-                str = 'Total ' + mixin.methods.formatNumber(number) + ' '
-                str += number > 1 ? plural : single + ' found'
+                str = `Total ${mixin.methods.formatNumber(number)} ${number > 1 ? plural : single} found`
             }
             return str
         },
