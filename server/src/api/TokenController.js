@@ -3,6 +3,7 @@ import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHelper from '../helpers/token'
 import Web3Util from '../helpers/web3'
+const logger = require('../helpers/logger')
 
 const TokenController = Router()
 
@@ -18,7 +19,7 @@ TokenController.get('/tokens', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -32,12 +33,11 @@ TokenController.get('/tokens/:slug', async (req, res) => {
         }
 
         token = await TokenHelper.formatToken(token)
-        let tokenInfo = await db.TokenInfo.findOne({ hash: hash })
-        token.moreInfo = tokenInfo
+        token.moreInfo = await db.TokenInfo.findOne({ hash: hash })
 
         res.json(token)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -53,7 +53,7 @@ TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
 
         res.json(tokenHolder)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -84,7 +84,7 @@ TokenController.post('/tokens/:token/updateInfo', async (req, res) => {
             return res.status(406).send('Unacceptable sign message')
         }
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })

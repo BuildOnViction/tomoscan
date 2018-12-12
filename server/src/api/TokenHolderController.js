@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHolderHelper from '../helpers/tokenHolder'
+const logger = require('../helpers/logger')
 
 const TokenHolderController = Router()
 
@@ -67,7 +68,7 @@ TokenHolderController.get('/token-holders', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

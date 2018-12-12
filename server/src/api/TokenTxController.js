@@ -2,6 +2,7 @@ import { Router } from 'express'
 import db from '../models'
 import { paginate } from '../helpers/utils'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
+const logger = require('../helpers/logger')
 
 const TokenTxController = Router()
 
@@ -35,8 +36,7 @@ TokenTxController.get('/token-txs', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

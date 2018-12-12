@@ -3,6 +3,7 @@ import db from '../models'
 import Web3Util from '../helpers/web3'
 import BlockHelper from '../helpers/block'
 const config = require('config')
+const logger = require('../helpers/logger')
 
 const BlockController = Router()
 
@@ -101,7 +102,7 @@ BlockController.get('/blocks', async (req, res, next) => {
         }
         return res.json(data)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -118,7 +119,7 @@ BlockController.get('/blocks/:slug', async (req, res) => {
 
         return res.json(block)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -152,7 +153,7 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
 
         return res.json({ signers: signers })
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -174,8 +175,7 @@ BlockController.get('/blocks/list/finality', async (req, res) => {
 
         return res.json(resp)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
