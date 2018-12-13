@@ -55,6 +55,8 @@ consumer.task = async function (job, done) {
 
         done()
     } catch (e) {
+        logger.warn(e)
+        logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl', blockNumber)
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
         done(e)

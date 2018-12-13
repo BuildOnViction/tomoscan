@@ -48,7 +48,7 @@ consumer.task = async function (job, done) {
         }
         done()
     } catch (e) {
-        logger.error(e)
+        logger.warn(e)
         done(e)
     }
 }

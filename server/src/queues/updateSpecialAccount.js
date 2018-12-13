@@ -72,7 +72,7 @@ consumer.task = async function (job, done) {
         await Promise.all(map2)
         done()
     } catch (e) {
-        logger.error(e)
+        logger.warn(e)
         done(e)
     }
 }
