@@ -152,10 +152,10 @@
                 slot-scope="props">
                 <span
                     class="d-lg-none"
-                    v-html="formatUnit(toEther(props.item.addressObj.balance, 5))"/>
+                    v-html="formatUnit(toTomo(props.item.addressObj.balance, 5))"/>
                 <span
                     class="d-none d-lg-block"
-                    v-html="formatUnit(toEther(props.item.addressObj.balance))"/>
+                    v-html="formatUnit(toTomo(props.item.addressObj.balance))"/>
             </template>
 
             <template

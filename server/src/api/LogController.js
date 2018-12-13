@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import LogHelper from '../helpers/log'
 import db from '../models'
+const logger = require('../helpers/logger')
 
 const LogController = Router()
 
@@ -34,8 +35,7 @@ LogController.get('/logs', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

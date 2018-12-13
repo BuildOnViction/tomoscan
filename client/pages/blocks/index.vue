@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', lastBlock, realTotal) }} found</p>
+            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total, realTotal) }}</p>
 
         <table-base
             v-if="total > 0"

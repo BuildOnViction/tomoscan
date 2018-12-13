@@ -6,6 +6,7 @@ import TokenTransactionHelper from '../helpers/tokenTransaction'
 const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
+const logger = require('../helpers/logger')
 
 TxController.get('/txs', async (req, res) => {
     try {
@@ -187,7 +188,6 @@ TxController.get('/txs', async (req, res) => {
                 }
             })
             await Promise.all(map)
-            console.log(status)
             for (let i = 0; i < status.length; i++) {
                 for (let j = 0; j < data.items.length; j++) {
                     if (status[i].hash === data.items[j].hash) {
@@ -199,8 +199,7 @@ TxController.get('/txs', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -214,7 +213,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         try {
             tx = await TransactionHelper.getTxDetail(hash)
         } catch (e) {
-            console.error(e)
+            logger.warn(e)
             return res.status(404).json({ message: 'Transaction is not found!' })
         }
         if (!tx) {
@@ -294,7 +293,7 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         return res.json(tx)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -317,8 +316,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
 
         return res.json(status)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -356,8 +354,7 @@ TxController.get('/txs/list/status', async (req, res) => {
 
         return res.json(resp)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })

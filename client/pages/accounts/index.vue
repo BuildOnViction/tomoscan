@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('account', 'accounts', total) }} found</p>
+            class="tomo-total-items">{{ _nFormatNumber('account', 'accounts', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -42,10 +42,10 @@
                 slot-scope="props">
                 <span
                     class="d-lg-none"
-                    v-html="formatUnit(toEther(props.item.balance, 5))"/>
+                    v-html="formatUnit(toTomo(props.item.balance, 5))"/>
                 <span
                     class="d-none d-lg-block"
-                    v-html="formatUnit(toEther(props.item.balance))"/>
+                    v-html="formatUnit(toTomo(props.item.balance))"/>
             </template>
         </table-base>
 
@@ -87,7 +87,7 @@ export default {
         total: 0,
         items: [],
         currentPage: 1,
-        perPage: 15,
+        perPage: 20,
         pages: 1
     }),
     watch: {

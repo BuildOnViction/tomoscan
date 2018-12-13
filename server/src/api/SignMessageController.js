@@ -3,6 +3,7 @@ import db from '../models'
 import Web3Util from '../helpers/web3'
 const config = require('config')
 const uuidv4 = require('uuid/v4')
+const logger = require('../helpers/logger')
 
 const SignMessageController = Router()
 
@@ -30,8 +31,7 @@ SignMessageController.post('/verifySignedMess', async (req, res, next) => {
             })
         }
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -63,8 +63,7 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
             })
         }
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -84,8 +83,7 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
             id: uuidv4()
         })
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -122,8 +120,7 @@ SignMessageController.post('/signMessage/verify', async (req, res, next) => {
 
         res.send('Done')
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(404).send(e)
     }
 })

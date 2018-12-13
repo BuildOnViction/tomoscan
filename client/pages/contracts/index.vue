@@ -43,7 +43,7 @@
             <template
                 slot="balance"
                 slot-scope="props">
-                <span>{{ formatUnit(toEther(props.item.balance)) }}</span>
+                <span>{{ formatUnit(toTomo(props.item.balance)) }}</span>
             </template>
 
             <template

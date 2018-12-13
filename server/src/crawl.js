@@ -68,7 +68,7 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                logger.info('Sleep 0.5 seconds')
+                logger.debug('Sleep 0.5 seconds')
                 await sleep(500)
             }
         }

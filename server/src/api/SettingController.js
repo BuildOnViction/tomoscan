@@ -3,6 +3,7 @@ import axios from 'axios'
 import db from '../models'
 import Web3Util from '../helpers/web3'
 const config = require('config')
+const logger = require('../helpers/logger')
 
 const SettingController = Router()
 
@@ -22,8 +23,7 @@ SettingController.get('/setting', async (req, res, next) => {
                 stats: { totalBlock, totalAddress, totalToken, totalSmartContract, lastBlock }
             })
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -35,8 +35,7 @@ SettingController.get('/setting/usd', async (req, res, next) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
