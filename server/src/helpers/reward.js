@@ -68,8 +68,9 @@ let RewardHelper = {
                 }
                 return true
             }).catch(async (e) => {
-                logger.error('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more',
+                logger.warn('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more',
                     startBlock, endBlock)
+                logger.warn(e)
                 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                 await sleep(2000)
                 await Web3Util.reconnectWeb3Socket()

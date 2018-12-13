@@ -157,8 +157,8 @@ let BlockHelper = {
     getBlock: async (number) => {
         let web3 = await Web3Util.getWeb3()
         return web3.eth.getBlock(number).catch(e => {
-            logger.error('Cannot get block %s detail', number)
-            logger.info('Sleep 2 seconds and re-getBlock until done')
+            logger.warn(e)
+            logger.warn('Cannot get block %s detail. Sleep 2 seconds and re-getBlock until done', number)
             return sleep(2000).then(() => {
                 return BlockHelper.getBlock(number)
             })
