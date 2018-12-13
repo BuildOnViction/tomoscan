@@ -23,8 +23,8 @@
             <template
                 slot="number"
                 slot-scope="props">
-                <nuxt-link :to="{name: 'epochs-slug', params: {slug: props.item.number}}">
-                    {{ props.item.number }}</nuxt-link>
+                <nuxt-link :to="{name: 'epochs-slug', params: {slug: props.item.number / 900}}">
+                    {{ props.item.number / 900 }}</nuxt-link>
             </template>
 
             <template
@@ -53,10 +53,6 @@
             <template
                 slot="gasUsed"
                 slot-scope="props">{{ formatNumber(props.item.gasUsed) }}</template>
-
-            <template
-                slot="finality"
-                slot-scope="props">{{ formatNumber(props.item.finality) }}</template>
         </table-base>
 
         <b-pagination-nav
@@ -88,12 +84,11 @@ export default {
     }),
     data: () => ({
         fields: {
-            number: { label: 'Height' },
+            number: { label: 'Epoch No.' },
             timestamp: { label: 'Age' },
             e_tx: { label: 'txn' },
             miner: { label: 'Miner' },
-            gasUsed: { label: 'GasUsed' },
-            finality: { label: 'Finality' }
+            gasUsed: { label: 'GasUsed' }
         },
         loading: true,
         pagination: {},

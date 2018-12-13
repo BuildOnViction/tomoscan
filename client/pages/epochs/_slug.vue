@@ -8,7 +8,7 @@
                 <h3
                     v-if="block"
                     class="tomo-card__headline">Epoc
-                    <span class="d-none d-lg-inline-block headline__block-number">#{{ block.number }}</span>
+                    <span class="d-none d-lg-inline-block headline__block-number">#{{ block.number / 900 }}</span>
                 </h3>
                 <div
                     v-if="block"
@@ -29,18 +29,9 @@
                     v-if="block"
                     class="tomo-card__table">
                     <tbody>
-                        <tr>
-                            <td>Height</td>
-                            <td>{{ block.number }}</td>
-                        </tr>
                         <tr v-if="timestamp_moment">
                             <td>TimeStamp</td>
                             <td v-html="timestamp_moment"/>
-                        </tr>
-                        <tr>
-                            <td>Transactions</td>
-                            <td>{{ (block.e_tx || block.e_tx >= 0) ? block.e_tx : block.transactions.length }}
-                                transactions</td>
                         </tr>
                         <tr>
                             <td>Hash</td>
@@ -77,48 +68,6 @@
                                     <span class="d-none d-lg-block">{{ block.parentHash }}</span>
                                 </nuxt-link>
                             </td>
-                        </tr>
-                        <tr>
-                            <td>Mined By</td>
-                            <td>
-                                <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug: block.signer}}"
-                                    class="d-sm-none">
-                                    <read-more
-                                        v-if="block.signer"
-                                        :text="block.signer" />
-                                    <read-more
-                                        v-else
-                                        :text="block.miner" />
-                                </nuxt-link>
-                                <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug: block.signer}}"
-                                    class="d-none d-sm-block d-md-none">
-                                    <read-more
-                                        v-if="block.signer"
-                                        :text="block.signer"
-                                        :max-chars="20" />
-                                    <read-more
-                                        v-else
-                                        :text="block.miner"
-                                        :max-chars="20" />
-                                </nuxt-link>
-                                <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug: block.signer}}"
-                                    class="d-none d-md-block">
-                                    <span
-                                        v-if="block.signer"
-                                        :text="block.signer"
-                                        :maxChars="20">{{ block.signer }}</span>
-                                    <span
-                                        v-else
-                                        :maxChars="20">{{ block.miner }}</span>
-                                </nuxt-link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Finality</td>
-                            <td>{{ block.finality }} %</td>
                         </tr>
                         <tr>
                             <td>Gas Used</td>
@@ -205,34 +154,6 @@
                 </table-base>
             </b-tab>
         </b-tabs>
-
-        <b-tabs
-            ref="allTabs"
-            v-model="tabIndex"
-            class="tomo-tabs"
-            @input="onSwitchTab">
-            <b-tab
-                :title="'Transactions (' + formatNumber(txsCount) + ')'"
-                :active="hashTab === '#transactions'"
-                href="#transactions">
-                <table-tx
-                    v-if="hashTab === '#transactions'"
-                    :block="number"
-                    :block_timestamp="block.timestamp"
-                    :parent="'transactions'"
-                    :page="this"/>
-            </b-tab>
-            <b-tab
-                :title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"
-                :active="hashTab === '#blockSigner'"
-                href="#blockSigner">
-                <block-signer
-                    v-if="hashTab === '#blockSigner'"
-                    :block="number"
-                    :parent="'blockSigner'"
-                    :page="this"/>
-            </b-tab>
-        </b-tabs>
     </section>
 </template>
 <script>
@@ -305,7 +226,7 @@ export default {
         let query = this.serializeQuery(params)
 
         let responses = await Promise.all([
-            this.$axios.get('/api/epochs/' + this.$route.params.slug),
+            this.$axios.get('/api/epochs/' + this.$route.params.slug * 900),
             this.$axios.get('/api/counting' + '?' + query)
         ])
 
