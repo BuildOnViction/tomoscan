@@ -70,7 +70,7 @@ let BlockHelper = {
             }
 
             let web3 = await Web3Util.getWeb3()
-            let _block = await BlockHelper.getBlock(hashOrNumber)
+            let _block = await web3.eth.getBlock(hashOrNumber)
             if (!_block) {
                 return null
             }
