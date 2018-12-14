@@ -73,8 +73,8 @@ let watch = async () => {
             }
         }
     } catch (e) {
-        logger.error(e)
-        logger.error('Sleep 2 seconds before going back to work')
+        logger.warn(e)
+        logger.warn('Sleep 2 seconds before going back to work')
         await sleep(2000)
         return watch()
     }

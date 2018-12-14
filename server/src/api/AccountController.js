@@ -21,7 +21,7 @@ AccountController.get('/accounts', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
