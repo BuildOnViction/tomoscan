@@ -108,7 +108,7 @@
 
             <template
                 slot="txFee"
-                slot-scope="props">{{ formatUnit(toTomo(props.item.gasPrice * props.item.gas)) }}</template>
+                slot-scope="props">{{ formatUnit(toTomo(props.item.gasPrice * props.item.gasUsed)) }}</template>
         </table-base>
 
         <b-pagination-nav
