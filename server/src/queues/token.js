@@ -49,7 +49,7 @@ consumer.task = async function (job, done) {
         token.status = true
         token.save()
     } catch (e) {
-        logger.error(e)
+        logger.warn(e)
         done(e)
     }
 

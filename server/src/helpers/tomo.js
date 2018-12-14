@@ -14,7 +14,7 @@ let blockSigner = {
     getSigners: async (blockHash) => {
         let bs = await blockSigner.getBlockSignerContract()
         return bs.methods.getSigners(blockHash).call().catch(e => {
-            logger.error('Cannot get signer of block %s. Sleep 2 seconds and try more', blockHash)
+            logger.warn('Cannot get signer of block %s. Sleep 2 seconds and try more', blockHash)
             return sleep(2000).then(() => {
                 return blockSigner.getSigners(blockHash)
             })
@@ -33,7 +33,7 @@ let tomoValidator = {
     getCandidateOwner: async (candidate) => {
         let tc = await tomoValidator.getValidatorContract()
         return tc.methods.getCandidateOwner(candidate).call().catch(e => {
-            logger.error('cannot get owner of candidate %s. Sleep 2 seconds and try more', candidate)
+            logger.warn('cannot get owner of candidate %s. Sleep 2 seconds and try more', candidate)
             return sleep(2000).then(() => {
                 return tomoValidator.getCandidateOwner(candidate)
             })
@@ -42,7 +42,7 @@ let tomoValidator = {
     getVoterCapacity: async (candidate, voter) => {
         let tc = await tomoValidator.getValidatorContract()
         return tc.methods.getVoterCap(candidate, voter).call().catch(e => {
-            logger.error('cannot get owner of candidate %s. Sleep 2 seconds and try more', candidate)
+            logger.warn('cannot get owner of candidate %s. Sleep 2 seconds and try more', candidate)
             return sleep(2000).then(() => {
                 return tomoValidator.getVoterCapacity(candidate, voter)
             })

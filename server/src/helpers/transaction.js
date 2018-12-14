@@ -122,7 +122,8 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
         } catch (e) {
-            logger.error(e)
+            logger.warn('cannot crawl transaction %s', hash)
+            logger.warn(e)
         }
     },
     getTxDetail: async (hash) => {

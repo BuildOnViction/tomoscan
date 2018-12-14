@@ -48,7 +48,7 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true)
             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
-        logger.error(e)
+        logger.warn(e)
         done(e)
     }
 

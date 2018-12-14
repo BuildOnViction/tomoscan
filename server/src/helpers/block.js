@@ -113,7 +113,8 @@ let BlockHelper = {
 
             return block
         } catch (e) {
-            logger.error(e)
+            logger.warn(e)
+            logger.warn('cannot get block %s', hashOrNumber)
             return {}
         }
     },
@@ -150,7 +151,7 @@ let BlockHelper = {
 
             return _block
         } catch (e) {
-            logger.error(e)
+            logger.warn(e)
             return {}
         }
     },
