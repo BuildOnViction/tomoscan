@@ -39,13 +39,11 @@ consumer.task = async function (job, done) {
         })
         await Promise.all(map)
 
-        if (parseInt(endBlock) % config.get('BLOCK_PER_EPOCH') === 0) {
-            let q = require('./index')
-            let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
-            q.create('UserHistoryProcess', { epoch: epoch })
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        }
+        let q = require('./index')
+        let epoch = parseInt(endBlock) / config.get('BLOCK_PER_EPOCH')
+        q.create('UserHistoryProcess', { epoch: epoch })
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         done()
     } catch (e) {
         logger.warn(e)
