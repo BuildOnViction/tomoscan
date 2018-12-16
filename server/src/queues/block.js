@@ -11,7 +11,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = parseInt(job.data.block)
     try {
-        logger.info('Process block: %s at %s', blockNumber, new Date())
+        logger.info('Process block: %s at %s attempts %s', blockNumber, new Date(), job.toJSON().attempts.made)
         let b = await BlockHelper.crawlBlock(blockNumber)
         const q = require('./index')
 
@@ -60,6 +60,9 @@ consumer.task = async function (job, done) {
         logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl', blockNumber)
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
+        if (job.toJSON().attempts.made === 4) {
+            logger.error('Attempts 5 times, can not crawl block %s', blockNumber)
+        }
         done(e)
         return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
