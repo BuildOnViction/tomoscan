@@ -13,11 +13,22 @@ process.setMaxListeners(1000)
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
+let countJobs = () => {
+    return new Promise((resolve, reject) => {
+        q.inactiveCount((err, l) => {
+            if (err) {
+                return reject(err)
+            }
+            return resolve(l)
+        })
+    })
+}
+
 let watch = async () => {
     try {
         let isSend = false
         let isOver2Minutes = 0
-        let step = 200
+        let step = 50
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let web3 = await Web3Util.getWeb3()
         if (!setting) {
@@ -29,6 +40,13 @@ let watch = async () => {
         let minBlockCrawl = parseInt(setting.meta_value || 0)
 
         while (true) {
+            let l = await countJobs()
+            if (l > 100) {
+                await sleep(2000)
+                logger.debug('%s jobs, sleep 2 seconds before adding more', l)
+                continue
+            }
+
             let maxBlockNum = await web3.eth.getBlockNumber()
             if (minBlockCrawl < maxBlockNum) {
                 let nextCrawl = minBlockCrawl + step
