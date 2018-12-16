@@ -12,7 +12,7 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let startBlock = job.data.startBlock
     let endBlock = job.data.endBlock
-    logger.info('Get block signer from block %s to %s', startBlock, endBlock)
+    logger.info('Get block signer from block %s to %s attempts %s', startBlock, endBlock, job.toJSON().attempts.made)
 
     let numbers = []
     for (let i = startBlock; i <= endBlock; i++) {
@@ -46,7 +46,10 @@ consumer.task = async function (job, done) {
             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         done()
     } catch (e) {
-        logger.warn(e)
+        logger.warn('BlockSignerProcess %s', e)
+        if (job.toJSON().attempts.made === 4) {
+            logger.error('Attempts 5 times, can not BlockSignerProcess %s %s', startBlock, endBlock)
+        }
         done(e)
     }
 }
