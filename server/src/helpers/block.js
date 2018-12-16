@@ -158,10 +158,20 @@ let BlockHelper = {
     getBlock: async (number) => {
         let web3 = await Web3Util.getWeb3()
         return web3.eth.getBlock(number).catch(e => {
-            logger.warn(e)
             logger.warn('Cannot get block %s detail. Sleep 2 seconds and re-getBlock until done', number)
+            logger.warn(e)
             return sleep(2000).then(() => {
                 return BlockHelper.getBlock(number)
+            })
+        })
+    },
+    getLastBlockNumber: async () => {
+        let web3 = await Web3Util.getWeb3()
+        return web3.eth.getBlockNumber().catch(e => {
+            logger.warn('Cannot get last block number. Sleep 2 seconds and try more')
+            logger.warn(e)
+            return sleep(2000).then(() => {
+                return BlockHelper.getLastBlockNumber()
             })
         })
     }
