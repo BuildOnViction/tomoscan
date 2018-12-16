@@ -170,7 +170,7 @@ const epochReward = async (epoch) => {
         let reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
         let reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
 
-        let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
+        let blockRewardCalculate = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
 
         let block = await db.Block.findOne({ number: blockRewardCalculate })
         let timestamp = new Date()
