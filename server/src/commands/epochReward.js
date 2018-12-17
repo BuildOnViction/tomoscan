@@ -28,28 +28,31 @@ const epochReward = async (epoch) => {
     let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
 
     // Update block signer
-    let blks = []
-    for (let i = startBlock; i <= endBlock; i++) {
-        blks.push(i)
-    }
-    let map = blks.map(async (b) => {
-        let block = await BlockHelper.getBlock(b)
+    for (let i = startBlock; i <= endBlock; i = i + 50) {
+        let its = []
+        for (let j = i; j < i + 50; j++) {
+            its.push(j)
+        }
+        logger.info('Update block signer from block %s to block %s', i, i + 49)
+        let map = its.map(async (b) => {
+            let block = await BlockHelper.getBlock(b)
 
-        let ss = await blockSigner.getSigners(block.hash)
-        await db.BlockSigner.updateOne({
-            blockHash: block.hash,
-            blockNumber: b
-        }, {
-            $set: {
+            let ss = await blockSigner.getSigners(block.hash)
+            await db.BlockSigner.updateOne({
                 blockHash: block.hash,
-                blockNumber: b,
-                signers: ss.map(it => (it || '').toLowerCase())
-            }
-        }, {
-            upsert: true
+                blockNumber: b
+            }, {
+                $set: {
+                    blockHash: block.hash,
+                    blockNumber: b,
+                    signers: ss.map(it => (it || '').toLowerCase())
+                }
+            }, {
+                upsert: true
+            })
         })
-    })
-    await Promise.all(map)
+        await Promise.all(map)
+    }
 
     // Get list event in range start - end block
     await RewardHelper.updateVoteHistory(epoch)
