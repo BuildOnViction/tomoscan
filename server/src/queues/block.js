@@ -36,9 +36,8 @@ consumer.task = async function (job, done) {
 
         // Begin from epoch 2
         if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % config.get('BLOCK_PER_EPOCH') === 0)) {
-            let endBlock = blockNumber - config.get('BLOCK_PER_EPOCH')
-            let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
-            q.create('BlockSignerProcess', { startBlock: startBlock, endBlock: endBlock })
+            let epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
+            q.create('RewardProcess', { epoch: epoch })
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
@@ -56,8 +55,7 @@ consumer.task = async function (job, done) {
 
         done()
     } catch (e) {
-        logger.warn(e)
-        logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl', blockNumber)
+        logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl. Error %s', blockNumber, e)
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
         if (job.toJSON().attempts.made === 4) {

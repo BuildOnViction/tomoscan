@@ -113,8 +113,7 @@ let BlockHelper = {
 
             return block
         } catch (e) {
-            logger.warn(e)
-            logger.warn('cannot get block %s', hashOrNumber)
+            logger.warn('cannot get block %s with error %s', hashOrNumber, e)
             return {}
         }
     },
@@ -151,15 +150,14 @@ let BlockHelper = {
 
             return _block
         } catch (e) {
-            logger.warn(e)
+            logger.warn('cannot get block on chain with error %s', e)
             return {}
         }
     },
     getBlock: async (number) => {
         let web3 = await Web3Util.getWeb3()
         return web3.eth.getBlock(number).catch(e => {
-            logger.warn('Cannot get block %s detail. Sleep 2 seconds and re-getBlock until done', number)
-            logger.warn(e)
+            logger.warn('Cannot get block %s detail. Sleep 2 seconds and try more. Error %s', number, e)
             return sleep(2000).then(() => {
                 return BlockHelper.getBlock(number)
             })
@@ -168,8 +166,7 @@ let BlockHelper = {
     getLastBlockNumber: async () => {
         let web3 = await Web3Util.getWeb3()
         return web3.eth.getBlockNumber().catch(e => {
-            logger.warn('Cannot get last block number. Sleep 2 seconds and try more')
-            logger.warn(e)
+            logger.warn('Cannot get last block number. Sleep 2 seconds and try more. Error %s', e)
             return sleep(2000).then(() => {
                 return BlockHelper.getLastBlockNumber()
             })
