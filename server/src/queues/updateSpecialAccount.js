@@ -4,6 +4,7 @@ const axios = require('axios')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('../helpers/logger')
+const urlJoin = require('url-join')
 
 const consumer = {}
 consumer.name = 'updateSpecialAccount'
@@ -25,7 +26,7 @@ consumer.task = async function (job, done) {
         }, { upsert: true })
 
         const tomomasterUrl = config.get('TOMOMASTER_API_URL')
-        const candidates = await axios.get(tomomasterUrl + '/api/candidates')
+        const candidates = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
         logger.info('there are %s candidates need process', candidates.data.length)
         let map1 = candidates.data.map(async (candidate) => {
             let hash = candidate.candidate.toLowerCase()

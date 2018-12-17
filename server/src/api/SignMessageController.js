@@ -4,6 +4,7 @@ import Web3Util from '../helpers/web3'
 const config = require('config')
 const uuidv4 = require('uuid/v4')
 const logger = require('../helpers/logger')
+const urlJoin = require('url-join')
 
 const SignMessageController = Router()
 
@@ -79,7 +80,7 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
 
         res.send({
             message,
-            url: `${config.get('BASE_URL')}api/signMessage/verify?id=`,
+            url: urlJoin(config.get('BASE_URL'), 'api/signMessage/verify?id='),
             id: uuidv4()
         })
     } catch (e) {
