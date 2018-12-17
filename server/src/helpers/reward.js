@@ -8,7 +8,7 @@ const BlockHelper = require('./block')
 const contractAddress = require('../contracts/contractAddress')
 
 let RewardHelper = {
-    updateVoteHistory: async (epoch, hasQueue = false, done = null) => {
+    updateVoteHistory: async (epoch) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
         logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
@@ -61,13 +61,6 @@ let RewardHelper = {
                 if (data.length > 0) {
                     await db.VoteHistory.insertMany(data)
                 }
-                if (hasQueue) {
-                    let q = require('../queues/index')
-                    q.create('UserVoteProcess', { epoch: epoch })
-                        .priority('normal').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-                    done()
-                }
                 return true
             }).catch(async (e) => {
                 logger.warn('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more. Error %s',
@@ -75,12 +68,9 @@ let RewardHelper = {
                 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                 await sleep(2000)
                 await Web3Util.reconnectWeb3Socket()
-                return RewardHelper.updateVoteHistory(epoch, hasQueue, done)
+                return RewardHelper.updateVoteHistory(epoch)
             })
 
-        if (done !== null) {
-            done()
-        }
         return true
     },
 
