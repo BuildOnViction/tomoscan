@@ -15,8 +15,7 @@ let AccountHelper = {
 
         web3.eth.getBalance(hash, function (err, balance) {
             if (err) {
-                logger.warn('get balance of account %s has error', hash)
-                logger.warn(err)
+                logger.warn('get balance of account %s has error %s', hash, err)
             } else {
                 _account.balance = balance
                 _account.balanceNumber = balance
@@ -50,8 +49,7 @@ let AccountHelper = {
 
             web3.eth.getBalance(hash, function (err, balance) {
                 if (err) {
-                    logger.warn('get balance of account %s has error', hash)
-                    logger.warn(err)
+                    logger.warn('get balance of account %s has error %s', hash, err)
                 } else {
                     _account.balance = balance
                     _account.balanceNumber = balance
@@ -82,7 +80,7 @@ let AccountHelper = {
             await db.Account.updateOne({ hash: hash }, _account,
                 { upsert: true, new: true })
         } catch (e) {
-            logger.warn(e)
+            logger.warn('cannot process account %s. Error %s', hash, e)
         }
     },
     async formatAccount (account) {

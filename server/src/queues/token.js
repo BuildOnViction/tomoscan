@@ -49,7 +49,7 @@ consumer.task = async function (job, done) {
         token.status = true
         token.save()
     } catch (e) {
-        logger.warn(e)
+        logger.warn('cannot process token %s. Error %s', address, e)
         done(e)
     }
 

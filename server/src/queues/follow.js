@@ -43,7 +43,7 @@ consumer.task = async function (job, done) {
             }
         }
     } catch (e) {
-        logger.warn(e)
+        logger.warn('follow process error %s', e)
         done(e)
     }
     done()

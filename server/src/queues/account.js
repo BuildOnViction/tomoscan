@@ -14,8 +14,7 @@ consumer.task = async function (job, done) {
         try {
             await AccountHelper.processAccount(hash)
         } catch (e) {
-            logger.warn('Cannot process account %s', hash)
-            logger.warn(e)
+            logger.warn('Cannot process account %s. Error %s', hash, e)
             return done(e)
         }
     })

@@ -2,6 +2,7 @@ const config = require('config')
 const axios = require('axios')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
+const urlJoin = require('url-join')
 
 const updateSpecialAccount = async () => {
     console.info('Count list transaction')
@@ -19,7 +20,7 @@ const updateSpecialAccount = async () => {
     }, { upsert: true })
 
     const tomomasterUrl = config.get('TOMOMASTER_API_URL')
-    const candidates = await axios.get(tomomasterUrl + '/api/candidates')
+    const candidates = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
     console.info('there are %s candidates need process', candidates.data.length)
     let map1 = candidates.data.map(async (candidate) => {
         let hash = candidate.candidate.toLowerCase()
