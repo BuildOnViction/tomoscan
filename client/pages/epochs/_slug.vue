@@ -15,11 +15,11 @@
                     class="block-breadcrumb">
                     <div class="block-breadcrumb__prev">
                         <i class="tm tm-chevrons-left"/>
-                        <nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">Prev</nuxt-link>
+                        <nuxt-link :to="{name: 'epochs-slug', params: {slug: block.number / 900 - 1}}">Prev</nuxt-link>
                     </div>
                     <span class="block-breadcrumb__divider">|</span>
                     <div class="block-breadcrumb__next">
-                        <nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number + 1}}">Next</nuxt-link>
+                        <nuxt-link :to="{name: 'epochs-slug', params: {slug: block.number / 900 + 1}}">Next</nuxt-link>
                         <i class="tm tm-chevrons-right"/>
                     </div>
                 </div>
@@ -53,7 +53,7 @@
                         <tr>
                             <td>Parent Hash</td>
                             <td>
-                                <nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">
+                                <nuxt-link :to="{name: 'epochs-slug', params: {slug: block.number / 900 - 1}}">
                                     <read-more
                                         :text="block.parentHash"
                                         class="d-sm-none" />

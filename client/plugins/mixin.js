@@ -21,7 +21,7 @@ const mixin = {
             return [].concat.apply([], query).join('&')
         },
 
-        formatNumber: (number) => {
+        formatNumber: (number = 0) => {
             let seps = number.toString().split('.')
             seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
 
@@ -119,7 +119,7 @@ const mixin = {
         _nFormatNumber: (single, plural, number, realNumber = 0) => {
             let str
             if (realNumber > number) {
-                str = `Total ${mixin.methods.formatNumber(realNumber)} ${plural} 
+                str = `Total ${mixin.methods.formatNumber(realNumber)} ${plural}
                 found (Showing the last 10,000 records)`
             } else {
                 str = `Total ${mixin.methods.formatNumber(number)} ${number > 1 ? plural : single} found`
