@@ -41,12 +41,6 @@
             </template>
 
             <template
-                slot="balance"
-                slot-scope="props">
-                <span>{{ formatUnit(toTomo(props.item.balance)) }}</span>
-            </template>
-
-            <template
                 slot="txCount"
                 slot-scope="props">
                 <span>{{ formatNumber(props.item.txCount) }}</span>
@@ -85,7 +79,6 @@ export default {
                 hash: { label: 'Address' },
                 contractName: { label: 'ContractName' },
                 compiler: { label: 'Compiler' },
-                balance: { label: 'Balance' },
                 txCount: { label: 'TxCount' },
                 createdAt: { label: 'Date Verified' }
             },

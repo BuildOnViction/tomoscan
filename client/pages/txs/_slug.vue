@@ -136,11 +136,11 @@
                                         </tr>
                                         <tr>
                                             <td>Gas Price</td>
-                                            <td>{{ formatUnit(toTomo(tx.gasPrice)) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice, 8)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
-                                            <td>{{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed)) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed, 8)) }}</td>
                                         </tr>
                                         <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
                                             <td>Token Transfer</td>
