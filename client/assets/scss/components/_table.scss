@@ -173,11 +173,11 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 10% 40% 40% 10%;
+      grid-template-columns: 15% 45% 40%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 10% 40% 42% 8%;
+      grid-template-columns: 15% 45% 40%;
     }
   }
 

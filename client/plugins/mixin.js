@@ -21,17 +21,26 @@ const mixin = {
             return [].concat.apply([], query).join('&')
         },
 
-        formatNumber: (number, limit = 5) => {
+        formatNumber: (number, limitComma = 5) => {
             let seps = number.toString().split('.')
-            console.log(seps)
             seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             if (seps[1]) {
-                seps[1] = seps[1].toString().substring(0, limit)
+                seps[1] = seps[1].toString().substring(0, limitComma)
             }
 
             let ret = seps.join('.')
-            if (ret === '0.00000') {
-                ret = '< 0.00001'
+            let count = limitComma
+            let sCompare = '0.'
+            let str = '0.'
+            while (count > 0) {
+                count--
+                sCompare += '0'
+                if (count >= 1) {
+                    str += '0'
+                }
+            }
+            if (ret === sCompare) {
+                ret = `< ${str}1`
             }
             return ret
         },
@@ -59,7 +68,7 @@ const mixin = {
             return str + str2
         },
 
-        toTomo: (wei) => {
+        toTomo: (wei, limitComma = 5) => {
             if (isNaN(wei)) {
                 return '0'
             }
@@ -76,7 +85,7 @@ const mixin = {
 
             weiNumber = weiNumber.dividedBy(divided).toString()
 
-            return mixin.methods.formatNumber(weiNumber)
+            return mixin.methods.formatNumber(weiNumber, limitComma)
         },
 
         toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
