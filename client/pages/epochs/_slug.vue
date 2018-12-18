@@ -34,76 +34,46 @@
                             <td v-html="timestamp_moment"/>
                         </tr>
                         <tr>
-                            <td>Hash</td>
-                            <td>
-                                <read-more
-                                    :text="block.hash"
-                                    class="d-sm-none" />
-                                <read-more
-                                    :text="block.hash"
-                                    :max-chars="20"
-                                    class="d-none d-sm-block d-md-none"/>
-                                <read-more
-                                    :text="block.hash"
-                                    :max-chars="40"
-                                    class="d-none d-md-block d-lg-none"/>
-                                <span class="d-none d-lg-block">{{ block.hash }}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Parent Hash</td>
-                            <td>
-                                <nuxt-link :to="{name: 'epochs-slug', params: {slug: block.number / 900 - 1}}">
-                                    <read-more
-                                        :text="block.parentHash"
-                                        class="d-sm-none" />
-                                    <read-more
-                                        :text="block.parentHash"
-                                        :max-chars="20"
-                                        class="d-none d-sm-block d-md-none"/>
-                                    <read-more
-                                        :text="block.parentHash"
-                                        :max-chars="40"
-                                        class="d-none d-md-block d-lg-none"/>
-                                    <span class="d-none d-lg-block">{{ block.parentHash }}</span>
-                                </nuxt-link>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Gas Used</td>
-                            <td>{{ formatNumber(block.gasUsed) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Gas Limit</td>
-                            <td>{{ formatNumber(block.gasLimit) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Extra Data</td>
-                            <td>
-                                <read-more
-                                    :text="block.extraData"
-                                    class="d-sm-none"/>
-                                <read-more
-                                    :text="block.extraData"
-                                    :max-chars="20"
-                                    class="d-none d-sm-block d-md-none"/>
-                                <read-more
-                                    :text="block.extraData"
-                                    :max-chars="40"
-                                    class="d-none d-md-block"/>
-                            </td>
-                        </tr>
-                        <tr>
                             <td>Masternodes</td>
-                            <b-list-group>
-                                <b-list-group-item
-                                    v-for="(masternode, index) in epocDetail.m1m2"
-                                    :key="index">
-                                    <nuxt-link :to="{name: 'address-slug', params: {slug: masternode}}" >
-                                        {{ masternode }}
-                                    </nuxt-link>
-                                </b-list-group-item>
-                            </b-list-group>
+                            <td>
+                                <b-list-group>
+                                    <b-list-group-item
+                                        v-for="(masternode, index) in epocDetail.m1m2"
+                                        v-if="index < 5"
+                                        :key="index">
+                                        <nuxt-link :to="{name: 'address-slug', params: {slug: masternode}}" >
+                                            {{ masternode }}
+                                        </nuxt-link>
+                                    </b-list-group-item>
+                                </b-list-group>
+                                <b-button
+                                    v-b-modal.modal1
+                                    v-if="epocDetail.m1m2.length > 5"
+                                    :size="'sm'"
+                                    :variant="'link'"
+                                    class="pl-0"
+                                >View all... (+{{ epocDetail.m1m2.length - 5 }} more)</b-button>
+                                <b-modal
+                                    id="modal1"
+                                    :ok-only="true"
+                                    :header-bg-variant="'primary'"
+                                    :header-text-variant="'light'"
+                                    title="Bootstrap-Vue">
+                                    <template slot="modal-header">
+                                        <h4>Masternodes</h4>
+                                    </template>
+                                    <div class="scrollable-container p-2 pl-4">
+                                        <b-list-group-item
+                                            v-for="(masternode, index) in epocDetail.m1m2"
+                                            :key="index"
+                                            class="mb-2">
+                                            <nuxt-link :to="{name: 'address-slug', params: {slug: masternode}}">
+                                                {{ masternode }}
+                                            </nuxt-link>
+                                        </b-list-group-item>
+                                    </div>
+                                </b-modal>
+                            </td>
                         </tr>
                     </tbody>
                 </table>
