@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', lastBlock, realTotal) }} found</p>
+            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total, realTotal) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -141,22 +141,6 @@ export default {
             self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
-
-            let listNumber = []
-            data.items.forEach(function (item) {
-                listNumber.push(item.number)
-            })
-            let listFinality = await self.$axios.get(`/api/blocks/list/finality?numbers=${listNumber.join(',')}`)
-
-            self.items.forEach(async (item) => {
-                if (listFinality !== null) {
-                    Object.keys(listFinality.data).forEach(function (key) {
-                        if (key === item.number) {
-                            item.finality = listFinality.data[key]
-                        }
-                    })
-                }
-            })
 
             // Hide loading.
             this.loading = false

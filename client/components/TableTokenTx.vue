@@ -93,7 +93,7 @@
 
             <template
                 slot="value"
-                slot-scope="props">{{ formatUnit(toEther(props.item.value), props.item.symbol) }}</template>
+                slot-scope="props">{{ formatUnit(toTomo(props.item.value), props.item.symbol) }}</template>
 
             <template
                 slot="token"

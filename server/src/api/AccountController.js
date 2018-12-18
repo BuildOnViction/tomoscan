@@ -2,6 +2,7 @@ import { Router } from 'express'
 import db from '../models'
 import { paginate } from '../helpers/utils'
 import AccountHelper from '../helpers/account'
+const logger = require('../helpers/logger')
 
 const AccountController = Router()
 
@@ -20,8 +21,7 @@ AccountController.get('/accounts', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -34,15 +34,14 @@ AccountController.get('/accounts/:slug', async (req, res) => {
         try {
             account = await AccountHelper.getAccountDetail(hash)
         } catch (e) {
-            console.log(e)
+            logger.warn(e)
             return res.status(404).json({ message: 'Account is not found!' })
         }
         account = await AccountHelper.formatAccount(account)
 
         return res.json(account)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -65,8 +64,7 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

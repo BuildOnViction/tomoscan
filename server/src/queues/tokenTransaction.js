@@ -3,6 +3,7 @@
 import web3 from 'web3'
 const utils = require('../helpers/utils')
 const db = require('../models')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
@@ -10,7 +11,7 @@ consumer.processNumber = 12
 consumer.task = async function (job, done) {
     try {
         let log = JSON.parse(job.data.log)
-        console.info('Process token transaction: ')
+        logger.info('Process token transaction: ')
         let _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
@@ -47,7 +48,7 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true)
             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
-        console.error(consumer.name, e)
+        logger.warn('cannot process token tx. Error %s', e)
         done(e)
     }
 

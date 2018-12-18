@@ -2,6 +2,7 @@
 
 const EmailService = require('../services/Email')
 const db = require('../models')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'FollowProcess'
@@ -42,7 +43,7 @@ consumer.task = async function (job, done) {
             }
         }
     } catch (e) {
-        console.error(consumer.name, e)
+        logger.warn('follow process error %s', e)
         done(e)
     }
     done()

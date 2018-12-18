@@ -3,13 +3,15 @@
 const Web3Util = require('./web3')
 const utils = require('./utils')
 const db = require('../models')
+const logger = require('./logger')
+let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let BlockHelper = {
     crawlBlock:async (blockNumber) => {
         let block = await db.Block.findOne({ number: blockNumber })
         let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
-            console.info('Block already processed', blockNumber)
+            logger.info('Block already processed %s', blockNumber)
             return null
         }
 
@@ -111,14 +113,14 @@ let BlockHelper = {
 
             return block
         } catch (e) {
-            console.error(e)
+            logger.warn('cannot get block %s with error %s', hashOrNumber, e)
             return {}
         }
     },
     getBlockOnChain: async (number) => {
         try {
             let web3 = await Web3Util.getWeb3()
-            let _block = await web3.eth.getBlock(number)
+            let _block = await BlockHelper.getBlock(number)
             if (!_block) {
                 return null
             }
@@ -148,9 +150,27 @@ let BlockHelper = {
 
             return _block
         } catch (e) {
-            console.error(e)
+            logger.warn('cannot get block on chain with error %s', e)
             return {}
         }
+    },
+    getBlock: async (number) => {
+        let web3 = await Web3Util.getWeb3()
+        return web3.eth.getBlock(number).catch(e => {
+            logger.warn('Cannot get block %s detail. Sleep 2 seconds and try more. Error %s', number, e)
+            return sleep(2000).then(() => {
+                return BlockHelper.getBlock(number)
+            })
+        })
+    },
+    getLastBlockNumber: async () => {
+        let web3 = await Web3Util.getWeb3()
+        return web3.eth.getBlockNumber().catch(e => {
+            logger.warn('Cannot get last block number. Sleep 2 seconds and try more. Error %s', e)
+            return sleep(2000).then(() => {
+                return BlockHelper.getLastBlockNumber()
+            })
+        })
     }
 }
 

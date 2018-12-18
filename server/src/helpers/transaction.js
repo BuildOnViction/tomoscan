@@ -3,6 +3,7 @@
 import Web3Util from './web3'
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
+const logger = require('./logger')
 
 let TransactionHelper = {
     parseLog: async (log) => {
@@ -44,29 +45,29 @@ let TransactionHelper = {
                 return false
             }
 
+            let listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
                 if (tx.to !== contractAddress.BlockSigner) {
-                    q.create('AccountProcess', { address: tx.from.toLowerCase() })
-                        .priority('normal').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                    if (!listHash.includes(tx.from.toLowerCase())) {
+                        listHash.push(tx.from.toLowerCase())
+                    }
                 }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
                 if (tx.to !== contractAddress.BlockSigner) {
-                    q.create('AccountProcess', { address: tx.to.toLowerCase() })
-                        .priority('normal').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                    if (!listHash.includes(tx.to)) {
+                        listHash.push(tx.to)
+                    }
                 }
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
                     tx.contractAddress = contractAddress
-
-                    q.create('AccountProcess', { address: contractAddress })
-                        .priority('normal').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                    if (!listHash.includes(contractAddress)) {
+                        listHash.push(contractAddress)
+                    }
 
                     await db.Account.updateOne(
                         { hash: contractAddress },
@@ -77,6 +78,12 @@ let TransactionHelper = {
                         },
                         { upsert: true, new: true })
                 }
+            }
+
+            if (listHash.length > 0) {
+                q.create('AccountProcess', { listHash: JSON.stringify(listHash) })
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
 
             tx.cumulativeGasUsed = receipt.cumulativeGasUsed
@@ -115,7 +122,7 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
         } catch (e) {
-            console.error(e)
+            logger.warn('cannot crawl transaction %s with error %s', hash, e)
         }
     },
     getTxDetail: async (hash) => {

@@ -67,6 +67,9 @@
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">
                         <b-nav-item
+                            :href="'https://docs.tomochain.com/tomoscan/features/'"
+                            :target="'_blank'">Need help?</b-nav-item>
+                            <!-- <b-nav-item
                             v-b-modal="'loginModal'"
                             v-if="!user">Login</b-nav-item>
                         <b-nav-item
@@ -84,7 +87,7 @@
                             <b-dropdown-item @click="onLogout">
                                 <i class="tm-logout mr-3"/>Logout
                             </b-dropdown-item>
-                        </b-nav-item-dropdown>
+                        </b-nav-item-dropdown> -->
                     </b-navbar-nav>
                 </b-collapse>
             </div>

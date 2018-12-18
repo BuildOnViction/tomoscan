@@ -1,13 +1,14 @@
 'use strict'
 
 const TokenHolderHelper = require('../helpers/tokenHolder')
+const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
 consumer.processNumber = 24
 consumer.task = async function (job, done) {
     let token = JSON.parse(job.data.token)
-    console.info('Process token holder: ', token.from, token.to, token.value)
+    logger.info('Process token holder: %s %s %s', token.from, token.to, token.value)
     if (!token) {
         done()
         return false
@@ -19,7 +20,7 @@ consumer.task = async function (job, done) {
         // Add holder to.
         await TokenHolderHelper.updateQuality(token.to, token.address, token.value)
     } catch (e) {
-        console.error(consumer.name, token, e)
+        logger.warn('cannot process token holder %s. Error %s', token, e)
         done(e)
     }
 

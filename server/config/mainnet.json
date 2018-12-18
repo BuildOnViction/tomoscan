@@ -1,0 +1,75 @@
+{
+  "APP_ENV": "prod",
+  "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
+  "redis": {
+    "host": "redis",
+    "port": 6379,
+    "password": null,
+    "prefix": "TomoScan"
+  },
+  "logs": {
+    "level": "debug"
+  },
+
+  "defaultCandidate": [
+    {
+      "name": "TomoChain01",
+      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
+      "candidate": "0x1b82c4bf317fcafe3d77e8b444c82715d216afe8",
+      "cap": 50000
+    },
+    {
+      "name": "TomoChain02",
+      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
+      "candidate": "0xad670b2b166684657ffff95f4810380ae7381e9b",
+      "cap": 50000
+    },
+    {
+      "name": "TomoChain03",
+      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
+      "candidate": "0xce41231d5dd8cdd7499e418b648c00af75d184a2",
+      "cap": 50000
+    },
+    {
+      "name": "TomoChain04",
+      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
+      "candidate": "0x45b7bd987fa22c9bac89b71f0ded03f6e150ba31",
+      "cap": 50000
+    },
+    {
+      "name": "TomoChain05",
+      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
+      "candidate": "0xf9aba09a6fa4a46fb1a6a3919b027d9cac5aa689",
+      "cap": 50000
+    }
+  ],
+
+  "WEB3_URI": "https://rpc.tomochain.com/",
+  "WEB3_WS_URI": "wss://ws.tomochain.com",
+  "DEBUG_QUERY": false,
+
+  "BASE_UNIT": "TOMO",
+  "PORT": 3333,
+  "DEBUG": "express:*",
+
+  "JWT_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
+  "APP_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
+
+  "SENDGRID_API_KEY": "",
+  "SENDER_EMAIL": "contact@tomochain.com",
+
+  "BASE_URL": "https://scan.tomochain.com/",
+  "CLIENT_URL": "http://localhost:3000/",
+  "TOMOMASTER_API_URL": "https://master.tomochain.com",
+  "CMC_ID": 2570,
+  "SLACK_WEBHOOK_URL": "",
+
+  "BLOCK_PER_EPOCH": 900,
+  "REWARD": 250,
+  "MASTER_NODE_REWARD_PERCENT": 40,
+  "FOUNDATION_REWARD_PERCENT": 10,
+  "VOTER_REWARD_PERCENT": 50,
+  "LIMITED_RECORDS": 10000,
+
+  "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET"
+}

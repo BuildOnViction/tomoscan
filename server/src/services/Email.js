@@ -3,6 +3,7 @@ import sgTransport from 'nodemailer-sendgrid-transport'
 import path from 'path'
 import Email from 'email-templates'
 const config = require('config')
+const urlJoin = require('url-join')
 
 class EmailService {
     constructor () {
@@ -43,8 +44,8 @@ class EmailService {
             to: tx.to,
             wei: tx.value,
             blockNumber: tx.blockNumber,
-            txLink: config.get('CLIENT_URL') + 'txs/' + tx.hash,
-            addressLink: config.get('CLIENT_URL') + 'address/' + address
+            txLink: urlJoin(config.get('CLIENT_URL'), 'txs/', tx.hash),
+            addressLink: urlJoin(config.get('CLIENT_URL'), 'address/', address)
         })
     }
 

@@ -29,7 +29,7 @@
                         <tr>
                             <td>TOMO Balance</td>
                             <td>
-                                <span>{{ formatUnit(toEther(address.balance)) }}</span>
+                                <span>{{ formatUnit(toTomo(address.balance)) }}</span>
                             </td>
                         </tr>
                         <tr>

@@ -17,6 +17,7 @@ import RewardController from './RewardController'
 import MixController from './MixController'
 import MasternodeController from './MasternodeController'
 import SignMessageController from './SignMessageController'
+import HomeController from './HomeController'
 
 const router = Router()
 
@@ -38,5 +39,6 @@ router.use(RewardController)
 router.use(MixController)
 router.use(MasternodeController)
 router.use(SignMessageController)
+router.use(HomeController)
 
 export default router

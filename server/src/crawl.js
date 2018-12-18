@@ -5,6 +5,7 @@ const q = require('./queues')
 const db = require('./models')
 const events = require('events')
 const config = require('config')
+const logger = require('./helpers/logger')
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000
@@ -12,11 +13,22 @@ process.setMaxListeners(1000)
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
+let countJobs = () => {
+    return new Promise((resolve, reject) => {
+        q.inactiveCount((err, l) => {
+            if (err) {
+                return reject(err)
+            }
+            return resolve(l)
+        })
+    })
+}
+
 let watch = async () => {
     try {
         let isSend = false
         let isOver2Minutes = 0
-        let step = 200
+        let step = 50
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let web3 = await Web3Util.getWeb3()
         if (!setting) {
@@ -28,6 +40,13 @@ let watch = async () => {
         let minBlockCrawl = parseInt(setting.meta_value || 0)
 
         while (true) {
+            let l = await countJobs()
+            if (l > 100) {
+                await sleep(2000)
+                logger.debug('%s jobs, sleep 2 seconds before adding more', l)
+                continue
+            }
+
             let maxBlockNum = await web3.eth.getBlockNumber()
             if (minBlockCrawl < maxBlockNum) {
                 let nextCrawl = minBlockCrawl + step
@@ -54,7 +73,7 @@ let watch = async () => {
                 // send notification after 2 minutes
                 if (isOver2Minutes >= 240 && isSend) {
                     let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                    console.info('Slack Notification - There is no new block in last 2 minutes')
+                    logger.info('Slack Notification - There is no new block in last 2 minutes')
                     await slack.send({
                         attachments: [
                             {
@@ -67,13 +86,12 @@ let watch = async () => {
                     })
                     isSend = false
                 }
-                console.info('Sleep 0.5 seconds')
+                logger.debug('Sleep 0.5 seconds')
                 await sleep(500)
             }
         }
     } catch (e) {
-        console.error(e)
-        console.error('Sleep 2 seconds before going back to work')
+        logger.warn('Sleep 2 seconds before going back to work. Error %s', e)
         await sleep(2000)
         return watch()
     }

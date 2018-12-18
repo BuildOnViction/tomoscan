@@ -7,6 +7,7 @@ import Web3Util from '../helpers/web3'
 import _ from 'lodash'
 import AccountHelper from '../helpers/account'
 import ContractHelper from '../helpers/contract'
+const logger = require('../helpers/logger')
 
 const ContractController = Router()
 
@@ -17,7 +18,7 @@ ContractController.get('/contracts', async (req, res, next) => {
 
         return res.json(data)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -33,7 +34,7 @@ ContractController.get('/contracts/:slug', async (req, res, next) => {
 
         return res.json(contract)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -44,7 +45,7 @@ ContractController.get('/soljsons', async (req, res, next) => {
 
         return res.json(versions)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -124,7 +125,7 @@ ContractController.post('/contracts', async (req, res, next) => {
                 return res.json(contract)
             })
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -186,7 +187,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
 
         return res.json(events)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -222,7 +223,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
                         let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
                         func.result = rs
                     } catch (e) {
-                        console.error(e)
+                        logger.warn(e)
                     }
                 }
 
@@ -232,7 +233,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
 
         return res.json(results)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -294,7 +295,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
             result.push(outputRs)
         }
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         result.push({
             name: 'Error',
             type: 'string',
@@ -314,7 +315,7 @@ ContractController.get('/contractCreator/:slug', async (req, res, next) => {
 
         return res.json(account)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(404).send()
     }
 })

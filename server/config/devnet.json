@@ -10,6 +10,7 @@
   "logs": {
     "level": "debug"
   },
+
   "defaultCandidate": [
     {
       "name": "sun",

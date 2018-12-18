@@ -1,6 +1,7 @@
 import { Router } from 'express'
 import db from '../models'
 import Web3Util from '../helpers/web3'
+const logger = require('../helpers/logger')
 
 const MixController = Router()
 
@@ -160,7 +161,7 @@ MixController.get('/counting', async (req, res) => {
 
         return res.json(result)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

@@ -12,8 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('masternode', 'masternodes', total) }} found</p>
-
+            class="tomo-total-items">{{ _nFormatNumber('MasterNode', 'MasterNodes', total) }}</p>
         <b-table
             v-if="total > 0"
             :items="items"

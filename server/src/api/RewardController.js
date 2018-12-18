@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { paginate } from '../helpers/utils'
 import db from '../models'
 const BigNumber = require('bignumber.js')
+const logger = require('../helpers/logger')
 
 const RewardController = Router()
 
@@ -24,8 +25,7 @@ RewardController.get('/rewards/:slug', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -40,8 +40,7 @@ RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -70,8 +69,7 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res
 
         return res.json({ address: address, totalReward: total.toNumber() })
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })
@@ -103,8 +101,7 @@ RewardController.post('/expose/rewards', async (req, res) => {
 
         res.send(reward)
     } catch (e) {
-        console.trace(e)
-        console.log(e)
+        logger.warn(e)
         return res.status(500).send()
     }
 })

@@ -6,6 +6,7 @@ import TokenTransactionHelper from '../helpers/tokenTransaction'
 const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
+const logger = require('../helpers/logger')
 
 TxController.get('/txs', async (req, res) => {
     try {
@@ -109,6 +110,7 @@ TxController.get('/txs', async (req, res) => {
             pages: pages,
             items: items
         }
+        const web3 = await Web3Util.getWeb3()
         // If exist blockNumber & not found txs on db (or less than) will get txs on chain
         if (blockNumber) {
             let block = await db.Block.findOne({ number: blockNumber })
@@ -116,8 +118,6 @@ TxController.get('/txs', async (req, res) => {
 
             const offset = page > 1 ? (page - 1) * perPage : 0
             if (block.e_tx > blockTx) {
-                const web3 = await Web3Util.getWeb3()
-
                 const _block = await web3.eth.getBlock(blockNumber)
 
                 const trans = _block.transactions
@@ -172,11 +172,34 @@ TxController.get('/txs', async (req, res) => {
             await Promise.all(map1)
             data.items = newItem
         }
+        let status = []
+        for (let i = 0; i < data.items.length; i++) {
+            if (!data.items[i].hasOwnProperty('status')) {
+                status.push({ hash: data.items[i].hash })
+            }
+        }
+        if (status.length > 0) {
+            let map = status.map(async function (s) {
+                let receipt = await web3.eth.getTransactionReceipt(s.hash)
+                if (receipt) {
+                    s.status = receipt.status
+                } else {
+                    s.status = null
+                }
+            })
+            await Promise.all(map)
+            for (let i = 0; i < status.length; i++) {
+                for (let j = 0; j < data.items.length; j++) {
+                    if (status[i].hash === data.items[j].hash) {
+                        data.items[j].status = status[i].status
+                    }
+                }
+            }
+        }
 
         return res.json(data)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -190,7 +213,7 @@ TxController.get('/txs/:slug', async (req, res) => {
         try {
             tx = await TransactionHelper.getTxDetail(hash)
         } catch (e) {
-            console.error(e)
+            logger.warn(e)
             return res.status(404).json({ message: 'Transaction is not found!' })
         }
         if (!tx) {
@@ -270,7 +293,7 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         return res.json(tx)
     } catch (e) {
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -293,8 +316,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
 
         return res.json(status)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
@@ -332,8 +354,7 @@ TxController.get('/txs/list/status', async (req, res) => {
 
         return res.json(resp)
     } catch (e) {
-        console.trace(e)
-        console.error(e)
+        logger.warn(e)
         return res.status(406).send()
     }
 })
