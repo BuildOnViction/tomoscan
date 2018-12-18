@@ -34,6 +34,27 @@
                             <td v-html="timestamp_moment"/>
                         </tr>
                         <tr>
+                            <td>From Block</td>
+                            <div class="text-black">{{ block.number - 900 }}</div>
+                        </tr>
+                        <tr>
+                            <td>To Block</td>
+                            <div class="text-black">{{ block.number }}</div>
+                        </tr>
+                        <tr>
+                            <td>Participant Stat</td>
+                            <b-list-group
+                                v-if="epocDetail.m1m2.length > 0 && epocDetail.rewards.Voter.length > 0"
+                                class="text-black">
+                                <b-list-group-item>
+                                    {{ epocDetail.m1m2.length }} Masternodes
+                                </b-list-group-item>
+                                <b-list-group-item>
+                                    {{ epocDetail.rewards.Voter.length }} Voters
+                                </b-list-group-item>
+                            </b-list-group>
+                        </tr>
+                        <tr>
                             <td>Masternodes</td>
                             <td>
                                 <b-list-group>
