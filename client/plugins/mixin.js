@@ -21,11 +21,19 @@ const mixin = {
             return [].concat.apply([], query).join('&')
         },
 
-        formatNumber: (number) => {
+        formatNumber: (number, limit = 5) => {
             let seps = number.toString().split('.')
+            console.log(seps)
             seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+            if (seps[1]) {
+                seps[1] = seps[1].toString().substring(0, limit)
+            }
 
-            return seps.join('.')
+            let ret = seps.join('.')
+            if (ret === '0.00000') {
+                ret = '< 0.00001'
+            }
+            return ret
         },
 
         toLongNumberString: (n) => {
