@@ -7,7 +7,7 @@
             <div class="tomo-card__header">
                 <h3
                     v-if="block"
-                    class="tomo-card__headline">Epoc
+                    class="tomo-card__headline">Epoch
                     <span class="d-none d-lg-inline-block headline__block-number">#{{ block.number / 900 }}</span>
                 </h3>
                 <div
@@ -103,7 +103,7 @@
                             {{ data.item.address }}</nuxt-link>
                     </template>
                     <template
-                        slot="validator"
+                        slot="masternode"
                         slot-scope="data">
                         <nuxt-link
                             v-if="data.item.validator"
@@ -158,7 +158,7 @@ export default {
             epocDetail: null,
             rewardTableFields: {
                 address: { label: 'Address' },
-                validator: { label: 'Validator' },
+                masternode: { label: 'Masternode' },
                 reward: { label: 'Reward' },
                 lockBalance: { label: 'Lock Balance' }
             }
