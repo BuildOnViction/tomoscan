@@ -11,6 +11,9 @@ let RewardHelper = {
     updateVoteHistory: async (epoch) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+        if (parseInt(epoch) === 2) {
+            startBlock = endBlock - (config.get('BLOCK_PER_EPOCH') * 2) + 1
+        }
         logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
         await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
@@ -122,7 +125,7 @@ let RewardHelper = {
         }
 
         // Get list event in range start - end block
-        await RewardHelper.updateVoteHistory(epoch)
+        await RewardHelper.updateVoteHistory(parseInt(epoch) + 1)
 
         logger.info('Remove old user vote amount for epoch %s', epoch)
         await db.UserVoteAmount.remove({ epoch: epoch })
