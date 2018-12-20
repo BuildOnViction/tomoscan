@@ -78,6 +78,7 @@ let RewardHelper = {
     },
 
     rewardProcess: async (epoch) => {
+        epoch = parseInt(epoch)
         let startBlock = (epoch - 1) * config.get('BLOCK_PER_EPOCH') + 1
         let endBlock = (epoch) * config.get('BLOCK_PER_EPOCH')
 
@@ -125,67 +126,10 @@ let RewardHelper = {
         }
 
         // Get list event in range start - end block
-        await RewardHelper.updateVoteHistory(parseInt(epoch) + 1)
+        await RewardHelper.updateVoteHistory(epoch + 1)
 
-        logger.info('Remove old user vote amount for epoch %s', epoch)
-        await db.UserVoteAmount.remove({ epoch: epoch })
-
-        // Calculate user vote for validator
-        let histories = await db.VoteHistory.find({
-            blockNumber: { $gte: startBlock, $lte: endBlock }
-        }).sort({ blockNumber: 1 })
-
-        logger.info('There are %s histories in epoch %s', histories.length, epoch)
-        for (let i = 0; i < histories.length; i++) {
-            let history = histories[i]
-
-            if (history.event === 'Propose') {
-                let data = {
-                    voter: history.owner,
-                    candidate: history.candidate,
-                    epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH')),
-                    voteAmount: history.cap
-                }
-                await db.UserVoteAmount.create(data)
-            } else if (history.event === 'Vote') {
-                let h = await db.UserVoteAmount.findOne({
-                    voter: history.voter,
-                    candidate: history.candidate
-                }).sort({ epoch: -1 })
-
-                await db.UserVoteAmount.updateOne({
-                    voter: history.voter,
-                    candidate: history.candidate,
-                    epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
-                }, {
-                    voteAmount: (h || { voteAmount: 0 }).voteAmount + history.cap
-                }, { upsert: true, new: true })
-            } else if (history.event === 'Unvote') {
-                let h = await db.UserVoteAmount.findOne({
-                    voter: history.voter,
-                    candidate: history.candidate
-                }).sort({ epoch: -1 })
-                await db.UserVoteAmount.updateOne({
-                    voter: history.voter,
-                    candidate: history.candidate,
-                    epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
-                }, {
-                    voteAmount: (h ? h.voteAmount : 0) - history.cap
-                }, { upsert: true, new: true })
-            } else if (history.event === 'Resign') {
-                let h = await db.UserVoteAmount.findOne({
-                    voter: history.voter,
-                    candidate: history.candidate
-                }).sort({ epoch: -1 })
-                await db.UserVoteAmount.updateOne({
-                    voter: history.voter,
-                    candidate: history.candidate,
-                    epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
-                }, {
-                    voteAmount: (h ? h.voteAmount : 0) - history.cap
-                }, { upsert: true, new: true })
-            }
-        }
+        // Vote history process
+        await RewardHelper.voteHistoryProcess(epoch)
 
         logger.info('Duplicate vote amount from prev to epoch %s', epoch)
         // Find in history and duplicate to this epoch if not found
@@ -246,7 +190,7 @@ let RewardHelper = {
             let reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
             let reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
 
-            let blockRewardCalculate = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
+            let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
 
             let block = await db.Block.findOne({ number: blockRewardCalculate })
             let timestamp = new Date()
@@ -307,6 +251,75 @@ let RewardHelper = {
         await Promise.all(validatorFinal)
         if (rewardValidator.length > 0) {
             await db.Reward.insertMany(rewardValidator)
+        }
+    },
+
+    voteHistoryProcess: async (epoch) => {
+        logger.info('Remove old user vote amount for epoch %s', epoch)
+        await db.UserVoteAmount.remove({ epoch: epoch })
+        let endBlock = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
+        let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+        if (parseInt(epoch) === 1) {
+            startBlock = endBlock - config.get('BLOCK_PER_EPOCH') * 2 + 1
+        }
+
+        // Calculate user vote for validator
+        let histories = await db.VoteHistory.find({
+            blockNumber: { $gte: startBlock, $lte: endBlock }
+        }).sort({ blockNumber: 1 })
+
+        logger.info('There are %s histories in epoch %s', histories.length, epoch)
+        for (let i = 0; i < histories.length; i++) {
+            let history = histories[i]
+
+            if (history.event === 'Propose') {
+                let data = {
+                    voter: history.owner,
+                    candidate: history.candidate,
+                    epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH')),
+                    voteAmount: history.cap
+                }
+                await db.UserVoteAmount.create(data)
+            } else if (history.event === 'Vote') {
+                let h = await db.UserVoteAmount.findOne({
+                    voter: history.voter,
+                    candidate: history.candidate
+                }).sort({ epoch: -1 })
+
+                await db.UserVoteAmount.updateOne({
+                    voter: history.voter,
+                    candidate: history.candidate,
+                    // epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
+                    epoch: epoch
+                }, {
+                    voteAmount: (h || { voteAmount: 0 }).voteAmount + history.cap
+                }, { upsert: true, new: true })
+            } else if (history.event === 'Unvote') {
+                let h = await db.UserVoteAmount.findOne({
+                    voter: history.voter,
+                    candidate: history.candidate
+                }).sort({ epoch: -1 })
+                await db.UserVoteAmount.updateOne({
+                    voter: history.voter,
+                    candidate: history.candidate,
+                    // epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
+                    epoch: epoch
+                }, {
+                    voteAmount: (h ? h.voteAmount : 0) - history.cap
+                }, { upsert: true, new: true })
+            } else if (history.event === 'Resign') {
+                let h = await db.UserVoteAmount.findOne({
+                    voter: history.voter,
+                    candidate: history.candidate
+                }).sort({ epoch: -1 })
+                await db.UserVoteAmount.updateOne({
+                    voter: history.voter,
+                    candidate: history.candidate,
+                    epoch: Math.ceil(history.blockNumber / config.get('BLOCK_PER_EPOCH'))
+                }, {
+                    voteAmount: (h ? h.voteAmount : 0) - history.cap
+                }, { upsert: true, new: true })
+            }
         }
     },
 
