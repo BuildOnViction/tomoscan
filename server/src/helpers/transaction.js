@@ -1,6 +1,6 @@
 'use strict'
 
-import Web3Util from './web3'
+const Web3Util = require('./web3')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('./logger')

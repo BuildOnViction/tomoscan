@@ -1,6 +1,6 @@
 'use strict'
 
-import Web3Util from './helpers/web3'
+const Web3Util = require('./helpers/web3')
 const db = require('./models')
 const events = require('events')
 const logger = require('./helpers/logger')
@@ -32,7 +32,7 @@ let watch = async () => {
             logger.info('new tx pending %s', txHash)
             await processTransaction(txHash)
         }
-    }).catch(async (e) => {
+    }).on('error', async (e) => {
         logger.warn('Something error when get tx pending. Sleep 2 seconds and try more. Error %s', e)
         let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
         await sleep(2000)
