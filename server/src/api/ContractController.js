@@ -7,6 +7,8 @@ import Web3Util from '../helpers/web3'
 import _ from 'lodash'
 import AccountHelper from '../helpers/account'
 import ContractHelper from '../helpers/contract'
+
+const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
 
 const ContractController = Router()
@@ -165,7 +167,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
                 if (results.length) {
                     for (let j = 0; j < results.length; j++) {
                         // Get tx relate.
-                        let tx = await web3.eth.getTransaction(
+                        let tx = await TransactionHelper.getTransaction(
                             results[j].transactionHash)
 
                         let functionHash = tx.input.substring(0, 10)
