@@ -27,10 +27,10 @@ let watch = async () => {
     let web3 = await Web3Util.getWeb3Socket()
     console.log('start subscribe')
 
-    await web3.eth.subscribe('pendingTransactions', function (error, txHash) {
+    await web3.eth.subscribe('pendingTransactions', async function (error, txHash) {
         if (!error) {
             console.log('txHash: ', txHash)
-            processTransaction(txHash)
+            await processTransaction(txHash)
         }
     }).on('data', function (transaction) {
 
