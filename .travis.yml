@@ -11,6 +11,9 @@ jobs:
         - cd $TRAVIS_BUILD_DIR/client && npm install && npm run lint
         - cd $TRAVIS_BUILD_DIR/server && npm install && npm run lint
 
+    - stage: Audit
+      script: cd $TRAVIS_BUILD_DIR/server && npm audit --production
+
     - stage: Tests
       script: echo "No tests at the moment"
 
@@ -91,6 +94,7 @@ jobs:
 
 stages:
   - name: Lint
+  - name: Audit
   - name: Tests
   - name: Build and push image
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
