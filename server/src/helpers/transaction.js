@@ -1,10 +1,11 @@
 'use strict'
 
-import Web3Util from './web3'
+const Web3Util = require('./web3')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('./logger')
 
+let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
     parseLog: async (log) => {
         const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
@@ -32,14 +33,13 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
 
         try {
-            let web3 = await Web3Util.getWeb3()
-            let tx = await web3.eth.getTransaction(hash)
+            let tx = await TransactionHelper.getTransaction(hash, true)
             const q = require('../queues')
 
             if (!tx) {
                 return false
             }
-            let receipt = await web3.eth.getTransactionReceipt(hash)
+            let receipt = await TransactionHelper.getTransactionReceipt(hash)
 
             if (!receipt) {
                 return false
@@ -136,7 +136,7 @@ let TransactionHelper = {
         // let tx = { hash: hash }
         let web3 = await Web3Util.getWeb3()
 
-        let _tx = await web3.eth.getTransaction(hash)
+        let _tx = await TransactionHelper.getTransaction(hash)
 
         if (!_tx) {
             return null
@@ -144,7 +144,7 @@ let TransactionHelper = {
 
         tx = Object.assign(tx, _tx)
 
-        let receipt = await web3.eth.getTransactionReceipt(hash)
+        let receipt = await TransactionHelper.getTransactionReceipt(hash)
 
         if (!receipt) {
             await db.Tx.updateOne({ hash: hash }, tx)
@@ -184,6 +184,32 @@ let TransactionHelper = {
         let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
             { upsert: true, new: true })
         return trans
+    },
+
+    getTransactionReceipt: async (hash, recall = false) => {
+        let web3 = await Web3Util.getWeb3()
+        if (recall) {
+            return web3.eth.getTransactionReceipt(hash).catch(e => {
+                logger.warn('Cannot get tx receipt %s. Sleep 2 seconds and try more. Error %s', hash, e)
+                return sleep(2000).then(() => {
+                    return TransactionHelper.getTransactionReceipt(hash)
+                })
+            })
+        }
+        return web3.eth.getTransactionReceipt(hash)
+    },
+
+    getTransaction: async (hash, recall = false) => {
+        let web3 = await Web3Util.getWeb3()
+        if (recall) {
+            return web3.eth.getTransaction(hash).catch(e => {
+                logger.warn('Cannot get tx %s. Sleep 2 seconds and try more. Error %s', hash, e)
+                return sleep(2000).then(() => {
+                    return TransactionHelper.getTransaction(hash)
+                })
+            })
+        }
+        return web3.eth.getTransaction(hash)
     }
 }
 
