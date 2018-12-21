@@ -17,20 +17,26 @@ consumer.task = async function (job, done) {
 
         if (b) {
             let { txs, timestamp } = b
-            let listHash = []
-            for (let i = 0; i < txs.length; i++) {
-                listHash.push(txs[i])
-                if (listHash.length === 500) {
-                    q.create('TransactionProcess', { txs: JSON.stringify(listHash), timestamp: timestamp })
-                        .priority('high').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-                    listHash = []
-                }
-            }
-            if (listHash.length > 0) {
+            if (txs.length <= 100) {
                 q.create('TransactionProcess', { txs: JSON.stringify(txs), timestamp: timestamp })
                     .priority('high').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            } else {
+                let listHash = []
+                for (let i = 0; i < txs.length; i++) {
+                    listHash.push(txs[i])
+                    if (listHash.length === 100) {
+                        q.create('TransactionProcess', { txs: JSON.stringify(listHash), timestamp: timestamp })
+                            .priority('high').removeOnComplete(true)
+                            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                        listHash = []
+                    }
+                }
+                if (listHash.length > 0) {
+                    q.create('TransactionProcess', { txs: JSON.stringify(txs), timestamp: timestamp })
+                        .priority('high').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                }
             }
         }
 
