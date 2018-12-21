@@ -3,15 +3,15 @@
 import Web3Util from './helpers/web3'
 const db = require('./models')
 const events = require('events')
+const logger = require('./helpers/logger')
+const TransactionHelper = require('./helpers/transaction')
 
 // fix warning max listener
 events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
 let processTransaction = async (hash) => {
-    let web3 = await Web3Util.getWeb3()
-
-    let tx = await web3.eth.getTransaction(hash)
+    let tx = await TransactionHelper.getTransaction(hash, true)
     if (tx.from) {
         tx.from = tx.from.toLowerCase()
     }
@@ -25,15 +25,19 @@ let processTransaction = async (hash) => {
 
 let watch = async () => {
     let web3 = await Web3Util.getWeb3Socket()
-    console.log('start subscribe')
+    logger.info('start subscribe tx pending')
 
-    await web3.eth.subscribe('pendingTransactions', async function (error, txHash) {
+    await web3.eth.subscribe('pendingTransactions', async (error, txHash) => {
         if (!error) {
-            console.log('txHash: ', txHash)
+            logger.info('new tx pending %s', txHash)
             await processTransaction(txHash)
         }
-    }).on('data', function (transaction) {
-
+    }).catch(async (e) => {
+        logger.warn('Something error when get tx pending. Sleep 2 seconds and try more. Error %s', e)
+        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+        await sleep(2000)
+        await Web3Util.reconnectWeb3Socket()
+        return watch()
     })
 }
 
