@@ -1,6 +1,6 @@
 'use strict'
 
-import TransactionHelper from '../helpers/transaction'
+const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
 
 const consumer = {}

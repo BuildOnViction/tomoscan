@@ -131,7 +131,7 @@ TxController.get('/txs', async (req, res) => {
                     }
                 }
                 let map = txids.map(async function (tx) {
-                    items.push(await web3.eth.getTransaction(tx))
+                    items.push(await TransactionHelper.getTransaction(tx))
                 })
                 await Promise.all(map)
                 const pages = Math.ceil(trans.length / perPage)
@@ -180,7 +180,7 @@ TxController.get('/txs', async (req, res) => {
         }
         if (status.length > 0) {
             let map = status.map(async function (s) {
-                let receipt = await web3.eth.getTransactionReceipt(s.hash)
+                let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
                 if (receipt) {
                     s.status = receipt.status
                 } else {
@@ -305,8 +305,7 @@ TxController.get('/txs/status/:hash', async (req, res) => {
         let tx = await db.Tx.findOne({ hash: hash })
         let status = false
         if (!tx) {
-            let web3 = await Web3Util.getWeb3()
-            let receipt = await web3.eth.getTransactionReceipt(hash)
+            let receipt = await TransactionHelper.getTransactionReceipt(hash)
             if (receipt) {
                 status = receipt.status
             }
@@ -340,9 +339,8 @@ TxController.get('/txs/list/status', async (req, res) => {
             }
         }
         if (notExistHash) {
-            let web3 = await Web3Util.getWeb3()
             let map = notExistHash.map(async function (tx) {
-                let receipt = await web3.eth.getTransactionReceipt(tx)
+                let receipt = await TransactionHelper.getTransactionReceipt(tx)
                 if (receipt) {
                     resp[tx] = receipt.status
                 } else {
