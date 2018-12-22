@@ -20,15 +20,4 @@ const q = kue.createQueue({
 q.setMaxListeners(1000)
 q.watchStuckJobs()
 
-fs.readdirSync(__dirname)
-    .filter(function (file) {
-        return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.indexOf('.map') < 0)
-    })
-    .forEach(function (file) {
-        let consumer = require(path.join(__dirname, file))
-
-        q.process(consumer.name, consumer.processNumber, consumer.task)
-    })
-
 module.exports = q
-// export default q
