@@ -30,5 +30,4 @@ fs.readdirSync(path.join(__dirname, 'queues'))
         q.process(consumer.name, consumer.processNumber, consumer.task)
     })
 
-
 module.exports = q

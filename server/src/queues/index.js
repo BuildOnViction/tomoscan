@@ -2,8 +2,6 @@
 
 const kue = require('kue')
 const config = require('config')
-const path = require('path')
-const fs = require('fs')
 
 // fix warning max listener
 process.setMaxListeners(1000)
