@@ -17,7 +17,7 @@ let RewardHelper = {
         logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
         await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
-        if (parseInt(epoch) === 1) {
+        if (parseInt(epoch) === 2) {
             let defaultCandidate = config.get('defaultCandidate')
             let candidates = []
             let map = defaultCandidate.map(candidate => {
@@ -257,6 +257,9 @@ let RewardHelper = {
     voteHistoryProcess: async (epoch) => {
         logger.info('Remove old user vote amount for epoch %s', epoch)
         await db.UserVoteAmount.remove({ epoch: epoch })
+        if (epoch === 1) {
+            await db.UserVoteAmount.remove({ epoch: 0 })
+        }
         let endBlock = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
         if (parseInt(epoch) === 1) {
@@ -283,7 +286,8 @@ let RewardHelper = {
             } else if (history.event === 'Vote') {
                 let h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
-                    candidate: history.candidate
+                    candidate: history.candidate,
+                    epoch: { $lte: epoch }
                 }).sort({ epoch: -1 })
 
                 await db.UserVoteAmount.updateOne({
@@ -297,7 +301,8 @@ let RewardHelper = {
             } else if (history.event === 'Unvote') {
                 let h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
-                    candidate: history.candidate
+                    candidate: history.candidate,
+                    epoch: { $lte: epoch }
                 }).sort({ epoch: -1 })
                 await db.UserVoteAmount.updateOne({
                     voter: history.voter,
@@ -310,7 +315,8 @@ let RewardHelper = {
             } else if (history.event === 'Resign') {
                 let h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
-                    candidate: history.candidate
+                    candidate: history.candidate,
+                    epoch: { $lt: epoch }
                 }).sort({ epoch: -1 })
                 await db.UserVoteAmount.updateOne({
                     voter: history.voter,
