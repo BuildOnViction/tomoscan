@@ -108,7 +108,11 @@
 
             <template
                 slot="txFee"
-                slot-scope="props">{{ formatUnit(toTomo(props.item.gasPrice * props.item.gasUsed)) }}</template>
+                slot-scope="props">
+                <span
+                    v-b-tooltip.hover
+                    :title="formatUnit(toTomo(props.item.gasPrice * props.item.gasUsed, 18))">
+                    {{ formatUnit(toTomo(props.item.gasPrice * props.item.gasUsed, 8)) }}</span></template>
         </table-base>
 
         <b-pagination-nav

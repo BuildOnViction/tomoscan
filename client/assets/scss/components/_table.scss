@@ -173,11 +173,11 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 10% 40% 40% 10%;
+      grid-template-columns: 15% 45% 40%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 10% 40% 42% 8%;
+      grid-template-columns: 15% 45% 40%;
     }
   }
 
@@ -564,15 +564,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 25% 15% 22% 20% 8% 10%;
+      grid-template-columns: 35% 20% 22% 8% 15%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 25% 15% 20% 20% 10% 10%;
+      grid-template-columns: 35% 20% 20% 10% 15%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 28% 12% 20% 20% 10% 10%;
+      grid-template-columns: 38% 17% 20% 10% 15%;
     }
   }
 

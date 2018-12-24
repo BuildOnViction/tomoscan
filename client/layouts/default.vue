@@ -184,7 +184,7 @@
                         class="tomo-footer__copyright">
                         <p>TomoScan 2018 - Running on TomoChain
                             <code class="text-muted copyright__code">
-                                tomo/v0.2.2-alpha/linux-amd64/go1.10.3
+                                tomo/v1.1.0-stable/linux-amd64/go1.10.5
                             </code>
                         </p>
                     </b-col>

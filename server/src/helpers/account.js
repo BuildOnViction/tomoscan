@@ -8,12 +8,9 @@ const logger = require('./logger')
 let AccountHelper = {
     getAccountDetail: async (hash) => {
         hash = hash.toLowerCase()
-        let _account = await db.Account.findOne({ hash: hash })
-        _account = _account || {}
 
         let web3 = await Web3Util.getWeb3()
-
-        web3.eth.getBalance(hash, function (err, balance) {
+        let b = web3.eth.getBalance(hash, function (err, balance) {
             if (err) {
                 logger.warn('get balance of account %s has error %s', hash, err)
             } else {
@@ -21,6 +18,9 @@ let AccountHelper = {
                 _account.balanceNumber = balance
             }
         })
+
+        let _account = await db.Account.findOne({ hash: hash })
+        _account = _account || {}
 
         if (!_account.hasOwnProperty('code')) {
             let code = await web3.eth.getCode(hash)
@@ -33,7 +33,7 @@ let AccountHelper = {
         _account.status = true
 
         delete _account['_id']
-
+        await b
         let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return acc
     },

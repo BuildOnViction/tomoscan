@@ -9,7 +9,7 @@ consumer.name = 'BlockFinalityProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blocks = await db.Block.find({ finality: { $lt: 50 }, updateFinalityTime: { $lt: 10 } })
-        .sort({ number: -1 }).limit(500)
+        .sort({ number: -1 }).limit(100)
     logger.info('Update finality %s blocks', blocks.length)
     try {
         let map = blocks.map(async function (block) {
