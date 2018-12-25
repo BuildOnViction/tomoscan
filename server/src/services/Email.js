@@ -1,28 +1,17 @@
-import nodemailer from 'nodemailer'
-import sgTransport from 'nodemailer-sendgrid-transport'
-import path from 'path'
-import Email from 'email-templates'
+const path = require('path')
 const config = require('config')
 const urlJoin = require('url-join')
+const sgMail = require('@sendgrid/mail')
+const fs = require('fs')
+const format = require('string-template')
 
 class EmailService {
-    constructor () {
-        const options = {
-            auth: {
-                api_key: config.get('SENDGRID_API_KEY')
-            }
-        }
-        this.transporter = nodemailer.createTransport(sgTransport(options))
-        this.templateDir = path.join(__dirname, '../', 'templates')
-        this.assetDir = path.join(__dirname, '../', 'assets')
-    }
-
     newUserRegister (user) {
         if (!user) {
             return false
         }
 
-        return this.send('register', user.email, 'Welcome to TOMO Explorer', {
+        return this.send('register.html', user.email, 'Welcome to TOMO Explorer', {
             name: user.email
         })
     }
@@ -37,49 +26,29 @@ class EmailService {
             subject = 'TOMO sent at ' + address
         }
 
-        return this.send('follow', user.email, subject, {
+        return this.send('follow.html', user.email, subject, {
             type: type,
             name: user.email,
             from: tx.from,
             to: tx.to,
             wei: tx.value,
             blockNumber: tx.blockNumber,
-            txLink: urlJoin(config.get('CLIENT_URL'), 'txs/', tx.hash),
-            addressLink: urlJoin(config.get('CLIENT_URL'), 'address/', address)
+            txLink: urlJoin(config.get('CLIENT_URL'), 'txs', tx.hash),
+            addressLink: urlJoin(config.get('CLIENT_URL'), 'address', address)
         })
     }
 
-    async send (templatePath, to, subject, params) {
-        if (config.get('APP_ENV') === 'dev') {
-            console.log(JSON.stringify({ templatePath, to, subject, params }))
+    async send (templateFile, to, subject, params) {
+        sgMail.setApiKey(config.get('SENDGRID_API_KEY'))
+        let stringTemplate = fs.readFileSync(path.join(__dirname, '../', 'templates', templateFile), 'utf8')
+        let body = format(stringTemplate, params)
+        const msg = {
+            to: 'khaihkd@gmail.com',
+            from: 'admin@tomochain.com',
+            subject: subject,
+            html: body
         }
-        let email = new Email({
-            views: { root: this.templateDir },
-            preview: false,
-            juice: true,
-            juiceResources: {
-                preserveImportant: true,
-                webResources: {
-                    relativeTo: this.assetDir
-                }
-            },
-            transport: this.transporter,
-            send: true,
-            message: {
-                from: `TomoChain <${config.get('SENDER_EMAIL')}>`
-            }
-        })
-
-        let result = await email.send({
-            template: templatePath,
-            message: {
-                to: to,
-                subject: subject
-            },
-            locals: params
-        })
-
-        return result
+        return sgMail.send(msg)
     }
 
     async recoverPassword (user, token) {
@@ -88,7 +57,7 @@ class EmailService {
         }
         const url = config.get('CLIENT_URL')
 
-        return this.send('reset-password', user.email, 'Reset Your Password', {
+        return this.send('reset-password.html', user.email, 'Reset Your Password', {
             name: user.email,
             link: `${url}accounts/reset-password?email=${user.email}&token=${token}`
         })
@@ -99,7 +68,7 @@ class EmailService {
             return false
         }
 
-        return this.send('reset-pw-comfirmation', user.email, 'Your Password Has Been Updated', {
+        return this.send('reset-pw-confirmation.html', user.email, 'Your Password Has Been Updated', {
             name: user.email
         })
     }
