@@ -24,7 +24,7 @@ SettingController.get('/setting', async (req, res, next) => {
             })
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -36,7 +36,7 @@ SettingController.get('/setting/usd', async (req, res, next) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 

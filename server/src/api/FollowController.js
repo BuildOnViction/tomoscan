@@ -26,7 +26,7 @@ FollowController.get('/follows', authService.authenticate(),
         } catch (e) {
             console.trace(e)
             console.log(e)
-            return res.status(500).send()
+            return res.status(400).send()
         }
     })
 
@@ -46,7 +46,7 @@ FollowController.post('/follows', authService.authenticate(),
         } catch (e) {
             console.trace(e)
             console.log(e)
-            return res.status(500).send()
+            return res.status(400).send()
         }
     })
 
@@ -74,7 +74,7 @@ FollowController.post('/follows/:id', authService.authenticate(),
         } catch (e) {
             console.trace(e)
             console.log(e)
-            return res.status(500).send()
+            return res.status(400).send()
         }
     })
 
@@ -95,7 +95,7 @@ FollowController.delete('/follows/:id', authService.authenticate(),
         } catch (e) {
             console.trace(e)
             console.log(e)
-            return res.status(500).send()
+            return res.status(400).send()
         }
     })
 
