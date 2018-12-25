@@ -1,6 +1,9 @@
 {
   "APP_ENV": "prod",
   "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
+  "logs": {
+    "level": "warn"
+  },
   "redis": {
     "host": "redis",
     "port": 6379,
