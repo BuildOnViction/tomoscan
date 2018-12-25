@@ -21,7 +21,7 @@ ContractController.get('/contracts', async (req, res, next) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -37,7 +37,7 @@ ContractController.get('/contracts/:slug', async (req, res, next) => {
         return res.json(contract)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -48,7 +48,7 @@ ContractController.get('/soljsons', async (req, res, next) => {
         return res.json(versions)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -76,7 +76,7 @@ ContractController.post('/contracts', async (req, res, next) => {
         solc.loadRemoteVersion(versionRelease,
             async (err, snapshot) => {
                 if (err) {
-                    return res.sendStatus(500)
+                    return res.sendStatus(400)
                 }
                 const output = snapshot.compile(sourceCode, optimization)
 
@@ -128,7 +128,7 @@ ContractController.post('/contracts', async (req, res, next) => {
             })
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -190,7 +190,7 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
         return res.json(events)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -236,7 +236,7 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
         return res.json(results)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 

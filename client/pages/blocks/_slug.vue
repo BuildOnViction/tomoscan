@@ -180,7 +180,7 @@
                 href="#transactions">
                 <table-tx
                     v-if="hashTab === '#transactions'"
-                    :block="number"
+                    :block="block.number.toString()"
                     :block_timestamp="block.timestamp"
                     :parent="'transactions'"
                     :page="this"/>

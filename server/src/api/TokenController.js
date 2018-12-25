@@ -20,7 +20,7 @@ TokenController.get('/tokens', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -38,7 +38,7 @@ TokenController.get('/tokens/:slug', async (req, res) => {
         res.json(token)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -54,7 +54,7 @@ TokenController.get('/tokens/:token/holder/:holder', async (req, res) => {
         res.json(tokenHolder)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 

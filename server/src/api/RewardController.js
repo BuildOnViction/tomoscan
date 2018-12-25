@@ -26,7 +26,7 @@ RewardController.get('/rewards/:slug', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -41,7 +41,7 @@ RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -70,7 +70,7 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res
         return res.json({ address: address, totalReward: total.toNumber() })
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -102,7 +102,7 @@ RewardController.post('/expose/rewards', async (req, res) => {
         res.send(reward)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 

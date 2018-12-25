@@ -33,7 +33,7 @@ SignMessageController.post('/verifySignedMess', async (req, res, next) => {
         }
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -65,7 +65,7 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
         }
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
@@ -85,7 +85,7 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
         })
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 

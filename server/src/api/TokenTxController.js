@@ -37,7 +37,7 @@ TokenTxController.get('/token-txs', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn(e)
-        return res.status(500).send()
+        return res.status(400).send()
     }
 })
 
