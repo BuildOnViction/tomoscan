@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import db from '../models'
 import TransactionHelper from '../helpers/transaction'
-import BlockHelper from '../helpers/block'
 import Web3Util from '../helpers/web3'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
 const config = require('config')

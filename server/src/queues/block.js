@@ -83,7 +83,7 @@ consumer.task = async function (job, done) {
             logger.error('Attempts 5 times, can not crawl block %s', blockNumber)
         }
         done(e)
-        // return emitter.emit('errorCrawlBlock', e, blockNumber)
+        return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 }
 
