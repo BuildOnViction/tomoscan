@@ -4,6 +4,7 @@ const Web3Util = require('./web3')
 const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('./logger')
+const BlockHelper = require('./block')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
@@ -104,7 +105,6 @@ let TransactionHelper = {
 
             // Parse log.
             let logs = receipt.logs
-            tx.logs = logs
             if (logs.length) {
                 for (let i = 0; i < logs.length; i++) {
                     let log = logs[i]
@@ -116,13 +116,13 @@ let TransactionHelper = {
             }
             tx.status = receipt.status
             tx.isPending = false
+            tx.hash = hash
 
-            delete tx['_id']
-
-            await db.Tx.updateOne({ hash: hash }, tx,
-                { upsert: true, new: true })
+            return tx
         } catch (e) {
-            logger.warn('cannot crawl transaction %s with error %s', hash, e)
+            logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
+            await sleep(2000)
+            return TransactionHelper.crawlTransaction(hash, timestamp)
         }
     },
     getTxDetail: async (hash) => {
@@ -133,8 +133,6 @@ let TransactionHelper = {
         } else {
             tx = { hash: hash }
         }
-        // let tx = { hash: hash }
-        let web3 = await Web3Util.getWeb3()
 
         let _tx = await TransactionHelper.getTransaction(hash)
 
@@ -150,8 +148,10 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx)
             return tx
         }
-        let block = await web3.eth.getBlock(_tx.blockNumber)
-        tx.timestamp = block.timestamp * 1000
+        if (tx.hasOwnProperty('timestamp')) {
+            let block = await BlockHelper.getBlockOnChain(_tx.blockNumber)
+            tx.timestamp = block.timestamp * 1000
+        }
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
         tx.gasUsed = receipt.gasUsed

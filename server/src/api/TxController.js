@@ -117,10 +117,11 @@ TxController.get('/txs', async (req, res) => {
             let blockTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
 
             const offset = page > 1 ? (page - 1) * perPage : 0
-            if (block.e_tx > blockTx) {
+            if (block === null || block.e_tx > blockTx) {
                 const _block = await web3.eth.getBlock(blockNumber)
 
                 const trans = _block.transactions
+                let countTx = trans.length
                 const items = []
                 let txids = []
                 for (let i = offset; i < (offset + perPage); i++) {
@@ -136,8 +137,8 @@ TxController.get('/txs', async (req, res) => {
                 await Promise.all(map)
                 const pages = Math.ceil(trans.length / perPage)
                 data = {
-                    realTotal: block.e_tx,
-                    total: block.e_tx > limitedRecords ? limitedRecords : block.e_tx,
+                    realTotal: countTx,
+                    total: countTx > limitedRecords ? limitedRecords : countTx,
                     perPage: perPage,
                     currentPage: page,
                     pages: pages,

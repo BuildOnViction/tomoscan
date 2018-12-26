@@ -3,6 +3,7 @@ import Web3Util from '../helpers/web3'
 const config = require('config')
 const contractAddress = require('../contracts/contractAddress')
 const BigNumber = require('bignumber.js')
+const q = require('../queues')
 
 const HomeController = Router()
 
@@ -21,6 +22,20 @@ HomeController.get('/circulatingSupply', async (req, res) => {
 
     let maxSupply = 100 * 10 ** 6
     return res.json({ circulatingSupply: circulatingNumber.toNumber(), maxSupply: maxSupply })
+})
+
+HomeController.get('/jobNumber', async (req, res) => {
+    let countJobs = () => {
+        return new Promise((resolve, reject) => {
+            q.inactiveCount((err, l) => {
+                if (err) {
+                    return reject(err)
+                }
+                return resolve(l)
+            })
+        })
+    }
+    return res.json({ jobNumber: await countJobs() })
 })
 
 export default HomeController

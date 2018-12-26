@@ -31,12 +31,20 @@ const watch = async () => {
         let isOver2Minutes = 0
         let step = 200
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
+        let newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
         let web3 = await Web3Util.getWeb3()
         if (!setting) {
             setting = await new db.Setting({
                 meta_key: 'min_block_crawl',
                 meta_value: 0
             })
+        }
+        if (!newJobSetting) {
+            newJobSetting = await new db.Setting({
+                meta_key: 'push_new_job',
+                meta_value: 1
+            })
+            await newJobSetting.save()
         }
         let minBlockCrawl = parseInt(setting.meta_value || 0)
 
@@ -47,49 +55,55 @@ const watch = async () => {
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 continue
             }
-
-            let maxBlockNum = await web3.eth.getBlockNumber()
-            if (minBlockCrawl < maxBlockNum) {
-                let nextCrawl = minBlockCrawl + step
-                nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
-                for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
-                    logger.debug('BlockProcess %s', i)
-                    q.create('BlockProcess', { block: i })
-                        .priority('high').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-
-                    minBlockCrawl = i
-                }
+            if (String(newJobSetting.meta_value) !== '1') {
+                newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
             }
 
-            if (minBlockCrawl > parseInt(setting.meta_value)) {
-                setting.meta_value = minBlockCrawl
-                isOver2Minutes = 0
-                isSend = true
-                await setting.save()
-            }
+            if (String(newJobSetting.meta_value) === '1') {
+                let maxBlockNum = await web3.eth.getBlockNumber()
+                if (minBlockCrawl < maxBlockNum) {
+                    let nextCrawl = minBlockCrawl + step
+                    nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
+                    for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
+                        logger.debug('BlockProcess %s', i)
+                        q.create('BlockProcess', { block: i })
+                            .priority('high').removeOnComplete(true)
+                            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
-            if (String(maxBlockNum) === String(minBlockCrawl)) {
-                isOver2Minutes += 0.5 // Similar to 0.5 second
-
-                // send notification after 2 minutes
-                if (isOver2Minutes >= 240 && isSend) {
-                    let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                    logger.info('Slack Notification - There is no new block in last 2 minutes')
-                    await slack.send({
-                        attachments: [
-                            {
-                                author_name: 'Slack Bot',
-                                title: ':warning: WARNING',
-                                color: 'danger',
-                                text: '<!channel> There is no new block in last 2 minutes'
-                            }
-                        ]
-                    })
-                    isSend = false
+                        minBlockCrawl = i
+                    }
                 }
-                logger.debug('Sleep 0.5 seconds')
-                await sleep(500)
+
+                if (minBlockCrawl > parseInt(setting.meta_value)) {
+                    setting.meta_value = minBlockCrawl
+                    isOver2Minutes = 0
+                    isSend = true
+                    await setting.save()
+                    newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
+                }
+
+                if (String(maxBlockNum) === String(minBlockCrawl)) {
+                    isOver2Minutes += 0.5 // Similar to 0.5 second
+
+                    // send notification after 2 minutes
+                    if (isOver2Minutes >= 240 && isSend) {
+                        let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
+                        logger.info('Slack Notification - There is no new block in last 2 minutes')
+                        await slack.send({
+                            attachments: [
+                                {
+                                    author_name: 'Slack Bot',
+                                    title: ':warning: WARNING',
+                                    color: 'danger',
+                                    text: '<!channel> There is no new block in last 2 minutes'
+                                }
+                            ]
+                        })
+                        isSend = false
+                    }
+                    logger.debug('Sleep 0.5 seconds')
+                    await sleep(500)
+                }
             }
         }
     } catch (e) {
