@@ -10,9 +10,6 @@
     "password": null,
     "prefix": "TomoScan"
   },
-  "logs": {
-    "level": "debug"
-  },
 
   "defaultCandidate": [
     {
