@@ -11,14 +11,18 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = parseInt(job.data.block)
     try {
-        logger.info('Process block: %s at %s attempts %s', blockNumber, new Date(), job.toJSON().attempts.made)
+        logger.info('Process block: %s attempts %s', blockNumber, job.toJSON().attempts.made)
         let b = await BlockHelper.crawlBlock(blockNumber)
         const q = require('./index')
 
         if (b) {
             let { txs, timestamp } = b
             if (txs.length <= 100) {
-                q.create('TransactionProcess', { txs: JSON.stringify(txs), timestamp: timestamp })
+                q.create('TransactionProcess', {
+                    txs: JSON.stringify(txs),
+                    blockNumber: blockNumber,
+                    timestamp: timestamp
+                })
                     .priority('high').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             } else {
@@ -26,14 +30,22 @@ consumer.task = async function (job, done) {
                 for (let i = 0; i < txs.length; i++) {
                     listHash.push(txs[i])
                     if (listHash.length === 100) {
-                        q.create('TransactionProcess', { txs: JSON.stringify(listHash), timestamp: timestamp })
+                        q.create('TransactionProcess', {
+                            txs: JSON.stringify(listHash),
+                            blockNumber: blockNumber,
+                            timestamp: timestamp
+                        })
                             .priority('high').removeOnComplete(true)
                             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                         listHash = []
                     }
                 }
                 if (listHash.length > 0) {
-                    q.create('TransactionProcess', { txs: JSON.stringify(txs), timestamp: timestamp })
+                    q.create('TransactionProcess', {
+                        txs: JSON.stringify(txs),
+                        blockNumber: blockNumber,
+                        timestamp: timestamp
+                    })
                         .priority('high').removeOnComplete(true)
                         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
@@ -71,7 +83,7 @@ consumer.task = async function (job, done) {
             logger.error('Attempts 5 times, can not crawl block %s', blockNumber)
         }
         done(e)
-        return emitter.emit('errorCrawlBlock', e, blockNumber)
+        // return emitter.emit('errorCrawlBlock', e, blockNumber)
     }
 }
 
