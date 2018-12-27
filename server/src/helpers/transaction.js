@@ -116,9 +116,9 @@ let TransactionHelper = {
             }
             tx.status = receipt.status
             tx.isPending = false
-            tx.hash = hash
 
-            return tx
+            await db.Tx.updateOne({ hash: hash }, tx,
+                { upsert: true, new: true })
         } catch (e) {
             logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
             await sleep(2000)

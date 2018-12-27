@@ -20,7 +20,6 @@ consumer.task = async function (job, done) {
             if (txs.length <= 100) {
                 q.create('TransactionProcess', {
                     txs: JSON.stringify(txs),
-                    blockNumber: blockNumber,
                     timestamp: timestamp
                 })
                     .priority('high').removeOnComplete(true)
@@ -32,7 +31,6 @@ consumer.task = async function (job, done) {
                     if (listHash.length === 100) {
                         q.create('TransactionProcess', {
                             txs: JSON.stringify(listHash),
-                            blockNumber: blockNumber,
                             timestamp: timestamp
                         })
                             .priority('high').removeOnComplete(true)
@@ -43,7 +41,6 @@ consumer.task = async function (job, done) {
                 if (listHash.length > 0) {
                     q.create('TransactionProcess', {
                         txs: JSON.stringify(txs),
-                        blockNumber: blockNumber,
                         timestamp: timestamp
                     })
                         .priority('high').removeOnComplete(true)
