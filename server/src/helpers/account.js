@@ -10,12 +10,12 @@ let AccountHelper = {
         hash = hash.toLowerCase()
 
         let web3 = await Web3Util.getWeb3()
+        let chainBalance = null
         let b = web3.eth.getBalance(hash, function (err, balance) {
             if (err) {
                 logger.warn('get balance of account %s has error %s', hash, err)
             } else {
-                _account.balance = balance
-                _account.balanceNumber = balance
+                chainBalance = balance
             }
         })
 
@@ -34,6 +34,10 @@ let AccountHelper = {
 
         delete _account['_id']
         await b
+        if (chainBalance !== null) {
+            _account.balance = chainBalance
+            _account.balanceNumber = chainBalance
+        }
         let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return acc
     },
