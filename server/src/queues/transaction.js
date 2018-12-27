@@ -29,7 +29,6 @@ consumer.task = async function (job, done) {
         }
     } catch (e) {
         logger.warn('cannot insert list tx at block %s. Error %s', blockNumber, e)
-        console.log(listTx)
     }
 
     done()
