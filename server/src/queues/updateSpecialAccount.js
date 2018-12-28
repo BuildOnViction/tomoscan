@@ -59,21 +59,28 @@ consumer.task = async function (job, done) {
 
         let accounts = await db.Account.find({ isContract: true })
         logger.info('there are %s contract accounts', accounts.length)
-        let map2 = accounts.map(async (acc) => {
-            let hash = acc.hash.toLowerCase()
-            let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
-            txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
-            txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
-            let logCount = await db.Log.countDocuments({ address: hash })
-            await db.SpecialAccount.updateOne({ hash: hash }, {
-                transactionCount: txCount,
-                logCount: logCount
-            }, { upsert: true })
-        })
-        await Promise.all(map2)
+        let listProcess = []
+        for (let i = 0; i < accounts.length; i++) {
+            listProcess.push(accounts[i])
+            if (listProcess.length === 100) {
+                let map2 = listProcess.map(async (acc) => {
+                    let hash = acc.hash.toLowerCase()
+                    let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
+                    txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
+                    txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
+                    let logCount = await db.Log.countDocuments({ address: hash })
+                    await db.SpecialAccount.updateOne({ hash: hash }, {
+                        transactionCount: txCount,
+                        logCount: logCount
+                    }, { upsert: true })
+                })
+                await Promise.all(map2)
+                listProcess = []
+            }
+        }
         done()
     } catch (e) {
-        logger.warn(e)
+        logger.warn('error when update special account. Error %s', e)
         done(e)
     }
 }
