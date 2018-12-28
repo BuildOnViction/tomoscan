@@ -3,7 +3,6 @@
 const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
 const config = require('config')
-const emitter = require('../helpers/errorHandler')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
@@ -74,13 +73,10 @@ consumer.task = async function (job, done) {
         done()
     } catch (e) {
         logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl. Error %s', blockNumber, e)
-        let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-        await sleep(2000)
         if (job.toJSON().attempts.made === 4) {
             logger.error('Attempts 5 times, can not crawl block %s', blockNumber)
         }
-        done(e)
-        return emitter.emit('errorCrawlBlock', e, blockNumber)
+        return done(e)
     }
 }
 
