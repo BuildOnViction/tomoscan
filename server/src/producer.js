@@ -29,7 +29,7 @@ const watch = async () => {
     try {
         let isSend = false
         let isOver2Minutes = 0
-        let step = 200
+        let step = 100
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
         let web3 = await Web3Util.getWeb3()
@@ -50,7 +50,7 @@ const watch = async () => {
 
         while (true) {
             let l = await countJobs()
-            if (l > 1000) {
+            if (l > 200) {
                 await sleep(2000)
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 continue
