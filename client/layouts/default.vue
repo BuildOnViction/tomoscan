@@ -41,7 +41,7 @@
                             :class="(isTxs) ? 'active' : ''"
                             text="Transactions">
                             <b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'txs-signTxs'}">Sign Transactions</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'txs-signTxs'}">Signing Transactions</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'txs-pending'}">Pending Transactions</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'txs-otherTxs'}">Other Transactions</b-dropdown-item>
                         </b-nav-item-dropdown>
