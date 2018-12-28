@@ -1,3 +1,4 @@
+const axios = require('axios')
 const { tomoValidator, blockSigner } = require('./tomo')
 const config = require('config')
 const db = require('../models')
@@ -6,7 +7,6 @@ const BigNumber = require('bignumber.js')
 const Web3Util = require('./web3')
 const BlockHelper = require('./block')
 const contractAddress = require('../contracts/contractAddress')
-
 let RewardHelper = {
     updateVoteHistory: async (epoch) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
@@ -371,6 +371,52 @@ let RewardHelper = {
 
         if (rewardVoter.length > 0) {
             await db.Reward.insertMany(rewardVoter)
+        }
+    },
+
+    rewardOnChain: async (epoch) => {
+        logger.info('Reward calculate for epoch %s', epoch)
+        let block = await BlockHelper.getBlock((parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH'))
+        let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+        let startBlock = endBlock - config.get('BLOCK_PER_EPOCH')
+        let data = {
+            'jsonrpc': '2.0',
+            'method': 'eth_getRewardByHash',
+            'params': [block.hash],
+            'id': 88
+        }
+
+        await db.Reward.remove({ epoch: epoch })
+
+        // const response = await axios.post('http://128.199.228.202:8545/', data)
+        const response = await axios.post(config.get('WEB3_URI'), data)
+        let result = response.data
+        if (!result.error) {
+            let signNumber = result.result.signers
+            let rewards = result.result.rewards
+
+            let rdata = []
+            for (let m in rewards) {
+                // console.log('reward for masternode', m)
+                for (let v in rewards[m]) {
+                    let r = new BigNumber(rewards[m][v])
+                    r = r.dividedBy(10 ** 18).toString()
+                    // console.log('  voter: ', v, r)
+                    rdata.push({
+                        epoch: epoch,
+                        startBlock: startBlock,
+                        endBlock: endBlock,
+                        address: v.toLowerCase(),
+                        validator: m.toLowerCase(),
+                        reason: 'Voter',
+                        lockBalance: 0,
+                        reward: r,
+                        rewardTime: block.timestamp * 1000,
+                        signNumber: signNumber[m].sign
+                    })
+                }
+            }
+            await db.Reward.insertMany(rdata)
         }
     }
 }
