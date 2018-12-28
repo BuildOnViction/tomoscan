@@ -94,14 +94,14 @@ let TransactionHelper = {
                 tx.blockNumber = receipt.blockNumber
             }
 
-            q.create('FollowProcess', {
-                transaction: hash,
-                blockNumber: tx.blockNumber,
-                fromAccount: tx.from,
-                toAccount: tx.to
-            })
-                .priority('low').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            // q.create('FollowProcess', {
+            //     transaction: hash,
+            //     blockNumber: tx.blockNumber,
+            //     fromAccount: tx.from,
+            //     toAccount: tx.to
+            // })
+            //     .priority('low').removeOnComplete(true)
+            //     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
             // Parse log.
             let logs = receipt.logs
