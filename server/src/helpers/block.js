@@ -16,7 +16,12 @@ let BlockHelper = {
         }
 
         let web3 = await Web3Util.getWeb3()
+
+        let start = new Date()
         let _block = await web3.eth.getBlock(blockNumber)
+        let end = new Date() - start
+        logger.info(`Execution time : %dms web3.eth.getBlock(${blockNumber})`, end)
+
         if (!_block) {
             return null
         }
