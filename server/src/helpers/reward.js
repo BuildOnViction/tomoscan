@@ -397,11 +397,9 @@ let RewardHelper = {
 
             let rdata = []
             for (let m in rewards) {
-                // console.log('reward for masternode', m)
                 for (let v in rewards[m]) {
                     let r = new BigNumber(rewards[m][v])
                     r = r.dividedBy(10 ** 18).toString()
-                    // console.log('  voter: ', v, r)
                     rdata.push({
                         epoch: epoch,
                         startBlock: startBlock,
@@ -416,7 +414,13 @@ let RewardHelper = {
                     })
                 }
             }
-            await db.Reward.insertMany(rdata)
+            console.log(rdata)
+            if (rdata.length > 0) {
+                logger.info('Insert %s rewards to db', rdata.length)
+                await db.Reward.insertMany(rdata)
+            }
+        } else {
+            console.warn('There are some error of epoch %s. Error %s', epoch, JSON.stringify(result.error))
         }
     }
 }
