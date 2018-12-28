@@ -417,6 +417,11 @@ let RewardHelper = {
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
                     await db.Reward.insertMany(rdata)
+                } else {
+                    logger.info('There is no reward found. Wait 10 seconds and retry')
+                    let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+                    await sleep(10000)
+                    return RewardHelper.rewardOnChain(epoch)
                 }
                 return true
             } else {
