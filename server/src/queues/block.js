@@ -49,7 +49,8 @@ consumer.task = async function (job, done) {
         }
 
         // Begin from epoch 2
-        if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % config.get('BLOCK_PER_EPOCH') === 0)) {
+        if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
+            (blockNumber % config.get('BLOCK_PER_EPOCH') === 10)) {
             let epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
             q.create('RewardProcess', { epoch: epoch })
                 .priority('normal').removeOnComplete(true)
