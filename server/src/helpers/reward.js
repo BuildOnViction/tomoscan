@@ -388,8 +388,8 @@ let RewardHelper = {
         try {
             await db.Reward.remove({ epoch: epoch })
 
-            const response = await axios.post('http://128.199.228.202:8545/', data)
-            // const response = await axios.post(config.get('WEB3_URI'), data)
+            // const response = await axios.post('http://128.199.228.202:8545/', data)
+            const response = await axios.post(config.get('WEB3_URI'), data)
             let result = response.data
             if (!result.error) {
                 let signNumber = result.result.signers
