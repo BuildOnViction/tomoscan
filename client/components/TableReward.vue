@@ -30,11 +30,11 @@
                 slot-scope="props">
                 {{ props.item.signNumber }}
             </template>
-            <template
-                slot="lockBalance"
-                slot-scope="props">
-                {{ formatNumber(props.item.lockBalance) }}
-            </template>
+            <!--<template-->
+            <!--slot="lockBalance"-->
+            <!--slot-scope="props">-->
+            <!--{{ formatNumber(props.item.lockBalance) }}-->
+            <!--</template>-->
             <template
                 slot="reward"
                 slot-scope="props">
@@ -108,7 +108,7 @@ export default {
             epoch: { label: 'Epoch' },
             validator: { label: 'MasterNode' },
             signNumber: { label: 'Sign number' },
-            lockBalance: { label: 'Lock balance' },
+            // lockBalance: { label: 'Lock balance' },
             reward: { label: 'Reward' },
             reason: { label: 'Reason' },
             timestamp: { label: 'Age' }
