@@ -65,7 +65,7 @@ const watch = async () => {
                     let nextCrawl = minBlockCrawl + step
                     nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
                     for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
-                        logger.debug('BlockProcess %s', i)
+                        logger.info('BlockProcess %s', i)
                         q.create('BlockProcess', { block: i })
                             .priority('high').removeOnComplete(true)
                             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()

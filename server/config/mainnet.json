@@ -2,7 +2,7 @@
   "APP_ENV": "prod",
   "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
   "logs": {
-    "level": "warn"
+    "level": "info"
   },
   "redis": {
     "host": "redis",
