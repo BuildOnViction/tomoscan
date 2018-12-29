@@ -9,13 +9,13 @@ const contractAddress = require('../contracts/contractAddress')
 const logger = require('../helpers/logger')
 
 TxController.get('/txs', async (req, res) => {
+    let params = { sort: { blockNumber: -1 } }
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
         perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
-        let params = { sort: { blockNumber: -1 } }
         if (blockNumber) {
             params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
         }
@@ -150,8 +150,10 @@ TxController.get('/txs', async (req, res) => {
         let listAddress = []
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]
-            listAddress.push(item.from)
-            if (item.to) {
+            if (!listAddress.includes(item.from)) {
+                listAddress.push(item.from)
+            }
+            if (item.to && !listAddress.includes(item.to)) {
                 listAddress.push(item.to)
             }
         }
@@ -200,7 +202,7 @@ TxController.get('/txs', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
+        logger.warn('cannot get list tx with query %s. Error', JSON.stringify(params.query), e)
         return res.status(406).send()
     }
 })

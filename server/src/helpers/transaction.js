@@ -19,7 +19,7 @@ let TransactionHelper = {
         let token = await db.Token.findOne({ hash: address })
         const q = require('../queues')
         if (!token) {
-            q.create('AccountProcess', { address: address })
+            q.create('AccountProcess', { listHash: JSON.stringify([address]) })
                 .priority('low').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             q.create('TokenProcess', { address: address })
@@ -49,7 +49,7 @@ let TransactionHelper = {
             let listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                if (tx.to !== contractAddress.BlockSigner) {
+                if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                     if (!listHash.includes(tx.from.toLowerCase())) {
                         listHash.push(tx.from.toLowerCase())
                     }
@@ -57,7 +57,7 @@ let TransactionHelper = {
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
-                if (tx.to !== contractAddress.BlockSigner) {
+                if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                     if (!listHash.includes(tx.to)) {
                         listHash.push(tx.to)
                     }
