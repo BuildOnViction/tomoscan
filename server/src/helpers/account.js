@@ -44,21 +44,20 @@ let AccountHelper = {
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
         try {
+            let web3 = await Web3Util.getWeb3()
+
+            let chainBalance = null
+            let b = web3.eth.getBalance(hash, function (err, balance) {
+                if (err) {
+                    logger.warn('get balance of account %s has error %s', hash, err)
+                } else {
+                    chainBalance = balance
+                }
+            })
             let _account = await db.Account.findOne({ hash: hash })
             if (!_account) {
                 _account = {}
             }
-
-            let web3 = await Web3Util.getWeb3()
-
-            web3.eth.getBalance(hash, function (err, balance) {
-                if (err) {
-                    logger.warn('get balance of account %s has error %s', hash, err)
-                } else {
-                    _account.balance = balance
-                    _account.balanceNumber = balance
-                }
-            })
 
             if (!_account.hasOwnProperty('code')) {
                 let code = await web3.eth.getCode(hash)
@@ -81,6 +80,11 @@ let AccountHelper = {
 
             delete _account['_id']
 
+            await b
+            if (chainBalance !== null) {
+                _account.balance = chainBalance
+                _account.balanceNumber = chainBalance
+            }
             await db.Account.updateOne({ hash: hash }, _account,
                 { upsert: true, new: true })
         } catch (e) {
