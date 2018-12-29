@@ -50,6 +50,23 @@ const updateSpecialAccount = async () => {
     })
     await Promise.all(map1)
 
+    console.log('count tx for tomochain contract')
+    let tomochainContract = []
+    for (let c in contractAddress) {
+        tomochainContract.push(contractAddress[c])
+    }
+    let map3 = tomochainContract.map(async (hash) => {
+        let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
+        txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
+        txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
+        let logCount = await db.Log.countDocuments({ address: hash })
+        await db.SpecialAccount.updateOne({ hash: hash }, {
+            transactionCount: txCount,
+            logCount: logCount
+        }, { upsert: true })
+    })
+    await Promise.all(map3)
+
     let accounts = await db.Account.find({ isContract: true })
     console.info('there are %s contract accounts', accounts.length)
     let map2 = accounts.map(async (acc) => {
