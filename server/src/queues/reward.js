@@ -13,7 +13,12 @@ consumer.task = async function (job, done) {
         if (check) {
             done()
         } else {
-            done(new Error('There is a problem'))
+            if (job.toJSON().attempts.made === 4) {
+                logger.error('Attempts 5 times, can not reward calculate %s', epoch)
+                done()
+            } else {
+                done(new Error('There is a problem'))
+            }
         }
     } catch (e) {
         logger.warn('BlockSignerProcess %s', e)
