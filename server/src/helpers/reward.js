@@ -374,7 +374,7 @@ let RewardHelper = {
         }
     },
 
-    rewardOnChain: async (epoch) => {
+    rewardOnChain: async (epoch, calculateTime = 0) => {
         let block = await BlockHelper.getBlock((parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH'))
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH')
@@ -421,11 +421,17 @@ let RewardHelper = {
                     logger.info('There is no reward found. Wait 10 seconds and retry')
                     let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                     await sleep(10000)
-                    return RewardHelper.rewardOnChain(epoch)
+                    calculateTime += 1
+                    if (calculateTime === 5) {
+                        logger.error('Cannot find reward for epoch %s at block %s', epoch, block)
+                        return false
+                    }
+                    return RewardHelper.rewardOnChain(epoch, calculateTime)
                 }
                 return true
             } else {
-                console.warn('There are some error of epoch %s. Error %s', epoch, JSON.stringify(result.error))
+                logger.warn('There are some error of epoch %s. Error %s', epoch, JSON.stringify(result.error))
+                return false
             }
         } catch (e) {
             logger.warn('There are something error of epoch %s. Error %s', epoch, e)
