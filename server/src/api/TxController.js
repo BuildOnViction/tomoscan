@@ -9,43 +9,21 @@ const contractAddress = require('../contracts/contractAddress')
 const logger = require('../helpers/logger')
 
 TxController.get('/txs', async (req, res) => {
-    let params = { sort: { blockNumber: -1 } }
+    let params = { sort: { blockNumber: -1 }, query: {} }
+    let limitedRecords = config.get('LIMITED_RECORDS')
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
         perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        let offset = page > 1 ? (page - 1) * perPage : 0
 
         let blockNumber = !isNaN(req.query.block) ? req.query.block : null
-        if (blockNumber) {
-            params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
-        }
-
-        // Check filter type.
-        if (req.query.filter) {
-            switch (req.query.filter) {
-            case 'latest':
-                params.sort = { createdAt: -1 }
-                break
-            }
-        }
-        let specialAccount = null
-
-        // Check type listing is pending.
-        let type = req.query.type
-        switch (type) {
-        case 'pending':
-            specialAccount = 'pendingTransaction'
-            params.query = Object.assign({}, params.query, { isPending: true })
-            params.sort = { createdAt: -1 }
-            break
-        case 'token':
-            break
-        default:
-            params.query = Object.assign({}, params.query, { isPending: false })
-            break
-        }
-
         let address = req.query.address
+        let specialAccount = null
+        let total = null
+        let type = req.query.type
+        let isBlock = false
+
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
             // if account is contract, has more condition
@@ -58,27 +36,29 @@ TxController.get('/txs', async (req, res) => {
                     { $or: [{ from: address }, { to: address }] })
             }
             specialAccount = address
-        }
-        // Check type of txs
-        if (req.query.typeOfTxs) {
+        } else if (blockNumber) {
+            params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
+            isBlock = true
+        } else if (type) {
             let condition
-            if (req.query.typeOfTxs === 'signTxs') {
+            if (type === 'signTxs') {
                 specialAccount = 'signTransaction'
-                condition = { to: contractAddress.BlockSigner }
-            } else if (req.query.typeOfTxs === 'otherTxs') {
+                condition = { to: contractAddress.BlockSigner, isPending: false }
+            } else if (type === 'otherTxs') {
                 specialAccount = 'otherTransaction'
-                condition = { to: { $ne: contractAddress.BlockSigner } }
+                condition = { to: { $ne: contractAddress.BlockSigner }, isPending: false }
+            } else if (type === 'pending') {
+                specialAccount = 'pendingTransaction'
+                condition = { isPending: true }
+                params.sort = { createdAt: -1 }
             }
-            if (params.query) {
-                params.query = Object.assign({}, params.query, condition || {})
-            } else {
-                params.query = condition || {}
-            }
-        }
-        if (Object.keys(params.query).length === 1 && params.query.isPending === false) {
+
+            params.query = Object.assign({}, params.query, condition || {})
+        } else {
             specialAccount = 'allTransaction'
+            params.query = Object.assign({}, params.query, { isPending: false })
         }
-        let total = null
+
         if (specialAccount != null) {
             let sa = await db.SpecialAccount.findOne({ hash: specialAccount })
             if (sa) {
@@ -88,36 +68,15 @@ TxController.get('/txs', async (req, res) => {
         if (total === null) {
             total = await db.Tx.countDocuments(params.query)
         }
-        let pages = Math.ceil(total / perPage)
-        let offset = page > 1 ? (page - 1) * perPage : 0
 
-        let items = await db.Tx.find(params.query)
-            .sort(params.sort)
-            .skip(offset).limit(perPage)
-            .lean().exec()
-
-        if (pages > 500) {
-            pages = 500
-        }
-        let limitedRecords = config.get('LIMITED_RECORDS')
-        let newTotal = total > limitedRecords ? limitedRecords : total
-
-        let data = {
-            realTotal: total,
-            total: newTotal,
-            perPage: perPage,
-            currentPage: page,
-            pages: pages,
-            items: items
-        }
-        const web3 = await Web3Util.getWeb3()
-        // If exist blockNumber & not found txs on db (or less than) will get txs on chain
-        if (blockNumber) {
+        let data = {}
+        let getOnChain = false
+        if (isBlock) {
             let block = await db.Block.findOne({ number: blockNumber })
-            let blockTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
+            if (block === null || block.e_tx > total) {
+                getOnChain = true
+                const web3 = await Web3Util.getWeb3()
 
-            const offset = page > 1 ? (page - 1) * perPage : 0
-            if (block === null || block.e_tx > blockTx) {
                 const _block = await web3.eth.getBlock(blockNumber)
 
                 const trans = _block.transactions
@@ -146,6 +105,30 @@ TxController.get('/txs', async (req, res) => {
                 }
             }
         }
+
+        if (getOnChain === false) {
+            let pages = Math.ceil(total / perPage)
+
+            let items = await db.Tx.find(params.query)
+                .sort(params.sort)
+                .skip(offset).limit(perPage)
+                .lean().exec()
+
+            if (pages > 500) {
+                pages = 500
+            }
+            let newTotal = total > limitedRecords ? limitedRecords : total
+
+            data = {
+                realTotal: total,
+                total: newTotal,
+                perPage: perPage,
+                currentPage: page,
+                pages: pages,
+                items: items
+            }
+        }
+        console.log(params)
 
         let listAddress = []
         for (let i = 0; i < data.items.length; i++) {

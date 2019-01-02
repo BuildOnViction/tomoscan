@@ -255,10 +255,10 @@ export default {
                 params.address = self.address
             }
             if (this.$route.name === 'txs-signTxs') {
-                params.typeOfTxs = 'signTxs'
+                params.type = 'signTxs'
             }
             if (this.$route.name === 'txs-otherTxs') {
-                params.typeOfTxs = 'otherTxs'
+                params.type = 'otherTxs'
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
