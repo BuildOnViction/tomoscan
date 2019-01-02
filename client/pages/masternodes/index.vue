@@ -22,7 +22,7 @@
             :current-page="currentPage"
             :show-empty="true"
             empty-text="There are no masternodes to show"
-            class="tomo-table"
+            class="tomo-table tomo-table--masternode"
             stacked="md">
 
             <template
