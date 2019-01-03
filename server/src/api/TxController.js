@@ -9,7 +9,7 @@ const contractAddress = require('../contracts/contractAddress')
 const logger = require('../helpers/logger')
 
 TxController.get('/txs', async (req, res) => {
-    let params = { sort: { blockNumber: -1 }, query: {} }
+    let params = { sort: { _id: -1 }, query: {} }
     let limitedRecords = config.get('LIMITED_RECORDS')
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
@@ -50,7 +50,6 @@ TxController.get('/txs', async (req, res) => {
             } else if (type === 'pending') {
                 specialAccount = 'pendingTransaction'
                 condition = { isPending: true }
-                params.sort = { createdAt: -1 }
             }
 
             params.query = Object.assign({}, params.query, condition || {})
@@ -128,7 +127,6 @@ TxController.get('/txs', async (req, res) => {
                 items: items
             }
         }
-        console.log(params)
 
         let listAddress = []
         for (let i = 0; i < data.items.length; i++) {

@@ -12,7 +12,7 @@ const utils = {
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
         params.query = params.hasOwnProperty('query') ? params.query : {}
-        params.sort = params.hasOwnProperty('sort') ? params.sort : {}
+        params.sort = params.hasOwnProperty('sort') ? params.sort : { _id: -1 }
         params.total = params.hasOwnProperty('total') ? params.total : null
         params.populate = params.hasOwnProperty('populate') ? params.populate : []
 

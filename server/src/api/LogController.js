@@ -26,7 +26,7 @@ LogController.get('/logs', async (req, res) => {
             tx = tx.toLowerCase()
             params.query = { transactionHash: tx }
         }
-        params.sort = { blockNumber: -1 }
+        params.sort = { _id: -1 }
         let data = await paginate(req, 'Log', params, total)
         let items = data.items
         for (let i = 0; i < items.length; i++) {
