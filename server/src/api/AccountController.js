@@ -59,7 +59,7 @@ AccountController.get('/accounts/:slug/mined', async (req, res) => {
         if (acc) {
             total = acc.minedBlock
         }
-        params.sort = { number: -1 }
+        params.sort = { _id: -1 }
         let data = await paginate(req, 'Block', params, total)
 
         return res.json(data)
