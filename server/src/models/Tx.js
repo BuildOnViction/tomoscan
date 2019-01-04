@@ -31,5 +31,7 @@ const Tx = new Schema({
     toJSON: { virtuals: true, getters: true },
     versionKey: false
 })
+Tx.index({ blockNumber: -1 })
+Tx.index({ createdAt: -1 })
 
 module.exports = mongoose.model('Tx', Tx)
