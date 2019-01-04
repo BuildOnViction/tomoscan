@@ -136,19 +136,11 @@
                                         </tr>
                                         <tr>
                                             <td>Gas Price</td>
-                                            <td>
-                                                <span
-                                                    v-b-tooltip.hover
-                                                    :title="formatUnit(toTomo(tx.gasPrice, 18))">
-                                                    {{ formatUnit(toTomo(tx.gasPrice, 8)) }}</span></td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice, 18)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Actual Tx Cost/Fee</td>
-                                            <td>
-                                                <span
-                                                    v-b-tooltip.hover
-                                                    :title="formatUnit(toTomo(tx.gasPrice * tx.gasUsed, 18))">
-                                                    {{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed, 8)) }}</span></td>
+                                            <td>{{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed, 18)) }}</td>
                                         </tr>
                                         <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
                                             <td>Token Transfer</td>
