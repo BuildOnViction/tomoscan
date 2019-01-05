@@ -52,10 +52,6 @@
   "PORT": 3333,
   "DEBUG": "express:*",
 
-  "JWT_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
-  "APP_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
-
-  "SENDGRID_API_KEY": "",
   "SENDER_EMAIL": "contact@tomochain.com",
 
   "BASE_URL": "https://scan.tomochain.com/",
