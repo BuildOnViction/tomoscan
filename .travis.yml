@@ -12,7 +12,9 @@ jobs:
         - cd $TRAVIS_BUILD_DIR/server && npm install && npm run lint
 
     - stage: Audit
-      script: cd $TRAVIS_BUILD_DIR/server && npm audit --production
+      script:
+        - cd $TRAVIS_BUILD_DIR/client && npm audit --production
+        - cd $TRAVIS_BUILD_DIR/server && npm audit --production
 
     - stage: Tests
       script: echo "No tests at the moment"
