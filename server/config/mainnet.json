@@ -44,18 +44,14 @@
     }
   ],
 
-  "WEB3_URI": "https://rpc.tomochain.com/",
-  "WEB3_WS_URI": "wss://ws.tomochain.com",
+  "WEB3_URI": "http://fullnode_tomoscan01:8545",
+  "WEB3_WS_URI": "ws://fullnode_tomoscan01:8546",
   "DEBUG_QUERY": false,
 
   "BASE_UNIT": "TOMO",
   "PORT": 3333,
   "DEBUG": "express:*",
 
-  "JWT_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
-  "APP_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
-
-  "SENDGRID_API_KEY": "",
   "SENDER_EMAIL": "contact@tomochain.com",
 
   "BASE_URL": "https://scan.tomochain.com/",
