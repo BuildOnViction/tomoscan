@@ -49,12 +49,13 @@ module.exports = {
                 autoTracking: {
                     screenView: true
                 }
-            }],
-        [
-            'nuxt-imagemin', {
-                optipng: { optimizationLevel: 5 },
-                gifsicle: { optimizationLevel: 2 }
+            // }],
             }]
+        // [
+        //     'nuxt-imagemin', {
+        //         optipng: { optimizationLevel: 5 },
+        //         gifsicle: { optimizationLevel: 2 }
+        //     }]
     ],
     css: [
         '~/assets/scss/app.scss'
