@@ -545,6 +545,23 @@
     }
   }
 }
+.tomo-table--reward-by-epoch {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 30% 30% 10% 15% 15%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 30% 30% 10% 15% 15%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 30% 30% 10% 15% 15%;
+    }
+  }
+}
 .tomo-table--masternode {
 
   i.tx-failed {

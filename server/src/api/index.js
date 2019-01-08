@@ -17,6 +17,7 @@ import MixController from './MixController'
 import MasternodeController from './MasternodeController'
 import SignMessageController from './SignMessageController'
 import HomeController from './HomeController'
+import EpochController from './EpochController'
 
 const router = Router()
 
@@ -38,5 +39,6 @@ router.use(MixController)
 router.use(MasternodeController)
 router.use(SignMessageController)
 router.use(HomeController)
+router.use(EpochController)
 
 export default router

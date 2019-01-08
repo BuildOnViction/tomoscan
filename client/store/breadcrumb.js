@@ -155,6 +155,14 @@ br.register('masternodes', (brs) => {
     brs.parent('accounts')
     brs.push('Masternodes', { name: 'masternodes' })
 })
+br.register('epochs', (brs) => {
+    brs.parent('index')
+    brs.push('Epochs', { name: 'epochs' })
+})
+br.register('epochs-slug', (brs) => {
+    brs.parent('epochs')
+    brs.push('Epochs detail', { name: 'epochs-slug' })
+})
 
 export const state = () => ({
     items: null
