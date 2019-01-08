@@ -25,44 +25,13 @@ consumer.task = async function (job, done) {
             transactionCount: await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
         }, { upsert: true })
 
-        // const tomomasterUrl = config.get('TOMOMASTER_API_URL')
-        // const candidates = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
-        // logger.info('there are %s candidates need process', candidates.data.length)
-        // let map1 = candidates.data.map(async (candidate) => {
-        //     let hash = candidate.candidate.toLowerCase()
-        //
-        //     logger.info('process candidate %s', hash)
-        //     let txCount = await db.Tx.countDocuments({ $or: [{ from: hash }, { to: hash }], isPending: false })
-        //     let minedBlock = await db.Block.countDocuments({ signer: hash })
-        //     let rewardCount = await db.Reward.countDocuments({ address: hash })
-        //     let logCount = await db.Log.countDocuments({ address: hash })
-        //     await db.SpecialAccount.updateOne({ hash: hash }, {
-        //         transactionCount: txCount,
-        //         minedBlock: minedBlock,
-        //         rewardCount: rewardCount,
-        //         logCount: logCount
-        //     }, { upsert: true })
-        //
-        //     let owner = candidate.owner.toLowerCase()
-        //    let txCountOwner = await db.Tx.countDocuments({ $or: [{ from: owner }, { to: owner }], isPending: false })
-        //     let minedBlockOwner = await db.Block.countDocuments({ signer: owner })
-        //     let rewardCountOwner = await db.Reward.countDocuments({ address: owner })
-        //     let logCountOwner = await db.Log.countDocuments({ address: owner })
-        //     await db.SpecialAccount.updateOne({ hash: owner }, {
-        //         transactionCount: txCountOwner,
-        //         minedBlock: minedBlockOwner,
-        //         rewardCount: rewardCountOwner,
-        //         logCount: logCountOwner
-        //     }, { upsert: true })
-        // })
-        // await Promise.all(map1)
-
         logger.info('count tx for tomochain contract')
         let tomochainContract = []
         for (let c in contractAddress) {
             tomochainContract.push(contractAddress[c])
         }
-        let map3 = tomochainContract.map(async (hash) => {
+        for (let i = 0; i < tomochainContract.length; i++) {
+            let hash = tomochainContract[i]
             let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
             txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
             txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
@@ -71,30 +40,8 @@ consumer.task = async function (job, done) {
                 transactionCount: txCount,
                 logCount: logCount
             }, { upsert: true })
-        })
-        await Promise.all(map3)
+        }
 
-        // let accounts = await db.Account.find({ isContract: true })
-        // logger.info('there are %s contract accounts', accounts.length)
-        // let listProcess = []
-        // for (let i = 0; i < accounts.length; i++) {
-        //     listProcess.push(accounts[i])
-        //     if (listProcess.length === 100) {
-        //         let map2 = listProcess.map(async (acc) => {
-        //             let hash = acc.hash.toLowerCase()
-        //             let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
-        //             txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
-        //             txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
-        //             let logCount = await db.Log.countDocuments({ address: hash })
-        //             await db.SpecialAccount.updateOne({ hash: hash }, {
-        //                 transactionCount: txCount,
-        //                 logCount: logCount
-        //             }, { upsert: true })
-        //         })
-        //         await Promise.all(map2)
-        //         listProcess = []
-        //     }
-        // }
         done()
     } catch (e) {
         logger.warn('error when update special account. Error %s', e)

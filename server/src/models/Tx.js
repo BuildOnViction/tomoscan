@@ -5,9 +5,9 @@ const Schema = mongoose.Schema
 
 const Tx = new Schema({
     hash: { type: String, unique: true, required: true },
-    nonce: { type: Number, index: true },
+    nonce: { type: Number },
     blockHash: { index: true, type: String },
-    blockNumber: { index: true, type: Number },
+    blockNumber: Number,
     transactionHash: { type: String, index: true },
     transactionIndex: Number,
     from: { type: String, index: true },
