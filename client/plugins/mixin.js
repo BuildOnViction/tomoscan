@@ -22,6 +22,7 @@ const mixin = {
         },
 
         formatNumber: (number, limitComma = 5) => {
+            number = new BigNumber(number)
             let seps = number.toString().split('.')
             seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
             if (seps[1]) {
