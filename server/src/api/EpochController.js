@@ -19,7 +19,6 @@ EpochController.get('/epochs', async (req, res, next) => {
 
         let listEpoch = []
         let fromEpoch = lastEpoch - (page - 1) * perPage
-        console.log('fromEpoch', fromEpoch)
         let isFinish = false
         while (isFinish === false) {
             let endBlock = fromEpoch * config.get('BLOCK_PER_EPOCH')
@@ -32,7 +31,7 @@ EpochController.get('/epochs', async (req, res, next) => {
             fromEpoch -= 1
             if (listEpoch.length === perPage) {
                 isFinish = true
-            } else if (fromEpoch === 1) {
+            } else if (fromEpoch === 0) {
                 isFinish = true
             }
         }
