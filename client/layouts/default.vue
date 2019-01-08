@@ -58,7 +58,11 @@
                             <b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
                         </b-nav-item-dropdown>
-                        <b-nav-item :to="{name: 'blocks'}">Blocks</b-nav-item>
+                        <b-nav-item-dropdown
+                            text="Blocks">
+                            <b-dropdown-item :to="{name: 'blocks'}">Blocks</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'epochs'}">Epochs</b-dropdown-item>
+                        </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">
                         <b-nav-item

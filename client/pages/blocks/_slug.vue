@@ -33,6 +33,13 @@
                             <td>Height</td>
                             <td>{{ block.number }}</td>
                         </tr>
+                        <tr>
+                            <td>Epoch</td>
+                            <td>
+                                <nuxt-link :to="{name: 'epochs-slug', params: {slug: Math.ceil(block.number / 900)}}">
+                                    {{ Math.ceil(block.number / 900) }}</nuxt-link>
+                            </td>
+                        </tr>
                         <tr v-if="timestamp_moment">
                             <td>TimeStamp</td>
                             <td v-html="timestamp_moment"/>
@@ -220,6 +227,7 @@ export default {
         return {
             number: null,
             block: null,
+            epoch: null,
             timestamp_moment: null,
             loading: true,
             txsCount: 0,

@@ -4,7 +4,14 @@
   box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
   padding: 20px;
   margin-bottom: 50px;
-  
+
+  a.disabled {
+    //pointer-events: none;
+    //color: currentColor;
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+
 
   @include media-breakpoint-up(md) {
     padding: 40px;
@@ -76,7 +83,7 @@
       display: block;
       margin-bottom: 15px;
     }
-    
+
     td {
       display: block;
 
@@ -150,19 +157,19 @@
         grid-gap: 15px;
         margin-bottom: 15px;
       }
-  
+
       td {
         word-break: break-word;
-  
+
         &:first-child {
           text-align: right;
         }
-  
+
         &:last-child {
           color: $color-text-2;
         }
       }
-  
+
     }
 
     @include media-breakpoint-up(md) {
