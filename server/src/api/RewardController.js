@@ -35,7 +35,14 @@ RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
         let epochNumber = req.params.epochNumber || 0
         let params = {}
         params.query = { epoch: epochNumber }
-        params.sort = { rewardTime: -1 }
+        let reason = req.query.reason
+        if (reason === 'voter') {
+            params.query = Object.assign({}, params.query,
+                { reason: { $ne: 'Foundation' } })
+        } else if (reason === 'foundation') {
+            params.query = Object.assign({}, params.query,
+                { reason: 'Foundation' })
+        }
         let data = await paginate(req, 'Reward', params)
 
         return res.json(data)
