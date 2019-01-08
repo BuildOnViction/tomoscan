@@ -54,11 +54,11 @@
                                     {{ epoch.endBlock + ' ( At ' +
                                     $moment(epoch.endTime).format('MMM Do YYYY, H:mm:ss') + ')' }}
                                 </nuxt-link>
-                                <nuxt-link
+                                <span
                                     v-else
                                     :to="{name: 'blocks-slug', params: {slug: epoch.endBlock}}">
                                     {{ epoch.endBlock + ' (waiting...)' }}
-                                </nuxt-link>
+                                </span>
                             </td>
                         </tr>
                         <tr>
