@@ -71,11 +71,11 @@ consumer.task = async function (job, done) {
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
 
-        if (blockNumber % 500 === 0) {
-            q.create('updateCandidateTxCount', {})
-                .priority('normal').removeOnComplete(true)
-                .attempts(2).backoff({ delay: 2000, type: 'fixed' }).save()
-        }
+        // if (blockNumber % 500 === 0) {
+        //     q.create('updateCandidateTxCount', {})
+        //         .priority('normal').removeOnComplete(true)
+        //         .attempts(2).backoff({ delay: 2000, type: 'fixed' }).save()
+        // }
 
         done()
     } catch (e) {
