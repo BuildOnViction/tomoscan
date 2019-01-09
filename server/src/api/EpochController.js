@@ -15,7 +15,7 @@ EpochController.get('/epochs', async (req, res, next) => {
 
         const web3 = await Web3Util.getWeb3()
         let lastBlock = await web3.eth.getBlockNumber()
-        let lastEpoch = Math.floor(lastBlock / config.get('BLOCK_PER_EPOCH')) - 1
+        let lastEpoch = Math.floor(lastBlock / config.get('BLOCK_PER_EPOCH'))
 
         let listEpoch = []
         let fromEpoch = lastEpoch - (page - 1) * perPage
@@ -80,7 +80,8 @@ EpochController.get('/epochs/:slug', async (req, res) => {
         rewardVoter: rewardVoter,
         rewardFoundation: rewardFoundation,
         startTime: sBlock.timestamp,
-        endTime: (eBlock || { timestamp: null }).timestamp
+        endTime: (eBlock || { timestamp: null }).timestamp,
+        lastEpoch: lastEpoch
     })
 })
 
