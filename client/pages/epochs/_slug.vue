@@ -22,7 +22,10 @@
                     </div>
                     <span class="block-breadcrumb__divider">|</span>
                     <div class="block-breadcrumb__next">
-                        <nuxt-link :to="{name: 'epochs-slug', params: {slug: epochNumber + 1}}">Next</nuxt-link>
+                        <nuxt-link
+                            :class="epochNumber === epoch.lastEpoch ? 'disabled' : ''"
+                            :to="epoch.lastEpoch === epochNumber ? '#' :
+                        {name: 'epochs-slug', params: {slug: epochNumber + 1}}">Next</nuxt-link>
                         <i class="tm tm-chevrons-right"/>
                     </div>
                 </div>
@@ -125,7 +128,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Block ' + this.$route.params.slug + ' Info'
+            title: 'Epoch ' + this.$route.params.slug + ' Info'
         }
     },
     data () {
