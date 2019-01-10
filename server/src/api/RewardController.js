@@ -85,8 +85,12 @@ RewardController.post('/expose/rewards', async (req, res) => {
     try {
         const address = req.body.address || null
         const owner = req.body.owner || null
-        const limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 0
         const reason = req.body.reason || null
+        let limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 200
+        if (limit > 200) {
+            limit = 200
+        }
+        const skip = (req.body.page) ? limit * (req.body.page - 1) : 0
         let params = {}
 
         if (owner) {
@@ -104,7 +108,7 @@ RewardController.post('/expose/rewards', async (req, res) => {
             params = Object.assign(params, { reason: reason })
         }
 
-        const reward = await db.Reward.find(params).sort({ _id: -1 }).limit(limit)
+        const reward = await db.Reward.find(params).sort({ _id: -1 }).limit(limit).skip(skip).exec()
 
         res.send(reward)
     } catch (e) {
