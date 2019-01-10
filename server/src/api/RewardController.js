@@ -107,10 +107,14 @@ RewardController.post('/expose/rewards', async (req, res) => {
         if (reason) {
             params = Object.assign(params, { reason: reason })
         }
+        const totalReward = db.Reward.countDocuments(params)
 
         const reward = await db.Reward.find(params).sort({ _id: -1 }).limit(limit).skip(skip).exec()
 
-        res.send(reward)
+        res.send({
+            items: reward,
+            total: await totalReward
+        })
     } catch (e) {
         logger.warn(e)
         return res.status(400).send()
