@@ -27,8 +27,8 @@ const utils = {
         let builder = mongoose.model(modelName)
             .find(params.query)
             .sort(params.sort)
+        let offset = page > 1 ? (page - 1) * perPage : 0
         if (!manualPaginate) {
-            let offset = page > 1 ? (page - 1) * perPage : 0
             builder = builder.skip(offset)
             builder = builder.limit(perPage)
         }
