@@ -22,18 +22,15 @@ TxController.get('/txs', async (req, res) => {
         let specialAccount = null
         let total = null
         let type = req.query.type
+        let txAccount = req.query.tx_account
         let isBlock = false
 
         if (typeof address !== 'undefined') {
             address = address.toLowerCase()
-            // if account is contract, has more condition
-            let account = await db.Account.findOne({ hash: address })
-            if (account && account.isContract) {
-                params.query = Object.assign({}, params.query,
-                    { $or: [{ from: address }, { to: address }, { contractAddress: address }] })
-            } else {
-                params.query = Object.assign({}, params.query,
-                    { $or: [{ from: address }, { to: address }] })
+            if (txAccount === 'in') {
+                params.query = Object.assign({}, params.query, { to: address })
+            } else if (txAccount === 'out') {
+                params.query = Object.assign({}, params.query, { from: address })
             }
             specialAccount = address
         } else if (blockNumber) {
@@ -62,7 +59,7 @@ TxController.get('/txs', async (req, res) => {
         if (specialAccount != null) {
             let sa = await db.SpecialAccount.findOne({ hash: specialAccount })
             if (sa) {
-                total = sa.transactionCount
+                total = sa.totalTransactionCount
             }
         }
         if (total === null) {

@@ -14,14 +14,21 @@ const getAccount = async (address) => {
     let acc = await db.SpecialAccount.findOne({ hash: address })
     if (acc) {
         return {
-            txCount: acc.transactionCount,
+            inTxCount: acc.inTransactionCount,
+            outTxCount: acc.outTransactionCount,
+            totalTxCount: acc.totalTransactionCount,
             logCount: acc.logCount,
             minedBlocks: acc.minedBlock,
             rewardCount: acc.rewardCount
         }
     } else {
+        let inTxCount = await db.Tx.countDocuments({ to : address })
+        let outTxCount = await db.Tx.countDocuments({ from: address })
+        let totalTxCount = inTxCount + outTxCount
         return {
-            txCount: await db.Tx.countDocuments({ $or: [{ from: address }, { to : address }] }),
+            inTxCount: inTxCount,
+            outTxCount: outTxCount,
+            totalTxCount: totalTxCount,
             logCount: await db.Log.countDocuments({ address: address }),
             minedBlocks: await db.Block.countDocuments({ signer: address }),
             rewardCount: await db.Reward.countDocuments({ address: address })
@@ -84,7 +91,7 @@ async function getTotalTransactions (address, block) {
     }
 
     if (address) {
-        total = await getAccount(address).txCount
+        total = await getAccount(address).totalTxCount
     }
 
     // If exist blockNumber & not found txs on db (or less than) will get txs on chain
@@ -116,7 +123,9 @@ MixController.get('/counting', async (req, res) => {
             minedBlocks: 0,
             events: 0,
             rewards: 0,
-            txes: 0,
+            inTxes: 0,
+            outTxes: 0,
+            totalTxes: 0,
             tokenHolders: 0,
             tokenTxs: 0,
             blockSigners: 0
@@ -129,7 +138,9 @@ MixController.get('/counting', async (req, res) => {
             case 'address':
                 const acc = await getAccount(address)
                 result.minedBlocks = acc.minedBlocks
-                result.txes = acc.txCount
+                result.inTxes = acc.inTxCount
+                result.outTxes = acc.outTxCount
+                result.totalTxes = acc.totalTxCount
                 result.rewards = acc.rewardCount
                 result.events = acc.logCount
                 result.tokenHolders = await getTotalTokenHolders(address, hash)
@@ -139,7 +150,7 @@ MixController.get('/counting', async (req, res) => {
                     getTotalTransactions(address, block),
                     getTotalBlockSigners(block)
                 ])
-                result.txes = blockData[0]
+                result.totalTxes = blockData[0]
                 result.blockSigners = blockData[1]
                 break
             case 'token':

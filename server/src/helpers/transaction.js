@@ -128,7 +128,7 @@ let TransactionHelper = {
     getTxDetail: async (hash) => {
         hash = hash.toLowerCase()
         let tx = await db.Tx.findOne({ hash: hash })
-        if (tx && tx.status) {
+        if (tx && tx.status && tx.gasUsed && tx.gasPrice) {
             return tx
         } else {
             tx = { hash: hash }

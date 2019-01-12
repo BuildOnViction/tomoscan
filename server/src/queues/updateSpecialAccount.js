@@ -13,16 +13,16 @@ consumer.task = async function (job, done) {
     try {
         logger.info('Count list transaction')
         await db.SpecialAccount.updateOne({ hash: 'allTransaction' }, {
-            transactionCount: await db.Tx.countDocuments({ isPending: false })
+            totalTransactionCount: await db.Tx.countDocuments({ isPending: false })
         }, { upsert: true })
         await db.SpecialAccount.updateOne({ hash: 'pendingTransaction' }, {
-            transactionCount: await db.Tx.countDocuments({ isPending: true })
+            totalTransactionCount: await db.Tx.countDocuments({ isPending: true })
         }, { upsert: true })
         await db.SpecialAccount.updateOne({ hash: 'signTransaction' }, {
-            transactionCount: await db.Tx.countDocuments({ to: contractAddress.BlockSigner, isPending: false })
+            totalTransactionCount: await db.Tx.countDocuments({ to: contractAddress.BlockSigner, isPending: false })
         }, { upsert: true })
-        await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, {
-            transactionCount: await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
+        await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, { totalTransactionCount:
+                await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
         }, { upsert: true })
 
         logger.info('count tx for tomochain contract')
@@ -32,12 +32,15 @@ consumer.task = async function (job, done) {
         }
         for (let i = 0; i < tomochainContract.length; i++) {
             let hash = tomochainContract[i]
-            let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
-            txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
-            txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
+            let outTxCount = await db.Tx.countDocuments({ from: hash })
+            let inTxCount = await db.Tx.countDocuments({ to: hash })
+            let contractTxCount = await db.Tx.countDocuments({ contractAddress: hash })
+            let totalTxCount = inTxCount + outTxCount + contractTxCount
             let logCount = await db.Log.countDocuments({ address: hash })
             await db.SpecialAccount.updateOne({ hash: hash }, {
-                transactionCount: txCount,
+                inTransactionCount: inTxCount,
+                outTransactionCount: outTxCount,
+                totalTransactionCount: totalTxCount,
                 logCount: logCount
             }, { upsert: true })
         }
