@@ -90,7 +90,8 @@ RewardController.post('/expose/rewards', async (req, res) => {
         if (limit > 200) {
             limit = 200
         }
-        const skip = (req.body.page) ? limit * (req.body.page - 1) : 0
+        let page = !isNaN(req.body.page) ? parseInt(req.body.page) : 1
+        const skip = limit * (page - 1)
         let params = {}
 
         if (owner) {
