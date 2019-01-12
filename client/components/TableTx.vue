@@ -173,6 +173,10 @@ export default {
             type: String,
             default: ''
         },
+        tx_account: {
+            type: String,
+            default: ''
+        },
         parent: {
             type: String,
             default: ''
@@ -253,6 +257,7 @@ export default {
 
             if (self.address) {
                 params.address = self.address
+                params.tx_account = self.tx_account
             }
             if (this.$route.name === 'txs-signTxs') {
                 params.type = 'signTxs'
