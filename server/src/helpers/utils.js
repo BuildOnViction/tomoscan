@@ -10,6 +10,7 @@ const utils = {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
         perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        let start = new Date()
 
         params.query = params.hasOwnProperty('query') ? params.query : {}
         params.sort = params.hasOwnProperty('sort') ? params.sort : { _id: -1 }
@@ -36,6 +37,12 @@ const utils = {
         if (pages > 500) {
             pages = 500
         }
+        
+        let end = new Date() - start
+        logger.info(`Paginate execution time : %dms query %s sort %s`,
+                    end,
+                    JSON.stringify(params.query),
+                    JSON.stringify(params.sort))
 
         let limitedRecords = config.get('LIMITED_RECORDS')
         let newTotal = total > limitedRecords ? limitedRecords : total
