@@ -182,7 +182,7 @@
             class="tomo-tabs"
             @input="onSwitchTab">
             <b-tab
-                :title="'Transactions (' + formatNumber(txsCount) + ')'"
+                :title="'Transactions (' + formatNumber(totalTxsCount) + ')'"
                 :active="hashTab === '#transactions'"
                 href="#transactions">
                 <table-tx
@@ -230,7 +230,7 @@ export default {
             epoch: null,
             timestamp_moment: null,
             loading: true,
-            txsCount: 0,
+            totalTxsCount: 0,
             blockSignerCount: 0,
             tabIndex: 0
         }
@@ -275,7 +275,7 @@ export default {
         let moment = self.$moment(responses[0].data.timestamp)
         this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
-        self.txsCount = responses[1].data.txes
+        self.totalTxsCount = responses[1].data.totalTxes
 
         self.blockSignerCount = responses[1].data.blockSigners
 

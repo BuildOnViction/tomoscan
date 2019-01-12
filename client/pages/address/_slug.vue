@@ -41,7 +41,7 @@
                         <tr>
                             <td>Transactions</td>
                             <td>
-                                <span>{{ txsCount }}</span> txns
+                                <span>{{ totalTxsCount }}</span> txns
                             </td>
                         </tr>
                         <tr v-if="address && !address.isContract">
@@ -123,14 +123,28 @@
             class="tomo-tabs"
             @input="onSwitchTab">
             <b-tab
-                id="transactions"
-                :active="hashTab === '#transactions'"
-                :title="'Transactions (' + formatNumber(txsCount) + ')'"
-                href="#transactions">
+                id="inTransactions"
+                :active="hashTab === '#inTransactions'"
+                :title="'In Transactions (' + formatNumber(inTxsCount) + ')'"
+                href="#inTransactions">
                 <table-tx
-                    v-if="hashTab === '#transactions'"
+                    v-if="hashTab === '#inTransactions'"
                     :address="hash"
-                    :parent="'#transactions'"
+                    :tx_account="'in'"
+                    :parent="'#inTransactions'"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
+                v-if="!address.isContract"
+                id="outTransactions"
+                :active="hashTab === '#outTransactions'"
+                :title="'Out Transactions (' + formatNumber(outTxsCount) + ')'"
+                href="#outTransactions">
+                <table-tx
+                    v-if="hashTab === '#outTransactions'"
+                    :address="hash"
+                    :tx_account="'out'"
+                    :parent="'#outTransactions'"
                     :page="this"/>
             </b-tab>
             <b-tab
@@ -235,7 +249,9 @@ export default {
         hash: null,
         address: null,
         smartContract: null,
-        txsCount: 0,
+        inTxsCount: 0,
+        outTxsCount: 0,
+        contractTxsCount: 0,
         blocksCount: 0,
         eventsCount: 0,
         tokensCount: 0,
@@ -256,7 +272,7 @@ export default {
             ]
         },
         hashTab () {
-            return this.$route.hash || '#transactions'
+            return this.$route.hash || '#inTransactions'
         }
     },
     created () {
@@ -304,7 +320,10 @@ export default {
 
             self.eventsCount = responses[1].data.events
 
-            self.txsCount = responses[1].data.txes
+            self.inTxsCount = responses[1].data.inTxes
+            self.outTxsCount = responses[1].data.outTxes
+            self.contractTxsCount = responses[1].data.contractTxes
+            self.totalTxsCount = responses[1].data.totalTxes
 
             self.rewardTime = responses[1].data.rewards
 

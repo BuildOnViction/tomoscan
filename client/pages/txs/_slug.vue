@@ -104,31 +104,27 @@
                                         <tr>
                                             <td>To</td>
                                             <td>
-                                                <div v-if="tx.to && tx.to_model">
+                                                <div v-if="tx.contractAddress">
+                                                    <span>[Contract&nbsp;</span>
+                                                    <nuxt-link
+                                                        :to="{name: 'address-slug',
+                                                              params: {slug: tx.contractAddress}}">
+                                                        {{ tx.contractAddress }}</nuxt-link>
+                                                    <span>&nbsp;Created]</span>
+                                                </div>
+                                                <div v-else="">
                                                     <i
-                                                        v-if="tx.to_model && tx.to_model.isContract"
+                                                        v-if="tx.to && tx.to_model && tx.to_model.isContract"
                                                         class="tm tm-icon-contract mr-2"/>
                                                     <nuxt-link
                                                         :to="{name: 'address-slug', params: {slug: tx.to}}"
-                                                        class="text-truncate">{{ tx.to_model.hash }}</nuxt-link>
-                                                </div>
-                                                <div v-else-if="tx.to">
-                                                    <nuxt-link
-                                                        :to="{name: 'address-slug', params: {slug: tx.to}}"
                                                         class="text-truncate">{{ tx.to }}</nuxt-link>
-                                                </div>
-                                                <div v-else>
-                                                    <span>[Contract&nbsp;</span>
-                                                    <nuxt-link
-                                                        :to="{name: 'address-slug', params: {slug: tx.to_model.hash}}">
-                                                        {{ tx.to_model.hash }}</nuxt-link>
-                                                    <span>&nbsp;Created]</span>
                                                 </div>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Value</td>
-                                            <td>{{ formatUnit(toTomo(tx.value)) }}</td>
+                                            <td>{{ formatUnit(toTomo(tx.value, 18)) }}</td>
                                         </tr>
                                         <tr>
                                             <td>Gas Used By Txn</td>

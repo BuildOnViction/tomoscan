@@ -7,16 +7,16 @@ const urlJoin = require('url-join')
 const updateSpecialAccount = async () => {
     console.info('Count list transaction')
     await db.SpecialAccount.updateOne({ hash: 'allTransaction' }, {
-        transactionCount: await db.Tx.countDocuments({ isPending: false })
+        totalTransactionCount: await db.Tx.countDocuments({ isPending: false })
     }, { upsert: true })
     await db.SpecialAccount.updateOne({ hash: 'pendingTransaction' }, {
-        transactionCount: await db.Tx.countDocuments({ isPending: true })
+        totalTransactionCount: await db.Tx.countDocuments({ isPending: true })
     }, { upsert: true })
     await db.SpecialAccount.updateOne({ hash: 'signTransaction' }, {
-        transactionCount: await db.Tx.countDocuments({ to: contractAddress.BlockSigner, isPending: false })
+        totalTransactionCount: await db.Tx.countDocuments({ to: contractAddress.BlockSigner, isPending: false })
     }, { upsert: true })
-    await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, {
-        transactionCount: await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
+    await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, { totalTransactionCount:
+            await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
     }, { upsert: true })
 
     console.log('count tx for tomochain contract')
@@ -24,17 +24,19 @@ const updateSpecialAccount = async () => {
     for (let c in contractAddress) {
         tomochainContract.push(contractAddress[c])
     }
-    let map3 = tomochainContract.map(async (hash) => {
-        let txCount = await db.Tx.countDocuments({ from: hash, isPending: false })
-        txCount += await db.Tx.countDocuments({ to: hash, isPending: false })
-        txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
+    for (let i = 0; i < tomochainContract.length; i++) {
+        let hash = tomochainContract[i]
+        let outTxCount = await db.Tx.countDocuments({ from: hash })
+        let inTxCount = await db.Tx.countDocuments({ to: hash })
+        let totalTxCount = inTxCount + outTxCount
         let logCount = await db.Log.countDocuments({ address: hash })
         await db.SpecialAccount.updateOne({ hash: hash }, {
-            transactionCount: txCount,
+            inTransactionCount: inTxCount,
+            outTransactionCount: outTxCount,
+            totalTransactionCount: totalTxCount,
             logCount: logCount
         }, { upsert: true })
-    })
-    await Promise.all(map3)
+    }
 
     const tomomasterUrl = config.get('TOMOMASTER_API_URL')
     const candidates = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
@@ -48,7 +50,7 @@ const updateSpecialAccount = async () => {
         let rewardCount = await db.Reward.countDocuments({ address: hash })
         let logCount = await db.Log.countDocuments({ address: hash })
         await db.SpecialAccount.updateOne({ hash: hash }, {
-            transactionCount: txCount,
+            totalTransactionCount: txCount,
             minedBlock: minedBlock,
             rewardCount: rewardCount,
             logCount: logCount
@@ -60,7 +62,7 @@ const updateSpecialAccount = async () => {
         // let rewardCountOwner = await db.Reward.countDocuments({ address: owner })
         // let logCountOwner = await db.Log.countDocuments({ address: owner })
         // await db.SpecialAccount.updateOne({ hash: owner }, {
-        //     transactionCount: txCountOwner,
+        //     totalTransactionCount: txCountOwner,
         //     minedBlock: minedBlockOwner,
         //     rewardCount: rewardCountOwner,
         //     logCount: logCountOwner
@@ -77,7 +79,7 @@ const updateSpecialAccount = async () => {
     //     txCount += await db.Tx.countDocuments({ contractAddress: hash, isPending: false })
     //     let logCount = await db.Log.countDocuments({ address: hash })
     //     await db.SpecialAccount.updateOne({ hash: hash }, {
-    //         transactionCount: txCount,
+    //         totalTransactionCount: txCount,
     //         logCount: logCount
     //     }, { upsert: true })
     // })

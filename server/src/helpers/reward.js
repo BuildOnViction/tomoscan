@@ -406,7 +406,7 @@ let RewardHelper = {
                             endBlock: endBlock,
                             address: v.toLowerCase(),
                             validator: m.toLowerCase(),
-                            reason: 'Voter',
+                            reason: v.toLowerCase() === contractAddress.foundation ? 'Foundation' : 'Voter',
                             lockBalance: 0,
                             reward: r,
                             rewardTime: block.timestamp * 1000,

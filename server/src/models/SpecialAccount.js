@@ -5,7 +5,9 @@ const Schema = mongoose.Schema
 
 const SpecialAccount = new Schema({
     hash: { type: String, unique: true, index: true },
-    transactionCount: { type: Number, default: 0 },
+    inTransactionCount: { type: Number, default: 0 },
+    outTransactionCount: { type: Number, default: 0 },
+    totalTransactionCount: { type: Number, default: 0 },
     minedBlock: { type: Number, default: 0 },
     rewardCount: { type: Number, default: 0 },
     logCount: { type: Number, default: 0 }
