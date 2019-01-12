@@ -11,6 +11,7 @@ const logger = require('../helpers/logger')
 TxController.get('/txs', async (req, res) => {
     let params = { sort: { blockNumber: -1 }, query: {} }
     let limitedRecords = config.get('LIMITED_RECORDS')
+    let start = new Date()
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
         perPage = Math.min(100, perPage)
@@ -62,9 +63,15 @@ TxController.get('/txs', async (req, res) => {
                 total = sa.totalTransactionCount
             }
         }
+        let end = new Date() - start
+        logger.info(`Txs preparation execution time: %dms`, end)
+        start = new Date()
         if (total === null) {
             total = await db.Tx.countDocuments(params.query)
+            end = new Date() - start
+            logger.info(`Txs count execution time: %dms query %s`, end, JSON.stringify(params.query))
         }
+        start = new Date()
 
         let data = {}
         let getOnChain = false
@@ -102,6 +109,9 @@ TxController.get('/txs', async (req, res) => {
                 }
             }
         }
+        end = new Date() - start
+        logger.info(`Txs isBlock execution time: %dms`, end)
+        start = new Date()
 
         if (getOnChain === false) {
             let pages = Math.ceil(total / perPage)
@@ -178,6 +188,8 @@ TxController.get('/txs', async (req, res) => {
                 }
             }
         }
+        end = new Date() - start
+        logger.info(`Txs getOnChain execution time: %dms`, end)
 
         return res.json(data)
     } catch (e) {
