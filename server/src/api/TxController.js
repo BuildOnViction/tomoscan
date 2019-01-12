@@ -134,6 +134,9 @@ TxController.get('/txs', async (req, res) => {
                 pages: pages,
                 items: items
             }
+            end = new Date() - start
+            logger.info(`Txs getOnChain === false execution time: %dms address %s`, end, address)
+            start = new Date()
         }
 
         let listAddress = []
@@ -189,7 +192,7 @@ TxController.get('/txs', async (req, res) => {
             }
         }
         end = new Date() - start
-        logger.info(`Txs getOnChain execution time: %dms`, end)
+        logger.info(`Txs getOnChain execution time: %dms address %s`, end, address)
 
         return res.json(data)
     } catch (e) {
