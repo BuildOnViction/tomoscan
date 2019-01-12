@@ -66,6 +66,7 @@ let TransactionHelper = {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()
                     tx.contractAddress = contractAddress
+                    tx.to = contractAddress
                     if (!listHash.includes(contractAddress)) {
                         listHash.push(contractAddress)
                     }
