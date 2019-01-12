@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const ethUtils = require('ethereumjs-util')
 const ethBlock = require('ethereumjs-block/from-rpc')
 const config = require('config')
+const logger = require('./logger')
 
 const utils = {
     paginate: async (
@@ -37,12 +38,11 @@ const utils = {
         if (pages > 500) {
             pages = 500
         }
-        
         let end = new Date() - start
         logger.info(`Paginate execution time : %dms query %s sort %s`,
-                    end,
-                    JSON.stringify(params.query),
-                    JSON.stringify(params.sort))
+            end,
+            JSON.stringify(params.query),
+            JSON.stringify(params.sort))
 
         let limitedRecords = config.get('LIMITED_RECORDS')
         let newTotal = total > limitedRecords ? limitedRecords : total
