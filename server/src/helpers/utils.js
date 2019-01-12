@@ -41,8 +41,9 @@ const utils = {
         let end = new Date() - start
         logger.info(`Paginate execution time : %dms model %s query %s sort %s skip %s limit %s`,
             end,
+            modelName,
             JSON.stringify(params.query),
-            JSON.stringify(params.sort), modelName, offset, perPage)
+            JSON.stringify(params.sort), offset, perPage)
 
         let limitedRecords = config.get('LIMITED_RECORDS')
         let newTotal = total > limitedRecords ? limitedRecords : total
