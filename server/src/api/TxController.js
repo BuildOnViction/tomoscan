@@ -135,7 +135,11 @@ TxController.get('/txs', async (req, res) => {
                 items: items
             }
             end = new Date() - start
-            logger.info(`Txs getOnChain === false execution time: %dms address %s`, end, address)
+            logger.info(`Txs getOnChain === false execution time: %dms address %s query %s sort %s %s %s`,
+                end, address,
+                JSON.stringify(params.query),
+                JSON.stringify(params.sort),
+                offset, perPage)
             start = new Date()
         }
 
