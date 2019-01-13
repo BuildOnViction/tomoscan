@@ -33,9 +33,8 @@ TxController.get('/txs', async (req, res) => {
             } else if (txAccount === 'out') {
                 params.query = Object.assign({}, params.query, { from: address })
             } else {
-                params.query = Object.assign({}, params.query, { $or: [{from: address}, {to: address}] })
+                params.query = Object.assign({}, params.query, { $or: [{ from: address }, { to: address }] })
             }
-            
         } else if (blockNumber) {
             params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
             isBlock = true
