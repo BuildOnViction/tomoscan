@@ -67,7 +67,7 @@ TxController.get('/txs', async (req, res) => {
         logger.info(`Txs preparation execution time: %dms`, end)
         start = new Date()
         if (total === null) {
-            total = await db.Tx.countDocuments(params.query)
+            total = 0 // await db.Tx.countDocuments(params.query)
             end = new Date() - start
             logger.info(`Txs count execution time: %dms query %s`, end, JSON.stringify(params.query))
         }
