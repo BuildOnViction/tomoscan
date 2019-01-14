@@ -4,6 +4,7 @@ const Web3Util = require('./web3')
 const TokenHelper = require('./token')
 const db = require('../models')
 const logger = require('./logger')
+const BigNumber = require('bignumber.js')
 
 let AccountHelper = {
     getAccountDetail: async (hash) => {
@@ -36,7 +37,8 @@ let AccountHelper = {
         await b
         if (chainBalance !== null) {
             _account.balance = chainBalance
-            _account.balanceNumber = chainBalance
+            let bn = new BigNumber(chainBalance)
+            _account.balanceNumber = bn.dividedBy(10 ** 18)
         }
         let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return acc
@@ -83,7 +85,8 @@ let AccountHelper = {
             await b
             if (chainBalance !== null) {
                 _account.balance = chainBalance
-                _account.balanceNumber = chainBalance
+                let bn = new BigNumber(chainBalance)
+                _account.balanceNumber = bn.dividedBy(10 ** 18)
             }
             await db.Account.updateOne({ hash: hash }, _account,
                 { upsert: true, new: true })
