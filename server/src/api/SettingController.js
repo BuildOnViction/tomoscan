@@ -2,7 +2,6 @@ import { Router } from 'express'
 import axios from 'axios'
 import db from '../models'
 import Web3Util from '../helpers/web3'
-const config = require('config')
 const logger = require('../helpers/logger')
 
 const SettingController = Router()
@@ -30,8 +29,7 @@ SettingController.get('/setting', async (req, res, next) => {
 
 SettingController.get('/setting/usd', async (req, res, next) => {
     try {
-        let { data } = await axios.get('https://api.coinmarketcap.com/v2/ticker/' +
-            config.get('CMC_ID') + '/?convert=USD')
+        let { data } = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
 
         return res.json(data)
     } catch (e) {
