@@ -9,6 +9,7 @@ const Reward = new Schema({
     endBlock: { type: Number },
     address: { type: String, index: true },
     validator: { type: String, index: true },
+    validatorName: String,
     reason: { type: String, index: true },
     lockBalance: { type: String },
     reward: { type: String },

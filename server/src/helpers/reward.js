@@ -7,6 +7,7 @@ const BigNumber = require('bignumber.js')
 const Web3Util = require('./web3')
 const BlockHelper = require('./block')
 const contractAddress = require('../contracts/contractAddress')
+const urlJoin = require('url-join')
 let RewardHelper = {
     updateVoteHistory: async (epoch) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
@@ -395,6 +396,20 @@ let RewardHelper = {
                 let signNumber = result.result.signers
                 let rewards = result.result.rewards
 
+                let hashes = []
+                for (let m in rewards) {
+                    hashes.push(m)
+                }
+                let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates/listByHash')
+                let candidate = await axios.post(url, { 'hashes': hashes.join(',') })
+                let canR = candidate.data
+                let canName = {}
+                if (!canR) {
+                    for (let i = 0; i < canR.length; i++) {
+                        canName[canR[i].candidate] = canR[i].name
+                    }
+                }
+
                 let rdata = []
                 for (let m in rewards) {
                     for (let v in rewards[m]) {
@@ -406,6 +421,7 @@ let RewardHelper = {
                             endBlock: endBlock,
                             address: v.toLowerCase(),
                             validator: m.toLowerCase(),
+                            validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : '',
                             reason: v.toLowerCase() === contractAddress.foundation ? 'Foundation' : 'Voter',
                             lockBalance: 0,
                             reward: r,
