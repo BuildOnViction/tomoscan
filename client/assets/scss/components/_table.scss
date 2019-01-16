@@ -572,15 +572,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 30% 18% 30% 12% 10%;
+      grid-template-columns: 5% 30% 13% 12% 30% 10%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 30% 18% 30% 12% 10%;
+      grid-template-columns: 5% 30% 13% 12% 30% 10%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 30% 18% 30% 12% 10%;
+      grid-template-columns: 5% 30% 13% 12% 30% 10%;
     }
   }
   .text-truncate {

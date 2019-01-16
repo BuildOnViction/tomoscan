@@ -43,6 +43,12 @@
             </template>
 
             <template
+                slot="capacity"
+                slot-scope="props">
+                {{ formatNumber(props.item.capacity) }}
+            </template>
+
+            <template
                 slot="owner"
                 slot-scope="props">
                 <div>
@@ -81,6 +87,10 @@ export default {
     data: () => ({
         fields: [
             {
+                key: 'number',
+                label: 'Num'
+            },
+            {
                 key: 'address',
                 label: 'Address'
             },
@@ -89,12 +99,12 @@ export default {
                 label: 'Name'
             },
             {
-                key: 'owner',
-                label: 'Owner'
+                key: 'capacity',
+                label: 'Capacity'
             },
             {
-                key: 'status',
-                label: 'Status'
+                key: 'owner',
+                label: 'Owner'
             },
             {
                 key: 'latestSignedBlock',
@@ -106,7 +116,7 @@ export default {
         total: 0,
         items: [],
         currentPage: 1,
-        perPage: 10,
+        perPage: 50,
         pages: 1
     }),
     watch: {
@@ -136,20 +146,23 @@ export default {
             self.loading = true
 
             let { data } = await this.$axios.get('/api/masternodes')
+            let num = 1
 
             for (let i = 0; i < data.length; i++) {
                 if (data[i].isMasternode) {
                     self.items.push({
+                        number: num,
                         address: data[i].candidate,
-                        status: 'MASTERNODE', // isMasternode = true
+                        capacity: data[i].capacityNumber,
                         name: data[i].name || 'Anonymous',
                         owner: data[i].owner,
                         latestSignedBlock: data[i].latestSignedBlock
                     })
+                    num++
                 }
             }
             self.total = self.items.length
-            self.pages = Math.ceil(data.length / self.perPage)
+            self.pages = Math.ceil(self.total / self.perPage)
 
             // Hide loading.
             self.loading = false
