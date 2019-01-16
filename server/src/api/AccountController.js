@@ -36,7 +36,7 @@ AccountController.get('/accounts', [
 })
 
 AccountController.get('/accounts/:slug', [
-    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Address address is incorrect.')
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -62,7 +62,7 @@ AccountController.get('/accounts/:slug', [
 })
 
 AccountController.get('/accounts/:slug/mined', [
-    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Address address is incorrect.'),
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('limit').isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').isInt().withMessage('Require page is number')
 ], async (req, res) => {

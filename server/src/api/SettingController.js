@@ -28,7 +28,7 @@ SettingController.get('/setting', async (req, res, next) => {
     }
 })
 
-SettingController.get('/setting/usd', async (req, res, next) => {
+SettingController.get('/setting/usd', async (req, res) => {
     try {
         let { data } = await axios.get('https://api.coinmarketcap.com/v2/ticker/' +
             config.get('CMC_ID') + '/?convert=USD')

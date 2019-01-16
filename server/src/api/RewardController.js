@@ -3,13 +3,22 @@ import { paginate } from '../helpers/utils'
 import db from '../models'
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const RewardController = Router()
 
-RewardController.get('/rewards/:slug', async (req, res) => {
+RewardController.get('/rewards/:slug', [
+    check('limit').isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').isInt().withMessage('Require page is number'),
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let address = req.params.slug
+    address = address.toLowerCase()
     try {
-        let address = req.params.slug
-        address = address.toLowerCase()
         let params = {}
         if (address) {
             params.query = { address: address }
@@ -25,14 +34,22 @@ RewardController.get('/rewards/:slug', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Cannot find reward of address %s. Error %s', address, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
+RewardController.get('/rewards/epoch/:epochNumber', [
+    check('limit').isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').isInt().withMessage('Require page is number'),
+    check('epochNumber').isInt().exists().withMessage('Epoch number is require')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let epochNumber = req.params.epochNumber || 0
     try {
-        let epochNumber = req.params.epochNumber || 0
         let params = {}
         params.query = { epoch: epochNumber }
         let reason = req.query.reason
@@ -47,12 +64,16 @@ RewardController.get('/rewards/epoch/:epochNumber', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Cannot find reward of epoch %s. Error %s', epochNumber, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', async (req, res) => {
+RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('fromEpoch').exists().isInt().withMessage('From epoch is require'),
+    check('toEpoch').exists().isInt().withMessage('To epoch is require')
+], async (req, res) => {
     try {
         let address = req.params.slug
         let fromEpoch = req.params.fromEpoch
