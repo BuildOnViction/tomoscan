@@ -31,7 +31,7 @@ AccountController.get('/accounts', [
         return res.json(data)
     } catch (e) {
         logger.warn('Get list account error %s', e)
-        return res.status(400).send()
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
