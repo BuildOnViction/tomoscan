@@ -15,8 +15,8 @@ const { check, validationResult } = require('express-validator/check')
 const ContractController = Router()
 
 ContractController.get('/contracts', [
-    check('limit').isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
-    check('page').isInt().withMessage('Require page is number')
+    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -55,7 +55,7 @@ ContractController.get('/contracts/:slug', [
     }
 })
 
-ContractController.get('/soljsons', async (req, res, next) => {
+ContractController.get('/soljsons', async (req, res) => {
     try {
         const versions = await ContractHelper.getVersions()
 
@@ -344,7 +344,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res) => {
     return res.json(result)
 })
 
-ContractController.get('/contractCreator/:slug', async (req, res, next) => {
+ContractController.get('/contractCreator/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()

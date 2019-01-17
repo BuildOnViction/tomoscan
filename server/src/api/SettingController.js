@@ -7,7 +7,7 @@ const logger = require('../helpers/logger')
 
 const SettingController = Router()
 
-SettingController.get('/setting', async (req, res, next) => {
+SettingController.get('/setting', async (req, res) => {
     try {
     // Get total blocks in db.
         let web3 = await Web3Util.getWeb3()

@@ -8,7 +8,7 @@ const urlJoin = require('url-join')
 
 const SignMessageController = Router()
 
-SignMessageController.post('/verifySignedMess', async (req, res, next) => {
+SignMessageController.post('/verifySignedMess', async (req, res) => {
     try {
         const web3 = await Web3Util.getWeb3()
         const signedMessage = req.body.message || ''
@@ -37,7 +37,7 @@ SignMessageController.post('/verifySignedMess', async (req, res, next) => {
     }
 })
 
-SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
+SignMessageController.post('/verifyScanedMess', async (req, res) => {
     try {
         const hash = req.body.hash || ''
         const messId = req.body.messId || ''
@@ -69,7 +69,7 @@ SignMessageController.post('/verifyScanedMess', async (req, res, next) => {
     }
 })
 
-SignMessageController.post('/generateSignMess', async (req, res, next) => {
+SignMessageController.post('/generateSignMess', async (req, res) => {
     try {
         const address = req.body.address || ''
 
@@ -89,7 +89,7 @@ SignMessageController.post('/generateSignMess', async (req, res, next) => {
     }
 })
 
-SignMessageController.post('/signMessage/verify', async (req, res, next) => {
+SignMessageController.post('/signMessage/verify', async (req, res) => {
     try {
         const web3 = await Web3Util.getWeb3()
         const message = req.body.message
