@@ -8,7 +8,7 @@ const { check, validationResult } = require('express-validator/check')
 const LogController = Router()
 
 LogController.get('/logs', [
-    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)

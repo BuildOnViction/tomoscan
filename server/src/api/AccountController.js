@@ -8,7 +8,7 @@ const { check, validationResult } = require('express-validator/check')
 const AccountController = Router()
 
 AccountController.get('/accounts', [
-    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -63,7 +63,7 @@ AccountController.get('/accounts/:slug', [
 
 AccountController.get('/accounts/:slug/mined', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
-    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)

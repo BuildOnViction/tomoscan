@@ -10,7 +10,7 @@ const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
 TxController.get('/txs', [
-    check('limit').optional().isInt({ lt: 101 }).withMessage('Limit is less than 101 items per page'),
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('block').optional().isInt().withMessage('Require page is number'),

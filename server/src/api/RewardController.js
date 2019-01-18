@@ -8,7 +8,7 @@ const { check, validationResult } = require('express-validator/check')
 const RewardController = Router()
 
 RewardController.get('/rewards/:slug', [
-    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res) => {
@@ -40,7 +40,7 @@ RewardController.get('/rewards/:slug', [
 })
 
 RewardController.get('/rewards/epoch/:epochNumber', [
-    check('limit').optional().isInt({ lt: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('epochNumber').isInt().exists().withMessage('Epoch number is require')
 ], async (req, res) => {
