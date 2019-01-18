@@ -34,7 +34,10 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
 
         try {
-            let tx = await TransactionHelper.getTransaction(hash, true)
+            let tx = await db.Tx.findOne({ hash : hash })
+            if (!tx) {
+                tx = await TransactionHelper.getTransaction(hash, true)
+            }
             const q = require('../queues')
 
             if (!tx) {
