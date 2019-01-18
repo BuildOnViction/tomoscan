@@ -3,17 +3,27 @@ import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHolderHelper from '../helpers/tokenHolder'
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const TokenHolderController = Router()
 
-TokenHolderController.get('/token-holders', async (req, res) => {
+TokenHolderController.get('/token-holders', [
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('hash').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let address = (req.query.address || '').toLowerCase()
+    let hash = (req.query.hash || '').toLowerCase()
     try {
-        let address = (req.query.address || '').toLowerCase()
         let params = {}
         if (address) {
             params.query = { token: address }
         }
-        let hash = (req.query.hash || '').toLowerCase()
         if (hash) {
             params.query = { hash: hash }
         }
@@ -68,8 +78,8 @@ TokenHolderController.get('/token-holders', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Get list token %s holder %s error %s', hash, address, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 

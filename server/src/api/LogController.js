@@ -3,10 +3,18 @@ import { paginate } from '../helpers/utils'
 import LogHelper from '../helpers/log'
 import db from '../models'
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const LogController = Router()
 
-LogController.get('/logs', async (req, res) => {
+LogController.get('/logs', [
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let address = req.query.address
         let params = {}
@@ -35,8 +43,8 @@ LogController.get('/logs', async (req, res) => {
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get list logs %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 

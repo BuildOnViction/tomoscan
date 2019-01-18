@@ -7,8 +7,21 @@ const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
-TxController.get('/txs', async (req, res) => {
+TxController.get('/txs', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('block').optional().isInt().withMessage('Require page is number'),
+    check('type').optional().isString().withMessage('type = signTxs|otherTxs|pending'),
+    check('tx_account').optional().isString().withMessage('type = in|out. if equal null return all')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+
     let params = { sort: { blockNumber: -1 }, query: {} }
     let limitedRecords = config.get('LIMITED_RECORDS')
     let start = new Date()
@@ -202,24 +215,29 @@ TxController.get('/txs', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn('cannot get list tx with query %s. Error', JSON.stringify(params.query), e)
-        return res.status(406).send()
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-TxController.get('/txs/:slug', async (req, res) => {
+TxController.get('/txs/:slug', [
+    check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug
+    hash = hash ? hash.toLowerCase() : hash
     try {
-        let hash = req.params.slug
-        hash = hash ? hash.toLowerCase() : hash
-
         let tx
         try {
             tx = await TransactionHelper.getTxDetail(hash)
         } catch (e) {
-            logger.warn(e)
-            return res.status(404).json({ message: 'Transaction is not found!' })
+            logger.warn('cannot get tx detail. Error', e)
+            return res.status(404).json({ errors: { message: 'Transaction is not found!' } })
         }
         if (!tx) {
-            return res.status(404).send()
+            return res.status(404).json({ errors: { message: 'Transaction is not found!' } })
         }
         if (tx._id) {
             tx = tx.toJSON()
@@ -295,67 +313,8 @@ TxController.get('/txs/:slug', async (req, res) => {
 
         return res.json(tx)
     } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
-    }
-})
-
-TxController.get('/txs/status/:hash', async (req, res) => {
-    try {
-        let hash = req.params.hash
-        hash = hash ? hash.toLowerCase() : hash
-        let tx = await db.Tx.findOne({ hash: hash })
-        let status = false
-        if (!tx) {
-            let receipt = await TransactionHelper.getTransactionReceipt(hash)
-            if (receipt) {
-                status = receipt.status
-            }
-        } else {
-            status = tx.status
-        }
-
-        return res.json(status)
-    } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
-    }
-})
-
-TxController.get('/txs/list/status', async (req, res) => {
-    try {
-        let hash = req.query.hash
-        let listHash = hash.split(',')
-        let tx = await db.Tx.find({ hash: { $in: listHash } })
-
-        let existHash = []
-        let resp = {}
-        for (let i = 0; i < tx.length; i++) {
-            existHash.push(tx[i].hash)
-            resp[tx[i].hash] = tx[i].status
-        }
-        let notExistHash = []
-        for (let i = 0; i < listHash.length; i++) {
-            if (!existHash.includes(listHash[i])) {
-                notExistHash.push(listHash[i])
-            }
-        }
-        if (notExistHash) {
-            let map = notExistHash.map(async function (tx) {
-                let receipt = await TransactionHelper.getTransactionReceipt(tx)
-                if (receipt) {
-                    resp[tx] = receipt.status
-                } else {
-                    resp[tx] = false
-                }
-            })
-            await Promise.all(map)
-        }
-
-        return res.json(resp)
-    } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
+        logger.warn('cannot get list tx %s detail. Error %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 

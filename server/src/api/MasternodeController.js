@@ -12,8 +12,8 @@ MasternodeController.get('/masternodes', async (req, res) => {
         const { data } = await axios.get(urlJoin(tomomasterUrl, '/api/candidates'))
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get list masternode %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 

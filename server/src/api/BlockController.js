@@ -4,10 +4,18 @@ import Web3Util from '../helpers/web3'
 import BlockHelper from '../helpers/block'
 const config = require('config')
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const BlockController = Router()
 
-BlockController.get('/blocks', async (req, res, next) => {
+BlockController.get('/blocks', [
+    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -102,31 +110,42 @@ BlockController.get('/blocks', async (req, res, next) => {
         }
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
+        logger.warn('Error get list block %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-BlockController.get('/blocks/:slug', async (req, res) => {
+BlockController.get('/blocks/:slug', [
+    check('slug').exists().withMessage('Block is require.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hashOrNumb = req.params.slug
     try {
-        let hashOrNumb = req.params.slug
-
         let block = await BlockHelper.getBlockDetail(hashOrNumb)
 
         if (block === null) {
-            return res.status(404).json({ message: 'Block is not found!' })
+            return res.status(404).json({ errors: { message: 'Block is not found!' } })
         }
 
         return res.json(block)
     } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
+        logger.warn('Error get block detail %s. %s', hashOrNumb, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-BlockController.get('/blocks/signers/:slug', async (req, res) => {
+BlockController.get('/blocks/signers/:slug', [
+    check('slug').exists().withMessage('Block is require.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let blockNumber = req.params.slug
     try {
-        let blockNumber = req.params.slug
         let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
 
         let signers
@@ -153,30 +172,8 @@ BlockController.get('/blocks/signers/:slug', async (req, res) => {
 
         return res.json({ signers: signers })
     } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
-    }
-})
-
-BlockController.get('/blocks/list/finality', async (req, res) => {
-    try {
-        let numbers = req.query.numbers
-        let listNumber = numbers.split(',')
-        let resp = {}
-
-        if (listNumber) {
-            let web3 = await Web3Util.getWeb3()
-            let map = listNumber.map(async function (number) {
-                let block = await web3.eth.getBlock(number)
-                resp[number] = block.finality
-            })
-            await Promise.all(map)
-        }
-
-        return res.json(resp)
-    } catch (e) {
-        logger.warn(e)
-        return res.status(406).send()
+        logger.warn('Error get block signer %s. %s', blockNumber, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
