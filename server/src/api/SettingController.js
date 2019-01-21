@@ -6,15 +6,15 @@ const logger = require('../helpers/logger')
 
 const SettingController = Router()
 
-SettingController.get('/setting', async (req, res, next) => {
+SettingController.get('/setting', async (req, res) => {
     try {
     // Get total blocks in db.
         let web3 = await Web3Util.getWeb3()
         let blk = await web3.eth.getBlock('latest')
-        let totalBlock = (blk || {}).number || await db.Block.countDocuments()
-        let totalAddress = await db.Account.countDocuments({ status: true })
-        let totalToken = await db.Token.countDocuments({ status: true })
-        let totalSmartContract = await db.Contract.countDocuments()
+        let totalBlock = (blk || {}).number || await db.Block.estimatedDocumentCount()
+        let totalAddress = await db.Account.estimatedDocumentCount()
+        let totalToken = await db.Token.estimatedDocumentCount()
+        let totalSmartContract = await db.Contract.estimatedDocumentCount()
         let lastBlock = await db.Block.findOne().sort({ number: -1 })
 
         return res.json(
@@ -27,7 +27,7 @@ SettingController.get('/setting', async (req, res, next) => {
     }
 })
 
-SettingController.get('/setting/usd', async (req, res, next) => {
+SettingController.get('/setting/usd', async (req, res) => {
     try {
         let { data } = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
 

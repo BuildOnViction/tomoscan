@@ -3,10 +3,18 @@ import db from '../models'
 import { paginate } from '../helpers/utils'
 import AccountHelper from '../helpers/account'
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const AccountController = Router()
 
-AccountController.get('/accounts', async (req, res) => {
+AccountController.get('/accounts', [
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let total = await db.Account.estimatedDocumentCount()
         let data = await paginate(req, 'Account',
@@ -23,11 +31,17 @@ AccountController.get('/accounts', async (req, res) => {
         return res.json(data)
     } catch (e) {
         logger.warn('Get list account error %s', e)
-        return res.status(400).send()
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-AccountController.get('/accounts/:slug', async (req, res) => {
+AccountController.get('/accounts/:slug', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     let hash = req.params.slug
     try {
         hash = hash.toLowerCase()
@@ -36,18 +50,26 @@ AccountController.get('/accounts/:slug', async (req, res) => {
             account = await AccountHelper.getAccountDetail(hash)
         } catch (e) {
             logger.warn('Cannot find account %s. Error %s', hash, e)
-            return res.status(404).json({ message: 'Account is not found!' })
+            return res.status(404).json({ errors: { message: 'Account is not found!' } })
         }
         account = await AccountHelper.formatAccount(account)
 
         return res.json(account)
     } catch (e) {
         logger.warn('Cannot find account detail %s. Error %s', hash, e)
-        return res.status(400).send()
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-AccountController.get('/accounts/:slug/mined', async (req, res) => {
+AccountController.get('/accounts/:slug/mined', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     let hash = req.params.slug
     try {
         hash = hash.toLowerCase()

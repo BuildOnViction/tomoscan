@@ -31,22 +31,24 @@ consumer.task = async function (job, done) {
         let transactionHash = _log.transactionHash.toLowerCase()
 
         delete _log['_id']
+        let tokenTx = await db.TokenTx.findOne({ transactionHash: transactionHash, from: _log.from, to: _log.to })
+        if (!tokenTx) {
+            await db.TokenTx.updateOne(
+                { transactionHash: transactionHash, from: _log.from, to: _log.to },
+                _log,
+                { upsert: true, new: true })
 
-        await db.TokenTx.updateOne(
-            { transactionHash: transactionHash, from: _log.from, to: _log.to },
-            _log,
-            { upsert: true, new: true })
-
-        // Add token holder data.
-        const q = require('./index')
-        q.create('TokenHolderProcess', { token: JSON.stringify({
-            from: _log.from.toLowerCase(),
-            to: _log.to.toLowerCase(),
-            address: _log.address,
-            value: _log.value
-        }) })
-            .priority('normal').removeOnComplete(true)
-            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            // Add token holder data.
+            const q = require('./index')
+            q.create('TokenHolderProcess', { token: JSON.stringify({
+                from: _log.from.toLowerCase(),
+                to: _log.to.toLowerCase(),
+                address: _log.address,
+                value: _log.value
+            }) })
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        }
     } catch (e) {
         logger.warn('cannot process token tx. Error %s', e)
         done(e)

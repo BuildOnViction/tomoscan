@@ -10,38 +10,52 @@ import ContractHelper from '../helpers/contract'
 
 const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
+const { check, validationResult } = require('express-validator/check')
 
 const ContractController = Router()
 
-ContractController.get('/contracts', async (req, res, next) => {
+ContractController.get('/contracts', [
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let data = await paginate(req, 'Contract',
             { query: {}, sort: { createdAt: -1 } })
 
         return res.json(data)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get list contract %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-ContractController.get('/contracts/:slug', async (req, res, next) => {
+ContractController.get('/contracts/:slug', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
         let contract = await db.Contract.findOne({ hash: hash })
         if (!contract) {
-            return res.status(404).send()
+            return res.status(404).json({ errors: { message: 'Contract was not found!' } })
         }
 
         return res.json(contract)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get contract detail %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-ContractController.get('/soljsons', async (req, res, next) => {
+ContractController.get('/soljsons', async (req, res) => {
     try {
         const versions = await ContractHelper.getVersions()
 
@@ -52,7 +66,17 @@ ContractController.get('/soljsons', async (req, res, next) => {
     }
 })
 
-ContractController.post('/contracts', async (req, res, next) => {
+ContractController.post('/contracts', [
+    check('sourceCode').exists().withMessage('Missing source code params'),
+    check('optimization').exists().withMessage('Missing optimization params'),
+    check('version').exists().withMessage('Missing version params'),
+    check('contractAddress').exists().withMessage('Missing contract address params'),
+    check('contractName').exists().withMessage('Missing contract name params')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         const versions = await ContractHelper.getVersions()
         const sourceCode = req.body.sourceCode
@@ -76,7 +100,7 @@ ContractController.post('/contracts', async (req, res, next) => {
         solc.loadRemoteVersion(versionRelease,
             async (err, snapshot) => {
                 if (err) {
-                    return res.sendStatus(400)
+                    return res.status(400).json({ errors: { message: 'Cannot load remote version' } })
                 }
                 const output = snapshot.compile(sourceCode, optimization)
 
@@ -127,18 +151,24 @@ ContractController.post('/contracts', async (req, res, next) => {
                 return res.json(contract)
             })
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error verify contract %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-ContractController.get('/contracts/:slug/events', async (req, res, next) => {
+ContractController.get('/contracts/:slug/events', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug
     try {
-        let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
         let contract = await db.Contract.findOne({ hash: hash })
         if (!contract) {
-            return res.status(404).send()
+            return res.status(404).json({ errors: { message: 'Contract was not found' } })
         }
 
         let abiObject = JSON.parse(contract.abiCode)
@@ -189,19 +219,25 @@ ContractController.get('/contracts/:slug/events', async (req, res, next) => {
 
         return res.json(events)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get contract %s events %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
+ContractController.get('/contracts/:slug/read', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug
     try {
-        let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
         let contract = await db.Contract.findOne({ hash: hash })
 
         if (!contract) {
-            return res.status(404).send()
+            return res.status(404).json({ errors: { message: 'Contract was not found' } })
         }
 
         let abiObject = JSON.parse(contract.abiCode)
@@ -235,12 +271,12 @@ ContractController.get('/contracts/:slug/read', async (req, res, nex) => {
 
         return res.json(results)
     } catch (e) {
-        logger.warn(e)
-        return res.status(400).send()
+        logger.warn('Error get contract %s events %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
+ContractController.get('/contracts/:slug/call/', async (req, res) => {
     let result = []
     try {
         let functionName = req.query.functionName
@@ -308,7 +344,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res, nex) => {
     return res.json(result)
 })
 
-ContractController.get('/contractCreator/:slug', async (req, res, next) => {
+ContractController.get('/contractCreator/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()
