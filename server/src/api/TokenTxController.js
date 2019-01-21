@@ -8,7 +8,7 @@ const { check, validationResult } = require('express-validator/check')
 const TokenTxController = Router()
 
 TokenTxController.get('/token-txs', [
-    check('limit').optional().isInt({ max: 30 }).withMessage('Limit is less than 30 items per page'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('token').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
