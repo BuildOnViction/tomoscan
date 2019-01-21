@@ -8,8 +8,9 @@ const AccountController = Router()
 
 AccountController.get('/accounts', async (req, res) => {
     try {
+        let total = await db.Account.estimatedDocumentCount()
         let data = await paginate(req, 'Account',
-            { query: { status: true }, sort: { balanceNumber: -1 } })
+            { query: { status: true }, sort: { balanceNumber: -1 } }, total)
 
         // Format rank.
         let items = data.items

@@ -11,74 +11,57 @@ A demo instance connected to the **TomoChain testnet** is available at [scan.tes
 - View pending transactions
 - Upload & verify contract sources
 - Display the current state of verified contracts
-- Follow an address list
 - Responsive layout
 
-Missing a feature? Please request it by creating a new [Issue](https://github.com/tomochain/tomo-explorer/issues).
+Missing a feature? Please request it by creating a new [Issue](https://github.com/tomochain/tomoscan/issues).
 
 ## Usage notes
 
-The explorer is still under heavy development, if you find any problems please create [an issue](https://github.com/tomochain/tomo-explorer/issues) or prepare [a pull request](https://github.com/tomochain/tomo-explorer/pulls).
+The explorer is still under heavy development, if you find any problems please create [an issue](https://github.com/tomochain/tomoscan/issues) or prepare [a pull request](https://github.com/tomochain/tomoscan/pulls).
 
 ## Getting started
 
 ### Requirements
-- [Docker](https://www.docker.com/get-docker)
+- [NodeJS](https://nodejs.org/)
+- [MongoDB](https://www.mongodb.com/)
+- [Redis](https://redis.io/)
 
 ### Setup
 
-Copy .env files
+Copy and modify your config
 ```bash
 cp client/.env.example client/.env
+cp server/config/default.json server/config/local.json
 ```
 
-Build & up docker
+Install library
 ```bash
-docker-compose -f docker-compose-dev.yml up --build
+cd client/ && npm install
 ```
-The site will run at http://localhost:3000, server will run at http://localhost:3333
-
-### Environment variables
-
-#### Client (in `client/.env`)
 
 ```bash
-API_URL=http://localhost:3333
-WS_URL=http://localhost:3333
-BASE_UNIT=TOMO
+cd server/ && npm install
 ```
-#### Server (in `server/src/config/default.json`)
+
+### Run
+After modify your config & install library. Your environment is ready to start
+
+- Run client to view in browser
+```bash
+cd client/ && npm run dev
 ```
-cp server/src/config/default.json server/src/config/local.json
+
+- Run API server for client
+```bash
+cd server/ && npm run server-dev
 ```
+
+- Run crawl data for API server
+```bash
+cd server/ && npm run crawl-dev
 ```
-{
-  "APP_ENV": "prod",
-  "MONGODB": "localhost",
-  "MONGODB_URI": "mongodb://localhost:27017/explorer",
-  "redis": {
-    "host": "localhost",
-    "port": 6379,
-    "password": null,
-    "prefix": "TomoScan"
-  },
 
-  "WEB3_URI": "https://testnet.tomochain.com/",
-  "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",
-  "DEBUG_QUERY": false,
-
-  "BASE_UNIT": "TOMO",
-  "PORT": 3333,
-  "DEBUG": "express:*",
-
-  "JWT_SECRET": "RANDOM_HASH",
-  "APP_SECRET": "RANDOM_HASH",
-
-  "SENDGRID_API_KEY": "",
-  "SENDER_EMAIL": "",
-
-  "CLIENT_URL": "http://localhost:3000/",
-  "CMC_ID": 2570,
-  "SLACK_WEBHOOK_URL": ""
-}
+- Get transaction pending
+```bash
+cd server/ && npm run subscribe-pending-tx-dev
 ```
