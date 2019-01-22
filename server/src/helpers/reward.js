@@ -404,7 +404,7 @@ let RewardHelper = {
                 let candidate = await axios.post(url, { 'hashes': hashes.join(',') })
                 let canR = candidate.data
                 let canName = {}
-                if (!canR) {
+                if (canR) {
                     for (let i = 0; i < canR.length; i++) {
                         canName[canR[i].candidate] = canR[i].name
                     }
