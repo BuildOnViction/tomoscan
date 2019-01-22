@@ -62,6 +62,8 @@ module.exports = {
     ],
     env: process.env,
     axios: {
+        proxyHeaders: false,
+        credentials: false,
         // baseURL: process.env.API_URL,
         proxy: true
     },
