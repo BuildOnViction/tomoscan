@@ -147,7 +147,7 @@ export default {
 
             let { data } = await this.$axios.get('/api/masternodes')
             let num = 1
-            const items = data.items
+            const items = (data || {}).items || []
 
             for (let i = 0; i < items.length; i++) {
                 if (items[i].isMasternode) {
