@@ -508,15 +508,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 10% 30% 13% 14% 13% 20%;
+      grid-template-columns: 10% 30% 15% 10% 10% 10% 15%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 10% 30% 13% 14% 13% 20%;
+      grid-template-columns: 10% 30% 15% 10% 10% 10% 15%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 10% 30% 13% 14% 13% 20%;
+      grid-template-columns: 10% 30% 15% 10% 10% 10% 15%;
     }
   }
 
@@ -550,15 +550,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 30% 30% 10% 15% 15%;
+      grid-template-columns: 30% 30% 13% 9% 9% 9%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 30% 30% 10% 15% 15%;
+      grid-template-columns: 30% 30% 13% 9% 9% 9%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 30% 30% 10% 15% 15%;
+      grid-template-columns: 30% 30% 13% 9% 9% 9%;
     }
   }
 }
