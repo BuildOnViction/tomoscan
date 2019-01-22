@@ -147,21 +147,22 @@ export default {
 
             let { data } = await this.$axios.get('/api/masternodes')
             let num = 1
+            const items = data.items
 
-            for (let i = 0; i < data.length; i++) {
-                if (data[i].isMasternode) {
+            for (let i = 0; i < items.length; i++) {
+                if (items[i].isMasternode) {
                     self.items.push({
                         number: num,
-                        address: data[i].candidate,
-                        capacity: data[i].capacityNumber,
-                        name: data[i].name || 'Anonymous',
-                        owner: data[i].owner,
-                        latestSignedBlock: data[i].latestSignedBlock
+                        address: items[i].candidate,
+                        capacity: items[i].capacityNumber,
+                        name: items[i].name || 'Anonymous',
+                        owner: items[i].owner,
+                        latestSignedBlock: items[i].latestSignedBlock
                     })
                     num++
                 }
             }
-            self.total = self.items.length
+            self.total = data.activeCandidates
             self.pages = Math.ceil(self.total / self.perPage)
 
             // Hide loading.
