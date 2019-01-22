@@ -35,6 +35,13 @@
                     class="text-truncate">{{ props.item.validator }}</nuxt-link>
             </template>
             <template
+                slot="validatorName"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'address-slug', params: {slug: props.item.validator}}"
+                    class="text-truncate">{{ props.item.validatorName }}</nuxt-link>
+            </template>
+            <template
                 slot="signNumber"
                 slot-scope="props">
                 {{ props.item.signNumber }}
@@ -103,6 +110,7 @@ export default {
         fields: {
             address: { label: 'Address' },
             validator: { label: 'MasterNode' },
+            validatorName: { label: 'MasterNode Name' },
             signNumber: { label: 'Sign number' },
             // lockBalance: { label: 'Lock balance' },
             reward: { label: 'Reward' },
