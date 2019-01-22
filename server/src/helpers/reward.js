@@ -421,7 +421,7 @@ let RewardHelper = {
                             endBlock: endBlock,
                             address: v.toLowerCase(),
                             validator: m.toLowerCase(),
-                            validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : '',
+                            validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : 'Anonymous',
                             reason: v.toLowerCase() === contractAddress.foundation ? 'Foundation' : 'Voter',
                             lockBalance: 0,
                             reward: r,
