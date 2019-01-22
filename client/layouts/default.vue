@@ -181,9 +181,12 @@
                     <b-col
                         md="6"
                         class="tomo-footer__copyright">
-                        <p>TomoScan 2018 - Running on TomoChain
+                        <p>TomoScan {{ (new Date()).getFullYear() }} - <a
+                            :href="`https://github.com/tomochain/tomoscan/releases/tag/v${version}`">
+                            v{{ version }}</a>
+
                             <code class="text-muted copyright__code">
-                                tomo/stable version/linux-amd64/golang
+                                TomoChain/stable version/linux-amd64/golang
                             </code>
                         </p>
                     </b-col>
@@ -245,6 +248,7 @@ import Breadcrumb from '~/components/Breadcrumb.vue'
 import Register from '~/components/Register.vue'
 import Login from '~/components/Login.vue'
 import ForgotPassword from '~/components/ForgotPassword.vue'
+import pkg from '../package.json'
 
 export default {
     components: {
@@ -258,7 +262,8 @@ export default {
     data () {
         return {
             search: null,
-            stats: null
+            stats: null,
+            version: pkg.version
         }
     },
     computed: {
