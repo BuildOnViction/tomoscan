@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const ethUtils = require('ethereumjs-util')
-const ethBlock = require('ethereumjs-block/from-rpc')
+const BlockHeader = require('ethereumjs-block/header')
 const config = require('config')
 const logger = require('./logger')
 
@@ -75,16 +75,32 @@ const utils = {
     getSigner: async (block) => {
         let signer = null
         if (block && block.number > 0) {
-            var sealers = block.extraData
-            if (sealers.length <= 130) { return undefined }
-            var sig = ethUtils.fromRpcSig('0x' +
-                sealers.substring(sealers.length - 130, sealers.length)) // remove signature
-            block.extraData = block.extraData.substring(0, block.extraData.length - 130)
-            var blk = ethBlock(block)
-            blk.header.difficulty[0] = block.difficulty
-            var sigHash = ethUtils.sha3(blk.header.serialize())
-            var pubkey = ethUtils.ecrecover(sigHash, sig.v, sig.r, sig.s)
-            signer = ethUtils.pubToAddress(pubkey).toString('hex')
+            const dataBuff = ethUtils.toBuffer(block.extraData)
+            const sig = ethUtils.fromRpcSig(dataBuff.slice(dataBuff.length - 65, dataBuff.length))
+
+            block.extraData = '0x' + ethUtils.toBuffer(block.extraData).slice(0, dataBuff.length - 65).toString('hex')
+
+            const headerHash = new BlockHeader({
+                parentHash: ethUtils.toBuffer(block.parentHash),
+                uncleHash: ethUtils.toBuffer(block.sha3Uncles),
+                coinbase: ethUtils.toBuffer(block.miner),
+                stateRoot: ethUtils.toBuffer(block.stateRoot),
+                transactionsTrie: ethUtils.toBuffer(block.transactionsRoot),
+                receiptTrie: ethUtils.toBuffer(block.receiptsRoot),
+                bloom: ethUtils.toBuffer(block.logsBloom),
+                difficulty: ethUtils.toBuffer(parseInt(block.difficulty)),
+                number: ethUtils.toBuffer(block.number),
+                gasLimit: ethUtils.toBuffer(block.gasLimit),
+                gasUsed: ethUtils.toBuffer(block.gasUsed),
+                timestamp: ethUtils.toBuffer(block.timestamp),
+                extraData: ethUtils.toBuffer(block.extraData),
+                mixHash: ethUtils.toBuffer(block.mixHash),
+                nonce: ethUtils.toBuffer(block.nonce)
+            })
+
+            const pub = ethUtils.ecrecover(headerHash.hash(), sig.v, sig.r, sig.s)
+
+            signer = ethUtils.addHexPrefix(ethUtils.pubToAddress(pub).toString('hex'))
         }
         return signer
     },

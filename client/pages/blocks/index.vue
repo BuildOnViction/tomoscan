@@ -91,7 +91,7 @@ export default {
             number: { label: 'Height' },
             timestamp: { label: 'Age' },
             e_tx: { label: 'txn' },
-            miner: { label: 'Miner' },
+            miner: { label: 'Creator' },
             gasUsed: { label: 'GasUsed' },
             finality: { label: 'Finality' }
         },

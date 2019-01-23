@@ -86,7 +86,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Mined By</td>
+                            <td>Created By</td>
                             <td>
                                 <nuxt-link
                                     :to="{name: 'address-slug', params: {slug: block.signer}}"
