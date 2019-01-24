@@ -65,11 +65,13 @@
                     class="tm tm-icon-contract mr-1 mr-lg-2" />
                 <span
                     v-if="address == props.item.from"
-                    class="text-truncate">{{ props.item.from }}</span>
+                    class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
+                    props.item.from_model.accountName : props.item.from }}</span>
                 <nuxt-link
                     v-else
                     :to="{name: 'address-slug', params: {slug: props.item.from}}"
-                    class="text-truncate">{{ props.item.from }}</nuxt-link>
+                    class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
+                    props.item.from_model.accountName : props.item.from }}</nuxt-link>
             </template>
 
             <template
@@ -89,11 +91,13 @@
                         class="tm tm-icon-contract mr-1 mr-lg-2" />
                     <span
                         v-if="address == props.item.to"
-                        class="text-truncate">{{ props.item.to }}</span>
+                        class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
+                        props.item.to_model.accountName : props.item.to }}</span>
                     <nuxt-link
                         v-else
                         :to="{name: 'address-slug', params:{slug: props.item.to}}"
-                        class="text-truncate">{{ props.item.to }}</nuxt-link>
+                        class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
+                        props.item.to_model.accountName : props.item.to }}</nuxt-link>
                 </div>
                 <div
                     v-else

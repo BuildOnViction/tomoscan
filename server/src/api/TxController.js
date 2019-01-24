@@ -27,7 +27,6 @@ TxController.get('/txs', [
     let start = new Date()
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-        perPage = Math.min(100, perPage)
         let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let offset = page > 1 ? (page - 1) * perPage : 0
 
@@ -58,7 +57,8 @@ TxController.get('/txs', [
                 condition = { to: contractAddress.BlockSigner, isPending: false }
             } else if (type === 'otherTxs') {
                 specialAccount = 'otherTransaction'
-                condition = { to: { $ne: contractAddress.BlockSigner }, isPending: false }
+                condition = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+                    isPending: false }
             } else if (type === 'pending') {
                 specialAccount = 'pendingTransaction'
                 condition = { isPending: true }
@@ -175,6 +175,8 @@ TxController.get('/txs', [
             let accounts = await db.Account.find({ hash: { $in: listAddress } })
             let map1 = data.items.map(async function (d) {
                 let map2 = accounts.map(async function (ac) {
+                    ac = ac.toJSON()
+                    ac.accountName = contractAddress[ac.hash] || null
                     if (d.from === ac.hash) {
                         d.from_model = ac
                     }
