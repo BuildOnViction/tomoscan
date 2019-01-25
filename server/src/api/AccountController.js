@@ -4,7 +4,7 @@ import { paginate } from '../helpers/utils'
 import AccountHelper from '../helpers/account'
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
-const contractAddress = require('../contracts/contractAddress')
+const accountName = require('../contracts/accountName')
 
 const AccountController = Router()
 
@@ -54,7 +54,7 @@ AccountController.get('/accounts/:slug', [
             return res.status(404).json({ errors: { message: 'Account is not found!' } })
         }
         account = await AccountHelper.formatAccount(account)
-        account.accountName = contractAddress[account.hash] || null
+        account.accountName = accountName[account.hash] || null
         return res.json(account)
     } catch (e) {
         logger.warn('Cannot find account detail %s. Error %s', hash, e)
