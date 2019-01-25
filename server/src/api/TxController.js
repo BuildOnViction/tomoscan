@@ -6,6 +6,7 @@ import TokenTransactionHelper from '../helpers/tokenTransaction'
 const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
+const accountName = require('../contracts/accountName')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -176,7 +177,7 @@ TxController.get('/txs', [
             let map1 = data.items.map(async function (d) {
                 let map2 = accounts.map(async function (ac) {
                     ac = ac.toJSON()
-                    ac.accountName = contractAddress[ac.hash] || null
+                    ac.accountName = accountName[ac.hash] || null
                     if (d.from === ac.hash) {
                         d.from_model = ac
                     }
