@@ -26,6 +26,12 @@
             <div class="tomo-card__body">
                 <table class="tomo-card__table">
                     <tbody>
+                        <tr v-if="address.accountName">
+                            <td>Account Name</td>
+                            <td>
+                                <span>{{ address.accountName }}</span>
+                            </td>
+                        </tr>
                         <tr>
                             <td>TOMO Balance</td>
                             <td>
@@ -169,7 +175,7 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                v-if="address && address.isContract"
+                v-if="address && address.isContract && smartContract"
                 :active="hashTab === '#code'"
                 title="Code"
                 href="#code"
