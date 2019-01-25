@@ -15,7 +15,7 @@
             <div
                 style="margin-top: 10px">
                 <strong>
-                    Method 2(easier):Using QR code scanning feature in TomoWallet to sign
+                    Method 2(easier): Using QR code scanning feature in TomoWallet to sign
                 </strong>
             </div>
             <div
@@ -132,7 +132,7 @@ export default {
         let self = this
         let acc = await this.$axios.get('/api/contractCreator/' + self.address)
         self.creator = acc.data.contractCreation || self.address
-        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.creator })
+        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.address })
 
         self.message = data.message
         self.messId = data.id
