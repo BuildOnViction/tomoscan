@@ -63,6 +63,9 @@ TxController.get('/txs', [
                 specialAccount = 'pendingTransaction'
                 condition = { isPending: true }
                 params.sort = { createdAt: -1 }
+            } else if (type === 'all') {
+                specialAccount = 'allTransaction'
+                params.query = Object.assign({}, params.query, { isPending: false })
             }
 
             params.query = Object.assign({}, params.query, condition || {})

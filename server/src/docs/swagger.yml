@@ -1,0 +1,385 @@
+swagger: '2.0'
+info:
+  version: 1.0.0
+  title: TomoScan APIs
+  description: TomoScan APIs
+  license:
+    name: Github
+    url: 'https://github.com/tomochain/tomoscan'
+tags:
+  - name: Accounts
+    description: Accounts API
+  - name: Blocks
+    description: Blocks API
+  - name: Transactions
+    description: Transactions API
+  - name: Tokens
+    description: Tokens API
+
+schemes:
+  - https
+  - http
+consumes:
+  - application/json
+produces:
+  - application/json
+paths:
+  /api/accounts:
+    get:
+      tags:
+        - Accounts
+      summary: Get list accounts
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/accounts/{hash}:
+    get:
+      tags:
+        - Accounts
+      summary: Get account detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: account address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/accounts/{hash}/mined:
+    get:
+      tags:
+        - Accounts
+      summary: Get list block create
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: account address
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+
+  /api/blocks:
+    get:
+      tags:
+        - Blocks
+      summary: Get list blocks
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/blocks/{hash}:
+    get:
+      tags:
+        - Blocks
+      summary: Get block detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: block number or block hash
+          type: string|number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/blocks/signers/{blockNumber}:
+    get:
+      tags:
+        - Blocks
+      summary: Get list signers of a block
+      parameters:
+        - name: blockNumber
+          in: path
+          required: true
+          description: account address
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+
+  /api/txs:
+    get:
+      tags:
+        - Transactions
+      summary: Get list blocks. Params limit & page & ((address & tx_account) | block | type)
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+        - name: address
+          in: query
+          required: false
+          description: list tx of address, group with tx_account
+          type: string
+        - name: tx_account
+          in: query
+          required: false
+          description: in|out, default = all, group with address
+          type: string
+        - name: block
+          in: query
+          required: false
+          description: list tx of a block
+          type: number
+        - name: type
+          in: query
+          required: false
+          description: signTxs|otherTxs|pending|all
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/{hash}:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: transaction hash
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get list tokens
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/tokens/{hash}:
+    get:
+      tags:
+        - Tokens
+      summary: Get token detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: token address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/token-txs:
+    get:
+      tags:
+        - Accounts
+      summary: Get list token transactions
+      parameters:
+        - name: address
+          in: query
+          required: fakse
+          description: account address
+          type: string
+        - name: token
+          in: path
+          required: false
+          description: token address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/token-holders:
+    get:
+      tags:
+        - Accounts
+      summary: Get list token holder
+      parameters:
+        - name: address
+          in: query
+          required: fakse
+          description: token address
+          type: string
+        - name: hash
+          in: path
+          required: false
+          description: account address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+
+
+  /api/rewards/{voter}:
+    get:
+      tags:
+        - Rewards
+      summary: Get list rewards of a voter
+      parameters:
+        - name: voter
+          in: path
+          required: true
+          description: account address
+          type: number
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/rewards/epoch/{epochNumber}:
+    get:
+      tags:
+        - Rewards
+      summary: Get list reward of an epoch
+      parameters:
+        - name: epochNumber
+          in: path
+          required: true
+          description: epoch number
+          type: number
+        - name: hash
+          in: path
+          required: true
+          description: account address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error

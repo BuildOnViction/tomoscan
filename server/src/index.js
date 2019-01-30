@@ -11,6 +11,9 @@ const cors = require('cors')
 const bodyParser = require('body-parser')
 const config = require('config')
 const producer = require('./producer')
+const fs = require('fs')
+const yaml = require('js-yaml')
+const swaggerUi = require('swagger-ui-express')
 
 const app = express()
 producer.watch()
@@ -29,6 +32,9 @@ app.use(logger('dev'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
+app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
 
 // Init auth and jwt.
 app.use(authService.initialize())
