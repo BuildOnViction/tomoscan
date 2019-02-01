@@ -5,6 +5,7 @@ import Web3Util from '../helpers/web3'
 const logger = require('../helpers/logger')
 
 const SettingController = Router()
+var tomoUsd = {}
 
 SettingController.get('/setting', async (req, res) => {
     try {
@@ -31,11 +32,11 @@ SettingController.get('/setting/usd', async (req, res) => {
     try {
         let { data } = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
 
-        return res.json(data)
+        tomoUsd = data
     } catch (e) {
         logger.warn(e)
-        return res.status(400).send()
     }
+    return res.json(tomoUsd)
 })
 
 export default SettingController
