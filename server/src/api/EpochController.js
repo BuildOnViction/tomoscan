@@ -99,4 +99,36 @@ EpochController.get('/epochs/:slug', [
     })
 })
 
+EpochController.get('/epochs/:slug/totalSigners', [
+    check('slug').exists().withMessage('Epoch number is incorrect.')
+], async (req, res) => {
+    const epoch = req.params.slug
+    const blockCheckpoint = epoch * config.get('BLOCK_PER_EPOCH')
+    const startBlock = blockCheckpoint - config.get('BLOCK_PER_EPOCH') + 1
+
+    let validators = []
+    let totalSignNumber = 0
+    let voteHistory = await db.UserVoteAmount.find({ epoch: epoch })
+    for (let i = 0; i < voteHistory.length; i++) {
+        if (validators.indexOf(voteHistory[i].candidate) < 0) {
+            validators.push(voteHistory[i].candidate)
+        }
+    }
+    let validatorMap = validators.map(async (validator) => {
+        validator = validator.toString().toLowerCase()
+        let validatorSignNumber = await db.BlockSigner
+            .countDocuments({
+                blockNumber: { $gte: startBlock, $lte: blockCheckpoint },
+                signers: validator
+            })
+        if (validatorSignNumber > 0) {
+            totalSignNumber += validatorSignNumber
+        }
+    })
+    await Promise.all(validatorMap)
+    return res.json({
+        total: totalSignNumber
+    })
+})
+
 export default EpochController
