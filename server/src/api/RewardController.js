@@ -143,4 +143,16 @@ RewardController.post('/expose/rewards', async (req, res) => {
     }
 })
 
+RewardController.post('/expose/signNumber/:epochNumber', async (req, res) => {
+    try {
+        let epoch = req.params.epochNumber || null
+        let signNumbers = await db.EpochSign.find({ epoch: epoch })
+
+        return res.json(signNumbers)
+    } catch (e) {
+        logger.warn(e)
+        return res.status(400).send()
+    }
+})
+
 export default RewardController
