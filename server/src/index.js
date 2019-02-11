@@ -25,7 +25,7 @@ const io = require('socket.io')(server)
 
 app.set('port', config.get('PORT') || 3333)
 app.use(compression())
-app.use(logger('dev'))
+app.use(logger('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
