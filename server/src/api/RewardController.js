@@ -74,6 +74,10 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
     check('fromEpoch').exists().isInt().withMessage('From epoch is require'),
     check('toEpoch').exists().isInt().withMessage('To epoch is require')
 ], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
     try {
         let address = req.params.slug
         let fromEpoch = req.params.fromEpoch
@@ -137,6 +141,24 @@ RewardController.post('/expose/rewards', async (req, res) => {
             items: reward,
             total: await totalReward
         })
+    } catch (e) {
+        logger.warn(e)
+        return res.status(400).send()
+    }
+})
+
+RewardController.post('/expose/signNumber/:epochNumber', [
+    check('epochNumber').exists().isInt().withMessage('Epoch number is require & need a number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        let epoch = req.params.epochNumber || null
+        let signNumbers = await db.EpochSign.find({ epoch: epoch })
+
+        return res.json(signNumbers)
     } catch (e) {
         logger.warn(e)
         return res.status(400).send()
