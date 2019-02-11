@@ -430,6 +430,17 @@ let RewardHelper = {
                         })
                     }
                 }
+                let sdata = []
+                for (let m in signNumber) {
+                    sdata.push({
+                        epoch: epoch,
+                        validator: m.toLowerCase(),
+                        signNumber: signNumber[m].sign
+                    })
+                }
+                if (sdata.length > 0) {
+                    await db.EpochSign.insertMany(sdata)
+                }
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
                     await db.Reward.insertMany(rdata)
