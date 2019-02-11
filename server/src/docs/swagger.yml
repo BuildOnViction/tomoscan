@@ -128,7 +128,7 @@ paths:
           in: path
           required: true
           description: block number or block hash
-          type: string|number
+          type: string
       responses:
         200:
           description: OK
@@ -266,11 +266,11 @@ paths:
     get:
       tags:
         - Accounts
-      summary: Get list token transactions
+      summary: Get list token transactions. Require 1 of 2 conditions - address | token
       parameters:
         - name: address
           in: query
-          required: fakse
+          required: false
           description: account address
           type: string
         - name: token
@@ -299,11 +299,11 @@ paths:
     get:
       tags:
         - Accounts
-      summary: Get list token holder
+      summary: Get list token holder. Require 1 of 2 conditions - address | hassh
       parameters:
         - name: address
           in: query
-          required: fakse
+          required: false
           description: token address
           type: string
         - name: hash
