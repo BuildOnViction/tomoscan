@@ -149,7 +149,7 @@ br.register('sign-txs', (brs) => {
 })
 br.register('other-txs', (brs) => {
     brs.parent('txs')
-    brs.push('Other Transactions', { name: 'txs-otherTxs' })
+    brs.push('Normal Transactions', { name: 'txs-otherTxs' })
 })
 br.register('masternodes', (brs) => {
     brs.parent('accounts')
