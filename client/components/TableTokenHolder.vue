@@ -33,11 +33,14 @@
                 slot-scope="props">{{ toTomo(convertHexToFloat(props.item.quantity, 16)) }}</template>
         </table-base>
 
-        <b-pagination
+        <b-pagination-nav
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
+            :number-of-pages="pages"
+            :link-gen="linkGen"
+            :limit="7"
             align="center"
             class="tomo-pagination"
             @change="onChangePaginate"
@@ -47,12 +50,10 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableBase from '~/components/TableBase'
-import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        TableBase,
-        ReadMore
+        TableBase
     },
     mixins: [mixin],
     props: {
@@ -65,6 +66,10 @@ export default {
             default: () => {
                 return {}
             }
+        },
+        parent: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -96,13 +101,16 @@ export default {
     methods: {
         async getDataFromApi () {
             let self = this
+
+            // Show loading.
+            self.loading = true
+
+            self.currentPage = parseInt(this.$route.query.page)
+
             let params = {
                 page: self.currentPage || 1,
                 limit: self.perPage
             }
-
-            // Show loading.
-            self.loading = true
 
             if (self.address) {
                 params.address = self.address
@@ -129,9 +137,17 @@ export default {
             let self = this
             self.currentPage = page
             // Set page
-            window.location.hash = page
+            // window.location.hash = page
 
             self.getDataFromApi()
+        },
+        linkGen (pageNum) {
+            return {
+                query: {
+                    page: pageNum
+                },
+                hash: this.parent
+            }
         }
     }
 }
