@@ -138,6 +138,7 @@
                         <table-token-tx
                             v-if="hashTab === '#tokenTransfers'"
                             :token="hash"
+                            :parent="'#tokenTransfers'"
                             :page="this"/>
                     </b-tab>
                     <b-tab
@@ -147,6 +148,7 @@
                         <table-token-holder
                             v-if="hashTab === '#tokenHolders'"
                             :address="hash"
+                            :parent="'#tokenHolders'"
                             :page="this"/>
                     </b-tab>
                     <b-tab
