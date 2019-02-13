@@ -43,7 +43,7 @@ TokenController.get('/tokens/:slug', [
     try {
         let token = await db.Token.findOne({ hash: hash }).lean()
         if (!token) {
-            return res.status(400).json({ errors: { message: 'Token was not found' } })
+            return res.status(404).json({ errors: { message: 'Token was not found' } })
         }
 
         token = await TokenHelper.formatToken(token)

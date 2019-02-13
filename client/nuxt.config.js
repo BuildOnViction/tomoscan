@@ -68,7 +68,8 @@ module.exports = {
         proxy: true
     },
     proxy: {
-        '/api/': process.env.API_URL
+        '/api/': process.env.API_URL,
+        '/docs': process.env.API_URL
     },
     loading: {
         color: '#34a1ff',
