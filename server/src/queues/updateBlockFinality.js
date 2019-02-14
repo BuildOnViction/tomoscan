@@ -2,8 +2,8 @@
 
 const db = require('../models')
 const logger = require('../helpers/logger')
-const BlockHelper = require('../helpers/block')
-
+const axios = require('axios')
+const config = require('config')
 const consumer = {}
 consumer.name = 'BlockFinalityProcess'
 consumer.processNumber = 1
@@ -13,8 +13,16 @@ consumer.task = async function (job, done) {
     logger.info('Update finality %s blocks', blocks.length)
     try {
         let map = blocks.map(async function (block) {
-            let b = await BlockHelper.getBlock(block.number)
-            block.finality = b.hasOwnProperty('finality') ? parseInt(b.finality) : 0
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockSignersByHash',
+                'params': [block.hash],
+                'id': 88
+            }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+
+            block.finality = parseInt(result.result)
             block.updateFinalityTime = block.updateFinalityTime ? block.updateFinalityTime + 1 : 1
             block.save()
         })
