@@ -165,4 +165,27 @@ RewardController.post('/expose/signNumber/:epochNumber', [
     }
 })
 
+RewardController.post('/expose/totalSignNumber/:epochNumber', [
+    check('epochNumber').exists().isInt().withMessage('Epoch number is require & need a number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        let epoch = req.params.epochNumber || null
+        let signNumbers = await db.EpochSign.find({ epoch: epoch })
+        let totalSign = 0
+        let map = signNumbers.map(function (signNumber) {
+            totalSign += signNumber.signNumber
+        })
+        await Promise.all(map)
+
+        return res.json({ epoch: epoch, totalSignNumber: totalSign })
+    } catch (e) {
+        logger.warn(e)
+        return res.status(400).send()
+    }
+})
+
 export default RewardController
