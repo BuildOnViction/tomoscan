@@ -5,6 +5,7 @@ import BlockHelper from '../helpers/block'
 const config = require('config')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const axios = require('axios')
 
 const BlockController = Router()
 
@@ -161,13 +162,16 @@ BlockController.get('/blocks/signers/:slug', [
         }
 
         if (checkInChain) {
-            let web3 = await Web3Util.getWeb3()
-
-            let block = await web3.eth.getBlock(blockNumber)
-            signers = []
-            if (block.signers) {
-                signers = block.signers
+            let block = await db.Block.findOne({ number: blockNumber })
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockSignersByHash',
+                'params': [block.hash],
+                'id': 88
             }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+            signers = result.result
         }
 
         return res.json({ signers: signers })
