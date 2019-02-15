@@ -5,6 +5,7 @@ import BlockHelper from '../helpers/block'
 const config = require('config')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const axios = require('axios')
 
 const BlockController = Router()
 
@@ -44,7 +45,7 @@ BlockController.get('/blocks', [
                 items.push(blocks[i])
                 existBlock.push(blocks[i].number)
                 if (blocks[i].finality < 50) {
-                    finalityBlock.push(blocks[i].number)
+                    finalityBlock.push(blocks[i].hash)
                 }
             }
             let notExistBlock = []
@@ -64,14 +65,22 @@ BlockController.get('/blocks', [
             await Promise.all(map)
         }
         let finality = []
-        let map2 = finalityBlock.map(async function (number) {
-            let b = await web3.eth.getBlock(number)
-            if (b) {
-                finality.push({
-                    block: number,
-                    finality: b.finality
-                })
+        let map2 = finalityBlock.map(async function (hash) {
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockFinalityByHash',
+                'params': [hash],
+                'id': 88
             }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+
+            let finalityNumber = parseInt(result.result)
+
+            finality.push({
+                hash: hash,
+                finality: finalityNumber
+            })
         })
 
         let result = []
@@ -85,7 +94,7 @@ BlockController.get('/blocks', [
 
         for (let i = 0; i < finality.length; i++) {
             for (let j = 0; j < result.length; j++) {
-                if (finality[i].block === result[j].number) {
+                if (finality[i].hash === result[j].hash) {
                     result[j].finality = finality[i].finality
                     break
                 }
@@ -161,13 +170,16 @@ BlockController.get('/blocks/signers/:slug', [
         }
 
         if (checkInChain) {
-            let web3 = await Web3Util.getWeb3()
-
-            let block = await web3.eth.getBlock(blockNumber)
-            signers = []
-            if (block.signers) {
-                signers = block.signers
+            let block = await db.Block.findOne({ number: blockNumber })
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockSignersByHash',
+                'params': [block.hash],
+                'id': 88
             }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+            signers = result.result
         }
 
         return res.json({ signers: signers })

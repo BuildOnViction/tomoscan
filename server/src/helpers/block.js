@@ -4,6 +4,8 @@ const Web3Util = require('./web3')
 const utils = require('./utils')
 const db = require('../models')
 const logger = require('./logger')
+const axios = require('axios')
+const config = require('config')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let BlockHelper = {
@@ -38,12 +40,16 @@ let BlockHelper = {
         _block.e_tx = endTxCount
         _block.signer = signer
 
-        let finalityNumber
-        if (_block.finality) {
-            finalityNumber = parseInt(_block.finality)
-        } else {
-            finalityNumber = 0
+        let data = {
+            'jsonrpc': '2.0',
+            'method': 'eth_getBlockFinalityByHash',
+            'params': [_block.hash],
+            'id': 88
         }
+        const response = await axios.post(config.get('WEB3_URI'), data)
+        let result = response.data
+
+        let finalityNumber = parseInt(result.result)
 
         // blockNumber = 0 is genesis block
         if (parseInt(blockNumber) === 0) {
@@ -88,19 +94,16 @@ let BlockHelper = {
             _block.timestamp = _block.timestamp * 1000
             _block.e_tx = endTxCount
 
-            let finalityNumber
-            if (_block.finality) {
-                finalityNumber = parseInt(_block.finality)
-            } else {
-                finalityNumber = 0
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockFinalityByHash',
+                'params': [_block.hash],
+                'id': 88
             }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
 
-            // blockNumber = 0 is genesis block
-            if (parseInt(_block.number) === 0) {
-                finalityNumber = 100
-            }
-
-            _block.finality = finalityNumber
+            _block.finality = parseInt(result.result)
             _block.status = true
             if (block) {
                 if (!block.hasOwnProperty('updateFinalityTime')) {
@@ -138,12 +141,16 @@ let BlockHelper = {
             _block.timestamp = _block.timestamp * 1000
             _block.e_tx = endTxCount
 
-            let finalityNumber
-            if (_block.finality) {
-                finalityNumber = parseInt(_block.finality)
-            } else {
-                finalityNumber = 0
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockFinalityByHash',
+                'params': [_block.hash],
+                'id': 88
             }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+
+            let finalityNumber = parseInt(result.result)
 
             // blockNumber = 0 is genesis block
             if (parseInt(_block.number) === 0) {

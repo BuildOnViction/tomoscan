@@ -7,7 +7,7 @@ const config = require('config')
 const db = {}
 
 mongoose.Promise = global.Promise
-mongoose.connect(config.get('MONGODB_URI'), { useNewUrlParser: true }, (err) => {
+mongoose.connect(config.get('MONGODB_URI'), { useCreateIndex: true, useNewUrlParser: true }, (err) => {
     if (err) {
         console.log('MongoDB Connection Error. Please make sure that MongoDB is running.')
         process.exit(1)

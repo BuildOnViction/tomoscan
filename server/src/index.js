@@ -40,7 +40,7 @@ app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
 app.use(authService.initialize())
 authService.setJwtStrategy()
 
-mongoose.connect(config.get('MONGODB_URI'), { useNewUrlParser: true }, (err) => {
+mongoose.connect(config.get('MONGODB_URI'), { useCreateIndex: true, useNewUrlParser: true }, (err) => {
     if (err) {
         console.log(
             'MongoDB Connection Error. Please make sure that MongoDB is running.')

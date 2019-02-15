@@ -64,6 +64,9 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
+        q.create('BlockSignerProcess', { block: blockNumber - 15 })
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
         /*
         if (blockNumber % 100 === 0) {
