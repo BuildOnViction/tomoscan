@@ -17,26 +17,29 @@ consumer.task = async function (job, done) {
         try {
             let data = {
                 'jsonrpc': '2.0',
-                'method': 'eth_getBlockFinalityByHash',
+                'method': 'eth_getBlockSignersByHash',
                 'params': [block.hash],
                 'id': 88
             }
             const response = await axios.post(config.get('WEB3_URI'), data)
             let result = response.data
-
-            let signers = result.result
-            await db.BlockSigner.updateOne({
-                blockHash: block.hash,
-                blockNumber: block.number
-            }, {
-                $set: {
+            if (!result.error) {
+                let signers = result.result
+                await db.BlockSigner.updateOne({
                     blockHash: block.hash,
-                    blockNumber: block.n,
-                    signers: signers.map(it => (it || '').toLowerCase())
-                }
-            }, {
-                upsert: true
-            })
+                    blockNumber: block.number
+                }, {
+                    $set: {
+                        blockHash: block.hash,
+                        blockNumber: block.n,
+                        signers: signers.map(it => (it || '').toLowerCase())
+                    }
+                }, {
+                    upsert: true
+                })
+            } else {
+                logger.warn('Cannot get block signer of block %s. Error %s', blockNumber, JSON.stringify(result.error))
+            }
             done()
         } catch (e) {
             logger.warn(e)
