@@ -3,7 +3,7 @@ import db from '../models'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
-import {paginate} from "../helpers/utils";
+import { paginate } from '../helpers/utils'
 const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
