@@ -7,7 +7,7 @@ const Tx = new Schema({
     hash: { type: String, unique: true, required: true },
     nonce: { type: Number },
     blockHash: { index: true, type: String },
-    blockNumber: Number,
+    blockNumber: { type: Number, index: true },
     transactionHash: { type: String, index: true },
     transactionIndex: Number,
     from: { type: String, index: true },
@@ -24,7 +24,8 @@ const Tx = new Schema({
     to_model: { type: Schema.Types.ObjectId, ref: 'Account' },
     status: { type: Boolean, default: false },
     isPending: { type: Boolean, index: true, default: false },
-    timestamp: Date
+    timestamp: Date,
+    i_tx: { type: Number, default: 0 }
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },

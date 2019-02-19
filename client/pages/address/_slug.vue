@@ -154,6 +154,17 @@
                     :page="this"/>
             </b-tab>
             <b-tab
+                id="internalTransactions"
+                :active="hashTab === '#internalTransactions'"
+                :title="'Internal Transactions (' + formatNumber(internalTxsCount) + ')'"
+                href="#internalTransactions">
+                <table-internal-tx
+                    v-if="hashTab === '#internalTransactions'"
+                    :address="hash"
+                    :parent="'#internalTransactions'"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
                 v-if="!address.isContract"
                 :active="hashTab === '#minedBlocks'"
                 :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
@@ -224,6 +235,7 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
+import TableInternalTx from '~/components/TableInternalTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
 import TableTxByAccount from '~/components/TableTxByAccount'
 import TableEvent from '~/components/TableEvent'
@@ -237,6 +249,7 @@ export default {
     components: {
         ReadSourceCode,
         TableTx,
+        TableInternalTx,
         TableTokensByAccount,
         TableTxByAccount,
         TableEvent,
@@ -257,6 +270,7 @@ export default {
         smartContract: null,
         inTxsCount: 0,
         outTxsCount: 0,
+        internalTxsCount: 0,
         contractTxsCount: 0,
         blocksCount: 0,
         eventsCount: 0,
@@ -328,6 +342,7 @@ export default {
 
             self.inTxsCount = responses[1].data.inTxes
             self.outTxsCount = responses[1].data.outTxes
+            self.internalTxsCount = responses[1].data.internalTxes
             self.contractTxsCount = responses[1].data.contractTxes
             self.totalTxsCount = responses[1].data.totalTxes
 

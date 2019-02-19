@@ -16,6 +16,7 @@ const getAccount = async (address) => {
         return {
             inTxCount: acc.inTransactionCount,
             outTxCount: acc.outTransactionCount,
+            internalTxCount: acc.internalTxCount,
             totalTxCount: acc.totalTransactionCount,
             logCount: acc.logCount,
             minedBlocks: acc.minedBlock,
@@ -24,10 +25,12 @@ const getAccount = async (address) => {
     } else {
         let inTxCount = await db.Tx.countDocuments({ to : address })
         let outTxCount = await db.Tx.countDocuments({ from: address })
-        let totalTxCount = inTxCount + outTxCount
+        let internalTxCount = await db.InternalTx.countDocuments({ $or: [{ from: address }, { to: address }] })
+        let totalTxCount = inTxCount + outTxCount + internalTxCount
         return {
             inTxCount: inTxCount,
             outTxCount: outTxCount,
+            internalTxCount: internalTxCount,
             totalTxCount: totalTxCount,
             logCount: await db.Log.countDocuments({ address: address }),
             minedBlocks: await db.Block.countDocuments({ signer: address }),
@@ -140,6 +143,7 @@ MixController.get('/counting', async (req, res) => {
                 result.minedBlocks = acc.minedBlocks
                 result.inTxes = acc.inTxCount
                 result.outTxes = acc.outTxCount
+                result.internalTxes = acc.internalTxCount
                 result.totalTxes = acc.totalTxCount
                 result.rewards = acc.rewardCount
                 result.events = acc.logCount

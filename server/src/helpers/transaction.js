@@ -5,6 +5,8 @@ const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('./logger')
 const BlockHelper = require('./block')
+const axios = require('axios')
+const config = require('config')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
@@ -121,6 +123,10 @@ let TransactionHelper = {
             tx.status = receipt.status
             tx.isPending = false
 
+            // Internal transaction
+            let internalTx = await TransactionHelper.getInternalTx(tx)
+            tx.i_tx = internalTx.length
+
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
         } catch (e) {
@@ -133,6 +139,8 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
         let tx = await db.Tx.findOne({ hash: hash })
         if (tx && tx.status && tx.gasUsed && tx.gasPrice) {
+            tx = tx.toJSON()
+            tx.internals = await TransactionHelper.getInternalTx(tx)
             return tx
         } else {
             tx = { hash: hash }
@@ -152,9 +160,9 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx)
             return tx
         }
-        if (tx.hasOwnProperty('timestamp')) {
+        if (!tx.hasOwnProperty('timestamp')) {
             let block = await BlockHelper.getBlockOnChain(_tx.blockNumber)
-            tx.timestamp = block.timestamp * 1000
+            tx.timestamp = block.timestamp
         }
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
@@ -183,11 +191,14 @@ let TransactionHelper = {
             }
         }
 
+        // Internal transaction
+        let internalTx = await TransactionHelper.getInternalTx(tx)
+        tx.i_tx = internalTx.length
+
         delete tx['_id']
 
-        let trans = await db.Tx.findOneAndUpdate({ hash: hash }, tx,
+        return db.Tx.findOneAndUpdate({ hash: hash }, tx,
             { upsert: true, new: true })
-        return trans
     },
 
     getTransactionReceipt: async (hash, recall = false) => {
@@ -214,6 +225,50 @@ let TransactionHelper = {
             })
         }
         return web3.eth.getTransaction(hash)
+    },
+    getInternalTx: async (transaction) => {
+        let itx = await db.InternalTx.find({ hash: transaction.hash })
+        console.log(itx)
+        if (transaction.i_tx === itx.length) {
+            console.log('vao day')
+            return itx
+        }
+        console.log('ra day', transaction)
+        let internalTx = []
+        let data = {
+            'jsonrpc': '2.0',
+            'method': 'debug_traceTransaction',
+            'params': [transaction.hash, { tracer: 'callTracer' }],
+            'id': 88
+        }
+        const response = await axios.post(config.get('WEB3_URI'), data)
+        let result = response.data
+        if (!result.error) {
+            let web3 = await Web3Util.getWeb3()
+            let res = result.result
+            if (res.hasOwnProperty('calls')) {
+                let calls = res.calls
+                let map = calls.map(async function (call) {
+                    let from = (call.from || '').toLowerCase()
+                    let to = (call.to || '').toLowerCase()
+                    let it = await db.InternalTx.findOneAndUpdate(
+                        { hash: transaction.hash, from: from, to: to },
+                        {
+                            hash: transaction.hash,
+                            blockNumber: transaction.blockNumber,
+                            from: from,
+                            to: to,
+                            value: web3.utils.hexToNumberString(call.value),
+                            timestamp: transaction.timestamp
+                        },
+                        { upsert: true, new: true }
+                    )
+                    internalTx.push(it)
+                })
+                await Promise.all(map)
+            }
+        }
+        return internalTx
     }
 }
 

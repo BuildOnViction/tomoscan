@@ -3,6 +3,7 @@ import db from '../models'
 import TransactionHelper from '../helpers/transaction'
 import Web3Util from '../helpers/web3'
 import TokenTransactionHelper from '../helpers/tokenTransaction'
+import {paginate} from "../helpers/utils";
 const config = require('config')
 const TxController = Router()
 const contractAddress = require('../contracts/contractAddress')
@@ -245,9 +246,6 @@ TxController.get('/txs/:slug', [
         if (!tx) {
             return res.status(404).json({ errors: { message: 'Transaction is not found!' } })
         }
-        if (tx._id) {
-            tx = tx.toJSON()
-        }
         tx.from_model = await db.Account.findOne({ hash: tx.from.toLowerCase() })
         let toModel
         if (tx.to) {
@@ -320,6 +318,28 @@ TxController.get('/txs/:slug', [
         return res.json(tx)
     } catch (e) {
         logger.warn('cannot get list tx %s detail. Error %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
+TxController.get('/txs/internal/:address', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
+
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let address = req.params.address
+    address = address ? address.toLowerCase() : address
+    try {
+        let data = await paginate(req, 'InternalTx',
+            { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } })
+        return res.json(data)
+    } catch (e) {
+        logger.warn('cannot get list internal tx of address %s. Error %s', address, e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
