@@ -228,12 +228,9 @@ let TransactionHelper = {
     },
     getInternalTx: async (transaction) => {
         let itx = await db.InternalTx.find({ hash: transaction.hash })
-        console.log(itx)
         if (transaction.i_tx === itx.length) {
-            console.log('vao day')
             return itx
         }
-        console.log('ra day', transaction)
         let internalTx = []
         let data = {
             'jsonrpc': '2.0',

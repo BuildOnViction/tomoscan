@@ -116,6 +116,7 @@
   }
 }
 .internal-tx {
+  font-size: 90%;
   .hash-tag {
     max-width: 135px !important;
     display: inline-block !important;
@@ -124,6 +125,6 @@
     color: $color-text-2;
   }
   p {
-    margin: 0 1em;
+    margin: 1em;
   }
 }
