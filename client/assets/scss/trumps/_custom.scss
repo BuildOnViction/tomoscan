@@ -89,12 +89,12 @@
   text-decoration: underline
 }
 
-.wrapper { 
+.wrapper {
   overflow:hidden;
 }
 
 #one {
-  float:left; 
+  float:left;
   width: 75%;
   margin-top: 18px;
 }
@@ -105,7 +105,7 @@
 }
 
 @media screen and (max-width: 1100px) {
-   #one { 
+   #one {
     float: none;
     width:auto;
   }
@@ -113,5 +113,17 @@
     margin-top: 10px;
     float: none;
     width:auto;
+  }
+}
+.internal-tx {
+  .hash-tag {
+    max-width: 135px !important;
+    display: inline-block !important;
+  }
+  .internal-color {
+    color: $color-text-2;
+  }
+  p {
+    margin: 0 1em;
   }
 }

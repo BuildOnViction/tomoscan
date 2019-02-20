@@ -283,6 +283,49 @@
   }
 }
 
+.tomo-table--internal-transactions {
+
+  i.tx-failed {
+    vertical-align: middle;
+  }
+
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 25% 8% 8% 25% 25% 9%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 25% 8% 8% 25% 25% 9%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 25% 8% 8% 25% 25% 9%;
+    }
+  }
+
+  .text-truncate {
+    max-width: 8.75rem;
+
+    @include media-breakpoint-up(lg) {
+      max-width: 12rem;
+    }
+
+    @include media-breakpoint-up(xl) {
+      max-width: 15rem;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      max-width: 18rem;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      max-width: 24rem;
+    }
+  }
+}
+
 .tomo-table--token-tx {
 
   thead tr,

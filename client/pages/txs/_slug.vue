@@ -120,6 +120,26 @@
                                                         :to="{name: 'address-slug', params: {slug: tx.to}}"
                                                         class="text-truncate">{{ tx.to }}</nuxt-link>
                                                 </div>
+                                                <small
+                                                    v-if="tx.internals && tx.internals.length > 0"
+                                                    class="internal-tx">
+                                                    <p
+                                                        v-for="(internal, key) in tx.internals"
+                                                        :key="key">
+                                                        <span class="text-secondary">TRANSFER </span>
+                                                        <span class="internal-color">
+                                                            {{ formatUnit(toTomo(internal.value, 18)) }}</span>
+                                                        <span class="text-secondary"> From </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: internal.from}}"
+                                                            class="hash-tag text-truncate">
+                                                            {{ internal.from }}</nuxt-link>
+                                                        <span class="text-secondary"> To </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: internal.to}}"
+                                                            class="hash-tag text-truncate">{{ internal.to }}</nuxt-link>
+                                                    </p>
+                                                </small>
                                             </td>
                                         </tr>
                                         <tr>
