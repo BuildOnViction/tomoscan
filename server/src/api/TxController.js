@@ -13,7 +13,7 @@ const { check, validationResult } = require('express-validator/check')
 
 TxController.get('/txs', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Require page is number'),
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('block').optional().isInt().withMessage('Require page is number'),
     check('type').optional().isString().withMessage('type = signTxs|otherTxs|pending'),
