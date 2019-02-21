@@ -1,6 +1,6 @@
 {
   "name": "tomoscan",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "TomoChain Block Explorer",
   "scripts": {
     "lint": "eslint --cache ./ --ext .vue --ext .js --env mocha",
