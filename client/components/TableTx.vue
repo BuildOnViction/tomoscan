@@ -278,7 +278,7 @@ export default {
             self.total = data.total || self.tx_total || (data.items || []).length
             self.realTotal = data.realTotal || self.tx_total || (data.items || []).length
             self.currentPage = data.currentPage
-            self.pages = data.pages
+            self.pages = data.pages || (self.total % self.perPage)
 
             if (data.items.length === 0) {
                 self.loading = false
