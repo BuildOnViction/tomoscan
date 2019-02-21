@@ -181,7 +181,7 @@ export default {
             type: String,
             default: ''
         },
-        txTotal: {
+        tx_total: {
             type: Number,
             default: 0
         },
@@ -275,7 +275,7 @@ export default {
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
-            self.total = data.total || self.txTotal || (data.items || []).length
+            self.total = data.total || self.tx_total || (data.items || []).length
             self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
