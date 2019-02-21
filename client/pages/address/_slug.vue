@@ -136,6 +136,7 @@
                 <table-tx
                     v-if="hashTab === '#inTransactions'"
                     :address="hash"
+                    :txTotal="inTxsCount"
                     :tx_account="'in'"
                     :parent="'#inTransactions'"
                     :page="this"/>
@@ -149,6 +150,7 @@
                 <table-tx
                     v-if="hashTab === '#outTransactions'"
                     :address="hash"
+                    :txTotal="outTxsCount"
                     :tx_account="'out'"
                     :parent="'#outTransactions'"
                     :page="this"/>
