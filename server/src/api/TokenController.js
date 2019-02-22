@@ -3,7 +3,7 @@ import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHelper from '../helpers/token'
 import Web3Util from '../helpers/web3'
-import _ from "lodash";
+// import _ from 'lodash'
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
