@@ -26,7 +26,7 @@ const getAccount = async (address) => {
         let inTxCount = await db.Tx.countDocuments({ to : address })
         let outTxCount = await db.Tx.countDocuments({ from: address })
         let internalTxCount = await db.InternalTx.countDocuments({ $or: [{ from: address }, { to: address }] })
-        let totalTxCount = inTxCount + outTxCount + internalTxCount
+        let totalTxCount = inTxCount + outTxCount
         return {
             inTxCount: inTxCount,
             outTxCount: outTxCount,
@@ -128,6 +128,7 @@ MixController.get('/counting', async (req, res) => {
             rewards: 0,
             inTxes: 0,
             outTxes: 0,
+            internalTxes: 0,
             totalTxes: 0,
             tokenHolders: 0,
             tokenTxs: 0,
