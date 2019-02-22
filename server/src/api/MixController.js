@@ -128,6 +128,7 @@ MixController.get('/counting', async (req, res) => {
             rewards: 0,
             inTxes: 0,
             outTxes: 0,
+            internalTxes: 0,
             totalTxes: 0,
             tokenHolders: 0,
             tokenTxs: 0,
