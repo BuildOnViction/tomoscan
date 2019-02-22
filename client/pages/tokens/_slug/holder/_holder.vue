@@ -31,7 +31,7 @@
                                 </tr>
                                 <tr>
                                     <td>Balance</td>
-                                    <td>{{ toTomo(convertHexToFloat(holderBalance.toString(), 16)) }} {{ symbol }}</td>
+                                    <td>{{ toTomo(holderBalance, token.decimals) }} {{ symbol }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
@@ -222,7 +222,7 @@ export default {
     methods: {
         async getTokenHolder (token, holder) {
             let { data } = await this.$axios.get('/api/tokens/' + token + '/holder/' + holder)
-            return data.quantity
+            return data.quantityNumber
         },
         async getAccountFromApi () {
             let self = this
