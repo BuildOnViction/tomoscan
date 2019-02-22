@@ -3,6 +3,7 @@ import { paginate } from '../helpers/utils'
 import db from '../models'
 import TokenHelper from '../helpers/token'
 import Web3Util from '../helpers/web3'
+import _ from "lodash";
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -70,6 +71,19 @@ TokenController.get('/tokens/:token/holder/:holder', [
         let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
         if (!tokenHolder) {
             return res.status(400).json({ errors: { message: 'Token or holder was not found' } })
+        }
+
+        // Get token balance by read smart contract
+        let contract = await db.Contract.findOne({ hash: token })
+        if (contract) {
+            let abiObject = JSON.parse(contract.abiCode)
+            let web3 = await Web3Util.getWeb3()
+            let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
+
+            let funcNameToCall = 'web3Contract.methods.balanceOf("' + holder + '").call()'
+
+            tokenHolder.quantityNumber = await eval(funcNameToCall) // eslint-disable-line no-eval
+            await tokenHolder.save()
         }
 
         res.json(tokenHolder)
