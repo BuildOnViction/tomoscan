@@ -246,21 +246,25 @@ let TransactionHelper = {
             if (res.hasOwnProperty('calls')) {
                 let calls = res.calls
                 let map = calls.map(async function (call) {
-                    let from = (call.from || '').toLowerCase()
-                    let to = (call.to || '').toLowerCase()
-                    let it = await db.InternalTx.findOneAndUpdate(
-                        { hash: transaction.hash, from: from, to: to },
-                        {
-                            hash: transaction.hash,
-                            blockNumber: transaction.blockNumber,
-                            from: from,
-                            to: to,
-                            value: web3.utils.hexToNumberString(call.value),
-                            timestamp: transaction.timestamp
-                        },
-                        { upsert: true, new: true }
-                    )
-                    internalTx.push(it)
+                    if (call.type === 'CALL') {
+                        if (call.value !== '0x0') {
+                            let from = (call.from || '').toLowerCase()
+                            let to = (call.to || '').toLowerCase()
+                            let it = await db.InternalTx.findOneAndUpdate(
+                                { hash: transaction.hash, from: from, to: to },
+                                {
+                                    hash: transaction.hash,
+                                    blockNumber: transaction.blockNumber,
+                                    from: from,
+                                    to: to,
+                                    value: web3.utils.hexToNumberString(call.value),
+                                    timestamp: transaction.timestamp
+                                },
+                                { upsert: true, new: true }
+                            )
+                            internalTx.push(it)
+                        }
+                    }
                 })
                 await Promise.all(map)
             }
