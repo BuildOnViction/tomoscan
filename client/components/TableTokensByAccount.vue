@@ -32,7 +32,7 @@
             <template
                 slot="quantity"
                 slot-scope="props">
-                {{ formatUnit(toTomo(convertHexToFloat(props.item.quantity, 16)), props.item.tokenObj ?
+                {{ formatUnit(toTomo(props.item.quantity), props.item.tokenObj ?
                 props.item.tokenObj.symbol : '') }}
             </template>
 

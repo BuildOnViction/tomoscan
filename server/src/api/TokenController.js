@@ -6,6 +6,7 @@ import Web3Util from '../helpers/web3'
 // import _ from 'lodash'
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const BigNumber = require('bignumber.js')
 
 const TokenController = Router()
 
@@ -82,7 +83,20 @@ TokenController.get('/tokens/:token/holder/:holder', [
 
             let funcNameToCall = 'web3Contract.methods.balanceOf("' + holder + '").call()'
 
-            tokenHolder.quantityNumber = await eval(funcNameToCall) // eslint-disable-line no-eval
+            let quantity = new BigNumber(await eval(funcNameToCall)) // eslint-disable-line no-eval
+
+            let tk = await db.Token.findOne({ hash: token })
+            let decimals
+            if (tk) {
+                decimals = tk.decimals
+            } else {
+                let web3 = await Web3Util.getWeb3()
+                let tokenFuncs = await TokenHelper.getTokenFuncs()
+                decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+                decimals = await web3.utils.hexToNumberString(decimals)
+            }
+            tokenHolder.quantity = quantity.toString(10)
+            tokenHolder.quantityNumber = quantity.div(10 ** parseInt(decimals)).toNumber()
             await tokenHolder.save()
         }
 

@@ -1,19 +1,19 @@
 'use strict'
 
-const utils = require('./utils')
 const BigNumber = require('bignumber.js')
 const db = require('../models')
+const TokenHelper = require('./token')
+const Web3Util = require('../helpers/web3')
 
 let TokenHolderHelper = {
     formatHolder: async (tokenHolder, totalSupply, decimals) => {
         if (totalSupply) {
             totalSupply = new BigNumber(totalSupply)
-            let quantity = new BigNumber(await utils.convertHexToFloat(tokenHolder.quantity, 16))
-            tokenHolder.balance = tokenHolder.balance || quantity.toString(10)
+            let quantity = new BigNumber(tokenHolder.quantity)
 
             let percentage = await quantity.div(totalSupply) * 100
             percentage = percentage.toFixed(4)
-            percentage = (percentage.toString() === '0.0000') ? '0.0001' : percentage
+            percentage = (percentage.toString() === '0.0000') ? '< 0.0001' : percentage
             tokenHolder.percentage = percentage
         }
 
@@ -30,22 +30,21 @@ let TokenHolderHelper = {
                 quantity: 0
             })
         }
-
-        holder.balance = new BigNumber(quantity).toString(10)
-        // Convert number to hex.
-        quantity = parseFloat(quantity).toString(16)
-        let quantityCalc = await utils.convertHexToFloat(holder.quantity, 16) +
-            await utils.convertHexToFloat(quantity, 16)
-        let newQuantity = quantityCalc.toString(16)
-        if (newQuantity.indexOf('-') >= 0) {
-            newQuantity = newQuantity.replace('-', '')
-            newQuantity = newQuantity.padStart(64, '0')
-            newQuantity = '-' + newQuantity
+        let tk = await db.Token.findOne({ hash: token })
+        let decimals
+        if (tk) {
+            decimals = tk.decimals
         } else {
-            newQuantity = newQuantity.padStart(64, '0')
+            let web3 = await Web3Util.getWeb3()
+            let tokenFuncs = await TokenHelper.getTokenFuncs()
+            decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+            decimals = await web3.utils.hexToNumberString(decimals)
         }
+
+        let oldQuantity = new BigNumber(holder.quantity || 0)
+        let newQuantity = oldQuantity.add(quantity).toString()
         holder.quantity = newQuantity
-        holder.quantityNumber = quantityCalc
+        holder.quantityNumber = newQuantity.div(10 ** parseInt(decimals))
         holder.save()
     }
 }
