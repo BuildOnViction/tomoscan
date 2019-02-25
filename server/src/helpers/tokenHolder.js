@@ -42,9 +42,9 @@ let TokenHolderHelper = {
         }
 
         let oldQuantity = new BigNumber(holder.quantity || 0)
-        let newQuantity = oldQuantity.add(quantity).toString()
-        holder.quantity = newQuantity
-        holder.quantityNumber = newQuantity.div(10 ** parseInt(decimals))
+        let newQuantity = oldQuantity.plus(quantity)
+        holder.quantity = newQuantity.toString()
+        holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals))
         holder.save()
     }
 }
