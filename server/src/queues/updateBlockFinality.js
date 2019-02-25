@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
         let map = blocks.map(async function (block) {
             let data = {
                 'jsonrpc': '2.0',
-                'method': 'eth_getBlockSignersByHash',
+                'method': 'eth_getBlockFinalityByHash',
                 'params': [block.hash],
                 'id': 88
             }
