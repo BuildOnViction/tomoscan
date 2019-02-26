@@ -34,6 +34,7 @@ let TransactionHelper = {
     },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
+        const web3 = await Web3Util.getWeb3()
 
         try {
             let tx = await db.Tx.findOne({ hash : hash })
@@ -120,7 +121,7 @@ let TransactionHelper = {
                         { upsert: true, new: true })
                 }
             }
-            tx.status = receipt.status
+            tx.status = web3.utils.hexToNumber(receipt.status)
             tx.isPending = false
 
             // Internal transaction
