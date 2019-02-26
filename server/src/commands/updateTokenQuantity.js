@@ -4,7 +4,7 @@ const Web3Util = require('../helpers/web3')
 const BigNumber = require('bignumber.js')
 
 const db = require('../models')
-const epochReward = async () => {
+const tokenQuantity = async () => {
     async function getTokenHolders (page, limit) {
         return db.TokenHolder.find().limit(limit).skip((page - 1) * limit)
     }
@@ -46,4 +46,4 @@ const epochReward = async () => {
     process.exit(0)
 }
 
-module.exports = { epochReward }
+module.exports = { tokenQuantity }
