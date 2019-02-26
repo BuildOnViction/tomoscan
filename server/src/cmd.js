@@ -5,6 +5,7 @@ const { RewardProcess } = require('./commands/updateRewardTime')
 const { updateTxCount } = require('./commands/updateTxCount')
 const { epochReward } = require('./commands/epochReward')
 const { updateSpecialAccount } = require('./commands/updateSpecialAccount')
+const { tokenQuantity } = require('./commands/updateTokenQuantity')
 
 program
     .version('0.1.0')
@@ -45,6 +46,13 @@ program
     .description('Update special account')
     .action(() => {
         updateSpecialAccount()
+    })
+program
+    .command('updateTokenQuantity')
+    .alias('utq')
+    .description('Update token quantity')
+    .action(() => {
+        tokenQuantity()
     })
 
 program.parse(process.argv)

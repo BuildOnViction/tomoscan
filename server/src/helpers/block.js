@@ -35,9 +35,8 @@ let BlockHelper = {
         signer = signer.toLowerCase()
 
         // Update end tx count.
-        let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
         _block.timestamp = timestamp
-        _block.e_tx = endTxCount
+        _block.e_tx = _block.transactions.length
         _block.signer = signer
 
         let data = {
@@ -90,9 +89,8 @@ let BlockHelper = {
             _block.signer = signer.toLowerCase()
 
             // Update end tx count.
-            let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
             _block.timestamp = _block.timestamp * 1000
-            _block.e_tx = endTxCount
+            _block.e_tx = _block.transactions.length
 
             let data = {
                 'jsonrpc': '2.0',
@@ -127,7 +125,6 @@ let BlockHelper = {
     },
     getBlockOnChain: async (number) => {
         try {
-            let web3 = await Web3Util.getWeb3()
             let _block = await BlockHelper.getBlock(number)
             if (!_block) {
                 return null
@@ -137,9 +134,8 @@ let BlockHelper = {
             _block.signer = signer.toLowerCase()
 
             // Update end tx count.
-            let endTxCount = await web3.eth.getBlockTransactionCount(_block.hash)
             _block.timestamp = _block.timestamp * 1000
-            _block.e_tx = endTxCount
+            _block.e_tx = _block.transactions.length
 
             let data = {
                 'jsonrpc': '2.0',
