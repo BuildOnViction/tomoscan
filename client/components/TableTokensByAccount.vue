@@ -32,8 +32,8 @@
             <template
                 slot="quantity"
                 slot-scope="props">
-                {{ formatUnit(toTomo(props.item.quantity), props.item.tokenObj ?
-                props.item.tokenObj.symbol : '') }}
+                {{ formatUnit(toTokenQuantity(props.item.quantity, props.item.tokenObj.decimals),
+                              props.item.tokenObj.symbol) }}
             </template>
 
         </table-base>
