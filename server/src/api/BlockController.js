@@ -82,6 +82,7 @@ BlockController.get('/blocks', [
                 finality: finalityNumber
             })
         })
+        await Promise.all(map2)
 
         let result = []
         for (let i = 0; i < listBlkNum.length; i++) {

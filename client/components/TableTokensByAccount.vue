@@ -25,7 +25,7 @@
                 slot-scope="props">
                 <nuxt-link
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
-                    :to="{name: 'tokens-slug', params: {slug: props.item.token}}">
+                    :to="{name: 'tokens-slug-holder-holder', params: {slug: props.item.token, holder: address}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
             </template>
 
