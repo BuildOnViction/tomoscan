@@ -89,6 +89,26 @@ const mixin = {
             return mixin.methods.formatNumber(weiNumber, limitComma)
         },
 
+        toTokenQuantity: (wei, decimal) => {
+            if (isNaN(wei)) {
+                return '0'
+            }
+
+            if (typeof (wei) !== 'string') {
+                wei = wei.toString()
+            }
+
+            // Set bignumber config.
+            BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
+
+            let weiNumber = new BigNumber(wei)
+            let divided = 10 ** decimal
+
+            weiNumber = weiNumber.dividedBy(divided).toString()
+
+            return mixin.methods.formatNumber(weiNumber, decimal)
+        },
+
         toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
 
         unformatAddress: (address) => address.replace(

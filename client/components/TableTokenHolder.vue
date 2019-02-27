@@ -30,7 +30,10 @@
 
             <template
                 slot="quantity"
-                slot-scope="props">{{ toTomo(convertHexToFloat(props.item.quantity, 16)) }}</template>
+                slot-scope="props">
+                {{ formatUnit(toTokenQuantity(props.item.quantity, props.item.tokenObj.decimals),
+                              props.item.tokenObj.symbol) }}
+            </template>
         </table-base>
 
         <b-pagination-nav

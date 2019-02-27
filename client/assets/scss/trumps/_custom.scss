@@ -128,3 +128,12 @@
     margin: 1em;
   }
 }
+.token-transfer {
+  .hash-tag {
+    max-width: 135px !important;
+    display: inline-block !important;
+  }
+  .internal-color {
+    color: $color-text-2;
+  }
+}

@@ -27,6 +27,7 @@ let TokenTransactionHelper = {
                         item.symbol = (typeof tokens[j]['symbol'] !== 'undefined')
                             ? tokens[j]['symbol']
                             : null
+                        item.decimals = tokens[j].decimals
                         res.push(item)
                     }
                 }
