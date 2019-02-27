@@ -1,9 +1,9 @@
-import { Router } from 'express'
-import db from '../models'
-import Web3Util from '../helpers/web3'
+const express = require('express')
+const db = require('../models')
+const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
 
-const MixController = Router()
+const MixController = express.Router()
 
 /**
  * get tx, log, mined block reward count
@@ -182,4 +182,4 @@ MixController.get('/counting', async (req, res) => {
     }
 })
 
-export default MixController
+module.exports = MixController

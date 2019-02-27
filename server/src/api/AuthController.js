@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import axios from 'axios'
-import db from '../models'
-import EmailService from '../services/Email'
+const express = require('express')
+const axios = require('axios')
+const db = require('../models')
+const EmailService = require('../services/Email')
 const config = require('config')
 
-const AuthController = Router()
+const AuthController = express.Router()
 
 AuthController.post('/login', async (req, res) => {
     try {
@@ -183,4 +183,4 @@ AuthController.post('/reset-password', async (req, res) => {
     }
 })
 
-export default AuthController
+module.exports = AuthController

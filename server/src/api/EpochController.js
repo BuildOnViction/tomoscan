@@ -1,4 +1,4 @@
-import { Router } from 'express'
+const express = require('express')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const config = require('config')
@@ -6,7 +6,7 @@ const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
 const { check, validationResult } = require('express-validator/check')
 
-const EpochController = Router()
+const EpochController = express.Router()
 
 EpochController.get('/epochs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -99,4 +99,4 @@ EpochController.get('/epochs/:slug', [
     })
 })
 
-export default EpochController
+module.exports = EpochController

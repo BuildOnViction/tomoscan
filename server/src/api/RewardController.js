@@ -1,11 +1,11 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import db from '../models'
+const express = require('express')
+const { paginate } = require('../helpers/utils')
+const db = require('../models')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const RewardController = Router()
+const RewardController = express.Router()
 
 RewardController.get('/rewards/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -71,7 +71,7 @@ RewardController.get('/rewards/epoch/:epochNumber', [
 
 RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
-    check('fromEpoch').exists().isInt().withMessage('From epoch is require'),
+    check('fromEpoch').exists().isInt().withMessage('= require(epoch is require'),
     check('toEpoch').exists().isInt().withMessage('To epoch is require')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -188,4 +188,4 @@ RewardController.post('/expose/totalSignNumber/:epochNumber', [
     }
 })
 
-export default RewardController
+module.exports = RewardController

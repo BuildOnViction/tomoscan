@@ -1,5 +1,5 @@
-import db from '../models'
-import AccountHelper from './account'
+const db = require('../models')
+const AccountHelper = require('./account')
 
 let FollowHelper = {
     async firstOrUpdate (req, user, startBlock) {

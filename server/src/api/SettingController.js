@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import axios from 'axios'
-import db from '../models'
-import Web3Util from '../helpers/web3'
+const express = require('express')
+const axios = require('axios')
+const db = require('../models')
+const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
 
-const SettingController = Router()
+const SettingController = express.Router()
 var tomoUsd = {}
 
 SettingController.get('/setting', async (req, res) => {
@@ -39,4 +39,4 @@ SettingController.get('/setting/usd', async (req, res) => {
     return res.json(tomoUsd)
 })
 
-export default SettingController
+module.exports = SettingController

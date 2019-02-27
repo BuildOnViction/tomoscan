@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import authService from '../services/Auth'
-import { paginate } from '../helpers/utils'
-import db from '../models'
-import FollowHelper from '../helpers/follow'
+const express = require('express')
+const authService = require('../services/Auth')
+const { paginate } = require('../helpers/utils')
+const db = require('../models')
+const FollowHelper = require('../helpers/follow')
 
-const FollowController = Router()
+const FollowController = express.Router()
 
 FollowController.get('/follows', authService.authenticate(),
     async (req, res, next) => {
@@ -99,4 +99,4 @@ FollowController.delete('/follows/:id', authService.authenticate(),
         }
     })
 
-export default FollowController
+module.exports = FollowController

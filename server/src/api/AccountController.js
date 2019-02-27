@@ -1,12 +1,12 @@
-import { Router } from 'express'
-import db from '../models'
-import { paginate } from '../helpers/utils'
-import AccountHelper from '../helpers/account'
+const express = require('express')
+const db = require('../models')
+const { paginate } = require('../helpers/utils')
+const AccountHelper = require('../helpers/account')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
 
-const AccountController = Router()
+const AccountController = express.Router()
 
 AccountController.get('/accounts', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -93,4 +93,4 @@ AccountController.get('/accounts/:slug/mined', [
     }
 })
 
-export default AccountController
+module.exports = AccountController

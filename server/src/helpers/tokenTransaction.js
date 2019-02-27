@@ -1,7 +1,7 @@
 'use strict'
 
-import Token from '../models/Token'
-import Block from '../models/Block'
+const Token = require('../models/Token')
+const Block = require('../models/Block')
 
 let TokenTransactionHelper = {
 

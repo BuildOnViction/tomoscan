@@ -1,11 +1,11 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import db from '../models'
-import TokenHolderHelper from '../helpers/tokenHolder'
+const express = require('express')
+const { paginate } = require('../helpers/utils')
+const db = require('../models')
+const TokenHolderHelper = require('../helpers/tokenHolder')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const TokenHolderController = Router()
+const TokenHolderController = express.Router()
 
 TokenHolderController.get('/token-holders', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -83,4 +83,4 @@ TokenHolderController.get('/token-holders', [
     }
 })
 
-export default TokenHolderController
+module.exports = TokenHolderController

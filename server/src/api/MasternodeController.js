@@ -1,10 +1,10 @@
-import { Router } from 'express'
-import axios from 'axios'
-import urlJoin from 'url-join'
-import config from 'config'
+const express = require('express')
+const axios = require('axios')
+const urlJoin = require('url-join')
+const config = require('config')
 const logger = require('../helpers/logger')
 
-const MasternodeController = Router()
+const MasternodeController = express.Router()
 
 MasternodeController.get('/masternodes', async (req, res) => {
     try {
@@ -17,4 +17,4 @@ MasternodeController.get('/masternodes', async (req, res) => {
     }
 })
 
-export default MasternodeController
+module.exports = MasternodeController

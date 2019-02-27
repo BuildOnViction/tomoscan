@@ -1,13 +1,13 @@
-import { Router } from 'express'
-import db from '../models'
-import Web3Util from '../helpers/web3'
-import BlockHelper from '../helpers/block'
+const express = require('express')
+const db = require('../models')
+const Web3Util = require('../helpers/web3')
+const BlockHelper = require('../helpers/block')
 const config = require('config')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const axios = require('axios')
 
-const BlockController = Router()
+const BlockController = express.Router()
 
 BlockController.get('/blocks', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -190,4 +190,4 @@ BlockController.get('/blocks/signers/:slug', [
     }
 })
 
-export default BlockController
+module.exports = BlockController

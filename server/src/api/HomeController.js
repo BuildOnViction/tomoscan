@@ -1,11 +1,11 @@
-import { Router } from 'express'
-import Web3Util from '../helpers/web3'
+const express = require('express')
+const Web3Util = require('../helpers/web3')
 const config = require('config')
 const contractAddress = require('../contracts/contractAddress')
 const BigNumber = require('bignumber.js')
 const q = require('../queues')
 
-const HomeController = Router()
+const HomeController = express.Router()
 
 HomeController.get('/circulatingSupply', async (req, res) => {
     const web3 = await Web3Util.getWeb3()
@@ -38,4 +38,4 @@ HomeController.get('/jobNumber', async (req, res) => {
     return res.json({ jobNumber: await countJobs() })
 })
 
-export default HomeController
+module.exports = HomeController
