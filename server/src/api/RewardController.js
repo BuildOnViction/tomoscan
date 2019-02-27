@@ -107,8 +107,48 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
         return res.status(400).send()
     }
 })
-
 RewardController.post('/expose/rewards', async (req, res) => {
+    try {
+        const address = req.body.address || null
+        const owner = req.body.owner || null
+        const reason = req.body.reason || null
+        let limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 200
+        if (limit > 200) {
+            limit = 200
+        }
+        let page = !isNaN(req.body.page) ? parseInt(req.body.page) : 1
+        const skip = limit * (page - 1)
+        let params = {}
+
+        if (owner) {
+            params = {
+                validator: address.toLowerCase(),
+                address: owner.toLowerCase()
+            }
+        } else {
+            params = {
+                address: address.toLowerCase()
+            }
+        }
+
+        if (reason) {
+            params = Object.assign(params, { reason: reason })
+        }
+        const totalReward = db.Reward.countDocuments(params)
+
+        const reward = await db.Reward.find(params).sort({ epoch: -1 }).limit(limit).skip(skip).exec()
+
+        res.send({
+            items: reward,
+            total: await totalReward
+        })
+    } catch (e) {
+        logger.warn(e)
+        return res.status(400).send()
+    }
+})
+
+RewardController.post('/expose/rewardsByEpoch', async (req, res) => {
     try {
         const address = req.body.address || null
         const owner = req.body.owner || null
