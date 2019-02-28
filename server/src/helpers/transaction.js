@@ -137,6 +137,7 @@ let TransactionHelper = {
         }
     },
     getTxDetail: async (hash) => {
+        const web3 = await Web3Util.getWeb3()
         hash = hash.toLowerCase()
         let tx = await db.Tx.findOne({ hash: hash })
         if (tx && tx.status && tx.gasUsed && tx.gasPrice) {
@@ -171,7 +172,7 @@ let TransactionHelper = {
         if (receipt.blockNumber) {
             tx.blockNumber = receipt.blockNumber
         }
-        tx.status = receipt.status
+        tx.status = web3.utils.hexToNumber(receipt.status)
         tx.isPending = false
         tx.from = tx.from.toLowerCase()
         if (tx.to) {
