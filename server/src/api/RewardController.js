@@ -71,7 +71,7 @@ RewardController.get('/rewards/epoch/:epochNumber', [
 
 RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
-    check('fromEpoch').exists().isInt().withMessage('= require(epoch is require'),
+    check('fromEpoch').exists().isInt().withMessage('From epoch is require'),
     check('toEpoch').exists().isInt().withMessage('To epoch is require')
 ], async (req, res) => {
     let errors = validationResult(req)

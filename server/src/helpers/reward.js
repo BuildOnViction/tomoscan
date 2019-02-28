@@ -15,7 +15,7 @@ let RewardHelper = {
         if (parseInt(epoch) === 2) {
             startBlock = endBlock - (config.get('BLOCK_PER_EPOCH') * 2) + 1
         }
-        logger.info('Get vote history = require(block %s to block %s', startBlock, endBlock)
+        logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
         await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
         if (parseInt(epoch) === 2) {
@@ -67,7 +67,7 @@ let RewardHelper = {
                 }
                 return true
             }).catch(async (e) => {
-                logger.warn('Cannot get vote history = require(block %s to %s. Sleep 2 seconds and try more. Error %s',
+                logger.warn('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more. Error %s',
                     startBlock, endBlock, e)
                 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                 await sleep(2000)
@@ -88,7 +88,7 @@ let RewardHelper = {
             logger.warn('Epoch %s is waiting for calculate', epoch)
             return
         }
-        logger.info('Calculate reward = require(block %s to block %s', startBlock, endBlock)
+        logger.info('Calculate reward from block %s to block %s', startBlock, endBlock)
 
         // Delete old reward
         logger.info('Remove old reward of epoch %s', epoch)
@@ -105,7 +105,7 @@ let RewardHelper = {
             for (let j = i; j < i + 50; j++) {
                 its.push(j)
             }
-            logger.info('Update block signer = require(block %s to block %s', i, i + 49)
+            logger.info('Update block signer from block %s to block %s', i, i + 49)
             let map = its.map(async (b) => {
                 let block = await BlockHelper.getBlock(b)
 
@@ -132,7 +132,7 @@ let RewardHelper = {
         // Vote history process
         await RewardHelper.voteHistoryProcess(epoch)
 
-        logger.info('Duplicate vote amount = require(prev to epoch %s', epoch)
+        logger.info('Duplicate vote amount from prev to epoch %s', epoch)
         // Find in history and duplicate to this epoch if not found
         let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
         let data = []
