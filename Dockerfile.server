@@ -22,9 +22,7 @@ RUN npm install
 
 COPY server .
 
-RUN npm run build \
-    && npm run build-prod \
-    && apk del deps
+RUN apk del deps
 
 EXPOSE 3333
 
