@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const config = require('config')
@@ -6,7 +6,7 @@ const uuidv4 = require('uuid/v4')
 const logger = require('../helpers/logger')
 const urlJoin = require('url-join')
 
-const SignMessageController = express.Router()
+const SignMessageController = Router()
 
 SignMessageController.post('/verifySignedMess', async (req, res) => {
     try {

@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const db = require('../models')
 const TransactionHelper = require('../helpers/transaction')
 const Web3Util = require('../helpers/web3')
@@ -11,7 +11,7 @@ const accountName = require('../contracts/accountName')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const TxController = express.Router()
+const TxController = Router()
 
 TxController.get('/txs', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),

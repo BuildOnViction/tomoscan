@@ -1,10 +1,10 @@
-const express = require('express')
+const { Router } = require('express')
 const authService = require('../services/Auth')
 const { paginate } = require('../helpers/utils')
 const db = require('../models')
 const FollowHelper = require('../helpers/follow')
 
-const FollowController = express.Router()
+const FollowController = Router()
 
 FollowController.get('/follows', authService.authenticate(),
     async (req, res, next) => {

@@ -1,9 +1,9 @@
-const express = require('express')
+const { Router } = require('express')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
 
-const MixController = express.Router()
+const MixController = Router()
 
 /**
  * get tx, log, mined block reward count

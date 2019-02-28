@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const db = require('../models')
 const { paginate } = require('../helpers/utils')
 const AccountHelper = require('../helpers/account')
@@ -6,7 +6,7 @@ const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
 
-const AccountController = express.Router()
+const AccountController = Router()
 
 AccountController.get('/accounts', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),

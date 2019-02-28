@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const cors = require('cors')
 
 const AccountController = require('./AccountController')
@@ -19,7 +19,7 @@ const SignMessageController = require('./SignMessageController')
 const HomeController = require('./HomeController')
 const EpochController = require('./EpochController')
 
-const router = express.Router()
+const router = Router()
 
 // Add USERS Routes
 router.all('*', cors())

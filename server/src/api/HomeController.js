@@ -1,11 +1,11 @@
-const express = require('express')
+const { Router } = require('express')
 const Web3Util = require('../helpers/web3')
 const config = require('config')
 const contractAddress = require('../contracts/contractAddress')
 const BigNumber = require('bignumber.js')
 const q = require('../queues')
 
-const HomeController = express.Router()
+const HomeController = Router()
 
 HomeController.get('/circulatingSupply', async (req, res) => {
     const web3 = await Web3Util.getWeb3()

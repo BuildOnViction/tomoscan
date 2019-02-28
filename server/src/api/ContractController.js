@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const solc = require('solc')
 const md5 = require('blueimp-md5')
 const db = require('../models')
@@ -12,7 +12,7 @@ const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const ContractController = express.Router()
+const ContractController = Router()
 
 ContractController.get('/contracts', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),

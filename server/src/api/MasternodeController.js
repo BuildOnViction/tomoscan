@@ -1,10 +1,10 @@
-const express = require('express')
+const { Router } = require('express')
 const axios = require('axios')
 const urlJoin = require('url-join')
 const config = require('config')
 const logger = require('../helpers/logger')
 
-const MasternodeController = express.Router()
+const MasternodeController = Router()
 
 MasternodeController.get('/masternodes', async (req, res) => {
     try {

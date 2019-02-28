@@ -1,11 +1,11 @@
-const express = require('express')
+const { Router } = require('express')
 const db = require('../models')
 const { paginate } = require('../helpers/utils')
 const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const TokenTxController = express.Router()
+const TokenTxController = Router()
 
 TokenTxController.get('/token-txs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),

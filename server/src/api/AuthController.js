@@ -1,10 +1,10 @@
-const express = require('express')
+const { Router } = require('express')
 const axios = require('axios')
 const db = require('../models')
 const EmailService = require('../services/Email')
 const config = require('config')
 
-const AuthController = express.Router()
+const AuthController = Router()
 
 AuthController.post('/login', async (req, res) => {
     try {

@@ -1,4 +1,4 @@
-const express = require('express')
+const { Router } = require('express')
 const { paginate } = require('../helpers/utils')
 const db = require('../models')
 const BigNumber = require('bignumber.js')
@@ -7,7 +7,7 @@ const { check, validationResult } = require('express-validator/check')
 const config = require('config')
 const Web3Util = require('../helpers/web3')
 
-const RewardController = express.Router()
+const RewardController = Router()
 
 RewardController.get('/rewards/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),

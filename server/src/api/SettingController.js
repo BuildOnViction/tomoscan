@@ -1,10 +1,10 @@
-const express = require('express')
+const { Router } = require('express')
 const axios = require('axios')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
 
-const SettingController = express.Router()
+const SettingController = Router()
 var tomoUsd = {}
 
 SettingController.get('/setting', async (req, res) => {

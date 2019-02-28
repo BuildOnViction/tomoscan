@@ -1,11 +1,11 @@
-const express = require('express')
+const { Router } = require('express')
 const utils = require('../helpers/utils')
 const LogHelper = require('../helpers/log')
 const db = require('../models')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const LogController = express.Router()
+const LogController = Router()
 
 LogController.get('/logs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
