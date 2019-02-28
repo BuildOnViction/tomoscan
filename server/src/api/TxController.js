@@ -343,7 +343,7 @@ TxController.get('/txs/internal/:address', [
         if (req.query.fromBlock) {
             params.query = Object.assign({}, params.query, { block: { $gte: req.query.fromBlock } })
         }
-        if (req.query.fromBlock) {
+        if (req.query.toBlock) {
             params.query = Object.assign({}, params.query, { block: { $lte: req.query.toBlock } })
         }
         let data = await utils.paginate(req, 'InternalTx', params)
