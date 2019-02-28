@@ -7,11 +7,9 @@
     "server-dev": "nodemon --inspect -w src --exec node src ",
     "crawl-dev": "nodemon --exec node ./src/crawl.js",
     "subscribe-pending-tx-dev": "nodemon --exec node ./src/subscribePendingTx.js",
-    "build": "babel src -s -D -d dist",
-    "start": "node dist",
-    "crawl": "node dist/crawl.js",
-    "subscribe-pending-tx": "node dist/subscribePendingTx.js",
-    "build-prod": "npm run -s build",
+    "start": "node src",
+    "crawl": "node src/crawl.js",
+    "subscribe-pending-tx": "node src/subscribePendingTx.js",
     "test": "eslint src"
   },
   "eslintConfig": {
