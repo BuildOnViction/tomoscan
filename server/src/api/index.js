@@ -1,23 +1,23 @@
-import { Router } from 'express'
-import cors from 'cors'
+const { Router } = require('express')
+const cors = require('cors')
 
-import AccountController from './AccountController'
-import TxController from './TxController'
-import BlockController from './BlockController'
-import TokenController from './TokenController'
-import TokenTxController from './TokenTxController'
-import TokenHolderController from './TokenHolderController'
-import AuthController from './AuthController'
-import FollowController from './FollowController'
-import SettingController from './SettingController'
-import ContractController from './ContractController'
-import LogController from './LogController'
-import RewardController from './RewardController'
-import MixController from './MixController'
-import MasternodeController from './MasternodeController'
-import SignMessageController from './SignMessageController'
-import HomeController from './HomeController'
-import EpochController from './EpochController'
+const AccountController = require('./AccountController')
+const TxController = require('./TxController')
+const BlockController = require('./BlockController')
+const TokenController = require('./TokenController')
+const TokenTxController = require('./TokenTxController')
+const TokenHolderController = require('./TokenHolderController')
+const AuthController = require('./AuthController')
+const FollowController = require('./FollowController')
+const SettingController = require('./SettingController')
+const ContractController = require('./ContractController')
+const LogController = require('./LogController')
+const RewardController = require('./RewardController')
+const MixController = require('./MixController')
+const MasternodeController = require('./MasternodeController')
+const SignMessageController = require('./SignMessageController')
+const HomeController = require('./HomeController')
+const EpochController = require('./EpochController')
 
 const router = Router()
 
@@ -41,4 +41,4 @@ router.use(SignMessageController)
 router.use(HomeController)
 router.use(EpochController)
 
-export default router
+module.exports = router

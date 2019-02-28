@@ -1,12 +1,12 @@
-import { Router } from 'express'
-import solc from 'solc'
-import md5 from 'blueimp-md5'
-import db from '../models'
-import { paginate } from '../helpers/utils'
-import Web3Util from '../helpers/web3'
-import _ from 'lodash'
-import AccountHelper from '../helpers/account'
-import ContractHelper from '../helpers/contract'
+const { Router } = require('express')
+const solc = require('solc')
+const md5 = require('blueimp-md5')
+const db = require('../models')
+const { paginate } = require('../helpers/utils')
+const Web3Util = require('../helpers/web3')
+const _ = require('lodash')
+const AccountHelper = require('../helpers/account')
+const ContractHelper = require('../helpers/contract')
 
 const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
@@ -358,4 +358,4 @@ ContractController.get('/contractCreator/:slug', async (req, res) => {
     }
 })
 
-export default ContractController
+module.exports = ContractController

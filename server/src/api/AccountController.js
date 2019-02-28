@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import db from '../models'
-import { paginate } from '../helpers/utils'
-import AccountHelper from '../helpers/account'
+const { Router } = require('express')
+const db = require('../models')
+const { paginate } = require('../helpers/utils')
+const AccountHelper = require('../helpers/account')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
@@ -93,4 +93,4 @@ AccountController.get('/accounts/:slug/mined', [
     }
 })
 
-export default AccountController
+module.exports = AccountController

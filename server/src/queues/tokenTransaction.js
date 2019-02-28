@@ -1,6 +1,6 @@
 'use strict'
 
-import web3 from 'web3'
+const Web3Utils = require('../helpers/web3')
 const utils = require('../helpers/utils')
 const db = require('../models')
 const logger = require('../helpers/logger')
@@ -9,6 +9,7 @@ const consumer = {}
 consumer.name = 'TokenTransactionProcess'
 consumer.processNumber = 12
 consumer.task = async function (job, done) {
+    const web3 = await Web3Utils.getWeb3()
     try {
         let log = JSON.parse(job.data.log)
         logger.info('Process token transaction: ')

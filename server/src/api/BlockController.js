@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import db from '../models'
-import Web3Util from '../helpers/web3'
-import BlockHelper from '../helpers/block'
+const { Router } = require('express')
+const db = require('../models')
+const Web3Util = require('../helpers/web3')
+const BlockHelper = require('../helpers/block')
 const config = require('config')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
@@ -190,4 +190,4 @@ BlockController.get('/blocks/signers/:slug', [
     }
 })
 
-export default BlockController
+module.exports = BlockController

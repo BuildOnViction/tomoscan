@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import LogHelper from '../helpers/log'
-import db from '../models'
+const { Router } = require('express')
+const utils = require('../helpers/utils')
+const LogHelper = require('../helpers/log')
+const db = require('../models')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -35,7 +35,7 @@ LogController.get('/logs', [
             params.query = { transactionHash: tx }
         }
         params.sort = { _id: -1 }
-        let data = await paginate(req, 'Log', params, total)
+        let data = await utils.paginate(req, 'Log', params, total)
         let items = data.items
         for (let i = 0; i < items.length; i++) {
             data.items[i] = await LogHelper.formatLog(items[i])
@@ -48,4 +48,4 @@ LogController.get('/logs', [
     }
 })
 
-export default LogController
+module.exports = LogController

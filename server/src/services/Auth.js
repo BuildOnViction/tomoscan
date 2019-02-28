@@ -1,6 +1,6 @@
-import passport from 'passport'
-import passportJwt from 'passport-jwt'
-import User from '../models/User'
+const passport = require('passport')
+const passportJwt = require('passport-jwt')
+const User = require('../models/User')
 const config = require('config')
 
 let authService = {
@@ -35,4 +35,4 @@ function setJwtStrategy () {
     passport.use(strategy)
 }
 
-export default authService
+module.exports = authService

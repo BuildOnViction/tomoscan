@@ -1,6 +1,6 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import db from '../models'
+const { Router } = require('express')
+const { paginate } = require('../helpers/utils')
+const db = require('../models')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
@@ -253,4 +253,4 @@ RewardController.post('/expose/totalSignNumber/:epochNumber', [
     }
 })
 
-export default RewardController
+module.exports = RewardController
