@@ -153,59 +153,32 @@ RewardController.post('/expose/rewardsByEpoch', async (req, res) => {
         const address = req.body.address || null
         const owner = req.body.owner || null
         const reason = req.body.reason || null
-        const web3 = await Web3Util.getWeb3()
-        let limit = !isNaN(req.body.limit) ? parseInt(req.body.limit) : 200
-        if (limit > 200) {
-            limit = 200
-        }
-        let page = !isNaN(req.body.page) ? parseInt(req.body.page) : 1
-        const skip = limit * (page - 1)
+        const epoch = req.body.epoch || 1
         let params = {}
 
         if (owner) {
             params = {
                 validator: address.toLowerCase(),
-                address: owner.toLowerCase()
+                address: owner.toLowerCase(),
+                epoch: epoch
             }
         } else {
             params = {
-                address: address.toLowerCase()
+                address: address.toLowerCase(),
+                epoch: epoch
             }
         }
 
         if (reason) {
             params = Object.assign(params, { reason: reason })
         }
-        // latest epoch
-        const latestBlock = await web3.eth.getBlockNumber()
-        const latestEpoch = parseInt(latestBlock / config.get('BLOCK_PER_EPOCH')) - 1
 
-        const start = latestEpoch - 2 - skip
-        const stop = start - limit
-
-        const r = []
-        for (let i = start; i > stop && i > 0; i--) {
-            params.epoch = i
-            const re = await db.Reward.findOne(params).exec()
-            if (re) {
-                r.push(re)
-            } else {
-                r.push({
-                    epoch: i,
-                    status: null,
-                    reward: 0,
-                    signNumber: 0
-                })
-            }
-        }
+        const re = await db.Reward.findOne(params).exec()
         // const totalReward = db.Reward.countDocuments(params)
 
         // const reward = await db.Reward.find(params).sort({ epoch: -1 }).limit(limit).skip(skip).exec()
 
-        res.send({
-            items: r,
-            total: latestEpoch - 2
-        })
+        res.json(re)
     } catch (e) {
         logger.warn(e)
         return res.status(400).send()
