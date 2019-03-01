@@ -93,13 +93,8 @@
 
             <template
                 slot="value"
-                slot-scope="props">{{ formatUnit(toTomo(props.item.value), props.item.symbol) }}</template>
-
-            <template
-                slot="token"
                 slot-scope="props">
-                <span v-if="props.item.symbol">TRC20 ({{ props.item.symbol }})</span>
-                <i v-else>TRC20</i>
+                {{ formatUnit(toTokenQuantity(props.item.value, props.item.decimals), props.item.symbol) }}
             </template>
         </table-base>
 
@@ -149,8 +144,7 @@ export default {
             from: { label: 'From' },
             arrow: { class: 'text-center' },
             to: { label: 'To' },
-            value: { label: 'Value' },
-            token: { label: 'Token' }
+            value: { label: 'Value' }
         },
         loading: true,
         pagination: {},
