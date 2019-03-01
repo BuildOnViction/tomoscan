@@ -362,6 +362,9 @@ export default {
         },
         toggleDarkMode () {
             this.darkMode = !this.darkMode
+            this.$cookie.set('tomoscan_darkmode', this.darkMode, {
+                expires: '1Y'
+            })
         }
     }
 }
