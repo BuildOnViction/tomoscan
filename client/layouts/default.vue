@@ -88,6 +88,15 @@
                             </b-dropdown-item>
                         </b-nav-item-dropdown> -->
                     </b-navbar-nav>
+                    <div
+                        id="dark-mode-toggle">
+                        <input
+                            type="checkbox"
+                            class="dark-mode-checkbox"
+                            @click="toggleDarkMode">
+                        <div class="toggle-switch">&nbsp;</div>
+                        <div class="toggle-bg">&nbsp;</div>
+                    </div>
                 </b-collapse>
             </div>
         </b-navbar>
@@ -259,8 +268,16 @@ export default {
         ForgotPassword
     },
     mixins: [mixin],
+    head () {
+        return {
+            bodyAttrs: {
+                class: this.darkMode ? 'dark-mode' : ''
+            }
+        }
+    },
     data () {
         return {
+            darkMode: false,
             search: null,
             stats: null,
             version: pkg.version
@@ -342,6 +359,9 @@ export default {
             let self = this
             let { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
+        },
+        toggleDarkMode () {
+            this.darkMode = !this.darkMode
         }
     }
 }

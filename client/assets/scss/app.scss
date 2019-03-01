@@ -100,6 +100,7 @@ This is where majority of our work takes place and our UI components are often c
 @import 'components/container';
 @import 'components/contract-info';
 @import 'components/copyright';
+@import 'components/dark-mode-toggle';
 @import 'components/dropdown';
 @import 'components/empty';
 @import 'components/event-logs';
@@ -125,3 +126,4 @@ TRUMPS
 utilities and helper classes with ability to override anything which goes before in the triangle, eg. hide helper class
 */
 @import 'trumps/custom';
+@import 'trumps/dark-mode';

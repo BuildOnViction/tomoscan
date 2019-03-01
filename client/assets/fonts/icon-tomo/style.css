@@ -67,3 +67,15 @@
 .tm-dismiss:before {
   content: "\e904";
 }
+.tm-sun:before {
+  content: "\e90b";
+}
+.tm-moon:before {
+  content: "\e90c";
+}
+.tm-sun1:before {
+  content: "\e90d";
+}
+.tm-moon1:before {
+  content: "\e90e";
+}
