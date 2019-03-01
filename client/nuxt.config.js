@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
     head: {
-        title: 'TOMO Explorer',
+        title: 'TomoScan',
         meta: [
             { charset: 'utf-8' },
             {

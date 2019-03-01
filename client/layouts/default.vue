@@ -8,7 +8,7 @@
                 <b-navbar-brand :to="{name: 'index'}">
                     <img
                         src="~/assets/img/logo.svg"
-                        alt="TOMO Explorer"
+                        alt="TomoScan"
                         class="tomo-nav__logo">
                 </b-navbar-brand>
                 <b-navbar-toggle
