@@ -1,15 +1,17 @@
-import { Router } from 'express'
-import db from '../models'
-import TransactionHelper from '../helpers/transaction'
-import Web3Util from '../helpers/web3'
-import TokenTransactionHelper from '../helpers/tokenTransaction'
-import { paginate } from '../helpers/utils'
+const { Router } = require('express')
+const db = require('../models')
+const TransactionHelper = require('../helpers/transaction')
+const Web3Util = require('../helpers/web3')
+const TokenTransactionHelper = require('../helpers/tokenTransaction')
+const utils = require('../helpers/utils')
 const config = require('config')
-const TxController = Router()
+
 const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+
+const TxController = Router()
 
 TxController.get('/txs', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
@@ -92,13 +94,13 @@ TxController.get('/txs', [
         }
         start = new Date()
 
+        const web3 = await Web3Util.getWeb3()
         let data = {}
         let getOnChain = false
         if (isBlock) {
             let block = await db.Block.findOne({ number: blockNumber })
             if (block === null || block.e_tx > total) {
                 getOnChain = true
-                const web3 = await Web3Util.getWeb3()
 
                 const _block = await web3.eth.getBlock(blockNumber)
 
@@ -202,7 +204,7 @@ TxController.get('/txs', [
             let map = status.map(async function (s) {
                 let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
                 if (receipt) {
-                    s.status = receipt.status
+                    s.status = web3.utils.hexToNumber(receipt.status)
                 } else {
                     s.status = null
                 }
@@ -325,7 +327,9 @@ TxController.get('/txs/:slug', [
 TxController.get('/txs/internal/:address', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
-    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
+    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('fromBlock').optional().isInt().withMessage('Require fromBlock is number'),
+    check('toBlock').optional().isInt().withMessage('Require toBlock is number')
 
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -335,8 +339,14 @@ TxController.get('/txs/internal/:address', [
     let address = req.params.address
     address = address ? address.toLowerCase() : address
     try {
-        let data = await paginate(req, 'InternalTx',
-            { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } })
+        let params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
+        if (req.query.fromBlock) {
+            params.query = Object.assign({}, params.query, { block: { $gte: req.query.fromBlock } })
+        }
+        if (req.query.toBlock) {
+            params.query = Object.assign({}, params.query, { block: { $lte: req.query.toBlock } })
+        }
+        let data = await utils.paginate(req, 'InternalTx', params)
         return res.json(data)
     } catch (e) {
         logger.warn('cannot get list internal tx of address %s. Error %s', address, e)
@@ -344,4 +354,4 @@ TxController.get('/txs/internal/:address', [
     }
 })
 
-export default TxController
+module.exports = TxController

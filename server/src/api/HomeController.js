@@ -1,5 +1,5 @@
-import { Router } from 'express'
-import Web3Util from '../helpers/web3'
+const { Router } = require('express')
+const Web3Util = require('../helpers/web3')
 const config = require('config')
 const contractAddress = require('../contracts/contractAddress')
 const BigNumber = require('bignumber.js')
@@ -38,4 +38,4 @@ HomeController.get('/jobNumber', async (req, res) => {
     return res.json({ jobNumber: await countJobs() })
 })
 
-export default HomeController
+module.exports = HomeController

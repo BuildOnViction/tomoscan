@@ -1,9 +1,9 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import db from '../models'
-import TokenHelper from '../helpers/token'
-import Web3Util from '../helpers/web3'
-// import _ from 'lodash'
+const { Router } = require('express')
+const utils = require('../helpers/utils')
+const db = require('../models')
+const TokenHelper = require('../helpers/token')
+const Web3Util = require('../helpers/web3')
+// const _ = require('lodash')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const BigNumber = require('bignumber.js')
@@ -19,7 +19,7 @@ TokenController.get('/tokens', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let data = await paginate(req, 'Token',
+        let data = await utils.paginate(req, 'Token',
             { sort: { createdAt: -1 } })
 
         for (let i = 0; i < data.items.length; i++) {
@@ -146,4 +146,4 @@ TokenController.post('/tokens/:token/updateInfo', [
     }
 })
 
-export default TokenController
+module.exports = TokenController

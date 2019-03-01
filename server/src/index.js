@@ -1,6 +1,6 @@
-import api from './api'
-import Web3Connector from './services/Web3Connector'
-import authService from './services/Auth'
+const api = require('./api')
+const Web3Connector = require('./services/Web3Connector')
+const authService = require('./services/Auth')
 
 const express = require('express')
 const events = require('events')

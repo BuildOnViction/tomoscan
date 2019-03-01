@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import { paginate } from '../helpers/utils'
-import db from '../models'
-import TokenHolderHelper from '../helpers/tokenHolder'
+const { Router } = require('express')
+const { paginate } = require('../helpers/utils')
+const db = require('../models')
+const TokenHolderHelper = require('../helpers/tokenHolder')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -83,4 +83,4 @@ TokenHolderController.get('/token-holders', [
     }
 })
 
-export default TokenHolderController
+module.exports = TokenHolderController

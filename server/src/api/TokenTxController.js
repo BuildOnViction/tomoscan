@@ -1,7 +1,7 @@
-import { Router } from 'express'
-import db from '../models'
-import { paginate } from '../helpers/utils'
-import TokenTransactionHelper from '../helpers/tokenTransaction'
+const { Router } = require('express')
+const db = require('../models')
+const { paginate } = require('../helpers/utils')
+const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -51,4 +51,4 @@ TokenTxController.get('/token-txs', [
     }
 })
 
-export default TokenTxController
+module.exports = TokenTxController

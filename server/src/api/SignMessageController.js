@@ -1,6 +1,6 @@
-import { Router } from 'express'
-import db from '../models'
-import Web3Util from '../helpers/web3'
+const { Router } = require('express')
+const db = require('../models')
+const Web3Util = require('../helpers/web3')
 const config = require('config')
 const uuidv4 = require('uuid/v4')
 const logger = require('../helpers/logger')
@@ -126,4 +126,4 @@ SignMessageController.post('/signMessage/verify', async (req, res) => {
     }
 })
 
-export default SignMessageController
+module.exports = SignMessageController

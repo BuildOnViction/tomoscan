@@ -1,6 +1,6 @@
 'use strict'
 
-import { formatAscIIJSON } from './utils'
+const { formatAscIIJSON } = require('./utils')
 
 let TokenHelper = {
     getTokenFuncs: async () => ({

@@ -1,4 +1,4 @@
-import { Router } from 'express'
+const { Router } = require('express')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const config = require('config')
@@ -99,4 +99,4 @@ EpochController.get('/epochs/:slug', [
     })
 })
 
-export default EpochController
+module.exports = EpochController

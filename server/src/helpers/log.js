@@ -1,5 +1,5 @@
-import db from '../models'
-import _ from 'lodash'
+const db = require('../models')
+const _ = require('lodash')
 
 let LogHelper = {
     getFunctionHashes () {

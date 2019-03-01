@@ -1,5 +1,5 @@
-import Web3Util from '../helpers/web3'
-import cache from 'memory-cache'
+const Web3Util = require('../helpers/web3')
+const cache = require('memory-cache')
 
 let Web3Connector = {
     connect: async (io) => {
@@ -30,4 +30,4 @@ let Web3Connector = {
     }
 }
 
-export default Web3Connector
+module.exports = Web3Connector
