@@ -6,6 +6,8 @@
   margin-bottom: 50px;
 
   a.disabled {
+    //pointer-events: none;
+    //color: currentColor;
     cursor: not-allowed;
     opacity: 0.5;
   }
@@ -70,7 +72,6 @@
   }
 
   &__table {
-    table-layout: fixed;
     width: 100%;
 
     thead tr {
@@ -152,7 +153,7 @@
 
       tr {
         display: grid;
-        grid-template-columns: 30% 70%;
+        grid-template-columns: 30% auto;
         grid-gap: 15px;
         margin-bottom: 15px;
       }
@@ -174,7 +175,7 @@
     @include media-breakpoint-up(md) {
 
       tr {
-        grid-template-columns: 20% 80%;
+        grid-template-columns: 20% auto;
         margin-bottom: 30px;
       }
 
@@ -187,7 +188,7 @@
       width: 80%;
 
       tr {
-        grid-template-columns: 15% 85%;
+        grid-template-columns: 15% auto;
       }
     }
 
@@ -247,7 +248,7 @@
   .tomo-card__table tr {
 
     @include media-breakpoint-up(md) {
-      grid-template-columns: 30% 70%;
+      grid-template-columns: 30% auto;
 
       &.is-contract-message {
         grid-template-columns: 100%;
@@ -277,7 +278,7 @@
     border-bottom: 1px solid #dddddd;
 
     @include media-breakpoint-up(sm) {
-      grid-template-columns: 30% 70%;
+      grid-template-columns: 30% auto;
     }
   }
 
