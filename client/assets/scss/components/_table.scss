@@ -332,11 +332,11 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 15% 12% 15% 5% 15% 31% 7%;
+      grid-template-columns: 25% 10% 25% 5% 25% 10%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 16% 12% 16% 5% 16% 25% 10%;
+      grid-template-columns: 25% 10% 25% 5% 25% 10%;
     }
   }
 
@@ -344,15 +344,19 @@
     max-width: 8.75rem;
 
     @include media-breakpoint-up(lg) {
-      max-width: 7rem;
+      max-width: 10rem;
     }
 
     @include media-breakpoint-up(xl) {
-      max-width: 9rem;
+      max-width: 13rem;
     }
 
     @include media-breakpoint-up(2xl) {
-      max-width: 11rem;
+      max-width: 16rem;
+    }
+
+    @include media-breakpoint-up(3xl) {
+      max-width: 22rem;
     }
   }
 }
