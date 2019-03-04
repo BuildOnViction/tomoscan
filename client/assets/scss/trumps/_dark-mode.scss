@@ -262,6 +262,40 @@ body.dark-mode .tomo-stat .tomo-stat__item a {
     }
 }
 
+// Headline
+.tomo-headline {
+    color: #cfcde1;
+}
+
+// Card
+body.dark-mode .tomo-card {
+    background-image: linear-gradient(-135deg,#2d2d4a,#40406a,#1d1e31);
+    background-size: 400% 400%;
+    animation: tomocard 10s ease infinite;
+
+    &__table {
+
+        thead tr {
+            color: #cfcde1;
+        }
+
+        td:first-child {
+            color: #cfcde1;
+        }
+
+        .vue-codemirror {
+            border-color: #47475f;
+        }
+
+        @include media-breakpoint-up(sm) {
+
+            td:last-child {
+                color: $color-text-dark;
+            }
+        }
+    }
+}
+
 // Custom CSS
 body.dark-mode {
 
@@ -298,4 +332,9 @@ body.dark-mode {
     .bs-tooltip-top .arrow:before {
         border-top-color: #aca9C4;
     }
+}
+
+// Tx Detail page
+body.dark-mode {
+
 }

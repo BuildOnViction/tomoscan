@@ -202,6 +202,7 @@
                                                             :options="{
                                                                 mode:'application/ld+json',
                                                                 gutters:[],
+                                                                theme: codeMirrorTheme,
                                                                 lineNumbers:false,styleActiveLine:false}" />
                                                     </no-ssr>
                                                 </span>
@@ -228,6 +229,7 @@
     </section>
 </template>
 <script>
+import Cookie from 'js-cookie'
 import mixin from '~/plugins/mixin'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
@@ -255,6 +257,9 @@ export default {
     computed: {
         hashTab () {
             return this.$route.hash || '#overview'
+        },
+        codeMirrorTheme () {
+            return Cookie.get('tomoscan_theme') === 'dark' ? 'duotone-dark' : 'eclipse'
         }
     },
     created () {
