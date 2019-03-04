@@ -141,6 +141,14 @@ body.dark-mode .search-form {
     }
 }
 
+// Breadcrumbs
+body.dark-mode .breadcrumb.tomo-breadcrumb {
+
+    .breadcrumb-item:last-child a {
+        color: $color-primary-dark;
+    }
+}
+
 // Footer
 body.dark-mode .tomo-footer  {
     color: $color-text-dark;
