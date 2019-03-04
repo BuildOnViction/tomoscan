@@ -1,16 +1,18 @@
 /* Dark Mode */
 $color-primary-dark: #30ddd8;
-$color-text-dark: #7573a6;
+$color-text-dark: #7773bd;
+$color-text-dark-alt: #7573ab;
 
 // Global Settings
 body.dark-mode {
+    color: $color-text-dark;
     background-color: #1d1e31;
 
     a {
-        color: $color-text-dark;
+        color: $color-primary-dark;
 
         &:hover {
-            color: $color-primary-dark;
+            color: #36fcf6;
         }
     }
     
@@ -123,6 +125,7 @@ body.dark-mode .tomo-nav {
     }
 
     .dropdown-item {
+        color: #aca9c4;
         background-color: transparent !important;
         border-bottom-color: #47475f;
 
@@ -154,8 +157,37 @@ body.dark-mode .search-form {
 // Breadcrumbs
 body.dark-mode .breadcrumb.tomo-breadcrumb {
 
+    a {
+        color: $color-text-dark-alt;
+    }
+
+    a:hover {
+        color: $color-primary-dark;
+    }
+
     .breadcrumb-item:last-child a {
         color: $color-primary-dark;
+    }
+}
+
+// Table
+body.dark-mode .tomo-table {
+    
+    thead tr {
+        color: $color-text-dark;
+    }
+
+    tbody tr {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#2e2e4b,#323252);
+    }
+
+    td:before {
+        color: #cfcde1;
+    }
+
+    .tm-arrow-right.text-success {
+        color: #6589e3 !important;
     }
 }
 
@@ -165,11 +197,22 @@ body.dark-mode .tomo-footer  {
 
     &__copyright {
         color: $color-text-dark;
+
+        a {
+            color: #6a8ae8;
+        }
+
+        a:hover {
+            color: #cfcde1;
+        }
     }
     
-
-    &__social i:hover {
-        color: #cfcde1;
+    &__social i {
+        color: $color-text-dark-alt;
+        
+        &:hover {
+            color: #cfcde1;
+        }
     }
 
 }
@@ -192,5 +235,67 @@ body.dark-mode .tomo-modal {
     .modal-content {
         background-color: transparent;
         background-image: linear-gradient(-135deg,#373658,#40406a);
+    }
+
+    .form-control {
+        &.is-invalid,
+        &.is-invalid:focus {
+            border-color: #fb6d9c;
+        }
+    }
+
+    .forgot-password {
+        color: $color-text-dark-alt;
+
+        &:hover {
+            color: $color-primary-dark;
+        }
+    }
+}
+
+// Tomo Stat
+body.dark-mode .tomo-stat .tomo-stat__item a {
+    color: $color-text-dark-alt;
+
+    &:hover {
+        color: $color-primary-dark;
+    }
+}
+
+// Custom CSS
+body.dark-mode {
+
+    .tomo-total-items {
+        color: #cfcde1;
+    }
+
+    .alert-danger,
+    .text-danger {
+        color: #fb6d9c !important;
+    }
+
+    .text-success {
+        color: $color-primary-dark !important;
+    }
+
+    .tooltip-inner {
+        color: #1d1e31;
+        background-color: #aca9c4;
+    }
+
+    .bs-tooltip-right .arrow:before {
+        border-right-color: #aca9C4;
+    }
+    
+    .bs-tooltip-left .arrow:before {
+        border-left-color: #aca9C4;
+    }
+    
+    .bs-tooltip-bottom .arrow:before {
+        border-bottom-color: #aca9C4;
+    }
+    
+    .bs-tooltip-top .arrow:before {
+        border-top-color: #aca9C4;
     }
 }
