@@ -91,8 +91,9 @@
                     <div
                         id="dark-mode-toggle">
                         <input
+                            id="dark-mode-checkbox"
+                            :checked="isDarkMode"
                             type="checkbox"
-                            class="dark-mode-checkbox"
                             @click="toggleDarkMode">
                         <div class="toggle-switch">&nbsp;</div>
                         <div class="toggle-bg">&nbsp;</div>
@@ -251,6 +252,7 @@
 </template>
 
 <script>
+import Cookie from 'js-cookie'
 import mixin from '~/plugins/mixin'
 import MyFooter from '~/components/Footer.vue'
 import Breadcrumb from '~/components/Breadcrumb.vue'
@@ -271,13 +273,12 @@ export default {
     head () {
         return {
             bodyAttrs: {
-                class: this.darkMode ? 'dark-mode' : ''
+                class: this.isDarkMode ? 'dark-mode' : ''
             }
         }
     },
     data () {
         return {
-            darkMode: false,
             search: null,
             stats: null,
             version: pkg.version
@@ -306,6 +307,10 @@ export default {
         isHomePage () {
             let name = this.$route.name
             return name ? name.indexOf(['index']) >= 0 : false
+        },
+        isDarkMode () {
+            console.log(Cookie.get('tomoscan_theme'))
+            return Cookie.get('tomoscan_theme') === 'dark'
         }
     },
     watch: {
@@ -315,6 +320,14 @@ export default {
             }
         }
     },
+    // beforeMount () {
+    //     let self = this
+
+    //     if (self.isDarkMode) {
+    //         // document.body.classList.add('dark-mode')
+    //         // document.getElementById('dark-mode-checkbox').checked = true
+    //     }
+    // },
     mounted () {
         let self = this
 
@@ -361,8 +374,8 @@ export default {
             self.stats = data.stats
         },
         toggleDarkMode () {
-            this.darkMode = !this.darkMode
-            this.$cookie.set('tomoscan_darkmode', this.darkMode, {
+            let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
+            Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
                 expires: '1Y'
             })
         }

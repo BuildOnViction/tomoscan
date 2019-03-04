@@ -11,7 +11,7 @@
     border-radius: 100px;
 }
 
-.dark-mode-checkbox {
+#dark-mode-checkbox {
     position: relative;
     width: 100%;
     height: 100%;
@@ -61,22 +61,22 @@
     @extend %tm-icon;
 }
 
-.dark-mode-checkbox:active + .toggle-switch:before {
+#dark-mode-checkbox:active + .toggle-switch:before {
     width: 46px;
     border-radius: 100px;
     transform: translate(360deg);
 }
 
-.dark-mode-checkbox:checked:active + .toggle-switch:before {
+#dark-mode-checkbox:checked:active + .toggle-switch:before {
     margin-left: -26px;
 }
 
-.dark-mode-checkbox:checked + .toggle-switch:before {
+#dark-mode-checkbox:checked + .toggle-switch:before {
     content: '\e90e';
     left: 30px;
     background-color: #678be0;
 }
 
-.dark-mode-checkbox:checked ~ .toggle-bg {
+#dark-mode-checkbox:checked ~ .toggle-bg {
     background-color: #323251;
 }

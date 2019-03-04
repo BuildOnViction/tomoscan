@@ -35,7 +35,6 @@ module.exports = {
         '~/plugins/vuelidate',
         '~/plugins/bootstrap-vue',
         '~/plugins/clipboards',
-        '~/plugins/cookies',
         { src: '~/plugins/vue-codemirror', ssr: false }
     ],
     modules: [
