@@ -92,7 +92,6 @@
                         id="dark-mode-toggle">
                         <input
                             id="dark-mode-checkbox"
-                            :checked="isDarkMode"
                             type="checkbox"
                             @click="toggleDarkMode">
                         <div class="toggle-switch">&nbsp;</div>
@@ -270,13 +269,6 @@ export default {
         ForgotPassword
     },
     mixins: [mixin],
-    head () {
-        return {
-            bodyAttrs: {
-                class: this.isDarkMode ? 'dark-mode' : ''
-            }
-        }
-    },
     data () {
         return {
             search: null,
@@ -320,14 +312,6 @@ export default {
             }
         }
     },
-    // beforeMount () {
-    //     let self = this
-
-    //     if (self.isDarkMode) {
-    //         // document.body.classList.add('dark-mode')
-    //         // document.getElementById('dark-mode-checkbox').checked = true
-    //     }
-    // },
     mounted () {
         let self = this
 
@@ -335,6 +319,11 @@ export default {
 
         if (self.isHomePage) {
             self.getStats()
+        }
+
+        if (self.isDarkMode) {
+            document.body.classList.add('dark-mode')
+            document.getElementById('dark-mode-checkbox').checked = true
         }
     },
     methods: {
@@ -376,8 +365,14 @@ export default {
         toggleDarkMode () {
             let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
-                expires: '1Y'
+                expires: 365
             })
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode')
+            } else {
+                document.body.classList.remove('dark-mode')
+            }
         }
     }
 }
