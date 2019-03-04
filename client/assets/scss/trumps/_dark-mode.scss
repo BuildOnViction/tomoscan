@@ -263,8 +263,22 @@ body.dark-mode .tomo-stat .tomo-stat__item a {
 }
 
 // Headline
-.tomo-headline {
+body.dark-mode .tomo-headline {
     color: #cfcde1;
+}
+
+// Tabs
+body.dark-mode .tomo-tabs {
+
+    .nav-link {
+        border-bottom-color: #505078;
+        color: #505078;
+
+        &.active {
+            border-bottom-color: $color-primary-dark;
+            color: $color-primary-dark;
+        }
+    }
 }
 
 // Card

@@ -1,4 +1,6 @@
 .tomo-headline {
+  transition: all .5s ease;
+
   .tomo-readmore--is-open {
     max-width: 80%;
   }
