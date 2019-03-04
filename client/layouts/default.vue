@@ -362,7 +362,7 @@ export default {
             let { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
         },
-        toggleDarkMode () {
+        toggleDarkMode (e) {
             let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
                 expires: 365
@@ -373,6 +373,8 @@ export default {
             } else {
                 document.body.classList.remove('dark-mode')
             }
+
+            this.darkLightMode(e)
         }
     }
 }

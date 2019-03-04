@@ -198,6 +198,7 @@
                                                 <span class="text-danger">
                                                     <no-ssr placeholder="Codemirror Loading...">
                                                         <codemirror
+                                                            ref="inputDataCode"
                                                             :value="inputData"
                                                             :options="{
                                                                 mode:'application/ld+json',

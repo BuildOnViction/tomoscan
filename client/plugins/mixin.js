@@ -169,7 +169,7 @@ const mixin = {
             let id = e.target.parentNode.id
             let mode = e.target.getAttribute('data-mode')
             let theme = mode === 'light' ? 'base16-dark' : 'eclipse'
-
+console.log(e)
             if (id === 'code-actions--source') {
                 this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
             }
