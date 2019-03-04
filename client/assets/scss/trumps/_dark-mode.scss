@@ -30,7 +30,17 @@ body.dark-mode {
             border-color: #739dff;
             background-color: #739dff;
         }
-      }
+    }
+    
+    .btn-secondary.btn-secondary {
+        border-color: #7573a8;
+        background-color: #7573a8;
+      
+        &:hover {
+            border-color: #5b5a88;
+            background-color: #5b5a88;
+        }
+    }
 }
 
 // Input
@@ -162,4 +172,25 @@ body.dark-mode .tomo-footer  {
         color: #cfcde1;
     }
 
+}
+
+// Modal
+body.dark-mode .tomo-modal {
+
+    .modal-header .close {
+        color: #7573a8;
+    }
+
+    .modal-title {
+        color: #cfcde1;
+    }
+
+    .control-label {
+        color: #7773bd;
+    }
+
+    .modal-content {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#373658,#40406a);
+    }
 }
