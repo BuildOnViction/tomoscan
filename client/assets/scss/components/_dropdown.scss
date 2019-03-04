@@ -1,5 +1,6 @@
 .dropdown-menu {
   border: none;
+  transition: all .5s ease-in;
 
   .tomo-nav & {
 
@@ -19,6 +20,7 @@
 }
 
 .dropdown-item {
+  transition: all .5s ease-in;
 
   .tomo-nav & {
     font-size: 14px;
