@@ -1,5 +1,21 @@
+/* Dark Mode */
+$color-primary-dark: #30ddd8;
+$color-text-dark: #7573a6;
+
 body.dark-mode {
     background-color: #1d1e31;
+
+    a {
+        color: $color-text-dark;
+
+        &:hover {
+            color: $color-primary-dark;
+        }
+    }
+    
+    .text-muted {
+        color: #62618c !important;
+    }
 
     .tomo-nav {
         background-image: linear-gradient(-135deg,#373658,#40406a);
@@ -45,7 +61,7 @@ body.dark-mode {
         background-image: linear-gradient(-135deg,#2e2e4b,#323252);
 
         @include media-breakpoint-down(md) {
-            border-top-color: #7573a6;
+            border-top-color: $color-text-dark;
         }
     }
 
@@ -62,7 +78,20 @@ body.dark-mode {
 
     .tomo-nav__toggle {
         path {
-            stroke: #7573a6;
+            stroke: $color-text-dark;
+        }
+    }
+
+    .tomo-footer {
+        color: $color-text-dark;
+
+        &__copyright {
+            color: $color-text-dark;
+        }
+        
+
+        &__social i:hover {
+            color: #cfcde1;
         }
     }
 }
