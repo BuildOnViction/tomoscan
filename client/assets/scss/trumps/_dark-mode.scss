@@ -506,3 +506,19 @@ body.dark-mode .tomo-pagination {
         }
     }
 }
+
+// Block breadcrumb
+body.dark-mode .block-breadcrumb {
+
+    a {
+        color: $color-text-dark;
+    }
+  
+    &__prev,
+    &__next {
+        &:hover,
+        &:hover a {
+        color: $color-primary-dark;
+        }
+    }
+}
