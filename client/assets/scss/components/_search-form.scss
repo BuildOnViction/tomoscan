@@ -39,7 +39,7 @@
     border: none;
     z-index: 1;
 
-    @extend %transit;
+    // @extend %transit;
 
     &::placeholder {
       color: rgb(167, 167, 167) !important;

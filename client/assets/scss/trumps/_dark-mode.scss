@@ -21,6 +21,11 @@ body.dark-mode {
     }
 }
 
+// Nuxt progress bar
+body.dark-mode .nuxt-progress {
+    background-color: $color-primary-dark !important;
+}
+
 // Buttons
 body.dark-mode {
     

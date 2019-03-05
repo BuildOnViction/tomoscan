@@ -301,7 +301,6 @@ export default {
             return name ? name.indexOf(['index']) >= 0 : false
         },
         isDarkMode () {
-            console.log(Cookie.get('tomoscan_theme'))
             return Cookie.get('tomoscan_theme') === 'dark'
         }
     },
@@ -322,8 +321,8 @@ export default {
         }
 
         if (self.isDarkMode) {
-            document.body.classList.add('dark-mode')
-            document.getElementById('dark-mode-checkbox').checked = true
+            // document.body.classList.add('dark-mode')
+            // document.getElementById('dark-mode-checkbox').checked = true
         }
     },
     methods: {
