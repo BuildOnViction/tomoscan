@@ -200,6 +200,11 @@
   .form-group {
     margin-bottom: 30px;
   }
+
+  .tomo-qrcode .btn.code-actions__copy {
+    box-shadow: none;
+    margin-bottom: 5px;
+  }
 }
 
 .tomo-card--transaction .tomo-readmore--is-open {

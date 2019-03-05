@@ -294,7 +294,10 @@ body.dark-mode .tomo-tabs {
 body.dark-mode .tomo-card {
     background-image: linear-gradient(-135deg,#2d2d4a,#40406a,#1d1e31);
     background-size: 400% 400%;
-    animation: tomocard 10s ease infinite;
+
+    &__headline {
+        color: #cfcde1;
+    }
 
     &__table {
 
@@ -316,6 +319,10 @@ body.dark-mode .tomo-card {
                 color: $color-text-dark;
             }
         }
+    }
+
+    .tomo-qrcode .btn.code-actions__copy {
+        color: #cfcde1;
     }
 }
 
@@ -357,7 +364,7 @@ body.dark-mode {
     }
 }
 
-// CodeMirror theme
+// CodeMirror
 body.dark-mode .vue-codemirror {
     .CodeMirror-wrap {
         color: #6c6783;
