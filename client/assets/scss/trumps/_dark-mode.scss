@@ -15,6 +15,10 @@ body.dark-mode {
             color: #36fcf6;
         }
     }
+
+    small {
+        color: $color-text-dark-alt;
+    }
     
     .text-muted {
         color: #505078 !important;
@@ -353,7 +357,109 @@ body.dark-mode {
     }
 }
 
-// Tx Detail page
-body.dark-mode {
+// CodeMirror theme
+body.dark-mode .vue-codemirror {
+    .CodeMirror-wrap {
+        color: #6c6783;
+        background-color: #2a2734;
+    }
 
+    div.CodeMirror-selected {
+        background-color: #545167!important;
+    }
+
+    .CodeMirror-gutters {
+        background-color: #2a2734;
+        border-right: 0px;
+    }
+
+    .CodeMirror-linenumber {
+        color: #545167;
+    }
+
+    /* Cursor */
+    .CodeMirror-cursor {
+        border-left: 1px solid #ffad5c;
+        border-right: .5em solid #ffad5c;
+        opacity: .5;
+    }
+
+    .CodeMirror-activeline-background {
+        background-color: #363342;
+        opacity: .5;
+    }
+
+    .cm-fat-cursor .CodeMirror-cursor {
+        background: #ffad5c;
+        opacity: .5;
+    }
+
+    span.cm-atom,
+    span.cm-number,
+    span.cm-keyword,
+    span.cm-variable,
+    span.cm-attribute,
+    span.cm-quote,
+    span.cm-hr,
+    span.cm-link { 
+        color: #ffcc99;
+    }
+
+    span.cm-property {
+        color: #9a86fd;
+    }
+
+    span.cm-punctuation,
+    span.cm-unit,
+    span.cm-negative {
+        color: #e09142;
+    }
+    
+    span.cm-string {
+        color: #ffb870;
+    }
+    
+    span.cm-operator {
+        color: #ffad5c;
+    }
+    
+    span.cm-positive {
+        color: #6a51e6;
+    }
+
+    span.cm-variable-2,
+    span.cm-variable-3,
+    span.cm-type,
+    span.cm-string-2,
+    span.cm-url {
+        color: #7a63ee;
+    }
+
+    span.cm-def,
+    span.cm-tag,
+    span.cm-builtin,
+    span.cm-qualifier,
+    span.cm-header,
+    span.cm-em {
+        color: #eeebff;
+    }
+
+    span.cm-bracket,
+    span.cm-comment {
+        color: #6c6783;
+    }
+
+    span.cm-error,
+    span.cm-invalidchar {
+        color: #f00;
+    }
+
+    span.cm-header {
+        font-weight: normal;
+    }
+    
+    .CodeMirror-matchingbracket {
+        text-decoration: underline;
+        color: #eeebff !important;
+    } 
 }

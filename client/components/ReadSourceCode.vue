@@ -38,10 +38,6 @@
                     v-clipboard="smartContract.sourceCode"
                     class="btn btn-sm mr-2 code-actions__copy"
                     @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
-                <button
-                    class="btn btn-sm code-actions__toggle"
-                    data-mode="light"
-                    @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror
@@ -59,11 +55,6 @@
                     v-clipboard="smartContract.abiCode"
                     class="btn btn-sm mr-2 code-actions__copy"
                     @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
-                <button
-                    id="btn-abi-code"
-                    class="btn btn-sm code-actions__toggle"
-                    data-mode="light"
-                    @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror
@@ -82,11 +73,6 @@
                     v-clipboard="address.code"
                     class="btn btn-sm mr-2 code-actions__copy"
                     @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
-                <button
-                    id="btn-code"
-                    class="btn btn-sm code-actions__toggle"
-                    data-mode="light"
-                    @click="darkLightMode"><i class="fa fa-adjust mr-1" />Dark Mode</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror

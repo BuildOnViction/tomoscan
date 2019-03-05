@@ -299,9 +299,6 @@ export default {
         isHomePage () {
             let name = this.$route.name
             return name ? name.indexOf(['index']) >= 0 : false
-        },
-        isDarkMode () {
-            return Cookie.get('tomoscan_theme') === 'dark'
         }
     },
     watch: {
@@ -318,11 +315,6 @@ export default {
 
         if (self.isHomePage) {
             self.getStats()
-        }
-
-        if (self.isDarkMode) {
-            // document.body.classList.add('dark-mode')
-            // document.getElementById('dark-mode-checkbox').checked = true
         }
     },
     methods: {
@@ -361,7 +353,7 @@ export default {
             let { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
         },
-        toggleDarkMode (e) {
+        toggleDarkMode () {
             let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
                 expires: 365
@@ -372,8 +364,6 @@ export default {
             } else {
                 document.body.classList.remove('dark-mode')
             }
-
-            this.darkLightMode(e)
         }
     }
 }
