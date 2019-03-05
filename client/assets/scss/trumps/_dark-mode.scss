@@ -1,7 +1,7 @@
 /* Dark Mode */
 $color-primary-dark: #30ddd8;
 $color-text-dark: #7773bd;
-$color-text-dark-alt: #7573ab;
+$color-text-dark-alt: #7573a6;
 
 // Global Settings
 body.dark-mode {
@@ -479,4 +479,30 @@ body.dark-mode .vue-codemirror {
         text-decoration: underline;
         color: #eeebff !important;
     } 
+}
+
+// Pagination
+body.dark-mode .tomo-pagination {
+    
+    .page-item {
+
+        &.active .page-link {
+            color: #cfcde1;
+            background-color: #373658;
+        }
+    
+        &.disabled:not([role="separator"]) .page-link {
+            background-color: #373658;
+        }
+
+        .page-link {
+            color: $color-text-dark;
+            background-color: #323258;
+
+            &:hover {
+                color: #cfcde1;
+                background-color: #373658;
+            }
+        }
+    }
 }
