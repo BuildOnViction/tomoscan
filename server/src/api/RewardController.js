@@ -4,8 +4,6 @@ const db = require('../models')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
-const config = require('config')
-const Web3Util = require('../helpers/web3')
 
 const RewardController = Router()
 
