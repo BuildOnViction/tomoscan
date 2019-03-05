@@ -57,11 +57,8 @@ body.dark-mode {
 // Input
 body.dark-mode {
 
-    input[type=email],
-    input[type=number],
-    input[type=password],
-    input[type=phone],
-    input[type=text] {
+    .form-control {
+        color: #6a8ae8;
         border-color: #323251;
         background-color: #323251;
 
@@ -82,6 +79,7 @@ body.dark-mode {
         &:-ms-input-placeholder {
             color: #505078;
         }
+
     }
 }
 
@@ -327,6 +325,10 @@ body.dark-mode .tomo-card {
 
     .tomo-qrcode .btn.code-actions__copy {
         color: #cfcde1;
+    }
+
+    &--verify {
+        background-image: linear-gradient(-135deg,#373658,#40406a);
     }
 }
 
