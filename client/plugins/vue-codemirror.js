@@ -1,8 +1,6 @@
 import Vue from 'vue'
 import VueCodeMirror from 'vue-codemirror'
 import 'codemirror/lib/codemirror.css'
-import 'codemirror/theme/base16-dark.css'
-import 'codemirror/theme/duotone-dark.css'
 import 'codemirror/theme/eclipse.css'
 
 // language
