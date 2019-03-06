@@ -92,6 +92,7 @@
                         id="dark-mode-toggle">
                         <input
                             id="dark-mode-checkbox"
+                            :checked="darkMode"
                             type="checkbox"
                             @click="toggleDarkMode">
                         <div class="toggle-switch">&nbsp;</div>
@@ -271,6 +272,7 @@ export default {
     mixins: [mixin],
     data () {
         return {
+            darkMode: false,
             search: null,
             stats: null,
             version: pkg.version
@@ -317,6 +319,8 @@ export default {
             self.getStats()
         }
 
+        self.darkMode = Cookie.get('tomoscan_theme') === 'dark'
+
         if (typeof Cookie.get('tomoscan_theme') === 'undefined') {
             document.getElementById('dark-mode-toggle').classList.add('try-dark-mode')
         }
@@ -359,6 +363,7 @@ export default {
         },
         toggleDarkMode (e) {
             let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
+            this.darkMode = darkMode
 
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
                 expires: 365

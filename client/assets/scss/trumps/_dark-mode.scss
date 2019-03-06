@@ -20,6 +20,10 @@ body.dark-mode {
     small {
         color: $color-text-dark-alt;
     }
+
+    .text-secondary {
+        color: $color-text-dark;
+    }
     
     .text-muted {
         color: #505078 !important;
@@ -573,4 +577,17 @@ body.dark-mode .code-actions .btn {
     color: #fff;
     border-color: #678be0;
     background-color: #678be0; 
+}
+
+// Token Info
+body.dark-mode .tomo-card--token {
+    background-image: linear-gradient(-135deg,#373658,#40406a);
+
+    .tomo-card__table tr {
+        border-bottom-color: #505078;
+    }
+
+    .code-actions__copy {
+        color: $color-text-white-dark;
+    }
 }
