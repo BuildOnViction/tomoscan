@@ -21,13 +21,13 @@ consumer.task = async function (job, done) {
 
         if (!token.name) {
             let name = await web3.eth.call({ to: token.hash, data: tokenFuncs['name'] })
-            name = await utils.trimWord(await web3.utils.hexToUtf8(name))
+            name = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(name))
             token.name = name
         }
 
         if (!token.symbol) {
             let symbol = await web3.eth.call({ to: token.hash, data: tokenFuncs['symbol'] })
-            symbol = await utils.trimWord(await web3.utils.hexToUtf8(symbol))
+            symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
             token.symbol = symbol
         }
 
