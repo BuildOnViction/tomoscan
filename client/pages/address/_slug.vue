@@ -111,7 +111,7 @@
                             type="button"
                             class="btn btn-sm mr-2 code-actions__copy"
                             @success="copyAddress">
-                        <i class="fa fa-clipboard" />Copy</button>
+                        <i class="fa fa-clipboard" /> Copy</button>
                     </div>
                     <div>
                         <vue-qrcode
