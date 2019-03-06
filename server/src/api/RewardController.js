@@ -4,6 +4,7 @@ const db = require('../models')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const config = require('config')
 
 const RewardController = Router()
 
@@ -146,37 +147,57 @@ RewardController.post('/expose/rewards', async (req, res) => {
     }
 })
 
-RewardController.post('/expose/rewardsByEpoch', async (req, res) => {
+RewardController.post('/expose/MNRewardsByEpochs', [
+    check('address').exists().withMessage('Account address is required.'),
+    check('owner').exists().withMessage('owner is required'),
+    check('reason').exists().withMessage('reason is required'),
+    check('epoch').exists().withMessage('epoch is required')
+], async (req, res) => {
     try {
         const address = req.body.address || null
         const owner = req.body.owner || null
         const reason = req.body.reason || null
-        const epoch = req.body.epoch || 1
+        const epoch = req.body.epoch || []
         let params = {}
-
-        if (owner) {
-            params = {
-                validator: address.toLowerCase(),
-                address: owner.toLowerCase(),
-                epoch: epoch
-            }
-        } else {
-            params = {
-                address: address.toLowerCase(),
-                epoch: epoch
-            }
-        }
 
         if (reason) {
             params = Object.assign(params, { reason: reason })
         }
 
-        const re = await db.Reward.findOne(params).exec()
-        // const totalReward = db.Reward.countDocuments(params)
+        const map = epoch.map(async (e) => {
+            params = {
+                validator: address.toLowerCase(),
+                address: owner.toLowerCase(),
+                reason: reason,
+                epoch: e
+            }
+            const totalReward = new BigNumber(config.get('REWARD'))
+            let result = await db.Reward.findOne(params).exec()
 
-        // const reward = await db.Reward.find(params).sort({ epoch: -1 }).limit(limit).skip(skip).exec()
+            if (result) {
+                result = result.toObject()
+                let signNumbers = await db.EpochSign.find({ epoch: e })
 
-        res.json(re)
+                let totalSign = 0
+                let map = signNumbers.map(function (signNumber) {
+                    totalSign += signNumber.signNumber
+                })
+
+                await Promise.all(map)
+                if (totalSign > 0) {
+                    result.masternodeReward = totalReward.multipliedBy(result.signNumber)
+                        .dividedBy(totalSign)
+                } else result.masternodeReward = result.reward
+                return result
+            } else {
+                return {
+                    epoch: e
+                }
+            }
+        })
+        const r = await Promise.all(map)
+
+        res.json(r)
     } catch (e) {
         logger.warn(e)
         return res.status(400).send()
