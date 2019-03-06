@@ -168,6 +168,19 @@
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
+                id="tokenTransactions"
+                :active="hashTab === '#tokenTransactions'"
+                :title="'Token Transactions (' + formatNumber(tokenTxsCount) + ')'"
+                href="#tokenTransactions">
+                <table-token-tx
+                    v-if="hashTab === '#tokenTransactions'"
+                    :holder="hash"
+                    :tx_total="tokenTxsCount"
+                    :parent="'#tokenTransactions'"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
+                v-if="!address.isContract"
                 :active="hashTab === '#minedBlocks'"
                 :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks">
@@ -238,6 +251,7 @@
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
 import TableInternalTx from '~/components/TableInternalTx'
+import TableTokenTx from '~/components/TableTokenTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
 import TableTxByAccount from '~/components/TableTxByAccount'
 import TableEvent from '~/components/TableEvent'
@@ -252,6 +266,7 @@ export default {
         ReadSourceCode,
         TableTx,
         TableInternalTx,
+        TableTokenTx,
         TableTokensByAccount,
         TableTxByAccount,
         TableEvent,
@@ -272,6 +287,7 @@ export default {
         smartContract: null,
         inTxsCount: 0,
         outTxsCount: 0,
+        tokenTxsCount: 0,
         internalTxsCount: 0,
         contractTxsCount: 0,
         blocksCount: 0,

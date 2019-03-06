@@ -100,8 +100,6 @@ let AccountHelper = {
         account = account.toJSON()
         if (account.isContract) {
             let tx = await db.Tx.findOne({
-                from: account.contractCreation,
-                to: null,
                 contractAddress: account.hash
             })
             if (tx) {
