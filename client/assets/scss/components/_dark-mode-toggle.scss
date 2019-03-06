@@ -1,0 +1,127 @@
+#dark-mode-toggle {
+    position: relative;
+    top: 50%;
+    width: 52px;
+    height: 26px;
+
+    @include media-breakpoint-down(md) {
+        left: 1rem;
+        height: 36px;
+    }
+
+    &.try-dark-mode {
+
+        &:before,
+        &:after {
+            position: absolute;
+            z-index: 9999;
+
+            @extend %transit;
+        }
+
+        &:before {
+            content: 'Try TomoScan\'s Dark Mode';
+            bottom: -62px;
+            left: -50px;
+            text-align: center;
+            color: #cfcde1;
+            background-image: linear-gradient(-135deg,#373658,#40406a);
+            border-radius: 5px;
+            padding: 5px;
+            width: 140px;
+            animation: slide 1s ease-in-out infinite;
+        }
+
+        &:after {
+            content: '';
+            left: 8px;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 5px 5px 5px;
+            border-color: transparent transparent #40406a transparent;
+            animation: slide 1s ease-in-out infinite;
+        }
+    }
+}
+
+#dark-mode-toggle,
+.toggle-bg {
+    border-radius: 100px;
+}
+
+#dark-mode-checkbox {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 3;
+}
+
+.toggle-switch,
+.toggle-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    @include media-breakpoint-down(md) {
+        top: 5px;
+        height: 26px;
+    }
+}
+
+
+.toggle-switch {
+    z-index: 2;
+}
+
+.toggle-bg {
+    width: 100%;
+    background-color: #ebf7fc;
+    transition: 0.3s ease all;
+    z-index: 1;
+}
+
+.toggle-switch:before {
+    content: '\e90d';
+    position: absolute;
+    top: 4px;
+    left: 4px;
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    font-size: 16px;
+    text-align: center;
+    line-height: 18px;;
+    color: #fff;
+    background-color: #34a1ff;
+    transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+
+    @extend %tm-icon;
+}
+
+#dark-mode-checkbox:active + .toggle-switch:before {
+    width: 46px;
+    border-radius: 100px;
+    transform: translate(360deg);
+}
+
+#dark-mode-checkbox:checked:active + .toggle-switch:before {
+    margin-left: -26px;
+}
+
+#dark-mode-checkbox:checked + .toggle-switch:before {
+    content: '\e90e';
+    left: 30px;
+    background-color: #678be0;
+}
+
+#dark-mode-checkbox:checked ~ .toggle-bg {
+    background-color: #1d1e31;
+}

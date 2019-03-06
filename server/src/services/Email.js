@@ -11,7 +11,7 @@ class EmailService {
             return false
         }
 
-        return this.send('register.html', user.email, 'Welcome to TOMO Explorer', {
+        return this.send('register.html', user.email, 'Welcome to TomoScan', {
             name: user.email
         })
     }

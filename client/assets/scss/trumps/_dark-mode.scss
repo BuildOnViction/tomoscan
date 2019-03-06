@@ -1,0 +1,576 @@
+/* Dark Mode */
+$color-primary-dark: #30ddd8;
+$color-text-dark: #7773bd;
+$color-text-dark-alt: #7573a6;
+$color-text-white-dark: #cfcde1;
+
+// Global Settings
+body.dark-mode {
+    color: $color-text-dark;
+    background-color: #1d1e31;
+
+    a {
+        color: $color-primary-dark;
+
+        &:hover {
+            color: #36fcf6;
+        }
+    }
+
+    small {
+        color: $color-text-dark-alt;
+    }
+    
+    .text-muted {
+        color: #505078 !important;
+    }
+}
+
+// Nuxt progress bar
+body.dark-mode .nuxt-progress {
+    background-color: $color-primary-dark !important;
+}
+
+// Buttons
+body.dark-mode {
+    
+    .btn-primary.btn-primary {
+        border-color: #678be0;
+        background-color: #678be0;
+      
+        &:hover {
+            border-color: #739dff;
+            background-color: #739dff;
+        }
+    }
+    
+    .btn-secondary.btn-secondary {
+        border-color: #7573a8;
+        background-color: #7573a8;
+      
+        &:hover {
+            border-color: #5b5a88;
+            background-color: #5b5a88;
+        }
+    }
+}
+
+// Input
+body.dark-mode {
+
+    .form-control {
+        color: #6a8ae8;
+        border-color: #323251;
+        background-color: #323251;
+
+        &:focus {
+            color: #6a8ae8;
+            border-color: #2e2e4b;
+            background-color: #2e2e4b;
+        }
+
+        &::-webkit-input-placeholder {
+            color: #505078;
+        }
+
+        &:-moz-placeholder {
+            color: #505078;
+        }
+
+        &:-ms-input-placeholder {
+            color: #505078;
+        }
+
+    }
+}
+
+// Header
+body.dark-mode .tomo-nav {
+    background-image: linear-gradient(-135deg,#373658,#40406a);
+
+    .nav-item {
+        &.active .nav-link,
+        &.show .nav-link {
+            color: $color-primary-dark;
+        }
+    }
+
+    .nav-item .nav-link {
+        color: #aca9c4;
+
+        &.active,
+        &:hover {
+            color: $color-primary-dark;
+        }
+    }
+
+    @include media-breakpoint-up(lg) {
+
+        .nav-item .nav-link:before {
+            background-color: $color-primary-dark;
+        }
+    }
+
+    @include media-breakpoint-down(md) {
+
+        #nav_collapse {
+            background-color: transparent;
+            background-image: linear-gradient(-135deg,#2e2e4b,#323252);
+        }
+
+        .nav-item {
+            border-bottom-color: #47475f;
+        }
+    }
+
+    .dropdown-menu {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#2e2e4b,#323252);
+
+        @include media-breakpoint-down(md) {
+            border-top-color: $color-text-dark;
+        }
+    }
+
+    .dropdown-item {
+        color: #aca9c4;
+        background-color: transparent !important;
+        border-bottom-color: #47475f;
+
+        &:hover,
+        &:focus {
+            color: $color-primary-dark;
+            outline: none;
+        }
+    }
+
+    .tomo-nav__toggle {
+        path {
+            stroke: $color-text-dark;
+        }
+    }
+}
+
+// Search Form
+body.dark-mode .search-form {
+    
+    .form-control.search-form__input {
+
+        &::placeholder {
+            color: #505078 !important;
+        }
+    }
+}
+
+// Breadcrumbs
+body.dark-mode .breadcrumb.tomo-breadcrumb {
+
+    a {
+        color: $color-text-dark-alt;
+    }
+
+    a:hover {
+        color: $color-primary-dark;
+    }
+
+    .breadcrumb-item:last-child a {
+        color: $color-primary-dark;
+    }
+}
+
+// Table
+body.dark-mode .tomo-table {
+    
+    thead tr {
+        color: $color-text-dark;
+    }
+
+    tbody tr {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#2e2e4b,#323252);
+
+        &:hover {
+            background-image: linear-gradient(-135deg, #323252 0%, #2e2e4b 100%);
+        }
+    }
+
+    td:before {
+        color: $color-text-white-dark;
+    }
+
+    .tm-arrow-right.text-success {
+        color: #6589e3 !important;
+    }
+}
+
+body.dark-mode .tomo-table--verified-contract {
+
+    tbody {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#2e2e4b,#323252);
+    }
+
+    tr {
+        border-bottom-color: $color-text-dark;
+    }
+
+    td:first-child {
+        color: $color-text-white-dark;
+    }
+}
+
+body.dark-mode .tomo-contract-info {
+
+    tr {
+        border-bottom-color: $color-text-dark;
+    }
+
+    &__name i {
+        color: $color-text-white-dark;
+    }
+
+    &__type {
+        color: #505078;
+    }
+
+    &__outputs {
+        background-color: #36365a;
+    }
+}
+
+// Footer
+body.dark-mode .tomo-footer  {
+    color: $color-text-dark;
+
+    &__copyright {
+        color: $color-text-dark;
+
+        a {
+            color: #6a8ae8;
+        }
+
+        a:hover {
+            color: $color-text-white-dark;
+        }
+    }
+    
+    &__social i {
+        color: $color-text-dark-alt;
+        
+        &:hover {
+            color: $color-text-white-dark;
+        }
+    }
+
+}
+
+// Modal
+body.dark-mode .tomo-modal {
+
+    .modal-header .close {
+        color: #7573a8;
+    }
+
+    .modal-title {
+        color: $color-text-white-dark;
+    }
+
+    .control-label {
+        color: #7773bd;
+    }
+
+    .modal-content {
+        background-color: transparent;
+        background-image: linear-gradient(-135deg,#373658,#40406a);
+    }
+
+    .form-control {
+        &.is-invalid,
+        &.is-invalid:focus {
+            border-color: #fb6d9c;
+        }
+    }
+
+    .forgot-password {
+        color: $color-text-dark-alt;
+
+        &:hover {
+            color: $color-primary-dark;
+        }
+    }
+}
+
+// Tomo Stat
+body.dark-mode .tomo-stat .tomo-stat__item a {
+    color: $color-text-dark-alt;
+
+    &:hover {
+        color: $color-primary-dark;
+    }
+}
+
+// Headline
+body.dark-mode .tomo-headline {
+    color: $color-text-white-dark;
+}
+
+// Tabs
+body.dark-mode .tomo-tabs {
+
+    .nav-link {
+        border-bottom-color: #505078;
+        color: #505078;
+
+        &.active {
+            border-bottom-color: $color-primary-dark;
+            color: $color-primary-dark;
+        }
+    }
+}
+
+// Card
+body.dark-mode .tomo-card {
+    background-image: linear-gradient(-135deg,#2d2d4a,#40406a,#1d1e31);
+    background-size: 400% 400%;
+
+    &__headline {
+        color: $color-text-white-dark;
+    }
+
+    &__table {
+
+        thead tr {
+            color: $color-text-white-dark;
+        }
+
+        td:first-child {
+            color: $color-text-white-dark;
+        }
+
+        @include media-breakpoint-up(sm) {
+
+            td:last-child {
+                color: $color-text-dark;
+            }
+        }
+    }
+
+    .tomo-qrcode .btn.code-actions__copy {
+        color: $color-text-white-dark;
+    }
+
+    &--verify {
+        background-image: linear-gradient(-135deg,#373658,#40406a);
+    }
+}
+
+// Custom CSS
+body.dark-mode {
+
+    .tomo-total-items {
+        color: $color-text-white-dark;
+    }
+
+    .alert-danger,
+    .text-danger {
+        color: #fb6d9c !important;
+    }
+
+    .text-success {
+        color: $color-primary-dark !important;
+    }
+
+    .tooltip-inner {
+        color: #1d1e31;
+        background-color: #aca9c4;
+    }
+
+    .bs-tooltip-right .arrow:before {
+        border-right-color: #aca9C4;
+    }
+    
+    .bs-tooltip-left .arrow:before {
+        border-left-color: #aca9C4;
+    }
+    
+    .bs-tooltip-bottom .arrow:before {
+        border-bottom-color: #aca9C4;
+    }
+    
+    .bs-tooltip-top .arrow:before {
+        border-top-color: #aca9C4;
+    }
+
+    .toasted.toasted-primary {
+        color: #ffffff;
+        background-image: linear-gradient(270deg,#2bb3d6,#4ad0c5);
+    }
+}
+
+// CodeMirror
+body.dark-mode .vue-codemirror {
+    border-color: #47475f;
+
+    .CodeMirror-simplescroll-horizontal,
+    .CodeMirror-simplescroll-vertical {
+        background-color: #2f304d;
+
+        div {
+            border-color: $color-text-white-dark;
+            background-color: $color-text-white-dark;
+        }
+    }
+
+    .CodeMirror-wrap {
+        color: #6c6783;
+        background-color: #2a2734;
+    }
+
+    div.CodeMirror-selected {
+        background-color: #545167!important;
+    }
+
+    .CodeMirror-gutters {
+        background-color: #2a2734;
+        border-right: 0px;
+    }
+
+    .CodeMirror-linenumber {
+        color: #545167;
+    }
+
+    /* Cursor */
+    .CodeMirror-cursor {
+        border-left: 1px solid #ffad5c;
+        border-right: .5em solid #ffad5c;
+        opacity: .5;
+    }
+
+    .CodeMirror-activeline-background {
+        background-color: #363342;
+        opacity: .5;
+    }
+
+    .cm-fat-cursor .CodeMirror-cursor {
+        background: #ffad5c;
+        opacity: .5;
+    }
+
+    span.cm-atom,
+    span.cm-number,
+    span.cm-keyword,
+    span.cm-variable,
+    span.cm-attribute,
+    span.cm-quote,
+    span.cm-hr,
+    span.cm-link { 
+        color: #ffcc99;
+    }
+
+    span.cm-property {
+        color: #9a86fd;
+    }
+
+    span.cm-punctuation,
+    span.cm-unit,
+    span.cm-negative {
+        color: #e09142;
+    }
+    
+    span.cm-string {
+        color: #ffb870;
+    }
+    
+    span.cm-operator {
+        color: #ffad5c;
+    }
+    
+    span.cm-positive {
+        color: #6a51e6;
+    }
+
+    span.cm-variable-2,
+    span.cm-variable-3,
+    span.cm-type,
+    span.cm-string-2,
+    span.cm-url {
+        color: #7a63ee;
+    }
+
+    span.cm-def,
+    span.cm-tag,
+    span.cm-builtin,
+    span.cm-qualifier,
+    span.cm-header,
+    span.cm-em {
+        color: #eeebff;
+    }
+
+    span.cm-bracket,
+    span.cm-comment {
+        color: #6c6783;
+    }
+
+    span.cm-error,
+    span.cm-invalidchar {
+        color: #f00;
+    }
+
+    span.cm-header {
+        font-weight: normal;
+    }
+    
+    .CodeMirror-matchingbracket {
+        text-decoration: underline;
+        color: #eeebff !important;
+    } 
+}
+
+// Pagination
+body.dark-mode .tomo-pagination {
+    
+    .page-item {
+
+        &.active .page-link {
+            color: $color-text-white-dark;
+            background-color: #373658;
+        }
+    
+        &.disabled:not([role="separator"]) .page-link {
+            background-color: #373658;
+        }
+
+        .page-link {
+            color: $color-text-dark;
+            background-color: #323258;
+
+            &:hover {
+                color: $color-text-white-dark;
+                background-color: #373658;
+            }
+        }
+    }
+}
+
+// Block breadcrumb
+body.dark-mode .block-breadcrumb {
+
+    a {
+        color: $color-text-dark;
+    }
+  
+    &__prev,
+    &__next {
+        &:hover,
+        &:hover a {
+        color: $color-primary-dark;
+        }
+    }
+}
+
+// Code action
+body.dark-mode .code-actions .btn {
+    color: #fff;
+    border-color: #678be0;
+    background-color: #678be0; 
+}

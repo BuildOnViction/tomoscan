@@ -11,6 +11,7 @@
 
     tr {
       color: #000;
+      transition: all .5s ease-in;
     }
 
     @include media-breakpoint-up(lg) {
@@ -40,6 +41,7 @@
       box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
       padding: 17px 20px 16px;
       margin-bottom: 20px;
+      transition: all .3s ease-in;
 
       @include media-breakpoint-up(lg) {
         display: grid;

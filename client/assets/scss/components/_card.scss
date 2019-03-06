@@ -72,6 +72,7 @@
   &__table {
     table-layout: fixed;
     width: 100%;
+    transition: all .5s ease;
 
     thead tr {
       grid-template-columns: 100%;
@@ -198,6 +199,11 @@
 
   .form-group {
     margin-bottom: 30px;
+  }
+
+  .tomo-qrcode .btn.code-actions__copy {
+    box-shadow: none;
+    margin-bottom: 5px;
   }
 }
 

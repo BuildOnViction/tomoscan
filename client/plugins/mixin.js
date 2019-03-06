@@ -165,29 +165,6 @@ const mixin = {
             return str
         },
 
-        darkLightMode (e) {
-            let id = e.target.parentNode.id
-            let mode = e.target.getAttribute('data-mode')
-            let theme = mode === 'light' ? 'base16-dark' : 'eclipse'
-
-            if (id === 'code-actions--source') {
-                this.$refs.tomoCmSourceCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--abi') {
-                this.$refs.tomoCmAbiCode.codemirror.setOption('theme', theme)
-            }
-
-            if (id === 'code-actions--creation') {
-                this.$refs.tomoCmCode.codemirror.setOption('theme', theme)
-            }
-
-            e.target.innerHTML = (mode === 'light')
-                ? '<i class="fa fa-adjust mr-1"></i> Light Mode' : '<i class="fa fa-adjust mr-1"></i> Dark Mode'
-            mode = (mode === 'light') ? 'dark' : 'light'
-            e.target.setAttribute('data-mode', mode)
-        },
-
         copySourceCode (e) {
             let id = e.trigger.parentNode.id
             let msg = ''
@@ -206,6 +183,7 @@ const mixin = {
 
             this.$toast.show(msg)
         },
+
         refreshCodeMirror () {
             this.$nextTick(() => {
                 if (this.$refs['readSourceCode']) {

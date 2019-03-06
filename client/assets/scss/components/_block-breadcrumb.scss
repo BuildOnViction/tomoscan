@@ -9,6 +9,8 @@
 
   &__prev,
   &__next {
+    cursor: pointer;
+  
     &:hover,
     &:hover a {
       color: $color-primary;

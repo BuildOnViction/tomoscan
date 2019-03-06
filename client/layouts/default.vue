@@ -8,7 +8,7 @@
                 <b-navbar-brand :to="{name: 'index'}">
                     <img
                         src="~/assets/img/logo.svg"
-                        alt="TOMO Explorer"
+                        alt="TomoScan"
                         class="tomo-nav__logo">
                 </b-navbar-brand>
                 <b-navbar-toggle
@@ -88,6 +88,15 @@
                             </b-dropdown-item>
                         </b-nav-item-dropdown> -->
                     </b-navbar-nav>
+                    <div
+                        id="dark-mode-toggle">
+                        <input
+                            id="dark-mode-checkbox"
+                            type="checkbox"
+                            @click="toggleDarkMode">
+                        <div class="toggle-switch">&nbsp;</div>
+                        <div class="toggle-bg">&nbsp;</div>
+                    </div>
                 </b-collapse>
             </div>
         </b-navbar>
@@ -242,6 +251,7 @@
 </template>
 
 <script>
+import Cookie from 'js-cookie'
 import mixin from '~/plugins/mixin'
 import MyFooter from '~/components/Footer.vue'
 import Breadcrumb from '~/components/Breadcrumb.vue'
@@ -306,6 +316,10 @@ export default {
         if (self.isHomePage) {
             self.getStats()
         }
+
+        if (typeof Cookie.get('tomoscan_theme') === 'undefined') {
+            document.getElementById('dark-mode-toggle').classList.add('try-dark-mode')
+        }
     },
     methods: {
 
@@ -342,6 +356,21 @@ export default {
             let self = this
             let { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
+        },
+        toggleDarkMode (e) {
+            let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
+
+            Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
+                expires: 365
+            })
+
+            e.target.parentElement.classList.remove('try-dark-mode')
+
+            if (darkMode) {
+                document.body.classList.add('dark-mode')
+            } else {
+                document.body.classList.remove('dark-mode')
+            }
         }
     }
 }

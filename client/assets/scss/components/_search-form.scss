@@ -11,6 +11,7 @@
     border: none;
     border-top-left-radius: 50%;
     border-bottom-left-radius: 50%;
+    padding: 0;
 
     @extend %transit;
 
@@ -37,8 +38,7 @@
     padding: 5px 20px;
     border: none;
     z-index: 1;
-
-    @extend %transit;
+    transition: box-shadow .5s ease;
 
     &::placeholder {
       color: rgb(167, 167, 167) !important;
@@ -85,7 +85,9 @@
     }
 
     .form-control.search-form__input {
+      height: 40px;
       padding: 5px 30px;
+      transition: max-width .5s ease;
 
       @include media-breakpoint-up(sm) {
         max-width: 300px;
