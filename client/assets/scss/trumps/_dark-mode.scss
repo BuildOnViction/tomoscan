@@ -574,3 +574,12 @@ body.dark-mode .code-actions .btn {
     border-color: #678be0;
     background-color: #678be0; 
 }
+
+// Token Info
+body.dark-mode .tomo-card--token {
+    background-image: linear-gradient(-135deg,#373658,#40406a);
+
+    .tomo-card__table tr {
+        border-bottom-color: #505078;
+    }
+}

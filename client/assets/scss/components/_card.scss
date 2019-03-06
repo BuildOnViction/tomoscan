@@ -270,9 +270,17 @@
 }
 
 .tomo-card--token {
+
   .tomo-card__table {
     @include media-breakpoint-up(2xl) {
       width: 100%;
+    }
+  }
+
+  .filter-address {
+    input[type="text"],
+    .btn {
+      height: 34px;
     }
   }
 
