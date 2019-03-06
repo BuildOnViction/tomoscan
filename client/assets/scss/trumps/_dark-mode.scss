@@ -20,6 +20,10 @@ body.dark-mode {
     small {
         color: $color-text-dark-alt;
     }
+
+    .text-secondary {
+        color: $color-text-dark;
+    }
     
     .text-muted {
         color: #505078 !important;
@@ -581,5 +585,9 @@ body.dark-mode .tomo-card--token {
 
     .tomo-card__table tr {
         border-bottom-color: #505078;
+    }
+
+    .code-actions__copy {
+        color: $color-text-white-dark;
     }
 }
