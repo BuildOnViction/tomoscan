@@ -566,3 +566,10 @@ body.dark-mode .block-breadcrumb {
         }
     }
 }
+
+// Code action
+body.dark-mode .code-actions .btn {
+    color: #fff;
+    border-color: #678be0;
+    background-color: #678be0; 
+}
