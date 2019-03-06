@@ -2,6 +2,7 @@
 $color-primary-dark: #30ddd8;
 $color-text-dark: #7773bd;
 $color-text-dark-alt: #7573a6;
+$color-text-white-dark: #cfcde1;
 
 // Global Settings
 body.dark-mode {
@@ -194,7 +195,7 @@ body.dark-mode .tomo-table {
     }
 
     td:before {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     .tm-arrow-right.text-success {
@@ -214,7 +215,7 @@ body.dark-mode .tomo-table--verified-contract {
     }
 
     td:first-child {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 }
 
@@ -225,7 +226,7 @@ body.dark-mode .tomo-contract-info {
     }
 
     &__name i {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     &__type {
@@ -249,7 +250,7 @@ body.dark-mode .tomo-footer  {
         }
 
         a:hover {
-            color: #cfcde1;
+            color: $color-text-white-dark;
         }
     }
     
@@ -257,7 +258,7 @@ body.dark-mode .tomo-footer  {
         color: $color-text-dark-alt;
         
         &:hover {
-            color: #cfcde1;
+            color: $color-text-white-dark;
         }
     }
 
@@ -271,7 +272,7 @@ body.dark-mode .tomo-modal {
     }
 
     .modal-title {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     .control-label {
@@ -310,7 +311,7 @@ body.dark-mode .tomo-stat .tomo-stat__item a {
 
 // Headline
 body.dark-mode .tomo-headline {
-    color: #cfcde1;
+    color: $color-text-white-dark;
 }
 
 // Tabs
@@ -333,17 +334,17 @@ body.dark-mode .tomo-card {
     background-size: 400% 400%;
 
     &__headline {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     &__table {
 
         thead tr {
-            color: #cfcde1;
+            color: $color-text-white-dark;
         }
 
         td:first-child {
-            color: #cfcde1;
+            color: $color-text-white-dark;
         }
 
         @include media-breakpoint-up(sm) {
@@ -355,7 +356,7 @@ body.dark-mode .tomo-card {
     }
 
     .tomo-qrcode .btn.code-actions__copy {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     &--verify {
@@ -367,7 +368,7 @@ body.dark-mode .tomo-card {
 body.dark-mode {
 
     .tomo-total-items {
-        color: #cfcde1;
+        color: $color-text-white-dark;
     }
 
     .alert-danger,
@@ -415,8 +416,8 @@ body.dark-mode .vue-codemirror {
         background-color: #2f304d;
 
         div {
-            border-color: #cfcde1;
-            background-color: #cfcde1;
+            border-color: $color-text-white-dark;
+            background-color: $color-text-white-dark;
         }
     }
 
@@ -531,7 +532,7 @@ body.dark-mode .tomo-pagination {
     .page-item {
 
         &.active .page-link {
-            color: #cfcde1;
+            color: $color-text-white-dark;
             background-color: #373658;
         }
     
@@ -544,7 +545,7 @@ body.dark-mode .tomo-pagination {
             background-color: #323258;
 
             &:hover {
-                color: #cfcde1;
+                color: $color-text-white-dark;
                 background-color: #373658;
             }
         }

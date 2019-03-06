@@ -316,6 +316,10 @@ export default {
         if (self.isHomePage) {
             self.getStats()
         }
+
+        if (typeof Cookie.get('tomoscan_theme') === 'undefined') {
+            document.getElementById('dark-mode-toggle').classList.add('try-dark-mode')
+        }
     },
     methods: {
 
@@ -353,11 +357,14 @@ export default {
             let { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
         },
-        toggleDarkMode () {
+        toggleDarkMode (e) {
             let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
+
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {
                 expires: 365
             })
+
+            e.target.parentElement.classList.remove('try-dark-mode')
 
             if (darkMode) {
                 document.body.classList.add('dark-mode')

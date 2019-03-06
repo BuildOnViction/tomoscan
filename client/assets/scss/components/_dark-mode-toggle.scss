@@ -3,11 +3,46 @@
     top: 50%;
     width: 52px;
     height: 26px;
-    overflow: hidden;
 
     @include media-breakpoint-down(md) {
         left: 1rem;
         height: 36px;
+    }
+
+    &.try-dark-mode {
+
+        &:before,
+        &:after {
+            position: absolute;
+            z-index: 9999;
+
+            @extend %transit;
+        }
+
+        &:before {
+            content: 'Try TomoScan\'s Dark Mode';
+            bottom: -62px;
+            left: -50px;
+            text-align: center;
+            color: #cfcde1;
+            background-image: linear-gradient(-135deg,#373658,#40406a);
+            border-radius: 5px;
+            padding: 5px;
+            width: 140px;
+            animation: slide 1s ease-in-out infinite;
+        }
+
+        &:after {
+            content: '';
+            left: 8px;
+            bottom: -10px;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 5px 5px 5px;
+            border-color: transparent transparent #40406a transparent;
+            animation: slide 1s ease-in-out infinite;
+        }
     }
 }
 
