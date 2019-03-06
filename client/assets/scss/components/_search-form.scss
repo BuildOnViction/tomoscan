@@ -38,6 +38,7 @@
     padding: 5px 20px;
     border: none;
     z-index: 1;
+    transition: box-shadow .5s ease;
 
     &::placeholder {
       color: rgb(167, 167, 167) !important;
