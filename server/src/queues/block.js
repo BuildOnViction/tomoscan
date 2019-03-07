@@ -15,7 +15,7 @@ consumer.task = async function (job, done) {
         const q = require('./index')
 
         if (b) {
-            let { txs, timestamp } = b
+            let { txs, timestamp, signer } = b
             if (txs.length <= 100) {
                 q.create('TransactionProcess', {
                     txs: JSON.stringify(txs),
@@ -46,6 +46,10 @@ consumer.task = async function (job, done) {
                         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
             }
+
+            q.create('CountProcess', { data: JSON.stringify([{ hash: signer, countType: 'mined' }]) })
+                .priority('low').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
 
         // Begin from epoch 2

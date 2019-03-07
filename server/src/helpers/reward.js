@@ -411,6 +411,7 @@ let RewardHelper = {
                 }
 
                 let rdata = []
+                let countProcess = []
                 for (let m in rewards) {
                     for (let v in rewards[m]) {
                         let r = new BigNumber(rewards[m][v])
@@ -428,7 +429,17 @@ let RewardHelper = {
                             rewardTime: block.timestamp * 1000,
                             signNumber: signNumber[m].sign
                         })
+                        countProcess.push({
+                            hash: v.toLowerCase(),
+                            countType: 'reward'
+                        })
                     }
+                }
+                if (countProcess.length > 0) {
+                    const q = require('../queues')
+                    q.create('CountProcess', { data: JSON.stringify(countProcess) })
+                        .priority('low').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
                 let sdata = []
                 for (let m in signNumber) {

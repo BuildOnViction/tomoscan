@@ -19,6 +19,7 @@ consumer.task = async function (job, done) {
             done()
             return false
         }
+        const q = require('./index')
 
         if (log.topics[1]) {
             _log.from = await utils.unformatAddress(log.topics[1])
@@ -40,7 +41,6 @@ consumer.task = async function (job, done) {
                 { upsert: true, new: true })
 
             // Add token holder data.
-            const q = require('./index')
             q.create('TokenHolderProcess', { token: JSON.stringify({
                 from: _log.from.toLowerCase(),
                 to: _log.to.toLowerCase(),
@@ -50,6 +50,12 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
+        q.create('TokenHolderProcess', { data: JSON.stringify([
+            { hash: _log.from, countType: 'tokenTx' },
+            { hash: _log.to, countType: 'tokenTx' }
+        ]) })
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
         logger.warn('cannot process token tx. Error %s', e)
         done(e)

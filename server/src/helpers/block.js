@@ -67,7 +67,7 @@ let BlockHelper = {
         await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
 
-        return { txs, timestamp }
+        return { txs, timestamp, signer }
     },
     getBlockDetail: async (hashOrNumber) => {
         try {
