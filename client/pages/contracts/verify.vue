@@ -68,7 +68,8 @@
                                 <b-form-select
                                     v-model="compiler"
                                     :options="compilers"
-                                    :class="getValidationClass('compiler')"/>
+                                    :class="getValidationClass('compiler')"
+                                    class="form-control"/>
                                 <div
                                     v-if="$v.compiler.$dirty && ! $v.compiler.required"
                                     class="text-danger">Compiler is required</div>
