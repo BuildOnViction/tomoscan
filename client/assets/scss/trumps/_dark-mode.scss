@@ -22,7 +22,7 @@ body.dark-mode {
     }
 
     .text-secondary {
-        color: $color-text-dark;
+        color: $color-text-dark !important;
     }
     
     .text-muted {
@@ -590,4 +590,8 @@ body.dark-mode .tomo-card--token {
     .code-actions__copy {
         color: $color-text-white-dark;
     }
+}
+
+body.dark-mode .token-transfer .internal-color {
+    color: $color-text-white-dark;
 }
