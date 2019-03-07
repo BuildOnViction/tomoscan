@@ -83,6 +83,11 @@ TxController.get('/txs', [
             if (sa) {
                 total = sa.totalTransactionCount
             }
+        } else {
+            let sa = await db.Account.findOne({ hash: specialAccount })
+            if (sa) {
+                total = sa.totalTxCount || 0
+            }
         }
         let end = new Date() - start
         logger.info(`Txs preparation execution time: %dms`, end)

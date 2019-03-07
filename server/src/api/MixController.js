@@ -11,31 +11,28 @@ const MixController = Router()
  * @returns address information
  */
 const getAccount = async (address) => {
-    let acc = await db.SpecialAccount.findOne({ hash: address })
+    let acc = await db.Account.findOne({ hash: address })
     if (acc) {
         return {
-            inTxCount: acc.inTransactionCount,
-            outTxCount: acc.outTransactionCount,
-            internalTxCount: acc.internalTxCount,
-            totalTxCount: acc.totalTransactionCount,
-            logCount: acc.logCount,
-            minedBlocks: acc.minedBlock,
-            rewardCount: acc.rewardCount
+            inTxCount: acc.inTxCount || 0,
+            outTxCount: acc.outTxCount || 0,
+            internalTxCount: acc.internalTxCount || 0,
+            totalTxCount: acc.totalTxCount || 0,
+            logCount: acc.logCount || 0,
+            tokenTxCount: acc.tokenTxCount || 0,
+            minedBlocks: acc.minedBlock || 0,
+            rewardCount: acc.rewardCount || 0
         }
-    } else {
-        let inTxCount = await db.Tx.countDocuments({ to : address })
-        let outTxCount = await db.Tx.countDocuments({ from: address })
-        let internalTxCount = await db.InternalTx.countDocuments({ $or: [{ from: address }, { to: address }] })
-        let totalTxCount = inTxCount + outTxCount
-        return {
-            inTxCount: inTxCount,
-            outTxCount: outTxCount,
-            internalTxCount: internalTxCount,
-            totalTxCount: totalTxCount,
-            logCount: await db.Log.countDocuments({ address: address }),
-            minedBlocks: await db.Block.countDocuments({ signer: address }),
-            rewardCount: await db.Reward.countDocuments({ address: address })
-        }
+    }
+    return {
+        inTxCount: 0,
+        outTxCount: 0,
+        internalTxCount: 0,
+        totalTxCount: 0,
+        logCount: 0,
+        tokenTxCount: 0,
+        minedBlocks: 0,
+        rewardCount: 0
     }
 }
 

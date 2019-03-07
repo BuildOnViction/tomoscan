@@ -25,26 +25,6 @@ consumer.task = async function (job, done) {
                 await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
         }, { upsert: true })
 
-        logger.info('count tx for tomochain contract')
-        let tomochainContract = []
-        for (let c in contractAddress) {
-            tomochainContract.push(contractAddress[c])
-        }
-        for (let i = 0; i < tomochainContract.length; i++) {
-            let hash = tomochainContract[i]
-            let outTxCount = await db.Tx.countDocuments({ from: hash })
-            let inTxCount = await db.Tx.countDocuments({ to: hash })
-            let contractTxCount = await db.Tx.countDocuments({ contractAddress: hash })
-            let totalTxCount = inTxCount + outTxCount + contractTxCount
-            let logCount = await db.Log.countDocuments({ address: hash })
-            await db.SpecialAccount.updateOne({ hash: hash }, {
-                inTransactionCount: inTxCount,
-                outTransactionCount: outTxCount,
-                totalTransactionCount: totalTxCount,
-                logCount: logCount
-            }, { upsert: true })
-        }
-
         done()
     } catch (e) {
         logger.warn('error when update special account. Error %s', e)

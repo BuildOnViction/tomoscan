@@ -78,7 +78,7 @@ AccountController.get('/accounts/:slug/mined', [
         if (hash) {
             params.query = { signer: hash }
         }
-        let acc = await db.SpecialAccount.findOne({ hash: hash })
+        let acc = await db.Account.findOne({ hash: hash })
         let total = null
         if (acc) {
             total = acc.minedBlock
