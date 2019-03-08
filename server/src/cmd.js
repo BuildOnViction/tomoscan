@@ -4,7 +4,7 @@ const { revert } = require('./commands/removeData')
 const { RewardProcess } = require('./commands/updateRewardTime')
 const { updateTxCount } = require('./commands/updateTxCount')
 const { epochReward } = require('./commands/epochReward')
-const { updateSpecialAccount } = require('./commands/updateSpecialAccount')
+const { counting } = require('./commands/counting')
 const { tokenQuantity } = require('./commands/updateTokenQuantity')
 
 program
@@ -41,11 +41,11 @@ program
         epochReward(epoch)
     })
 program
-    .command('updateSpecialAccount')
-    .alias('usa')
-    .description('Update special account')
+    .command('counting')
+    .alias('count')
+    .description('Re-count tx, token, mined block, log,...')
     .action(() => {
-        updateSpecialAccount()
+        counting()
     })
 program
     .command('updateTokenQuantity')
