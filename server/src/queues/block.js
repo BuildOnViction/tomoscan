@@ -64,6 +64,8 @@ consumer.task = async function (job, done) {
             q.create('BlockFinalityProcess', {})
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        }
+        if (blockNumber % 5 === 0) {
             q.create('TransactionPendingProcess', {})
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
