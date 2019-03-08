@@ -26,9 +26,9 @@ TokenTxController.get('/token-txs', [
         if (token) {
             params.query = { address: token.toLowerCase() }
 
-            let tk = await db.SpecialAccount.findOne({ hash: token.toLowerCase() })
+            let tk = await db.Account.findOne({ hash: token.toLowerCase() })
             if (tk) {
-                total = tk.txCount
+                total = tk.totalTxCount
             }
         }
         if (address) {

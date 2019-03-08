@@ -24,9 +24,9 @@ LogController.get('/logs', [
             address = address.toLowerCase()
             params.query = { address: address }
 
-            let acc = await db.SpecialAccount.findOne({ hash: address })
+            let acc = await db.Account.findOne({ hash: address })
             if (acc) {
-                total = acc.logCount
+                total = acc.logCount || 0
             }
         }
         let tx = req.query.tx
