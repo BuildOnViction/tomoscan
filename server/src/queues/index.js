@@ -2,6 +2,7 @@
 
 const kue = require('kue')
 const config = require('config')
+const logger = require('../helpers/logger')
 
 // fix warning max listener
 process.setMaxListeners(1000)
@@ -17,5 +18,9 @@ const q = kue.createQueue({
 })
 q.setMaxListeners(1000)
 q.watchStuckJobs()
+
+q.on('error', function (err) {
+    logger.error('REDIS-KUE ERROR %s', err)
+})
 
 module.exports = q
