@@ -5,16 +5,10 @@ const Schema = mongoose.Schema
 
 const SpecialAccount = new Schema({
     hash: { type: String, unique: true, index: true },
-    inTransactionCount: { type: Number, default: 0 },
-    outTransactionCount: { type: Number, default: 0 },
-    internalTxCount: { type: Number, default: 0 },
-    totalTransactionCount: { type: Number, default: 0 },
-    minedBlock: { type: Number, default: 0 },
-    rewardCount: { type: Number, default: 0 },
-    logCount: { type: Number, default: 0 }
-}, {
-    timestamps: false,
-    versionKey: false
+    total: { type: Number, default: 0 },
+    pending: { type: Number, default: 0 },
+    sign: { type: Number, default: 0 },
+    other: { type: Number, default: 0 }
 })
 
 module.exports = mongoose.model('SpecialAccount', SpecialAccount)
