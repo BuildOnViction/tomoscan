@@ -56,35 +56,32 @@ TxController.get('/txs', [
             isBlock = true
         } else if (type) {
             let condition
+            specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
             if (type === 'signTxs') {
-                specialAccount = 'signTransaction'
+                total = specialAccount ? specialAccount.sign : 0
                 condition = { to: contractAddress.BlockSigner, isPending: false }
             } else if (type === 'otherTxs') {
-                specialAccount = 'otherTransaction'
+                total = specialAccount ? specialAccount.other : 0
                 condition = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
                     isPending: false }
             } else if (type === 'pending') {
-                specialAccount = 'pendingTransaction'
+                total = specialAccount ? specialAccount.pending : 0
                 condition = { isPending: true }
                 params.sort = { createdAt: -1 }
             } else if (type === 'all') {
-                specialAccount = 'allTransaction'
+                total = specialAccount ? specialAccount.total : 0
                 params.query = Object.assign({}, params.query, { isPending: false })
             }
 
             params.query = Object.assign({}, params.query, condition || {})
         } else {
-            specialAccount = 'allTransaction'
+            specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
+            total = specialAccount ? specialAccount.total : 0
             params.query = Object.assign({}, params.query, { isPending: false })
         }
 
-        if (specialAccount != null) {
-            let sa = await db.SpecialAccount.findOne({ hash: specialAccount })
-            if (sa) {
-                total = sa.totalTransactionCount
-            }
-        } else {
-            let sa = await db.Account.findOne({ hash: specialAccount })
+        if (total === null) {
+            let sa = await db.Account.findOne({ hash: address })
             if (sa) {
                 total = sa.totalTxCount || 0
             }
