@@ -77,6 +77,21 @@ let TransactionHelper = {
                     hash: tx.to,
                     countType: 'inTx'
                 })
+                let sign = 0
+                let other = 0
+                if (tx.to === contractAddress.BlockSigner) {
+                    sign = 1
+                } else {
+                    other = 1
+                }
+
+                await db.SpecialAccount.updateOne(
+                    { hash: 'transaction' }, { $inc: {
+                        total: 1,
+                        pending: -1,
+                        sign: sign,
+                        other: other
+                    } }, { upsert: true, new: true })
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     let contractAddress = receipt.contractAddress.toLowerCase()

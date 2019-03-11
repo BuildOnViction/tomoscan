@@ -19,6 +19,9 @@ let processTransaction = async (hash) => {
         tx.to = tx.to.toLowerCase()
     }
     tx.isPending = true
+
+    await db.SpecialAccount.updateOne(
+        { hash: 'transaction' }, { $inc: { pending: 1 } }, { upsert: true, new: true })
     await db.Tx.updateOne({ hash: hash }, tx,
         { upsert: true, new: true })
 }
