@@ -25,7 +25,6 @@ let countJobs = () => {
 }
 
 const watch = async () => {
-    console.log('watch')
     try {
         let isSend = false
         let isOver2Minutes = 0
