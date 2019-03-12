@@ -4,7 +4,7 @@ const AccountHelper = require('../helpers/account')
 
 const consumer = {}
 consumer.name = 'AccountProcess'
-consumer.processNumber = 24
+consumer.processNumber = 4
 consumer.task = async function (job, done) {
     let listHash = JSON.parse(job.data.listHash)
     let map = listHash.map(async function (hash) {
