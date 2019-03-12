@@ -9,7 +9,7 @@ const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
-consumer.processNumber = 6
+consumer.processNumber = 2
 consumer.task = async function (job, done) {
     let address = job.data.address.toLowerCase()
     logger.info('Process token: %s', address)

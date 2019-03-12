@@ -49,7 +49,7 @@ const watch = async () => {
 
         while (true) {
             let l = await countJobs()
-            if (l > 200) {
+            if (l > 500) {
                 await sleep(2000)
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 continue

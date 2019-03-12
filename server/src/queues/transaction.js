@@ -5,7 +5,7 @@ const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TransactionProcess'
-consumer.processNumber = 32
+consumer.processNumber = 8
 consumer.task = async function (job, done) {
     let txs = JSON.parse(job.data.txs.toLowerCase())
     let timestamp = job.data.timestamp

@@ -3,7 +3,7 @@ const db = require('../models')
 
 const consumer = {}
 consumer.name = 'CountProcess'
-consumer.processNumber = 32
+consumer.processNumber = 16
 consumer.task = async function (job, done) {
     let data = JSON.parse(job.data.data)
     logger.info('count process %s items', data.length)
