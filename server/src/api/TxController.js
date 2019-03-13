@@ -83,7 +83,13 @@ TxController.get('/txs', [
         if (total === null) {
             let sa = await db.Account.findOne({ hash: address })
             if (sa) {
-                total = sa.totalTxCount || 0
+                if (txAccount === 'in') {
+                    total = sa.inTxCount || 0
+                } else if (txAccount === 'out') {
+                    total = sa.outTxCount || 0
+                } else {
+                    total = sa.totalTxCount || 0
+                }
             }
         }
         let end = new Date() - start
