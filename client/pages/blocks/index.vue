@@ -30,10 +30,10 @@
             <template
                 slot="timestamp"
                 slot-scope="props">
-                <span :id="'timestamp__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-                <b-tooltip :target="'timestamp__' + props.index">
-                    {{ $moment(props.item.timestamp).format('lll') }}
-                </b-tooltip>
+                <span
+                    v-b-tooltip.hover
+                    :title="$moment(props.item.timestamp).format('lll')">
+                    {{ $moment(props.item.timestamp).fromNow() }}</span>
             </template>
 
             <template

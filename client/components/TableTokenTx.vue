@@ -44,10 +44,10 @@
                 slot="timestamp"
                 slot-scope="props">
                 <div v-if="props.item.timestamp">
-                    <span :id="'age__' + props.index">{{ $moment(props.item.timestamp).fromNow() }}</span>
-                    <b-tooltip :target="'age__' + props.index">
-                        {{ $moment(props.item.timestamp).format('lll') }}
-                    </b-tooltip>
+                    <span
+                        v-b-tooltip.hover
+                        :title="$moment(props.item.timestamp).format('lll')">
+                        {{ $moment(props.item.timestamp).fromNow() }}</span>
                 </div>
             </template>
 
