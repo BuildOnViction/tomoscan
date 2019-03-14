@@ -222,6 +222,7 @@
                     :contract="hash"/>
             </b-tab>
             <b-tab
+                v-if="!address.isContract"
                 id="events"
                 :active="hashTab === '#events'"
                 :title="'Events (' + formatNumber(eventsCount) + ')'"
@@ -379,6 +380,8 @@ export default {
             const allTabs = this.$refs.allTabs
             const location = window.location
             const value = this.tabIndex
+            console.log('location', location)
+            console.log('value', value)
             if (allTabs) {
                 if (location.hash !== allTabs.tabs[value].href) {
                     this.$router.replace({
