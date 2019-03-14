@@ -186,7 +186,7 @@ RewardController.post('/expose/MNRewardsByEpochs', [
                 await Promise.all(map)
                 if (totalSign > 0) {
                     result.masternodeReward = totalReward.multipliedBy(result.signNumber)
-                        .dividedBy(totalSign)
+                        .dividedBy(totalSign).multipliedBy(0.4) // 40% for masternode
                 } else result.masternodeReward = result.reward
                 return result
             } else {
