@@ -161,7 +161,13 @@ let TransactionHelper = {
                         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
             }
-            tx.status = web3.utils.hexToNumber(receipt.status)
+            let status
+            if (typeof receipt.status === 'boolean') {
+                status = receipt.status
+            } else {
+                status = web3.utils.hexToNumber(receipt.status)
+            }
+            tx.status = status
             tx.isPending = false
 
             // Internal transaction
@@ -223,7 +229,13 @@ let TransactionHelper = {
         if (receipt.blockNumber) {
             tx.blockNumber = receipt.blockNumber
         }
-        tx.status = web3.utils.hexToNumber(receipt.status)
+        let status
+        if (typeof receipt.status === 'boolean') {
+            status = receipt.status
+        } else {
+            status = web3.utils.hexToNumber(receipt.status)
+        }
+        tx.status = status
         tx.isPending = false
         tx.from = tx.from.toLowerCase()
         if (tx.to) {

@@ -212,7 +212,13 @@ TxController.get('/txs', [
             let map = status.map(async function (s) {
                 let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
                 if (receipt) {
-                    s.status = web3.utils.hexToNumber(receipt.status)
+                    let status
+                    if (typeof receipt.status === 'boolean') {
+                        status = receipt.status
+                    } else {
+                        status = web3.utils.hexToNumber(receipt.status)
+                    }
+                    s.status = status
                 } else {
                     s.status = null
                 }
