@@ -109,7 +109,14 @@ const mixin = {
             return mixin.methods.formatNumber(weiNumber, decimal)
         },
 
-        toEtherNumber: (wei) => web3.utils.fromWei(wei, 'ether'),
+        toTomoNumber: (wei) => {
+            BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
+
+            let weiNumber = new BigNumber(wei)
+            let divided = 10 ** 18
+            return weiNumber.dividedBy(divided).toString()
+            // web3.utils.fromWei(wei, 'ether')
+        },
 
         unformatAddress: (address) => address.replace(
             '0x000000000000000000000000', '0x'),

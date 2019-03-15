@@ -41,7 +41,7 @@
                         <tr>
                             <td>TOMO USD Value</td>
                             <td>
-                                <span>{{ formatNumber(usdPrice * toEtherNumber(address.balance), 18) }}</span>
+                                <span>{{ formatNumber(usdPrice * toTomoNumber(address.balance), 18) }}</span>
                             </td>
                         </tr>
                         <tr>
