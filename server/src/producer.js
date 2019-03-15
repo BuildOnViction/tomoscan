@@ -50,16 +50,20 @@ const watch = async () => {
         while (true) {
             let l = await countJobs()
             if (l > 500) {
-                await sleep(2000)
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
+                await sleep(2000)
                 continue
             }
             if (String(newJobSetting.meta_value) !== '1') {
                 newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
+                logger.debug('Setting is not allow push new job. Sleep 2 seconds and wait to allow')
+                await sleep(2000)
+                continue
             }
 
             if (String(newJobSetting.meta_value) === '1') {
                 let maxBlockNum = await web3.eth.getBlockNumber()
+                logger.debug('Min block crawl %s, Max block number %s', minBlockCrawl, maxBlockNum)
                 if (minBlockCrawl < maxBlockNum) {
                     let nextCrawl = minBlockCrawl + step
                     nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
