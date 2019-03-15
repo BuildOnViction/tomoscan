@@ -111,7 +111,8 @@
                             type="button"
                             class="btn btn-sm mr-2 code-actions__copy"
                             @success="copyAddress">
-                        <i class="fa fa-clipboard" /> Copy</button>
+                            <i class="fa fa-clipboard"/> Copy
+                        </button>
                     </div>
                     <div>
                         <vue-qrcode
@@ -181,6 +182,7 @@
             </b-tab>
             <b-tab
                 v-if="!address.isContract"
+                id="minedBlocks"
                 :active="hashTab === '#minedBlocks'"
                 :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
                 href="#minedBlocks">
@@ -191,6 +193,7 @@
             </b-tab>
             <b-tab
                 v-if="address && address.hashTokens"
+                id="tokenHolding"
                 :active="hashTab === '#tokenHolding'"
                 :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
                 href="#tokenHolding">
@@ -202,11 +205,13 @@
             </b-tab>
             <b-tab
                 v-if="address && address.isContract && smartContract"
+                id="code"
                 :active="hashTab === '#code'"
                 title="Code"
                 href="#code"
                 @click="refreshCodeMirror">
                 <read-source-code
+                    v-if="hashTab === '#code'"
                     ref="readSourceCode"
                     :token="hash"
                     :smartcontract="smartContract"
@@ -219,6 +224,7 @@
                 title="Read Contract"
                 href="#readContract">
                 <read-contract
+                    v-if="hashTab === '#readContract'"
                     :contract="hash"/>
             </b-tab>
             <b-tab
@@ -380,6 +386,7 @@ export default {
             const allTabs = this.$refs.allTabs
             const location = window.location
             const value = this.tabIndex
+            console.log('allTabs', allTabs)
             console.log('location', location)
             console.log('value', value)
             if (allTabs) {
