@@ -242,7 +242,7 @@ TxController.get('/txs', [
     }
 })
 
-TxController.get('/txs/:slug', [
+TxController.get(['/txs/:slug', '/tx/:slug'], [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
