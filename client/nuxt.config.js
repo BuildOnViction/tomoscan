@@ -105,6 +105,7 @@ module.exports = {
     router: {
         extendRoutes (routes) {
             routes.push({ name: 'tx', path: '/tx', component: 'pages/txs/index.vue' })
+            routes.push({ name: 'tx_slug', path: '/tx/:slug', component: 'pages/txs/_slug.vue' })
         }
     }
 }
