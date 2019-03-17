@@ -101,5 +101,10 @@ module.exports = {
     toast: {
         position: 'bottom-center',
         duration: 2000
+    },
+    router: {
+        extendRoutes (routes) {
+            routes.find((r) => r.path.includes('pages/txs/_slug.vue')).path = '/tx/:slug'
+        }
     }
 }
