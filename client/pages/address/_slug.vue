@@ -127,13 +127,13 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs">
+            class="tomo-tabs"
+            @input="onSwitchTab">
             <b-tab
                 id="inTransactions"
                 :active="hashTab === '#inTransactions'"
                 :title="'In Transactions (' + formatNumber(inTxsCount) + ')'"
-                href="#inTransactions"
-                @click="onSwitchTab">
+                href="#inTransactions">
                 <table-tx
                     v-if="hashTab === '#inTransactions'"
                     :address="hash"
@@ -147,8 +147,7 @@
                 id="outTransactions"
                 :active="hashTab === '#outTransactions'"
                 :title="'Out Transactions (' + formatNumber(outTxsCount) + ')'"
-                href="#outTransactions"
-                @click="onSwitchTab">
+                href="#outTransactions">
                 <table-tx
                     v-if="hashTab === '#outTransactions'"
                     :address="hash"
@@ -161,8 +160,7 @@
                 id="internalTransactions"
                 :active="hashTab === '#internalTransactions'"
                 :title="'Internal Transactions (' + formatNumber(internalTxsCount) + ')'"
-                href="#internalTransactions"
-                @click="onSwitchTab">
+                href="#internalTransactions">
                 <table-internal-tx
                     v-if="hashTab === '#internalTransactions'"
                     :address="hash"
@@ -174,8 +172,7 @@
                 id="tokenTransactions"
                 :active="hashTab === '#tokenTransactions'"
                 :title="'Token Transactions (' + formatNumber(tokenTxsCount) + ')'"
-                href="#tokenTransactions"
-                @click="onSwitchTab">
+                href="#tokenTransactions">
                 <table-token-tx
                     v-if="hashTab === '#tokenTransactions'"
                     :holder="hash"
@@ -188,8 +185,7 @@
                 id="minedBlocks"
                 :active="hashTab === '#minedBlocks'"
                 :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
-                href="#minedBlocks"
-                @click="onSwitchTab">
+                href="#minedBlocks">
                 <table-tx-by-account
                     v-if="hashTab === '#minedBlocks'"
                     :page="this"
@@ -200,8 +196,7 @@
                 id="tokenHolding"
                 :active="hashTab === '#tokenHolding'"
                 :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
-                href="#tokenHolding"
-                @click="onSwitchTab">
+                href="#tokenHolding">
                 <table-tokens-by-account
                     v-if="hashTab === '#tokenHolding'"
                     :address="hash"
@@ -214,7 +209,7 @@
                 :active="hashTab === '#code'"
                 title="Code"
                 href="#code"
-                @click="refreshCodeMirror && onSwitchTab">
+                @click="refreshCodeMirror">
                 <read-source-code
                     v-if="hashTab === '#code'"
                     ref="readSourceCode"
@@ -227,8 +222,7 @@
                 id="readContract"
                 :active="hashTab === '#readContract'"
                 title="Read Contract"
-                href="#readContract"
-                @click="onSwitchTab">
+                href="#readContract">
                 <read-contract
                     v-if="hashTab === '#readContract'"
                     :contract="hash"/>
@@ -238,8 +232,7 @@
                 id="events"
                 :active="hashTab === '#events'"
                 :title="'Events (' + formatNumber(eventsCount) + ')'"
-                href="#events"
-                @click="onSwitchTab">
+                href="#events">
                 <table-event
                     v-if="hashTab === '#events'"
                     :address="hash"
@@ -251,8 +244,7 @@
                 id="rewards"
                 :active="hashTab === '#rewards'"
                 :title="'Rewards (' + formatNumber(rewardTime) + ')'"
-                href="#rewards"
-                @click="onSwitchTab">
+                href="#rewards">
                 <table-reward
                     v-if="hashTab === '#rewards'"
                     :address="hash"
@@ -395,13 +387,13 @@ export default {
             const location = window.location
             const value = this.tabIndex
             if (allTabs) {
-                if (location.hash !== allTabs.tabs[value].href) {
-                    this.$router.replace({
-                        hash: allTabs.tabs[value].href
-                    })
-                } else {
-                    location.hash = allTabs.tabs[value].href
-                }
+                // if (location.hash !== allTabs.tabs[value].href) {
+                //     this.$router.replace({
+                //         hash: allTabs.tabs[value].href
+                //     })
+                // } else {
+                location.hash = allTabs.tabs[value].href
+                // }
             }
         },
         copyAddress () {
