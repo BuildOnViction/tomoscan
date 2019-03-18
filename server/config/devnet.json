@@ -32,8 +32,8 @@
     }
   ],
 
-  "WEB3_URI": "https://devnet.tomochain.com/",
-  "WEB3_WS_URI": "wss://devnet.tomochain.com/ws",
+  "WEB3_URI": "https://testnet.tomochain.com/",
+  "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",
   "DEBUG_QUERY": false,
 
   "BASE_UNIT": "TOMO",
