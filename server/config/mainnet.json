@@ -57,7 +57,6 @@
   "BASE_URL": "https://scan.tomochain.com/",
   "CLIENT_URL": "http://localhost:3000/",
   "TOMOMASTER_API_URL": "https://master.tomochain.com",
-  "SLACK_WEBHOOK_URL": "",
 
   "BLOCK_PER_EPOCH": 900,
   "REWARD": 250,

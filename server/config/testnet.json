@@ -46,10 +46,9 @@
   "SENDGRID_API_KEY": "",
   "SENDER_EMAIL": "contact@tomochain.com",
 
-  "BASE_URL": "https://scan.devnet.tomochain.com/",
+  "BASE_URL": "https://scan.testnet.tomochain.com/",
   "CLIENT_URL": "http://localhost:3000/",
-  "TOMOMASTER_API_URL": "https://master.devnet.tomochain.com",
-  "SLACK_WEBHOOK_URL": "",
+  "TOMOMASTER_API_URL": "https://master.testnet.tomochain.com",
 
   "BLOCK_PER_EPOCH": 900,
   "REWARD": 250,

@@ -4,7 +4,6 @@ const Web3Util = require('./helpers/web3')
 const q = require('./queues')
 const db = require('./models')
 const events = require('events')
-// const config = require('config')
 const logger = require('./helpers/logger')
 
 // fix warning max listener
@@ -26,8 +25,6 @@ let countJobs = () => {
 
 const watch = async () => {
     try {
-        // let isSend = false
-        // let isOver2Minutes = 0
         let step = 100
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
@@ -79,34 +76,9 @@ const watch = async () => {
 
                 if (minBlockCrawl > parseInt(setting.meta_value)) {
                     setting.meta_value = minBlockCrawl
-                    // isOver2Minutes = 0
-                    // isSend = true
                     await setting.save()
                     newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
                 }
-
-                // if (String(maxBlockNum) === String(minBlockCrawl)) {
-                //     isOver2Minutes += 0.5 // Similar to 0.5 second
-                //
-                //     // send notification after 2 minutes
-                //     if (isOver2Minutes >= 240 && isSend) {
-                //         let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                //         logger.info('Slack Notification - There is no new block in last 2 minutes')
-                //         await slack.send({
-                //             attachments: [
-                //                 {
-                //                     author_name: 'Slack Bot',
-                //                     title: ':warning: WARNING',
-                //                     color: 'danger',
-                //                     text: '<!channel> There is no new block in last 2 minutes'
-                //                 }
-                //             ]
-                //         })
-                //         isSend = false
-                //     }
-                //     logger.debug('Sleep 0.5 seconds')
-                //     await sleep(500)
-                // }
             }
         }
     } catch (e) {

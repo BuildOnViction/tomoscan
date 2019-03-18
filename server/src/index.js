@@ -48,19 +48,6 @@ mongoose.connect(config.get('MONGODB_URI'), { useCreateIndex: true, useNewUrlPar
     } else {
     // Initialize public api
         app.use('/api', api)
-
-        // Production error handler
-        if (config.get('APP_ENV') === 'prod') {
-            app.use(function (err, req, res, next) {
-                var slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                slack.send({
-                    channel: '#tm_explorer',
-                    text: err.stack
-                })
-
-                res.sendStatus(err.status || 500)
-            })
-        }
     }
 })
 
