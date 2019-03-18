@@ -129,36 +129,29 @@
                 <b-tabs
                     ref="allTabs"
                     v-model="tabIndex"
-                    class="tomo-tabs"
-                    @input="onSwitchTab">
+                    class="tomo-tabs">
                     <b-tab
                         :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
-                        :active="hashTab === '#tokenTransfers'"
                         href="#tokenTransfers">
                         <table-token-tx
-                            v-if="hashTab === '#tokenTransfers'"
                             :token="hash"
                             :parent="'#tokenTransfers'"
                             :page="this"/>
                     </b-tab>
                     <b-tab
                         :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
-                        :active="hashTab === '#tokenHolders'"
                         href="#tokenHolders">
                         <table-token-holder
-                            v-if="hashTab === '#tokenHolders'"
                             :address="hash"
                             :parent="'#tokenHolders'"
                             :page="this"/>
                     </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
-                        :active="hashTab === '#code'"
                         title="Code"
                         href="#code"
                         @click="refreshCodeMirror">
                         <read-source-code
-                            v-if="hashTab === '#code'"
                             ref="readSourceCode"
                             :token="hash"
                             :smartcontract="smartContract"
@@ -166,11 +159,9 @@
                     </b-tab>
                     <b-tab
                         v-if="smartContract"
-                        :active="hashTab === '#readContract'"
                         title="Read Contract"
                         href="#readContract">
                         <read-contract
-                            v-if="hashTab === '#readContract'"
                             :contract="hash"/>
                     </b-tab>
                 </b-tabs>
