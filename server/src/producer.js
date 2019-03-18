@@ -85,28 +85,28 @@ const watch = async () => {
                     newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
                 }
 
-                if (String(maxBlockNum) === String(minBlockCrawl)) {
-                    isOver2Minutes += 0.5 // Similar to 0.5 second
-
-                    // send notification after 2 minutes
-                    if (isOver2Minutes >= 240 && isSend) {
-                        let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
-                        logger.info('Slack Notification - There is no new block in last 2 minutes')
-                        await slack.send({
-                            attachments: [
-                                {
-                                    author_name: 'Slack Bot',
-                                    title: ':warning: WARNING',
-                                    color: 'danger',
-                                    text: '<!channel> There is no new block in last 2 minutes'
-                                }
-                            ]
-                        })
-                        isSend = false
-                    }
-                    logger.debug('Sleep 0.5 seconds')
-                    await sleep(500)
-                }
+                // if (String(maxBlockNum) === String(minBlockCrawl)) {
+                //     isOver2Minutes += 0.5 // Similar to 0.5 second
+                //
+                //     // send notification after 2 minutes
+                //     if (isOver2Minutes >= 240 && isSend) {
+                //         let slack = require('slack-notify')(config.get('SLACK_WEBHOOK_URL'))
+                //         logger.info('Slack Notification - There is no new block in last 2 minutes')
+                //         await slack.send({
+                //             attachments: [
+                //                 {
+                //                     author_name: 'Slack Bot',
+                //                     title: ':warning: WARNING',
+                //                     color: 'danger',
+                //                     text: '<!channel> There is no new block in last 2 minutes'
+                //                 }
+                //             ]
+                //         })
+                //         isSend = false
+                //     }
+                //     logger.debug('Sleep 0.5 seconds')
+                //     await sleep(500)
+                // }
             }
         }
     } catch (e) {
