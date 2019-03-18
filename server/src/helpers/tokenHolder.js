@@ -46,7 +46,7 @@ let TokenHolderHelper = {
             let oldQuantity = new BigNumber(holder.quantity || 0)
             let newQuantity = oldQuantity.plus(quantity)
             holder.quantity = newQuantity.toString()
-            holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber()
+            holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
             holder.save()
         } catch (e) {
             logger.warn('token updateQuality error %s', e)
