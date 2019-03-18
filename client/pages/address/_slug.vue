@@ -390,13 +390,10 @@ export default {
 
             self.$store.dispatch('app/getUSDPrice')
         },
-        onSwitchTab: function () {
+        onSwitchTab: function (tabIndex) {
             const allTabs = this.$refs.allTabs
             const location = window.location
-            const value = this.tabIndex
-            console.log('allTabs', allTabs)
-            console.log('location', location)
-            console.log('value', value)
+            const value = tabIndex
             if (allTabs) {
                 if (location.hash !== allTabs.tabs[value].href) {
                     this.$router.replace({
