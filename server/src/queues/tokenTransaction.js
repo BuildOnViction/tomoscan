@@ -50,7 +50,7 @@ consumer.task = async function (job, done) {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
-        q.create('TokenHolderProcess', { data: JSON.stringify([
+        q.create('CountProcess', { data: JSON.stringify([
             { hash: _log.from, countType: 'tokenTx' },
             { hash: _log.to, countType: 'tokenTx' }
         ]) })
