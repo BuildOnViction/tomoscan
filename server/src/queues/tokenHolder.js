@@ -7,20 +7,19 @@ const consumer = {}
 consumer.name = 'TokenHolderProcess'
 consumer.processNumber = 8
 consumer.task = async function (job, done) {
-    let token = JSON.parse(job.data.token)
-    logger.info('Process token holder: %s %s %s', token.from, token.to, token.value)
-    if (!token) {
-        done()
-        return false
-    }
-
     try {
+        let token = JSON.parse(job.data.token)
+        logger.info('Process token holder: %s %s %s', token.from, token.to, token.value)
+        if (!token) {
+            done()
+            return false
+        }
         // Add holder from.
         await TokenHolderHelper.updateQuality(token.from, token.address, -token.value)
         // Add holder to.
         await TokenHolderHelper.updateQuality(token.to, token.address, token.value)
     } catch (e) {
-        logger.warn('cannot process token holder %s. Error %s', token, e)
+        logger.warn('Error TokenHolderProcess %s', e)
         done(e)
     }
 
