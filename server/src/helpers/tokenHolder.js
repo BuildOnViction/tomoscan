@@ -23,7 +23,7 @@ let TokenHolderHelper = {
 
     updateQuality: async (hash, token, quantity) => {
         try {
-            let holder = await db.TokenHolder.findOne({hash: hash, token: token})
+            let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
             if (!holder) {
                 // Create new.
                 holder = await db.TokenHolder.create({
@@ -32,14 +32,14 @@ let TokenHolderHelper = {
                     quantity: 0
                 })
             }
-            let tk = await db.Token.findOne({hash: token})
+            let tk = await db.Token.findOne({ hash: token })
             let decimals
             if (tk) {
                 decimals = tk.decimals
             } else {
                 let web3 = await Web3Util.getWeb3()
                 let tokenFuncs = await TokenHelper.getTokenFuncs()
-                decimals = await web3.eth.call({to: token, data: tokenFuncs['decimals']})
+                decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
                 decimals = await web3.utils.hexToNumberString(decimals)
             }
 
