@@ -72,6 +72,9 @@ const watch = async () => {
 
                         minBlockCrawl = i
                     }
+                } else {
+                    logger.debug('There are no new block. Sleep 2 seconds and wait')
+                    await sleep(2000)
                 }
 
                 if (minBlockCrawl > parseInt(setting.meta_value)) {

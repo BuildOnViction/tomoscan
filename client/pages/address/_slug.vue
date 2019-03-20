@@ -127,7 +127,8 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs">
+            class="tomo-tabs"
+            @input="onSwitchTab">
             <b-tab
                 id="inTransactions"
                 :title="'In Transactions (' + formatNumber(inTxsCount) + ')'"
@@ -367,13 +368,13 @@ export default {
             const value = this.tabIndex
             console.log(value)
             if (allTabs) {
-                if (location.hash !== allTabs.tabs[value].href) {
-                    this.$router.replace({
-                        hash: allTabs.tabs[value].href
-                    })
-                } else {
-                    location.hash = allTabs.tabs[value].href
-                }
+                // if (location.hash !== allTabs.tabs[value].href) {
+                //     this.$router.replace({
+                //         hash: allTabs.tabs[value].href
+                //     })
+                // } else {
+                location.hash = allTabs.tabs[value].href
+                // }
             }
         },
         copyAddress () {
