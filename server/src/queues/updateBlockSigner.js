@@ -41,7 +41,7 @@ consumer.task = async function (job, done) {
                 logger.warn('Cannot get block signer of block %s. Error %s', blockNumber, JSON.stringify(result.error))
             }
         } catch (e) {
-            logger.warn(e)
+            logger.warn('Failed BlockSignerProcess %s', e)
             return done(e)
         }
     }
