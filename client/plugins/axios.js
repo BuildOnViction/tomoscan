@@ -9,6 +9,7 @@ export default function ({ $axios, redirect, app, store }) {
             if (token) {
                 config.headers.common['Authorization'] = token
             }
+            config.headers.common['Access-Control-Allow-Origin'] = '*'
         }
     })
 
