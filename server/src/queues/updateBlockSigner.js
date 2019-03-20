@@ -40,12 +40,12 @@ consumer.task = async function (job, done) {
             } else {
                 logger.warn('Cannot get block signer of block %s. Error %s', blockNumber, JSON.stringify(result.error))
             }
-            done()
         } catch (e) {
             logger.warn(e)
-            done(e)
+            return done(e)
         }
     }
+    return done()
 }
 
 module.exports = consumer
