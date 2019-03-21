@@ -222,7 +222,7 @@ export default {
     methods: {
         async getTokenHolder (token, holder) {
             let { data } = await this.$axios.get('/api/tokens/' + token + '/holder/' + holder)
-            return data.quantityNumber
+            return data.quantity
         },
         async getAccountFromApi () {
             let self = this
