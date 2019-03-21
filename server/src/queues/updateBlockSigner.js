@@ -4,6 +4,7 @@ const db = require('../models')
 const logger = require('../helpers/logger')
 const axios = require('axios')
 const config = require('config')
+const BlockHelper = require('../helpers/block')
 
 const consumer = {}
 consumer.name = 'BlockSignerProcess'
@@ -12,6 +13,9 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let blockNumber = parseInt(job.data.block)
     let block = await db.Block.findOne({ number: blockNumber })
+    if (!block) {
+        block = BlockHelper.getBlock(blockNumber)
+    }
     if (block) {
         logger.info('Update signers for block %s %s', block.number, block.hash)
         try {
@@ -31,7 +35,7 @@ consumer.task = async function (job, done) {
                 }, {
                     $set: {
                         blockHash: block.hash,
-                        blockNumber: block.n,
+                        blockNumber: block.number,
                         signers: signers.map(it => (it || '').toLowerCase())
                     }
                 }, {
