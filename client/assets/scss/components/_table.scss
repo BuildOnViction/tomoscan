@@ -666,22 +666,25 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 35% 20% 22% 8% 15%;
+      grid-template-columns: 40% 25% 20% 15%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 35% 20% 20% 10% 15%;
+      grid-template-columns: 40% 25% 20% 15%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 38% 17% 20% 10% 15%;
+      grid-template-columns: 40% 25% 20% 15%;
     }
   }
 
   .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
+    }
 
     @include media-breakpoint-up(xl) {
-      max-width: 15rem;
+      max-width: 100%;
     }
 
     @include media-breakpoint-up(2xl) {

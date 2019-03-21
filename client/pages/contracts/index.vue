@@ -41,12 +41,6 @@
             </template>
 
             <template
-                slot="txCount"
-                slot-scope="props">
-                <span>{{ formatNumber(props.item.txCount) }}</span>
-            </template>
-
-            <template
                 slot="createdAt"
                 slot-scope="props">
                 <span>{{ $moment(props.item.createdAt).format('ll') }}</span>
@@ -79,7 +73,6 @@ export default {
                 hash: { label: 'Address' },
                 contractName: { label: 'ContractName' },
                 compiler: { label: 'Compiler' },
-                txCount: { label: 'TxCount' },
                 createdAt: { label: 'Date Verified' }
             },
             loading: true,
