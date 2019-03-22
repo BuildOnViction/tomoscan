@@ -27,7 +27,8 @@
                                 </tr>
                                 <tr>
                                     <td>Holders</td>
-                                    <td>{{ holdersCount }} {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
+                                    <td>{{ formatNumber(holdersCount) }}
+                                        {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
