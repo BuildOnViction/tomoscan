@@ -27,10 +27,10 @@ consumer.task = async function (job, done) {
             block.save()
         })
         await Promise.all(map)
-        done()
+        return done()
     } catch (e) {
         logger.warn(e)
-        done(e)
+        return done(e)
     }
 }
 

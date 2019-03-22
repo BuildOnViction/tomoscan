@@ -16,8 +16,7 @@ consumer.task = async function (job, done) {
         let _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
-            done()
-            return false
+            return done()
         }
         const q = require('./index')
 
@@ -58,10 +57,10 @@ consumer.task = async function (job, done) {
             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
         logger.warn('cannot process token tx. Error %s', e)
-        done(e)
+        return done(e)
     }
 
-    done()
+    return done()
 }
 
 module.exports = consumer

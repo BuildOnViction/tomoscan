@@ -11,8 +11,7 @@ consumer.task = async function (job, done) {
         let token = JSON.parse(job.data.token)
         logger.info('Process token holder: %s %s %s', token.from, token.to, token.value)
         if (!token) {
-            done()
-            return false
+            return done()
         }
         // Add holder from.
         await TokenHolderHelper.updateQuality(token.from, token.address, -token.value)
@@ -20,10 +19,10 @@ consumer.task = async function (job, done) {
         await TokenHolderHelper.updateQuality(token.to, token.address, token.value)
     } catch (e) {
         logger.warn('Error TokenHolderProcess %s', e)
-        done(e)
+        return done(e)
     }
 
-    done()
+    return done()
 }
 
 module.exports = consumer

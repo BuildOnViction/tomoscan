@@ -25,10 +25,10 @@ consumer.task = async function (job, done) {
                 await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
         }, { upsert: true })
 
-        done()
+        return done()
     } catch (e) {
         logger.warn('error when update special account. Error %s', e)
-        done(e)
+        return done(e)
     }
 }
 

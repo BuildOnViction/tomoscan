@@ -50,10 +50,10 @@ consumer.task = async function (job, done) {
         token.save()
     } catch (e) {
         logger.warn('cannot process token %s. Error %s', address, e)
-        done(e)
+        return done(e)
     }
 
-    done()
+    return done()
 }
 
 module.exports = consumer

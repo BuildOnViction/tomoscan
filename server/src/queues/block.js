@@ -74,13 +74,7 @@ consumer.task = async function (job, done) {
             .priority('normal').removeOnComplete(true)
             .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
-        // if (blockNumber % 100 === 0) {
-        //     q.create('updateSpecialAccount', {})
-        //         .priority('normal').removeOnComplete(true)
-        //         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        // }
-
-        done()
+        return done()
     } catch (e) {
         logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl. Error %s', blockNumber, e)
         if (job.toJSON().attempts.made === 4) {

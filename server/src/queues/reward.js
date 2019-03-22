@@ -11,21 +11,21 @@ consumer.task = async function (job, done) {
     try {
         let check = await RewardHelper.rewardOnChain(epoch)
         if (check) {
-            done()
+            return done()
         } else {
             if (job.toJSON().attempts.made === 4) {
                 logger.error('Attempts 5 times, can not reward calculate %s', epoch)
-                done()
+                return done()
             } else {
-                done(new Error('There is a problem'))
+                return done(new Error('There is a problem'))
             }
         }
     } catch (e) {
-        logger.warn('BlockSignerProcess %s', e)
+        logger.warn('RewardProcess %s', e)
         if (job.toJSON().attempts.made === 4) {
             logger.error('Attempts 5 times, can not reward calculate %s', epoch)
         }
-        done(e)
+        return done(e)
     }
 }
 

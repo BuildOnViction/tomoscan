@@ -14,7 +14,7 @@ consumer.task = async function (job, done) {
     let blockNumber = parseInt(job.data.block)
     let block = await db.Block.findOne({ number: blockNumber })
     if (!block) {
-        block = BlockHelper.getBlock(blockNumber)
+        block = await BlockHelper.getBlock(blockNumber)
     }
     if (block) {
         logger.info('Update signers for block %s %s', block.number, block.hash)

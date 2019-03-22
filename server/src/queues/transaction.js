@@ -15,12 +15,12 @@ consumer.task = async function (job, done) {
         try {
             await TransactionHelper.crawlTransaction(hash, timestamp)
         } catch (e) {
-            done(e)
+            return done(e)
         }
     })
     await Promise.all(map)
 
-    done()
+    return done()
 }
 
 module.exports = consumer
