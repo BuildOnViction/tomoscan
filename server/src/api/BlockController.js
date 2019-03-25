@@ -190,4 +190,21 @@ BlockController.get('/blocks/signers/:slug', [
     }
 })
 
+BlockController.get('/blocks/finality/latestIrreversibleBlock', async (req, res) => {
+    let last30Block = await db.Block.find().limit(50).sort({ finality: -1 })
+    let lastFinality
+    for (let i = 0; i < last30Block.length; i++) {
+        let b = last30Block[i]
+        if (b.finality >= 75) {
+            lastFinality = b.number
+            break
+        }
+        if (i === last30Block.length - 1) {
+            lastFinality = b.number
+        }
+        console.log(lastFinality)
+    }
+    return res.json({ latestIrreversibleBlock: lastFinality })
+})
+
 module.exports = BlockController
