@@ -131,16 +131,18 @@
                     ref="allTabs"
                     v-model="tabIndex"
                     class="tomo-tabs">
+                    <!--:title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"-->
                     <b-tab
-                        :title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"
+                        title="Token Transfers"
                         href="#tokenTransfers">
                         <table-token-tx
                             :token="hash"
                             :parent="'#tokenTransfers'"
                             :page="this"/>
                     </b-tab>
+                    <!--:title="'Token Holders (' + formatNumber(holdersCount) + ')'"-->
                     <b-tab
-                        :title="'Token Holders (' + formatNumber(holdersCount) + ')'"
+                        title="Token Holders"
                         href="#tokenHolders">
                         <table-token-holder
                             :address="hash"

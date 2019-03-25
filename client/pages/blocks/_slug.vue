@@ -127,14 +127,6 @@
                             <td>Finality</td>
                             <td>{{ block.finality }} %</td>
                         </tr>
-                        <!--tr>
-                            <td>Difficulty</td>
-                            <td>{{ formatNumber(block.difficulty) }}</td>
-                        </tr-->
-                        <!--tr>
-                            <td>Total Difficulty</td>
-                            <td>{{ formatNumber(block.totalDifficulty) }}</td>
-                        </tr-->
                         <tr>
                             <td>Gas Used</td>
                             <td>{{ formatNumber(block.gasUsed) }}</td>
@@ -176,14 +168,15 @@
             </div>
         </div>
 
+        <!--:title="'Transactions (' + formatNumber(totalTxsCount) + ')'"-->
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
             class="tomo-tabs"
             @input="onSwitchTab">
             <b-tab
-                :title="'Transactions (' + formatNumber(totalTxsCount) + ')'"
                 :active="hashTab === '#transactions'"
+                title="Transactions"
                 href="#transactions">
                 <table-tx
                     v-if="hashTab === '#transactions'"
@@ -192,9 +185,10 @@
                     :parent="'transactions'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"-->
             <b-tab
-                :title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"
                 :active="hashTab === '#blockSigner'"
+                title="BlockSigner"
                 href="#blockSigner">
                 <block-signer
                     v-if="hashTab === '#blockSigner'"

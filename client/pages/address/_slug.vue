@@ -129,9 +129,10 @@
             v-model="tabIndex"
             class="tomo-tabs"
             @input="onSwitchTab">
+            <!--:title="'In Transactions (' + formatNumber(inTxsCount) + ')'"-->
             <b-tab
                 id="inTransactions"
-                :title="'In Transactions (' + formatNumber(inTxsCount) + ')'"
+                title="In Transactions"
                 href="#inTransactions">
                 <table-tx
                     :address="hash"
@@ -140,10 +141,11 @@
                     :parent="'#inTransactions'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Out Transactions (' + formatNumber(outTxsCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
                 id="outTransactions"
-                :title="'Out Transactions (' + formatNumber(outTxsCount) + ')'"
+                title="Out Transactions"
                 href="#outTransactions">
                 <table-tx
                     :address="hash"
@@ -152,19 +154,21 @@
                     :parent="'#outTransactions'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Internal Transactions (' + formatNumber(internalTxsCount) + ')'"-->
             <b-tab
                 id="internalTransactions"
-                :title="'Internal Transactions (' + formatNumber(internalTxsCount) + ')'"
+                title="Internal Transactions"
                 href="#internalTransactions">
                 <table-internal-tx
                     :address="hash"
                     :parent="'#internalTransactions'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Token Transactions (' + formatNumber(tokenTxsCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
                 id="tokenTransactions"
-                :title="'Token Transactions (' + formatNumber(tokenTxsCount) + ')'"
+                title="Token Transactions"
                 href="#tokenTransactions">
                 <table-token-tx
                     :holder="hash"
@@ -172,19 +176,21 @@
                     :parent="'#tokenTransactions'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Created Blocks (' + formatNumber(blocksCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
                 id="minedBlocks"
-                :title="'Created Blocks (' + formatNumber(blocksCount) + ')'"
+                title="Created Blocks"
                 href="#minedBlocks">
                 <table-tx-by-account
                     :page="this"
                     :parent="'minedBlocks'"/>
             </b-tab>
+            <!--:title="'Token Holding (' + formatNumber(tokensCount) + ')'"-->
             <b-tab
                 v-if="address && address.hashTokens"
                 id="tokenHolding"
-                :title="'Token Holding (' + formatNumber(tokensCount) + ')'"
+                title="Token Holding"
                 href="#tokenHolding">
                 <table-tokens-by-account
                     :address="hash"
@@ -211,20 +217,22 @@
                 <read-contract
                     :contract="hash"/>
             </b-tab>
+            <!--:title="'Events (' + formatNumber(eventsCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
                 id="events"
-                :title="'Events (' + formatNumber(eventsCount) + ')'"
+                title="Events"
                 href="#events">
                 <table-event
                     :address="hash"
                     :parent="'events'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Rewards (' + formatNumber(rewardTime) + ')'"-->
             <b-tab
                 v-if="hasReward && !address.isContract"
                 id="rewards"
-                :title="'Rewards (' + formatNumber(rewardTime) + ')'"
+                title="Rewards"
                 href="#rewards">
                 <table-reward
                     :address="hash"

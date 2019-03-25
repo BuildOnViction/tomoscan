@@ -90,9 +90,10 @@
             v-model="tabIndex"
             class="tomo-tabs"
             @input="onSwitchTab">
+            <!--:title="'Reward Voter (' + formatNumber(voterCount) + ')'"-->
             <b-tab
-                :title="'Reward Voter (' + formatNumber(voterCount) + ')'"
                 :active="hashTab === '#voters'"
+                title="Reward Voter"
                 href="#voters">
                 <table-reward-by-epoch
                     v-if="hashTab === '#voters'"
@@ -101,9 +102,10 @@
                     :parent="'voters'"
                     :page="this"/>
             </b-tab>
+            <!--:title="'Reward Foundation (' + formatNumber(foundationCount) + ')'"-->
             <b-tab
-                :title="'Reward Foundation (' + formatNumber(foundationCount) + ')'"
                 :active="hashTab === '#foundations'"
+                title="Reward Foundation"
                 href="#foundations">
                 <table-reward-by-epoch
                     v-if="hashTab === '#foundations'"

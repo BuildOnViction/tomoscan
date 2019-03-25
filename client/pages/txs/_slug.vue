@@ -212,10 +212,11 @@
                             </div>
                         </div>
                     </b-tab>
+                    <!--:title="'Events (' + formatNumber(eventsCount) + ')'"-->
                     <b-tab
                         v-if="eventsCount > 0"
                         :active="hashTab === '#events'"
-                        :title="'Events (' + formatNumber(eventsCount) + ')'"
+                        title="Events"
                         href="#events">
                         <table-event
                             v-if="hashTab === '#events'"
