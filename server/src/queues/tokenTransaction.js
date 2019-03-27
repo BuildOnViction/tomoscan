@@ -26,35 +26,54 @@ consumer.task = async function (job, done) {
         if (log.topics[2]) {
             _log.to = await utils.unformatAddress(log.topics[2])
         }
-        _log.value = web3.utils.hexToNumberString(log.data)
-        _log.valueNumber = _log.value
         _log.address = _log.address.toLowerCase()
         let transactionHash = _log.transactionHash.toLowerCase()
 
-        delete _log['_id']
-        let tokenTx = await db.TokenTx.findOne({ transactionHash: transactionHash, from: _log.from, to: _log.to })
-        if (!tokenTx) {
-            await db.TokenTx.updateOne(
-                { transactionHash: transactionHash, from: _log.from, to: _log.to },
-                _log,
-                { upsert: true, new: true })
+        if (log.data !== '0x') {
+            _log.value = web3.utils.hexToNumberString(log.data)
+            _log.valueNumber = _log.value
 
-            // Add token holder data.
-            q.create('TokenHolderProcess', { token: JSON.stringify({
-                from: _log.from.toLowerCase(),
-                to: _log.to.toLowerCase(),
-                address: _log.address,
-                value: _log.value
-            }) })
+            delete _log['_id']
+            let tokenTx = await db.TokenTx.findOne({ transactionHash: transactionHash, from: _log.from, to: _log.to })
+            if (!tokenTx) {
+                await db.TokenTx.updateOne(
+                    { transactionHash: transactionHash, from: _log.from, to: _log.to },
+                    _log,
+                    { upsert: true, new: true })
+
+                // Add token holder data.
+                q.create('TokenHolderProcess', {
+                    token: JSON.stringify({
+                        from: _log.from.toLowerCase(),
+                        to: _log.to.toLowerCase(),
+                        address: _log.address,
+                        value: _log.value
+                    })
+                })
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+            q.create('CountProcess', {
+                data: JSON.stringify([
+                    { hash: _log.from, countType: 'tokenTx' },
+                    { hash: _log.to, countType: 'tokenTx' }
+                ])
+            })
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        } else {
+            if (log.topics[3]) {
+                _log.tokenId = await web3.utils.hexToNumber(log.topics[3])
+                await db.TokenNftTx.updateOne(
+                    { transactionHash: transactionHash, from: _log.from, to: _log.to },
+                    _log,
+                    { upsert: true, new: true })
+
+                await db.TokenNftHolder.updateOne(
+                    { token: _log.address, tokenId: _log.tokenId },
+                    { holder: _log.to }, { upsert: true, new: true })
+            }
         }
-        q.create('CountProcess', { data: JSON.stringify([
-            { hash: _log.from, countType: 'tokenTx' },
-            { hash: _log.to, countType: 'tokenTx' }
-        ]) })
-            .priority('normal').removeOnComplete(true)
-            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
     } catch (e) {
         logger.warn('cannot process token tx. Error %s', e)
         return done(e)
