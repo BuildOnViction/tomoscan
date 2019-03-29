@@ -67,7 +67,7 @@
                                             class="text-truncate">{{ token.hash }}</nuxt-link>
                                     </td>
                                 </tr>
-                                <tr>
+                                <tr v-if="token.type === 'trc20'">
                                     <td>Decimal</td>
                                     <td>{{ token.decimals }}</td>
                                 </tr>
@@ -136,6 +136,12 @@
                         title="Token Transfers"
                         href="#tokenTransfers">
                         <table-token-tx
+                            v-if="token.type === 'trc20'"
+                            :token="hash"
+                            :parent="'#tokenTransfers'"
+                            :page="this"/>
+                        <table-token-tx-nft
+                            v-if="token.type === 'trc721'"
                             :token="hash"
                             :parent="'#tokenTransfers'"
                             :page="this"/>
@@ -145,6 +151,12 @@
                         title="Token Holders"
                         href="#tokenHolders">
                         <table-token-holder
+                            v-if="token.type === 'trc20'"
+                            :address="hash"
+                            :parent="'#tokenHolders'"
+                            :page="this"/>
+                        <table-token-nft-holder
+                            v-if="token.type === 'trc721'"
                             :address="hash"
                             :parent="'#tokenHolders'"
                             :page="this"/>
@@ -175,7 +187,9 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTokenTx from '~/components/TableTokenTx'
+import TableTokenTxNft from '~/components/TableTokenTxNft'
 import TableTokenHolder from '~/components/TableTokenHolder'
+import TableTokenNftHolder from '~/components/TableTokenNftHolder'
 import ReadContract from '~/components/ReadContract'
 import ReadSourceCode from '~/components/ReadSourceCode'
 
@@ -183,8 +197,10 @@ export default {
     components: {
         ReadSourceCode,
         TableTokenTx,
+        TableTokenTxNft,
         ReadContract,
-        TableTokenHolder
+        TableTokenHolder,
+        TableTokenNftHolder
     },
     mixins: [mixin],
     head () {

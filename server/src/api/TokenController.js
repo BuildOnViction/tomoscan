@@ -11,6 +11,7 @@ const BigNumber = require('bignumber.js')
 const TokenController = Router()
 
 TokenController.get('/tokens', [
+    check('type').optional().isString().withMessage('Default is trc-20'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
@@ -19,8 +20,14 @@ TokenController.get('/tokens', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let data = await utils.paginate(req, 'Token',
-            { sort: { createdAt: -1 } })
+        let params = { sort: { createdAt: -1 } }
+        let tokenType = req.query.type
+        if (tokenType) {
+            params.query = { type: tokenType }
+        } else {
+            params.query = { type: 'trc20' }
+        }
+        let data = await utils.paginate(req, 'Token', params)
 
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]

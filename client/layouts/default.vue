@@ -55,8 +55,10 @@
                         <b-nav-item-dropdown
                             :class="(isTokens || isTokenTxs) ? 'active' : ''"
                             text="Tokens">
-                            <b-dropdown-item :to="{name: 'tokens'}">All Tokens</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'tokentxs'}">Token Transfers</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'tokens'}">TRC20 Tokens</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'tokentxs'}">TRC20 Transfers</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'tokens-nft'}">TRC721 Tokens</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'tokentxs-nft'}">TRC721 Transfers</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item-dropdown
                             text="Blocks">
