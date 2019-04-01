@@ -116,7 +116,9 @@ TokenController.get('/tokens/:token/holder/:holder', [
 
 TokenController.get('/tokens/:token/nftHolder/:holder', [
     check('token').exists().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.'),
-    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Holder address is incorrect.')
+    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Holder address is incorrect.'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -125,12 +127,9 @@ TokenController.get('/tokens/:token/nftHolder/:holder', [
     try {
         let token = req.params.token.toLowerCase()
         let holder = req.params.holder.toLowerCase()
-        let tokenHolder = await db.TokenNftHolder.findOne({ holder: holder, token: token })
-        if (!tokenHolder) {
-            return res.status(400).json({ errors: { message: 'Token or holder was not found' } })
-        }
+        let data = await utils.paginate(req, 'TokenNftHolder', { query: { holder: holder, token: token } })
 
-        res.json(tokenHolder)
+        res.json(data)
     } catch (e) {
         logger.warn('Get nft token holder error %s', e)
         return res.status(500).json({ errors: { message: 'Something error!' } })

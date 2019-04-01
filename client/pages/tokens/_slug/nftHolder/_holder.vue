@@ -30,10 +30,6 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>Balance</td>
-                                    <td>{{ toTomo(holderBalance, token.decimals) }} {{ symbol }}</td>
-                                </tr>
-                                <tr>
                                     <td>Transfers</td>
                                     <td>{{ formatNumber(tokenTxsCount) }}</td>
                                 </tr>
@@ -134,6 +130,12 @@
                             :holder="holder"
                             :page="this"/>
                     </b-tab>
+                    <b-tab title="Inventory">
+                        <table-inventory
+                            :token="hash"
+                            :holder="holder"
+                            :page="this"/>
+                    </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
                         title="Code"
@@ -158,6 +160,7 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTokenTxNft from '~/components/TableTokenTxNft'
+import TableInventory from '~/components/TableInventory'
 import ReadSourceCode from '~/components/ReadSourceCode'
 import ReadContract from '~/components/ReadContract'
 
@@ -165,7 +168,8 @@ export default {
     components: {
         ReadContract,
         ReadSourceCode,
-        TableTokenTxNft
+        TableTokenTxNft,
+        TableInventory
     },
     mixins: [mixin],
     head () {
@@ -186,8 +190,7 @@ export default {
             holder: null,
             addressFilter: null,
             address: null,
-            smartContract: null,
-            holderBalance: 0
+            smartContract: null
         }
     },
     created () {
@@ -213,14 +216,9 @@ export default {
         self.loading = false
         self.moreInfo = data.moreInfo
 
-        self.holderBalance = await self.getTokenHolder(self.hash, self.holder)
         self.getAccountFromApi()
     },
     methods: {
-        async getTokenHolder (token, holder) {
-            let { data } = await this.$axios.get('/api/tokens/' + token + '/nftHolder/' + holder)
-            return data.quantity
-        },
         async getAccountFromApi () {
             let self = this
 
