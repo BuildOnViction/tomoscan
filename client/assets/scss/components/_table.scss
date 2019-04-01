@@ -502,6 +502,26 @@
   }
 }
 
+.tomo-table--nft-holders {
+  td {
+    grid-template-columns: 40% auto;
+  }
+
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 60% 40%;
+    }
+  }
+
+  .text-truncate {
+    @include media-breakpoint-up(lg) {
+      max-width: 100%;
+    }
+  }
+}
+
 .tomo-table--tokens-by-account {
   .text-truncate {
     @include media-breakpoint-up(lg) {

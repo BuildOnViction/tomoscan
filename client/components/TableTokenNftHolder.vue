@@ -24,7 +24,7 @@
                 slot="holder"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'tokens-slug-holder-holder', params: { slug: address, holder: props.item.holder}}"
+                    :to="{name: 'tokens-slug-nftHolder-holder', params: { slug: address, holder: props.item.holder}}"
                     class="text-truncate">{{ props.item.holder }}</nuxt-link>
             </template>
 
@@ -112,7 +112,6 @@ export default {
             }
 
             let query = this.serializeQuery(params)
-            console.log(456)
             let { data } = await this.$axios.get('/api/token-holders/nft' + '?' + query)
             self.items = data.items
             self.total = data.total

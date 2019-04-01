@@ -203,10 +203,15 @@ const mixin = {
                 }
             })
         },
-        async filterAddress (filter) {
+        async filterAddress (filter, tokenType) {
             if (filter) {
                 let search = filter.trim()
-                let to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
+                let to
+                if (tokenType === 'trc20') {
+                    to = { name: 'tokens-slug-holder-holder', params: { slug: this.hash, holder: search } }
+                } else if (tokenType === 'trc721') {
+                    to = { name: 'tokens-slug-nftHolder-holder', params: { slug: this.hash, holder: search } }
+                }
                 return this.$router.push(to)
             }
         }
