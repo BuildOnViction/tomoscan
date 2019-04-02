@@ -22,13 +22,12 @@
                             class="tomo-card__table">
                             <tbody>
                                 <tr>
-                                    <td>Total Supply</td>
-                                    <td>{{ formatUnit(formatNumber(token.totalSupplyNumber), symbol) }}</td>
-                                </tr>
-                                <tr>
-                                    <td>Holders</td>
-                                    <td>{{ formatNumber(holdersCount) }}
-                                        {{ holdersCount > 1 ? 'addresses' : 'address' }}</td>
+                                    <td>Holder</td>
+                                    <td>
+                                        <nuxt-link
+                                            :to="{name: 'address-slug', params:{slug: holder}}"
+                                            class="text-truncate">{{ holder }}</nuxt-link>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
@@ -66,10 +65,6 @@
                                             :to="{name: 'address-slug', params: {slug: token.hash}}"
                                             class="text-truncate">{{ token.hash }}</nuxt-link>
                                     </td>
-                                </tr>
-                                <tr v-if="token.type === 'trc20'">
-                                    <td>Decimal</td>
-                                    <td>{{ token.decimals }}</td>
                                 </tr>
                                 <tr>
                                     <td>Links</td>
@@ -127,44 +122,23 @@
 
         <b-row>
             <b-col>
-                <b-tabs
-                    ref="allTabs"
-                    v-model="tabIndex"
-                    class="tomo-tabs">
+                <b-tabs class="tomo-tabs">
                     <!--:title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"-->
-                    <b-tab
-                        title="Token Transfers"
-                        href="#tokenTransfers">
-                        <table-token-tx
-                            v-if="token.type === 'trc20'"
-                            :token="hash"
-                            :parent="'#tokenTransfers'"
-                            :page="this"/>
+                    <b-tab title="Token Transfers">
                         <table-token-tx-nft
-                            v-if="token.type === 'trc721'"
                             :token="hash"
-                            :parent="'#tokenTransfers'"
+                            :holder="holder"
                             :page="this"/>
                     </b-tab>
-                    <!--:title="'Token Holders (' + formatNumber(holdersCount) + ')'"-->
-                    <b-tab
-                        title="Token Holders"
-                        href="#tokenHolders">
-                        <table-token-holder
-                            v-if="token.type === 'trc20'"
-                            :address="hash"
-                            :parent="'#tokenHolders'"
-                            :page="this"/>
-                        <table-token-nft-holder
-                            v-if="token.type === 'trc721'"
-                            :address="hash"
-                            :parent="'#tokenHolders'"
+                    <b-tab title="Inventory">
+                        <table-inventory
+                            :token="hash"
+                            :holder="holder"
                             :page="this"/>
                     </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
                         title="Code"
-                        href="#code"
                         @click="refreshCodeMirror">
                         <read-source-code
                             ref="readSourceCode"
@@ -174,8 +148,7 @@
                     </b-tab>
                     <b-tab
                         v-if="smartContract"
-                        title="Read Contract"
-                        href="#readContract">
+                        title="Read Contract">
                         <read-contract
                             :contract="hash"/>
                     </b-tab>
@@ -186,26 +159,22 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableTokenTx from '~/components/TableTokenTx'
 import TableTokenTxNft from '~/components/TableTokenTxNft'
-import TableTokenHolder from '~/components/TableTokenHolder'
-import TableTokenNftHolder from '~/components/TableTokenNftHolder'
-import ReadContract from '~/components/ReadContract'
+import TableInventory from '~/components/TableInventory'
 import ReadSourceCode from '~/components/ReadSourceCode'
+import ReadContract from '~/components/ReadContract'
 
 export default {
     components: {
-        ReadSourceCode,
-        TableTokenTx,
-        TableTokenTxNft,
         ReadContract,
-        TableTokenHolder,
-        TableTokenNftHolder
+        ReadSourceCode,
+        TableTokenTxNft,
+        TableInventory
     },
     mixins: [mixin],
     head () {
         return {
-            title: 'Token ' + this.$route.params.slug + ' Info'
+            title: 'Token Holder Info'
         }
     },
     data () {
@@ -218,20 +187,15 @@ export default {
             tokenTxsCount: 0,
             holdersCount: 0,
             moreInfo: null,
+            holder: null,
             addressFilter: null,
             address: null,
-            smartContract: null,
-            holderBalance: 0,
-            tabIndex: 0
-        }
-    },
-    computed: {
-        hashTab () {
-            return this.$route.hash || '#tokenTransfers'
+            smartContract: null
         }
     },
     created () {
         this.hash = this.$route.params.slug
+        this.holder = this.$route.params.holder
     },
     async mounted () {
         let self = this
@@ -244,30 +208,14 @@ export default {
             to: { name: 'tokens-slug', params: { slug: self.hash } }
         })
 
-        let params = {}
-
-        if (self.hash) {
-            params.token = self.hash
-        }
-
-        params.list = 'token'
-        let query = this.serializeQuery(params)
-
-        let responses = await Promise.all([
-            self.$axios.get('/api/tokens/' + self.hash),
-            self.$axios.get('/api/counting' + '?' + query)
-        ])
-
-        self.token = responses[0].data
-        self.tokenName = responses[0].data.name
-        self.symbol = responses[0].data.symbol
-
-        self.tokenTxsCount = responses[1].data.tokenTxs
-
-        self.holdersCount = responses[1].data.tokenHolders
+        let { data } = await self.$axios.get('/api/tokens/' + self.hash)
+        self.token = data
+        self.tokenName = data.name
+        self.symbol = data.symbol
 
         self.loading = false
-        self.moreInfo = responses[0].data.moreInfo
+        self.moreInfo = data.moreInfo
+
         self.getAccountFromApi()
     },
     methods: {
@@ -277,20 +225,6 @@ export default {
             let { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
-        },
-        onSwitchTab: function () {
-            const allTabs = this.$refs.allTabs
-            const location = window.location
-            const value = this.tabIndex
-            if (allTabs) {
-                if (location.hash !== allTabs.tabs[value].href) {
-                    this.$router.replace({
-                        hash: allTabs.tabs[value].href
-                    })
-                } else {
-                    location.hash = allTabs.tabs[value].href
-                }
-            }
         }
     }
 }

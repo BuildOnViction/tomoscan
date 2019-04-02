@@ -12,7 +12,8 @@ const Token = new Schema({
     symbol: String,
     decimals: Number,
     txCount: { type: Number, default: 0 },
-    status: { type: Boolean, default: false }
+    status: { type: Boolean, default: false },
+    type: { type: String, index: true }
 }, {
     timestamps: true,
     toJSON: { virtuals: true, getters: true },

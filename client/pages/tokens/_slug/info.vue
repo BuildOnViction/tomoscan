@@ -50,8 +50,7 @@
                                         type="text"
                                         class="form-control"
                                         placeholder="Website"
-                                        aria-label="Website"
-                                        @keyup.enter="filterAddress">
+                                        aria-label="Website">
                                 </td>
                             </tr>
                             <tr>
@@ -62,8 +61,7 @@
                                         type="text"
                                         class="form-control"
                                         placeholder="Overview"
-                                        aria-label="Overview"
-                                        @keyup.enter="filterAddress">
+                                        aria-label="Overview">
                                 </td>
                             </tr>
                             <tr>

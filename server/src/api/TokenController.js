@@ -11,6 +11,7 @@ const BigNumber = require('bignumber.js')
 const TokenController = Router()
 
 TokenController.get('/tokens', [
+    check('type').optional().isString().withMessage('Default is trc-20'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
@@ -19,8 +20,14 @@ TokenController.get('/tokens', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let data = await utils.paginate(req, 'Token',
-            { sort: { createdAt: -1 } })
+        let params = { sort: { createdAt: -1 } }
+        let tokenType = req.query.type
+        if (tokenType) {
+            params.query = { type: tokenType }
+        } else {
+            params.query = { type: 'trc20' }
+        }
+        let data = await utils.paginate(req, 'Token', params)
 
         for (let i = 0; i < data.items.length; i++) {
             let item = data.items[i]
@@ -103,6 +110,28 @@ TokenController.get('/tokens/:token/holder/:holder', [
         res.json(tokenHolder)
     } catch (e) {
         logger.warn('Get token holder error %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
+TokenController.get('/tokens/:token/nftHolder/:holder', [
+    check('token').exists().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.'),
+    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Holder address is incorrect.'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        let token = req.params.token.toLowerCase()
+        let holder = req.params.holder.toLowerCase()
+        let data = await utils.paginate(req, 'TokenNftHolder', { query: { holder: holder, token: token } })
+
+        res.json(data)
+    } catch (e) {
+        logger.warn('Get nft token holder error %s', e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })

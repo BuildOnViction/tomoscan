@@ -109,12 +109,12 @@
                                                 class="form-control form-control-sm"
                                                 placeholder="Address"
                                                 aria-label="Address"
-                                                @keyup.enter="filterAddress(addressFilter)">
+                                                @keyup.enter="filterAddress(addressFilter, token.type)">
                                             <div class="input-group-append">
                                                 <button
                                                     class="btn btn-primary btn-primary-sm"
                                                     type="button"
-                                                    @click="filterAddress(addressFilter)">
+                                                    @click="filterAddress(addressFilter, token.type)">
                                                     <i class="fa fa-filter"/>
                                                 </button>
                                             </div>
