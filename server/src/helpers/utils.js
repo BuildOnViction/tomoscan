@@ -45,19 +45,12 @@ const utils = {
             JSON.stringify(params.query),
             JSON.stringify(params.sort), offset, perPage)
 
-        let limitedRecords = config.get('LIMITED_RECORDS')
-        let newTotal = total > limitedRecords ? limitedRecords : total
-
         if (total === 0) {
             total = items.length
         }
-        if (newTotal === 0) {
-            newTotal = items.length
-        }
 
         return {
-            realTotal: total,
-            total: newTotal,
+            total: total,
             perPage: perPage,
             currentPage: page,
             pages: pages,

@@ -13,7 +13,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('transaction', 'transactions', total, realTotal) }} </p>
+            class="tomo-total-items">{{ _nFormatNumber('transaction', 'transactions', total) }} </p>
 
         <table-base
             v-if="total > 0"
@@ -144,7 +144,6 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
-        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 20,
@@ -196,12 +195,11 @@ export default {
             let { data } = await this.$axios.get('/api/token-txs/nft' + '?' + query)
             self.items = data.items
             self.total = data.total
-            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
 
             if (self.page) {
-                self.page.tokenTxsCount = self.realTotal
+                self.page.tokenTxsCount = self.total
             }
 
             // Hide loading.

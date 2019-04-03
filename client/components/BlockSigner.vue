@@ -81,7 +81,7 @@ export default {
                 })
             })
             self.total = data.signers.length
-            self.page.blockSignerCount = self.realTotal
+            self.page.blockSignerCount = self.total
 
             // Hide loading.
             self.loading = false
