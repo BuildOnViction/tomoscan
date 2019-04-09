@@ -4,7 +4,7 @@ const TransactionHelper = require('../helpers/transaction')
 const Web3Util = require('../helpers/web3')
 const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
-const config = require('config')
+const redisHelper = require('../helpers/redis')
 
 const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
@@ -27,7 +27,6 @@ TxController.get('/txs', [
     }
 
     let params = { sort: { blockNumber: -1 }, query: {} }
-    let limitedRecords = config.get('LIMITED_RECORDS')
     let start = new Date()
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
@@ -49,7 +48,16 @@ TxController.get('/txs', [
             } else if (txAccount === 'out') {
                 params.query = Object.assign({}, params.query, { from: address })
             } else {
+                txAccount = 'all'
                 params.query = Object.assign({}, params.query, { $or: [{ from: address }, { to: address }] })
+            }
+            if (page === 1) {
+                let cache = await redisHelper.get(`txs-${txAccount}-${address}`)
+                if (cache !== null) {
+                    let r = JSON.parse(cache)
+                    logger.info('load %s txs of address %s from cache', txAccount, address)
+                    return res.json(r)
+                }
             }
         } else if (blockNumber) {
             params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
@@ -129,8 +137,7 @@ TxController.get('/txs', [
                 await Promise.all(map)
                 const pages = Math.ceil(trans.length / perPage)
                 data = {
-                    realTotal: countTx,
-                    total: countTx > limitedRecords ? limitedRecords : countTx,
+                    total: countTx,
                     perPage: perPage,
                     currentPage: page,
                     pages: pages,
@@ -153,11 +160,9 @@ TxController.get('/txs', [
             if (pages > 500) {
                 pages = 500
             }
-            let newTotal = total > limitedRecords ? limitedRecords : total
 
             data = {
-                realTotal: total,
-                total: newTotal,
+                total: total,
                 perPage: perPage,
                 currentPage: page,
                 pages: pages,
@@ -234,7 +239,9 @@ TxController.get('/txs', [
         }
         end = new Date() - start
         logger.info(`Txs getOnChain execution time: %dms address %s`, end, address)
-
+        if (page === 1 && address && data.items.length > 0) {
+            redisHelper.set(`txs-${txAccount}-${address}`, JSON.stringify(data))
+        }
         return res.json(data)
     } catch (e) {
         logger.warn('cannot get list tx with query %s. Error', JSON.stringify(params.query), e)
