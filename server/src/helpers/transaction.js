@@ -191,21 +191,39 @@ let TransactionHelper = {
             let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
             if (cacheOut !== null) {
                 let r1 = JSON.parse(cacheOut)
-                r1.total += 1
-                r1.items.unshift(tx)
-                r1.items.pop()
-                logger.debug('Update cache out tx of address %s', tx.from)
-                await redisHelper.set(`txs-out-${tx.from}`, JSON.stringify(r1))
+                let isExist = false
+                for (let i = 0; i < r1.items.length; i++) {
+                    if (r1.items[i].hash === hash) {
+                        isExist = true
+                        break
+                    }
+                }
+                if (!isExist) {
+                    r1.total += 1
+                    r1.items.unshift(tx)
+                    r1.items.pop()
+                    logger.debug('Update cache out tx of address %s', tx.from)
+                    await redisHelper.set(`txs-out-${tx.from}`, JSON.stringify(r1))
+                }
             }
             if (tx.to) {
                 let cacheIn = await redisHelper.get(`txs-in-${tx.to}`)
                 if (cacheIn !== null) {
-                    let r2 = JSON.parse(cacheOut)
-                    r2.total += 1
-                    r2.items.unshift(tx)
-                    r2.items.pop()
-                    logger.debug('Update cache in tx of address %s', tx.from)
-                    await redisHelper.set(`txs-in-${tx.to}`, JSON.stringify(r2))
+                    let r2 = JSON.parse(cacheIn)
+                    let isExist = false
+                    for (let i = 0; i < r2.items.length; i++) {
+                        if (r2.items[i].hash === hash) {
+                            isExist = true
+                            break
+                        }
+                    }
+                    if (!isExist) {
+                        r2.total += 1
+                        r2.items.unshift(tx)
+                        r2.items.pop()
+                        logger.debug('Update cache in tx of address %s', tx.from)
+                        await redisHelper.set(`txs-in-${tx.to}`, JSON.stringify(r2))
+                    }
                 }
             }
         } catch (e) {

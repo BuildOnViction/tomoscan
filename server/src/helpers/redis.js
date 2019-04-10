@@ -12,7 +12,7 @@ const client = redis.createClient({
 const DEFAULT_EXPIRY_TIME = 2 * 60 * 60
 let RedisHelper = {
     set: async (name, value) => {
-        // will expiry in 24 hours
+        // will expiry in 2 hours
         await client.set(name, value, 'EX', DEFAULT_EXPIRY_TIME)
     },
     get: async (name) => {
