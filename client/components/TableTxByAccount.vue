@@ -13,7 +13,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total, realTotal) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -94,7 +94,6 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
-        realTotal: 0,
         items: [],
         currentPage: 0,
         perPage: 20,
@@ -129,13 +128,12 @@ export default {
             let { data } = await this.$axios.get('/api/accounts/' + hash + '/mined?' + query)
             self.items = data.items
             self.total = data.total
-            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
             self.perPage = data.perPage
 
             if (self.page) {
-                self.page.blocksCount = self.realTotal
+                self.page.blocksCount = self.total
             }
 
             // Hide loading.

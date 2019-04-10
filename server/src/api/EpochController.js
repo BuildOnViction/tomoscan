@@ -46,7 +46,6 @@ EpochController.get('/epochs', [
         let data = {
             lastEpoch: lastEpoch,
             lastBlock: lastBlock,
-            realTotal: lastEpoch,
             total: lastEpoch,
             perPage: perPage,
             currentPage: page,

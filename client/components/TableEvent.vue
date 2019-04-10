@@ -13,7 +13,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('item', 'items', total, realTotal) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('item', 'items', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -205,7 +205,6 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
-        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 15,
@@ -259,7 +258,6 @@ export default {
             let { data } = await self.$axios.get('/api/logs?' + query)
             self.items = data.items
             self.total = data.total
-            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
             if (self.items.length) {
@@ -270,7 +268,7 @@ export default {
 
             // Hide loading.
             self.loading = false
-            self.page.eventsCount = self.realTotal
+            self.page.eventsCount = self.total
 
             return data
         },

@@ -13,7 +13,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('transaction', 'transactions', total, realTotal) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('transaction', 'transactions', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -214,7 +214,6 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
-        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 20,
@@ -276,7 +275,6 @@ export default {
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
             self.total = data.total || self.tx_total || (data.items || []).length
-            self.realTotal = data.realTotal || self.tx_total || (data.items || []).length
             self.currentPage = data.currentPage
             self.pages = data.pages || (self.total % self.perPage)
 
@@ -284,7 +282,7 @@ export default {
                 self.loading = false
             }
             if (self.page) {
-                self.page.txsCount = self.realTotal
+                self.page.txsCount = self.total
             }
 
             data.items.forEach(async (item, index, array) => {

@@ -102,8 +102,6 @@ BlockController.get('/blocks', [
             }
         }
 
-        let limitedRecords = config.get('LIMITED_RECORDS')
-        let newTotal = maxBlockNumber > limitedRecords ? limitedRecords : maxBlockNumber
         let pages = Math.ceil(maxBlockNumber / perPage)
         if (pages > 500) {
             pages = 500
@@ -111,8 +109,7 @@ BlockController.get('/blocks', [
         await Promise.all(map2)
 
         let data = {
-            realTotal: maxBlockNumber,
-            total: newTotal,
+            total: maxBlockNumber,
             perPage: perPage,
             currentPage: page,
             pages: pages,

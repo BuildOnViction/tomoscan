@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total, realTotal) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('block', 'blocks', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -99,7 +99,6 @@ export default {
         pagination: {},
         total: 0,
         lastBlock: 0,
-        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 20,
@@ -138,7 +137,6 @@ export default {
             self.items = data.items
             self.total = data.total
             self.lastBlock = data.items[0].number
-            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
 

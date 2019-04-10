@@ -14,7 +14,7 @@
         <p
             v-if="total > 0"
             class="tomo-total-items">
-            {{ _nFormatNumber('internal transaction', 'internal transactions', total, realTotal) }}</p>
+            {{ _nFormatNumber('internal transaction', 'internal transactions', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -134,7 +134,6 @@ export default {
         loading: true,
         pagination: {},
         total: 0,
-        realTotal: 0,
         items: [],
         currentPage: 1,
         perPage: 20,
@@ -168,7 +167,6 @@ export default {
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs/internal/' + self.address + '?' + query)
             self.total = data.total || (data.items || []).length
-            self.realTotal = data.realTotal
             self.currentPage = data.currentPage
             self.pages = data.pages
 
@@ -176,7 +174,7 @@ export default {
                 self.loading = false
             }
             if (self.page) {
-                self.page.txsCount = self.realTotal
+                self.page.txsCount = self.total
             }
 
             data.items.forEach(async (item, index, array) => {

@@ -7,11 +7,12 @@ const logger = require('./logger')
 const BlockHelper = require('./block')
 const axios = require('axios')
 const config = require('config')
+const redisHelper = require('./redis')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
     parseLog: async (log) => {
-        const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
+        const TOPIC_TRANSFER = '0x652c36b1757d28e8c1dea554d95b3c5e47c73e20759c8482051ec9205a6c1d41'
         if (log.topics[0] !== TOPIC_TRANSFER) {
             return false
         }
@@ -187,6 +188,44 @@ let TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
+            let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
+            if (cacheOut !== null) {
+                let r1 = JSON.parse(cacheOut)
+                let isExist = false
+                for (let i = 0; i < r1.items.length; i++) {
+                    if (r1.items[i].hash === hash) {
+                        isExist = true
+                        break
+                    }
+                }
+                if (!isExist) {
+                    r1.total += 1
+                    r1.items.unshift(tx)
+                    r1.items.pop()
+                    logger.debug('Update cache out tx of address %s', tx.from)
+                    await redisHelper.set(`txs-out-${tx.from}`, JSON.stringify(r1))
+                }
+            }
+            if (tx.to) {
+                let cacheIn = await redisHelper.get(`txs-in-${tx.to}`)
+                if (cacheIn !== null) {
+                    let r2 = JSON.parse(cacheIn)
+                    let isExist = false
+                    for (let i = 0; i < r2.items.length; i++) {
+                        if (r2.items[i].hash === hash) {
+                            isExist = true
+                            break
+                        }
+                    }
+                    if (!isExist) {
+                        r2.total += 1
+                        r2.items.unshift(tx)
+                        r2.items.pop()
+                        logger.debug('Update cache in tx of address %s', tx.from)
+                        await redisHelper.set(`txs-in-${tx.to}`, JSON.stringify(r2))
+                    }
+                }
+            }
         } catch (e) {
             logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
             await sleep(2000)
