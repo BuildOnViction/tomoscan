@@ -2,7 +2,6 @@ const mongoose = require('mongoose')
 
 const ethUtils = require('ethereumjs-util')
 const BlockHeader = require('ethereumjs-block/header')
-const config = require('config')
 const logger = require('./logger')
 
 const utils = {
