@@ -12,7 +12,7 @@ const redisHelper = require('./redis')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
     parseLog: async (log) => {
-        const TOPIC_TRANSFER = '0x652c36b1757d28e8c1dea554d95b3c5e47c73e20759c8482051ec9205a6c1d41'
+        const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
         if (log.topics[0] !== TOPIC_TRANSFER) {
             return false
         }
