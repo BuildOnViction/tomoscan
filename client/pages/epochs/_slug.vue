@@ -96,7 +96,6 @@
             @input="onSwitchTab">
             <!--:title="'Reward Voter (' + formatNumber(voterCount) + ')'"-->
             <b-tab
-                :active="hashTab === '#voters'"
                 title="Reward Voter"
                 href="#voters">
                 <table-reward-by-epoch
@@ -108,7 +107,6 @@
             </b-tab>
             <!--:title="'Reward Foundation (' + formatNumber(foundationCount) + ')'"-->
             <b-tab
-                :active="hashTab === '#foundations'"
                 title="Reward Foundation"
                 href="#foundations">
                 <table-reward-by-epoch
@@ -119,7 +117,6 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                :active="hashTab === '#slashedNode'"
                 title="Slashed Node"
                 href="#slashedNode">
 
