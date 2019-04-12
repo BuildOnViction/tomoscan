@@ -185,8 +185,7 @@
                                                                 params: {slug: tokenTx.address}}">
                                                             &nbsp;
                                                             <span
-                                                                v-if="tokenTx.symbol"
-                                                                v-html="'TRC20 (' + tokenTx.symbol + ')'"/>
+                                                                v-if="tokenTx.symbol">TRC20 {{ tokenTx.symbol }}</span>
                                                         </nuxt-link>
                                                     </p>
                                                 </span>

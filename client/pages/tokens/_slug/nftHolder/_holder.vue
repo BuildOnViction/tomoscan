@@ -5,9 +5,7 @@
     <section v-else>
         <div class="card tomo-card tomo-card--token">
             <div class="tomo-card__header">
-                <h2
-                    class="tomo-card__headline"
-                    v-html="tokenName"/>&nbsp;
+                <h2 class="tomo-card__headline">{{ tokenName }}&nbsp;</h2>
                 <i
                     v-if="moreInfo"
                     class="fa fa-check-circle token-status"

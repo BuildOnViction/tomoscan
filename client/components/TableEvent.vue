@@ -47,9 +47,7 @@
             <template
                 slot="method"
                 slot-scope="props">
-                <div
-                    class="d-block"
-                    v-html="props.item.methodName"/>
+                <div class="d-block">{{ props.item.methodName }}</div>
                 <div class="d-block">[{{ props.item.methodCode }}]</div>
             </template>
 
