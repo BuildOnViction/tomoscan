@@ -12,7 +12,7 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">Total {{ _nFormatNumber('signer', 'signers', total) }} found</p>
+            class="tomo-total-items">{{ _nFormatNumber('signer', 'signers', total) }} found</p>
 
         <table-base
             v-if="total > 0"
