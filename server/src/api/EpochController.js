@@ -4,6 +4,8 @@ const Web3Util = require('../helpers/web3')
 const config = require('config')
 const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
+const axios = require('axios')
+const urlJoin = require('url-join')
 const { check, validationResult } = require('express-validator/check')
 
 const EpochController = Router()
@@ -83,12 +85,16 @@ EpochController.get('/epochs/:slug', [
     let sBlock = await BlockHelper.getBlockDetail(startBlock)
     let eBlock = await BlockHelper.getBlockDetail(endBlock)
 
+    const tomomasterUrl = config.get('TOMOMASTER_API_URL')
+    const { data } = await axios.get(urlJoin(tomomasterUrl, '/api/candidates/slashed/', epochNumber))
+
     return res.json({
         epoch: epochNumber,
         startBlock: startBlock,
         endBlock: endBlock,
         masterNodeNumber: masterNodeNumber.length,
         masterNode: masterNodeNumber,
+        slashedNode: data.penalties,
         voterNumber: voterNumber.length,
         rewardVoter: rewardVoter,
         rewardFoundation: rewardFoundation,

@@ -150,12 +150,8 @@
             <template
                 slot="balance"
                 slot-scope="props">
-                <span
-                    class="d-lg-none"
-                    v-html="formatUnit(toTomo(props.item.addressObj.balance, 5))"/>
-                <span
-                    class="d-none d-lg-block"
-                    v-html="formatUnit(toTomo(props.item.addressObj.balance))"/>
+                <span class="d-lg-none">{{ formatUnit(toTomo(props.item.addressObj.balance, 5)) }}</span>
+                <span class="d-none d-lg-block">{{ formatUnit(toTomo(props.item.addressObj.balance)) }}</span>
             </template>
 
             <template
