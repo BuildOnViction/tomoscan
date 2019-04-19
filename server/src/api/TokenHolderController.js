@@ -28,7 +28,7 @@ TokenHolderController.get('/token-holders', [
             params.query = { hash: hash }
         }
         params.sort = { quantityNumber: -1 }
-        params.query = Object.assign(params.query, { quantityNumber: { $gte: 0 } })
+        params.query = Object.assign(params.query, { quantityNumber: { $gt: 0 } })
         let data = await paginate(req, 'TokenHolder', params)
 
         let items = data.items

@@ -13,41 +13,7 @@
       background-color: #dddddd;
     }
 
-    &:first-child,
-    &:nth-child(2),
-    &:nth-last-child(2),
-    &:last-child {
-      font-size: 0;
-      
-      span:before {
-        line-height: 30px;
-        display: inline-block;
-        vertical-align: middle;
 
-        @extend %tm-icon;
-      }
-    }
-
-    &:first-child span:before {
-      font-size: 20px;
-      content: '\e905';
-    }
-
-    &:nth-child(2) span:before {
-      font-size: 10px;
-      content: '\e908';
-    }
-
-    &:nth-last-child(2) span:before {
-      font-size: 10px;
-      content: '\e907';
-    }
-
-    &:last-child span:before {
-      font-size: 20px;
-      content: '\e906';
-    }
-    
     .page-link {
       color: $color-text;
       background-color: $white;
