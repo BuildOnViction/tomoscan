@@ -392,24 +392,24 @@ let TransactionHelper = {
                         if (call.value !== '0x0') {
                             let from = (call.from || '').toLowerCase()
                             let to = (call.to || '').toLowerCase()
-                            let it = await db.InternalTx.findOneAndUpdate(
-                                { hash: transaction.hash, from: from, to: to },
-                                {
-                                    hash: transaction.hash,
-                                    blockNumber: transaction.blockNumber,
-                                    from: from,
-                                    to: to,
-                                    value: web3.utils.hexToNumberString(call.value),
-                                    timestamp: transaction.timestamp
-                                },
-                                { upsert: true, new: true }
-                            )
-                            internalTx.push(it)
+
+                            internalTx.push({
+                                hash: transaction.hash,
+                                blockNumber: transaction.blockNumber,
+                                from: from,
+                                to: to,
+                                value: web3.utils.hexToNumberString(call.value),
+                                timestamp: transaction.timestamp
+                            })
                         }
                     }
                 })
                 await Promise.all(map)
             }
+        }
+        if (internalTx.length > 0) {
+            await db.InternalTx.remove({ hash: transaction.hash })
+            await db.InternalTx.insertMany(internalTx)
         }
         return internalTx
     }
