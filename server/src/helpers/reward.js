@@ -412,8 +412,12 @@ let RewardHelper = {
 
                 let rdata = []
                 let countProcess = []
+                let mnNumber = 0
+                let vNumber = 0
                 for (let m in rewards) {
+                    mnNumber += 1
                     for (let v in rewards[m]) {
+                        vNumber += 1
                         let r = new BigNumber(rewards[m][v])
                         r = r.dividedBy(10 ** 18).toString()
                         rdata.push({
@@ -452,6 +456,33 @@ let RewardHelper = {
                 if (sdata.length > 0) {
                     await db.EpochSign.insertMany(sdata)
                 }
+
+                let sBlock = await BlockHelper.getBlockDetail(startBlock)
+                let eBlock = await BlockHelper.getBlockDetail(endBlock)
+
+                let slashedNode = []
+                let blk = await BlockHelper.getBlock(endBlock)
+                if (blk.penalties && blk.penalties !== '0x') {
+                    let sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
+                    if (sbuff.length > 0) {
+                        for (let i = 1; i <= sbuff.length / 20; i++) {
+                            let address = sbuff.slice((i - 1) * 20, i * 20)
+                            slashedNode.push('0x' + address.toString('hex'))
+                        }
+                    }
+                }
+                await db.Epoch.insert({
+                    epoch: epoch,
+                    startBlock: startBlock,
+                    endBlock: endBlock,
+                    startTime: sBlock.timestamp,
+                    endTime: eBlock.timestamp,
+                    duration: (new Date(eBlock.timestamp) - new Date(sBlock.timestamp)) / 1000,
+                    masterNodeNumber: mnNumber,
+                    voterNumber: vNumber,
+                    slashedNode: slashedNode
+                })
+
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
                     await db.Reward.insertMany(rdata)
