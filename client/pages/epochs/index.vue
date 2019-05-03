@@ -41,6 +41,11 @@
                     {{ props.item.endBlock }}
                 </nuxt-link>
             </template>
+            <template
+                slot="slashedNode"
+                slot-scope="props">
+                {{ props.item.slashedNode.length }}
+            </template>
         </table-base>
 
         <b-pagination-nav
@@ -74,7 +79,11 @@ export default {
         fields: {
             epoch: { label: 'Epoch' },
             startBlock: { label: 'Start block' },
-            endBlock: { label: 'End block' }
+            endBlock: { label: 'End block' },
+            duration: { label: 'Duration' },
+            masterNodeNumber: { label: 'MasterNode' },
+            voterNumber: { label: 'Voter' },
+            slashedNode: { label: 'SlashedNode' }
         },
         loading: true,
         pagination: {},
