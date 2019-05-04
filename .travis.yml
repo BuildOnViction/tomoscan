@@ -11,8 +11,8 @@ jobs:
         - cd $TRAVIS_BUILD_DIR/client && npm install && npm run lint
         - cd $TRAVIS_BUILD_DIR/server && npm install && npm run lint
 
-    - stage: Audit
-      script:
+#    - stage: Audit
+#      script:
 #        - cd $TRAVIS_BUILD_DIR/client && npm audit --production
 #        - cd $TRAVIS_BUILD_DIR/server && npm audit --production
 
@@ -96,7 +96,7 @@ jobs:
 
 stages:
   - name: Lint
-  - name: Audit
+#  - name: Audit
   - name: Tests
   - name: Build and push image
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
