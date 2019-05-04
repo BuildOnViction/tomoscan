@@ -6,7 +6,6 @@ const config = require('config')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const axios = require('axios')
-const utils = require('../helpers/utils')
 
 const BlockController = Router()
 
