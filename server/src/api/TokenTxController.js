@@ -34,6 +34,7 @@ TokenTxController.get('/token-txs', [
         if (address) {
             params.query = Object.assign(params.query,
                 { $or: [{ from: address.toLowerCase() }, { to: address.toLowerCase() }] })
+            total = null
         }
         params.sort = { blockNumber: -1 }
         let data = await paginate(req, 'TokenTx', params, total)

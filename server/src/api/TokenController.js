@@ -76,9 +76,22 @@ TokenController.get('/tokens/:token/holder/:holder', [
     try {
         let token = req.params.token.toLowerCase()
         let holder = req.params.holder.toLowerCase()
+
+        let t = await db.Token.findOne({ hash: token }).lean()
+        if (!t) {
+            return res.status(404).json({ errors: { message: 'Token was not found' } })
+        }
+
         let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
+        let exist = true
         if (!tokenHolder) {
-            return res.status(400).json({ errors: { message: 'Token or holder was not found' } })
+            tokenHolder = {
+                hash: holder,
+                token: token,
+                quantity: '0',
+                quantityNumber: 0
+            }
+            exist = false
         }
 
         // Get token balance by read smart contract
@@ -102,9 +115,11 @@ TokenController.get('/tokens/:token/holder/:holder', [
                 decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
                 decimals = await web3.utils.hexToNumberString(decimals)
             }
-            tokenHolder.quantity = quantity.toString(10)
-            tokenHolder.quantityNumber = quantity.div(10 ** parseInt(decimals)).toNumber()
-            await tokenHolder.save()
+            if (exist) {
+                tokenHolder.quantity = quantity.toString(10)
+                tokenHolder.quantityNumber = quantity.div(10 ** parseInt(decimals)).toNumber()
+                await tokenHolder.save()
+            }
         }
 
         res.json(tokenHolder)
