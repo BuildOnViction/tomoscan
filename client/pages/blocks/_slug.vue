@@ -124,6 +124,29 @@
                             </td>
                         </tr>
                         <tr>
+                            <td>Verified By</td>
+                            <td><nuxt-link
+                                :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                class="d-sm-none">
+                                <read-more
+                                    :text="block.m2" />
+                            </nuxt-link>
+                                <nuxt-link
+                                    :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                    class="d-none d-sm-block d-md-none">
+                                    <read-more
+                                        :text="block.m2"
+                                        :max-chars="20" />
+                                </nuxt-link>
+                                <nuxt-link
+                                    :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                    class="d-none d-md-block">
+                                    <span
+                                        :maxChars="20">{{ block.m2 }}</span>
+                                </nuxt-link>
+                            </td>
+                        </tr>
+                        <tr>
                             <td>Finality</td>
                             <td>{{ block.finality }} %</td>
                         </tr>
@@ -195,6 +218,101 @@
                     :block="number"
                     :parent="'blockSigner'"
                     :page="this"/>
+            </b-tab>
+            <b-tab
+                v-if="block.slashedNode"
+                :active="hashTab === '#slashedNode'"
+                title="SlashedNode"
+                href="#slashedNode">
+                <div
+                    v-if="block.slashedNode.length === 0"
+                    class="tomo-empty">
+                    <i class="fa fa-cube tomo-empty__icon"/>
+                    <p class="tomo-empty__description">No slashed node</p>
+                </div>
+                <p
+                    v-if="block.slashedNode.length > 0"
+                    class="tomo-total-items">{{ _nFormatNumber('node', 'nodes', block.slashedNode.length) }}</p>
+                <table
+                    v-if="block.slashedNode.length > 0"
+                    class="tomo-table">
+                    <thead>
+                        <tr><th>Coinbase</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, index) in block.slashedNode"
+                            :key="index">
+                            <td>
+                                <nuxt-link
+                                    :to="{name: 'address-slug', params: {slug: item}}">{{ item }}</nuxt-link>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </b-tab>
+            <b-tab
+                v-if="block.validators"
+                :active="hashTab === '#validators'"
+                title="List Validators"
+                href="#validators">
+                <div
+                    v-if="block.validators.length === 0"
+                    class="tomo-empty">
+                    <i class="fa fa-cube tomo-empty__icon"/>
+                    <p class="tomo-empty__description">No slashed node</p>
+                </div>
+                <p
+                    v-if="block.validators.length > 0"
+                    class="tomo-total-items">
+                    {{ _nFormatNumber('validator', 'validators', block.validators.length) }}</p>
+                <table
+                    v-if="block.validators.length > 0"
+                    class="tomo-table">
+                    <thead>
+                        <tr><th>Coinbase</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, index) in block.validators"
+                            :key="index">
+                            <td>
+                                <nuxt-link
+                                    :to="{name: 'address-slug', params: {slug: item}}">{{ item }}</nuxt-link>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </b-tab>
+            <b-tab
+                v-if="block.randoms"
+                :active="hashTab === '#randoms'"
+                title="List Randomize"
+                href="#randoms">
+                <div
+                    v-if="block.randoms.length === 0"
+                    class="tomo-empty">
+                    <i class="fa fa-cube tomo-empty__icon"/>
+                    <p class="tomo-empty__description">No slashed node</p>
+                </div>
+                <p
+                    v-if="block.randoms.length > 0"
+                    class="tomo-total-items">
+                    {{ _nFormatNumber('number', 'numbers', block.randoms.length) }}</p>
+                <table
+                    v-if="block.validators.length > 0"
+                    class="tomo-table">
+                    <thead>
+                        <tr><th>Random number</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr
+                            v-for="(item, index) in block.randoms"
+                            :key="index">
+                            <td>{{ item }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </b-tab>
         </b-tabs>
     </section>

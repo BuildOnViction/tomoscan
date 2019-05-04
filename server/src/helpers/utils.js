@@ -122,6 +122,35 @@ const utils = {
         }
         return signer
     },
+    getM2: async (block) => {
+        let dataBuff = ethUtils.toBuffer(block.extraData)
+
+        block.extraData = '0x' + ethUtils.toBuffer(block.extraData).slice(0, dataBuff.length - 65).toString('hex')
+
+        let headerHash = new BlockHeader({
+            parentHash: ethUtils.toBuffer(block.parentHash),
+            uncleHash: ethUtils.toBuffer(block.sha3Uncles),
+            coinbase: ethUtils.toBuffer(block.miner),
+            stateRoot: ethUtils.toBuffer(block.stateRoot),
+            transactionsTrie: ethUtils.toBuffer(block.transactionsRoot),
+            receiptTrie: ethUtils.toBuffer(block.receiptsRoot),
+            bloom: ethUtils.toBuffer(block.logsBloom),
+            difficulty: ethUtils.toBuffer(parseInt(block.difficulty)),
+            number: ethUtils.toBuffer(block.number),
+            gasLimit: ethUtils.toBuffer(block.gasLimit),
+            gasUsed: ethUtils.toBuffer(block.gasUsed),
+            timestamp: ethUtils.toBuffer(block.timestamp),
+            extraData: ethUtils.toBuffer(block.extraData),
+            mixHash: ethUtils.toBuffer(block.mixHash),
+            nonce: ethUtils.toBuffer(block.nonce)
+        })
+        let dataBuffM2 = ethUtils.toBuffer(block.validator)
+        let sigM2 = ethUtils.fromRpcSig(dataBuffM2.slice(dataBuffM2.length - 65, dataBuffM2.length))
+        let pubM2 = ethUtils.ecrecover(headerHash.hash(), sigM2.v, sigM2.r, sigM2.s)
+
+        let m2 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pubM2).toString('hex'))
+        return m2.toLowerCase()
+    },
     toAddress: async (text, length) => {
         if (isNaN(length)) { length = 16 }
 

@@ -34,6 +34,8 @@ let BlockHelper = {
         let signer = await utils.toAddress(await utils.getSigner(_block), 100)
         signer = signer.toLowerCase()
 
+        _block.m2 = await utils.getM2(_block)
+
         // Update end tx count.
         _block.timestamp = timestamp
         _block.e_tx = _block.transactions.length
@@ -87,6 +89,8 @@ let BlockHelper = {
             // Get signer.
             let signer = await utils.toAddress(await utils.getSigner(_block), 100)
             _block.signer = signer.toLowerCase()
+
+            _block.m2 = await utils.getM2(_block)
 
             // Update end tx count.
             _block.timestamp = _block.timestamp * 1000
