@@ -418,7 +418,7 @@ let RewardHelper = {
                             'params': [canR[i].candidate.toLowerCase(), '0x' + epoch.toString('hex')],
                             'id': 88
                         }
-                        let status = await axios.post(config.get('blockchain.rpc'), data)
+                        let status = await axios.post(config.get('WEB3_URI'), data)
                         if (status.data === 'SLASHED') {
                             slashedNode.push(canR[i].candidate.toLowerCase())
                         }
