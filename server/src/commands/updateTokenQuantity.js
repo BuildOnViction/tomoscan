@@ -19,11 +19,10 @@ const tokenQuantity = async () => {
             if (contract) {
                 let abiObject = JSON.parse(contract.abiCode)
                 let web3 = await Web3Util.getWeb3()
-                let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
+                let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
-                let funcNameToCall = 'web3Contract.methods.balanceOf("' + th.hash + '").call()'
-
-                let quantity = new BigNumber(await eval(funcNameToCall)) // eslint-disable-line no-eval
+                let rs = await web3Contract.methods.balanceOf(th.hash).call()
+                let quantity = new BigNumber(rs)
                 let token = await db.Token.findOne({ hash: th.token })
                 let decimals
                 if (token) {

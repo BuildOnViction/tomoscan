@@ -122,9 +122,9 @@ export default {
 
             for (let i = 0; i < elements.length; i++) {
                 if (i === 0) {
-                    strParams = "'" + this.add0xforAddress(elements[0].value) + "'"
+                    strParams = this.add0xforAddress(elements[0].value)
                 } else {
-                    strParams = strParams + ",'" + elements[i].value + "'"
+                    strParams = strParams + ',' + elements[i].value
                 }
 
                 if (elements[i].value === '') {
