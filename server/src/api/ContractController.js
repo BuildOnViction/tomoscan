@@ -11,6 +11,7 @@ const ContractHelper = require('../helpers/contract')
 const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const url = require('url')
 
 const ContractController = Router()
 
@@ -247,7 +248,7 @@ ContractController.get('/contracts/:slug/read', [
             (item.stateMutability !== 'payable'))
 
         let web3 = await Web3Util.getWeb3()
-        let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
+        let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
         let results = []
 
         if (contractFunctions.length) {
@@ -255,11 +256,8 @@ ContractController.get('/contracts/:slug/read', [
                 let func = contractFunctions[i]
 
                 if (func.constant && !func.inputs.length) {
-                    var funcNameToCall = 'web3Contract.methods.' + func.name + '().call()'
-
                     try {
-                        let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
-                        func.result = rs
+                        func.result = await web3Contract.methods[func.name]().call()
                     } catch (e) {
                         logger.warn(e)
                     }
@@ -292,7 +290,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res) => {
 
         let abiObject = JSON.parse(contract.abiCode)
         let web3 = await Web3Util.getWeb3()
-        let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
+        let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
         let contractFunctions = abiObject.filter((item) =>
             (item.type === 'function') &&
@@ -301,9 +299,7 @@ ContractController.get('/contracts/:slug/call/', async (req, res) => {
       (item.name === functionName) &&
       (item.signature) === signature)
 
-        let funcNameToCall = 'web3Contract.methods.' + functionName + '(' + strParams + ').call()'
-
-        let rs = await eval(funcNameToCall) // eslint-disable-line no-eval
+        let rs = await web3Contract.methods[functionName](...strParams.split(',')).call()
 
         for (let i = 0; i < contractFunctions[0].outputs.length; i++) {
             let output = contractFunctions[0].outputs[i]
