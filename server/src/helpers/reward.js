@@ -400,6 +400,9 @@ let RewardHelper = {
                 for (let m in rewards) {
                     hashes.push(m)
                 }
+
+                let slashedNode = []
+
                 let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates/listByHash')
                 let candidate = await axios.post(url, { 'hashes': hashes.join(',') })
                 let canR = candidate.data
@@ -407,6 +410,18 @@ let RewardHelper = {
                 if (canR) {
                     for (let i = 0; i < canR.length; i++) {
                         canName[canR[i].candidate] = canR[i].name
+
+                        // TODO: will use get list candidate status in the future
+                        let data = {
+                            'jsonrpc': '2.0',
+                            'method': 'eth_getCandidateStatus',
+                            'params': [canR[i].candidate.toLowerCase(), '0x' + epoch.toString('hex')],
+                            'id': 88
+                        }
+                        let status = await axios.post(config.get('blockchain.rpc'), data)
+                        if (status.data === 'SLASHED') {
+                            slashedNode.push(canR[i].candidate.toLowerCase())
+                        }
                     }
                 }
 
@@ -460,17 +475,6 @@ let RewardHelper = {
                 let sBlock = await BlockHelper.getBlockDetail(startBlock)
                 let eBlock = await BlockHelper.getBlockDetail(endBlock)
 
-                let slashedNode = []
-                let blk = await BlockHelper.getBlock(endBlock)
-                if (blk.penalties && blk.penalties !== '0x') {
-                    let sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
-                    if (sbuff.length > 0) {
-                        for (let i = 1; i <= sbuff.length / 20; i++) {
-                            let address = sbuff.slice((i - 1) * 20, i * 20)
-                            slashedNode.push('0x' + address.toString('hex'))
-                        }
-                    }
-                }
                 await db.Epoch.insert({
                     epoch: epoch,
                     startBlock: startBlock,
