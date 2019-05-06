@@ -99,11 +99,9 @@ TokenController.get('/tokens/:token/holder/:holder', [
         if (contract) {
             let abiObject = JSON.parse(contract.abiCode)
             let web3 = await Web3Util.getWeb3()
-            let web3Contract = new web3.eth.Contract(abiObject, contract.hash) // eslint-disable-line no-unused-vars
-
-            let funcNameToCall = 'web3Contract.methods.balanceOf("' + holder + '").call()'
-
-            let quantity = new BigNumber(await eval(funcNameToCall)) // eslint-disable-line no-eval
+            let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+            let rs = await web3Contract.methods.balanceOf(holder).call()
+            let quantity = new BigNumber(rs)
 
             let tk = await db.Token.findOne({ hash: token })
             let decimals
