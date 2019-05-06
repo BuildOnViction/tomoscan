@@ -11,7 +11,6 @@ const ContractHelper = require('../helpers/contract')
 const TransactionHelper = require('../helpers/transaction')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
-const url = require('url')
 
 const ContractController = Router()
 
