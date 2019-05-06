@@ -90,7 +90,12 @@ let BlockHelper = {
             let signer = await utils.toAddress(await utils.getSigner(_block), 100)
             _block.signer = signer.toLowerCase()
 
-            _block.m2 = await utils.getM2(_block)
+            try {
+                _block.m2 = await utils.getM2(_block)
+            } catch (e) {
+                logger.warn('Cannot get m2 of block %s. Error %s', _block.number, e)
+                _block.m2 = 'N/A'
+            }
 
             // Update end tx count.
             _block.timestamp = _block.timestamp * 1000

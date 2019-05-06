@@ -125,25 +125,31 @@
                         </tr>
                         <tr>
                             <td>Verified By</td>
-                            <td><nuxt-link
-                                :to="{name: 'address-slug', params: {slug: block.m2}}"
-                                class="d-sm-none">
-                                <read-more
-                                    :text="block.m2" />
-                            </nuxt-link>
-                                <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug: block.m2}}"
-                                    class="d-none d-sm-block d-md-none">
-                                    <read-more
-                                        :text="block.m2"
-                                        :max-chars="20" />
-                                </nuxt-link>
-                                <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug: block.m2}}"
-                                    class="d-none d-md-block">
-                                    <span
-                                        :maxChars="20">{{ block.m2 }}</span>
-                                </nuxt-link>
+                            <td>
+                                <span
+                                    v-if="block.m2 !== 'N/A'">
+                                    <nuxt-link
+                                        :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                        class="d-sm-none">
+                                        <read-more
+                                            :text="block.m2" />
+                                    </nuxt-link>
+                                    <nuxt-link
+                                        :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                        class="d-none d-sm-block d-md-none">
+                                        <read-more
+                                            :text="block.m2"
+                                            :max-chars="20" />
+                                    </nuxt-link>
+                                    <nuxt-link
+                                        :to="{name: 'address-slug', params: {slug: block.m2}}"
+                                        class="d-none d-md-block">
+                                        <span
+                                            :maxChars="20">{{ block.m2 }}</span>
+                                    </nuxt-link>
+                                </span>
+                                <span
+                                    v-else>{{ block.m2 }}</span>
                             </td>
                         </tr>
                         <tr>
