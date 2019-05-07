@@ -402,16 +402,10 @@ export default {
     methods: {
         onSwitchTab: function () {
             const allTabs = this.$refs.allTabs
-            const location = window.location
-            const value = this.tabIndex
             if (allTabs) {
-                if (location.hash !== allTabs.tabs[value].href) {
-                    this.$router.replace({
-                        hash: allTabs.tabs[value].href
-                    })
-                } else {
-                    location.hash = allTabs.tabs[value].href
-                }
+                const value = this.tabIndex
+                const location = window.location
+                location.hash = allTabs.tabs[value].href
             }
         }
     }
