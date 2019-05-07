@@ -408,7 +408,7 @@ let TransactionHelper = {
             }
         }
         if (internalTx.length > 0) {
-            await db.InternalTx.remove({ hash: transaction.hash })
+            await db.InternalTx.deleteOne({ hash: transaction.hash })
             await db.InternalTx.insertMany(internalTx)
         }
         return internalTx

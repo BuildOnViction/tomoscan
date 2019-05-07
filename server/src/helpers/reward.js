@@ -16,7 +16,7 @@ let RewardHelper = {
             startBlock = endBlock - (config.get('BLOCK_PER_EPOCH') * 2) + 1
         }
         logger.info('Get vote history from block %s to block %s', startBlock, endBlock)
-        await db.VoteHistory.remove({ blockNumber: { $gte: startBlock, $lte: endBlock } })
+        await db.VoteHistory.deleteOne({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
         if (parseInt(epoch) === 2) {
             let defaultCandidate = config.get('defaultCandidate')
@@ -92,7 +92,7 @@ let RewardHelper = {
 
         // Delete old reward
         logger.info('Remove old reward of epoch %s', epoch)
-        await db.Reward.remove({ epoch: epoch })
+        await db.Reward.deleteOne({ epoch: epoch })
 
         let totalReward = new BigNumber(config.get('REWARD'))
         let validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
@@ -257,9 +257,9 @@ let RewardHelper = {
 
     voteHistoryProcess: async (epoch) => {
         logger.info('Remove old user vote amount for epoch %s', epoch)
-        await db.UserVoteAmount.remove({ epoch: epoch })
+        await db.UserVoteAmount.deleteOne({ epoch: epoch })
         if (epoch === 1) {
-            await db.UserVoteAmount.remove({ epoch: 0 })
+            await db.UserVoteAmount.deleteOne({ epoch: 0 })
         }
         let endBlock = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
@@ -387,7 +387,7 @@ let RewardHelper = {
         }
 
         try {
-            await db.Reward.remove({ epoch: epoch })
+            await db.Reward.deleteOne({ epoch: epoch })
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
@@ -475,7 +475,7 @@ let RewardHelper = {
                 let sBlock = await BlockHelper.getBlockDetail(startBlock)
                 let eBlock = await BlockHelper.getBlockDetail(endBlock)
 
-                await db.Epoch.insert({
+                await db.Epoch.updateOne({ epoch: epoch }, {
                     epoch: epoch,
                     startBlock: startBlock,
                     endBlock: endBlock,
@@ -485,7 +485,7 @@ let RewardHelper = {
                     masterNodeNumber: mnNumber,
                     voterNumber: vNumber,
                     slashedNode: slashedNode
-                })
+                }, { upsert: true, new: true })
 
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
