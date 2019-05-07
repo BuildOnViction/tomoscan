@@ -396,16 +396,11 @@ let RewardHelper = {
                 let signNumber = result.result.signers
                 let rewards = result.result.rewards
 
-                let hashes = []
-                for (let m in rewards) {
-                    hashes.push(m)
-                }
-
                 let slashedNode = []
 
-                let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates/listByHash')
-                let candidate = await axios.post(url, { 'hashes': hashes.join(',') })
-                let canR = candidate.data
+                let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates')
+                let c = await axios.get(url)
+                let canR = c.data.items
                 let canName = {}
                 if (canR) {
                     for (let i = 0; i < canR.length; i++) {
@@ -419,8 +414,10 @@ let RewardHelper = {
                             'id': 88
                         }
                         let status = await axios.post(config.get('WEB3_URI'), data)
-                        if (status.data === 'SLASHED') {
-                            slashedNode.push(canR[i].candidate.toLowerCase())
+                        if (!status.err) {
+                            if (status.data.result === 'SLASHED') {
+                                slashedNode.push(canR[i].candidate.toLowerCase())
+                            }
                         }
                     }
                 }
