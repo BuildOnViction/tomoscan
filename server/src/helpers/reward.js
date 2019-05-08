@@ -410,7 +410,7 @@ let RewardHelper = {
                         let data = {
                             'jsonrpc': '2.0',
                             'method': 'eth_getCandidateStatus',
-                            'params': [canR[i].candidate.toLowerCase(), '0x' + epoch.toString('hex')],
+                            'params': [canR[i].candidate.toLowerCase(), `0x${epoch}`],
                             'id': 88
                         }
                         let status = await axios.post(config.get('WEB3_URI'), data)
