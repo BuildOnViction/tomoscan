@@ -494,7 +494,7 @@ let RewardHelper = {
                     endTime: eBlock.timestamp,
                     duration: (new Date(eBlock.timestamp) - new Date(sBlock.timestamp)) / 1000,
                     masterNodeNumber: mnNumber,
-                    voterNumber: vNumber,
+                    voterNumber: vNumber.length,
                     slashedNode: slashedNode
                 }, { upsert: true, new: true })
 
