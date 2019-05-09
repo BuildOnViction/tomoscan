@@ -425,11 +425,9 @@ let RewardHelper = {
                 let rdata = []
                 let countProcess = []
                 let mnNumber = 0
-                let vNumber = 0
                 for (let m in rewards) {
                     mnNumber += 1
                     for (let v in rewards[m]) {
-                        vNumber += 1
                         let r = new BigNumber(rewards[m][v])
                         r = r.dividedBy(10 ** 18).toString()
                         rdata.push({
@@ -472,18 +470,6 @@ let RewardHelper = {
                 let sBlock = await BlockHelper.getBlockDetail(startBlock)
                 let eBlock = await BlockHelper.getBlockDetail(endBlock)
 
-                await db.Epoch.updateOne({ epoch: epoch }, {
-                    epoch: epoch,
-                    startBlock: startBlock,
-                    endBlock: endBlock,
-                    startTime: sBlock.timestamp,
-                    endTime: eBlock.timestamp,
-                    duration: (new Date(eBlock.timestamp) - new Date(sBlock.timestamp)) / 1000,
-                    masterNodeNumber: mnNumber,
-                    voterNumber: vNumber,
-                    slashedNode: slashedNode
-                }, { upsert: true, new: true })
-
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
                     await db.Reward.insertMany(rdata)
@@ -498,6 +484,20 @@ let RewardHelper = {
                     }
                     return RewardHelper.rewardOnChain(epoch, calculateTime)
                 }
+                let vNumber = await db.Reward.distinct('address', { epoch: epoch })
+
+                await db.Epoch.updateOne({ epoch: epoch }, {
+                    epoch: epoch,
+                    startBlock: startBlock,
+                    endBlock: endBlock,
+                    startTime: sBlock.timestamp,
+                    endTime: eBlock.timestamp,
+                    duration: (new Date(eBlock.timestamp) - new Date(sBlock.timestamp)) / 1000,
+                    masterNodeNumber: mnNumber,
+                    voterNumber: vNumber,
+                    slashedNode: slashedNode
+                }, { upsert: true, new: true })
+
                 return true
             } else {
                 logger.warn('There are some error of epoch %s. Error %s', epoch, JSON.stringify(result.error))
