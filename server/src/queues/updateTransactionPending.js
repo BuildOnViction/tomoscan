@@ -6,7 +6,7 @@ const TransactionHelper = require('../helpers/transaction')
 
 const consumer = {}
 consumer.name = 'TransactionPendingProcess'
-consumer.processNumber = 2
+consumer.processNumber = 1
 consumer.task = async function (job, done) {
     let txes = await db.Tx.find({ isPending: true })
         .sort({ timestamp: 1 }).limit(100)

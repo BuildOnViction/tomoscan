@@ -7,7 +7,7 @@ const logger = require('../helpers/logger')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
-consumer.processNumber = 4
+consumer.processNumber = 2
 consumer.task = async function (job, done) {
     const web3 = await Web3Utils.getWeb3()
     try {
