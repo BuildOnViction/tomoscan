@@ -383,3 +383,48 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
+  /api/epochs:
+    get:
+      tags:
+        - Epoch
+      summary: Get list epoch
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/epochs/{epochNumber}:
+    get:
+      tags:
+        - Epoch
+      summary: Get epoch detail
+      parameters:
+        - name: epochNumber
+          in: path
+          required: true
+          description: epoch number
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
