@@ -42,16 +42,18 @@ consumer.task = async function (job, done) {
                     { upsert: true, new: true })
 
                 // Add token holder data.
-                q.create('TokenHolderProcess', {
-                    token: JSON.stringify({
-                        from: _log.from.toLowerCase(),
-                        to: _log.to.toLowerCase(),
-                        address: _log.address,
-                        value: _log.value
+                if (_log.from.toLowerCase() !== _log.to.toLowerCase()){
+                    q.create('TokenHolderProcess', {
+                        token: JSON.stringify({
+                            from: _log.from.toLowerCase(),
+                            to: _log.to.toLowerCase(),
+                            address: _log.address,
+                            value: _log.value
+                        })
                     })
-                })
-                    .priority('normal').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                }
             }
             q.create('CountProcess', {
                 data: JSON.stringify([
