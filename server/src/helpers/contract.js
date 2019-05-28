@@ -5,7 +5,15 @@ let ContractHelper = {
     async getVersions () {
         let { data } = await axios.get(
             'https://ethereum.github.io/solc-bin/bin/list.json')
-        return Object.values(data.releases)
+        let releases = data.releases
+        let result = []
+        for (let key in releases) {
+            let arr = key.split('.')
+            if (parseInt(arr[1]) <= 4) {
+                result.push(releases[key])
+            }
+        }
+        return result
     },
 
     async insertOrUpdate (contractName, contractAddress, releaseVersion, sourceCode, optimization, ouput) {
