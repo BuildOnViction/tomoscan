@@ -13,4 +13,5 @@ const Signature = new Schema({
     versionKey: false
 })
 
+Signature.index({ createdAt: 1 }, { expires: '3600s' })
 module.exports = mongoose.model('Signature', Signature)
