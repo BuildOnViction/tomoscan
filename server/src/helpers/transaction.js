@@ -42,6 +42,8 @@ let TransactionHelper = {
             let tx = await db.Tx.findOne({ hash : hash })
             if (!tx) {
                 tx = await TransactionHelper.getTransaction(hash, true)
+            } else {
+                tx = tx.toJSON()
             }
             const q = require('../queues')
 
@@ -188,6 +190,7 @@ let TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
+            tx.to_model = await db.Account.findOne({ hash: tx.to })
             let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
             if (cacheOut !== null) {
                 let r1 = JSON.parse(cacheOut)
@@ -408,7 +411,7 @@ let TransactionHelper = {
             }
         }
         if (internalTx.length > 0) {
-            await db.InternalTx.deleteOne({ hash: transaction.hash })
+            await db.InternalTx.deleteMany({ hash: transaction.hash })
             await db.InternalTx.insertMany(internalTx)
         }
         return internalTx

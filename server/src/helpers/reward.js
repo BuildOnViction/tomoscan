@@ -387,7 +387,7 @@ let RewardHelper = {
         }
 
         try {
-            await db.Reward.deleteOne({ epoch: epoch })
+            await db.Reward.deleteMany({ epoch: epoch })
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
