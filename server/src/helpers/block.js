@@ -99,7 +99,7 @@ let BlockHelper = {
             }
             const response = await axios.post(config.get('WEB3_URI'), data)
             let result = response.data
-console.log('kakakaka')
+
             _block.finality = parseInt(result.result)
             _block.status = true
             if (block) {
@@ -115,7 +115,6 @@ console.log('kakakaka')
 
             block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
-            console.log('block', block)
 
             return block
         } catch (e) {
