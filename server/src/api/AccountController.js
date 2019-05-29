@@ -3,7 +3,7 @@ const db = require('../models')
 const { paginate } = require('../helpers/utils')
 const AccountHelper = require('../helpers/account')
 const logger = require('../helpers/logger')
-const { check, validationResult } = require('express-validator/check')
+const { check, validationResult, query } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
 
 const AccountController = Router()
@@ -59,6 +59,48 @@ AccountController.get('/accounts/:slug', [
     } catch (e) {
         logger.warn('Cannot find account detail %s. Error %s', hash, e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
+AccountController.get('/accounts/:slug/listTokens', [
+    query('limit')
+        .isInt({ min: 0, max: 200 }).optional().withMessage('limit should greater than 0 and less than 200'),
+    query('page').isNumeric({ no_symbols: true }).optional().withMessage('page must be number'),
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
+], async (req, res, next) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return next(errors.array())
+    }
+    try {
+        const creator = (req.params.slug || '').toLowerCase()
+        let limit = (req.query.limit) ? parseInt(req.query.limit) : 200
+        let skip
+        skip = (req.query.page) ? limit * (req.query.page - 1) : 0
+
+        const total = db.Account.count({
+            isToken: true,
+            contractCreation: creator
+        })
+        const tokens = await db.Account.find({
+            isToken: true,
+            contractCreation: creator
+        }).sort({ balanceNumber: -1 }).limit(limit).skip(skip).lean().exec()
+        const map = await Promise.all(tokens.map(async (t) => {
+            const tokenDetail = await db.Token.findOne({
+                hash: t.hash
+            })
+            if (tokenDetail) {
+                Object.assign(t, tokenDetail._doc)
+            }
+            return t
+        }))
+        return res.json({
+            total: await total,
+            items: map
+        })
+    } catch (error) {
+        return next(error)
     }
 })
 
