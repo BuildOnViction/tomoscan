@@ -122,8 +122,9 @@ const utils = {
         }
         return signer
     },
-    getM2: async (block) => {
+    getM1M2: async (block) => {
         let dataBuff = ethUtils.toBuffer(block.extraData)
+        let sig = ethUtils.fromRpcSig(dataBuff.slice(dataBuff.length - 65, dataBuff.length))
 
         block.extraData = '0x' + ethUtils.toBuffer(block.extraData).slice(0, dataBuff.length - 65).toString('hex')
 
@@ -144,12 +145,23 @@ const utils = {
             mixHash: ethUtils.toBuffer(block.mixHash),
             nonce: ethUtils.toBuffer(block.nonce)
         })
-        let dataBuffM2 = ethUtils.toBuffer(block.validator)
-        let sigM2 = ethUtils.fromRpcSig(dataBuffM2.slice(dataBuffM2.length - 65, dataBuffM2.length))
-        let pubM2 = ethUtils.ecrecover(headerHash.hash(), sigM2.v, sigM2.r, sigM2.s)
 
-        let m2 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pubM2).toString('hex'))
-        return m2.toLowerCase()
+        let pub = ethUtils.ecrecover(headerHash.hash(), sig.v, sig.r, sig.s)
+        let m1 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pub).toString('hex'))
+        m1 = m1.toLowerCase()
+
+        let m2
+        try {
+            let dataBuffM2 = ethUtils.toBuffer(block.validator)
+            let sigM2 = ethUtils.fromRpcSig(dataBuffM2.slice(dataBuffM2.length - 65, dataBuffM2.length))
+            let pubM2 = ethUtils.ecrecover(headerHash.hash(), sigM2.v, sigM2.r, sigM2.s)
+            m2 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pubM2).toString('hex'))
+            m2 = m2.toLowerCase()
+        } catch (e) {
+            logger.warn('Cannot get m2 of block %s. Error %s', block.number, e)
+            m2 = 'N/A'
+        }
+        return { m1, m2 }
     },
     toAddress: async (text, length) => {
         if (isNaN(length)) { length = 16 }

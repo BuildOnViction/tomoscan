@@ -27,24 +27,15 @@ let BlockHelper = {
         if (!_block) {
             return null
         }
+        let { m1, m2 } = await utils.getM1M2(_block)
+        _block.m2 = m2
+        _block.signer = m1
 
         let timestamp = _block.timestamp * 1000
-
-        // Get signer.
-        let signer = await utils.toAddress(await utils.getSigner(_block), 100)
-        signer = signer.toLowerCase()
-
-        try {
-            _block.m2 = await utils.getM2(_block)
-        } catch (e) {
-            logger.warn('Cannot get m2 of block %s. Error %s', _block.number, e)
-            _block.m2 = 'N/A'
-        }
 
         // Update end tx count.
         _block.timestamp = timestamp
         _block.e_tx = _block.transactions.length
-        _block.signer = signer
 
         let data = {
             'jsonrpc': '2.0',
@@ -74,7 +65,7 @@ let BlockHelper = {
         await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
 
-        return { txs, timestamp, signer }
+        return { txs, timestamp, m1 }
     },
     getBlockDetail: async (hashOrNumber) => {
         try {
@@ -91,16 +82,10 @@ let BlockHelper = {
             if (!_block) {
                 return null
             }
-            // Get signer.
-            let signer = await utils.toAddress(await utils.getSigner(_block), 100)
-            _block.signer = signer.toLowerCase()
+            let { m1, m2 } = await utils.getM1M2(_block)
 
-            try {
-                _block.m2 = await utils.getM2(_block)
-            } catch (e) {
-                logger.warn('Cannot get m2 of block %s. Error %s', _block.number, e)
-                _block.m2 = 'N/A'
-            }
+            _block.m2 = m2
+            _block.signer = m1
 
             // Update end tx count.
             _block.timestamp = _block.timestamp * 1000
@@ -114,7 +99,7 @@ let BlockHelper = {
             }
             const response = await axios.post(config.get('WEB3_URI'), data)
             let result = response.data
-
+console.log('kakakaka')
             _block.finality = parseInt(result.result)
             _block.status = true
             if (block) {
@@ -130,6 +115,7 @@ let BlockHelper = {
 
             block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
+            console.log('block', block)
 
             return block
         } catch (e) {
