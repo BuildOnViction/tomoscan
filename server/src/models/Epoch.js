@@ -12,7 +12,8 @@ const Epoch = new Schema({
     duration: Number,
     masterNodeNumber: Number,
     voterNumber: Number,
-    slashedNode: [{ type: String }]
+    slashedNode: [{ type: String }],
+    isActive: Boolean
 }, {
     timestamps: false,
     toObject: { virtuals: true },

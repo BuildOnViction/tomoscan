@@ -396,8 +396,6 @@ let RewardHelper = {
                 let signNumber = result.result.signers
                 let rewards = result.result.rewards
 
-                let slashedNode = []
-
                 let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates')
                 let c = await axios.get(url)
                 let canR = c.data.items
@@ -405,20 +403,6 @@ let RewardHelper = {
                 if (canR) {
                     for (let i = 0; i < canR.length; i++) {
                         canName[canR[i].candidate] = canR[i].name
-
-                        // TODO: will use get list candidate status in the future
-                        let data = {
-                            'jsonrpc': '2.0',
-                            'method': 'eth_getCandidateStatus',
-                            'params': [canR[i].candidate.toLowerCase(), `0x${epoch}`],
-                            'id': 88
-                        }
-                        let status = await axios.post(config.get('WEB3_URI'), data)
-                        if (!status.err) {
-                            if (status.data.result === 'SLASHED') {
-                                slashedNode.push(canR[i].candidate.toLowerCase())
-                            }
-                        }
                     }
                 }
 
@@ -495,7 +479,7 @@ let RewardHelper = {
                     duration: (new Date(eBlock.timestamp) - new Date(sBlock.timestamp)) / 1000,
                     masterNodeNumber: mnNumber,
                     voterNumber: vNumber.length,
-                    slashedNode: slashedNode
+                    isActive: true
                 }, { upsert: true, new: true })
 
                 return true

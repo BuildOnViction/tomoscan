@@ -21,7 +21,7 @@ EpochController.get('/epochs', [
         let lastBlock = await web3.eth.getBlockNumber()
         let lastEpoch = Math.floor(lastBlock / config.get('BLOCK_PER_EPOCH'))
 
-        let params = { sort: { epoch: -1 } }
+        let params = { sort: { epoch: -1 }, query: { isActive: true } }
         let data = await utils.paginate(req, 'Epoch', params, lastEpoch)
         data.lastBlock = lastBlock
         data.lastEpoch = lastEpoch
@@ -43,22 +43,19 @@ EpochController.get('/epochs/:slug', [
     let epochNumber = req.params.slug
     const web3 = await Web3Util.getWeb3()
     let lastBlock = await web3.eth.getBlockNumber()
-    let lastEpoch = Math.ceil(lastBlock / config.get('BLOCK_PER_EPOCH'))
-    if (epochNumber > lastEpoch) {
+    let lastEpoch = Math.ceil(lastBlock / config.get('BLOCK_PER_EPOCH')) - 1
+    let epoch = await db.Epoch.findOne({ epoch: epochNumber })
+    if (!epoch) {
         return res.status(404).json({ errors: { message: 'Epoch is not found or does not finish!' } })
     }
-    let endBlock = epochNumber * config.get('BLOCK_PER_EPOCH')
-    let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
     let masterNodeNumber = await db.Reward.distinct('validator', { epoch: epochNumber })
     let rewardVoter = await db.Reward.countDocuments({ epoch: epochNumber, reason: { $ne: 'Foundation' } })
     let rewardFoundation = await db.Reward.countDocuments({ epoch: epochNumber, reason: 'Foundation' })
 
-    let epoch = await db.Epoch.findOne({ epoch: epochNumber })
-
     return res.json({
         epoch: epochNumber,
-        startBlock: startBlock,
-        endBlock: endBlock,
+        startBlock: epoch.startBlock,
+        endBlock: epoch.endBlock,
         masterNodeNumber: epoch.masterNodeNumber,
         masterNode: masterNodeNumber,
         slashedNode: epoch.slashedNode,
