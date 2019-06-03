@@ -42,7 +42,7 @@ consumer.task = async function (job, done) {
                     { upsert: true, new: true })
 
                 // Add token holder data.
-                if (_log.from.toLowerCase() !== _log.to.toLowerCase()){
+                if (_log.from.toLowerCase() !== _log.to.toLowerCase()) {
                     q.create('TokenHolderProcess', {
                         token: JSON.stringify({
                             from: _log.from.toLowerCase(),
