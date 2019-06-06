@@ -4,6 +4,8 @@ const Web3Utils = require('../helpers/web3')
 const utils = require('../helpers/utils')
 const db = require('../models')
 const logger = require('../helpers/logger')
+const TokenHelper = require('../helpers/token')
+const BigNumber = require('bignumber.js')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
@@ -29,32 +31,55 @@ consumer.task = async function (job, done) {
         _log.address = _log.address.toLowerCase()
         let transactionHash = _log.transactionHash.toLowerCase()
 
-        if (log.data !== '0x') {
+        let token = await db.Token.findOne({ hash: _log.address })
+        let tokenType
+        let decimals
+        if (token && token.type) {
+            tokenType = token.type
+            decimals = token.decimals
+        } else {
+            let code = await web3.eth.getCode(_log.address)
+            if (code === '0x') {
+                return done()
+            }
+            let tokenFuncs = await TokenHelper.getTokenFuncs()
+            decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+            decimals = await web3.utils.hexToNumberString(decimals)
+            tokenType = await TokenHelper.checkTokenType(code)
+        }
+        if (tokenType === 'trc20' || tokenType === 'trc21') {
             _log.value = web3.utils.hexToNumberString(log.data)
-            _log.valueNumber = _log.value
+
+            let vl = new BigNumber(_log.value || 0)
+            _log.valueNumber = vl.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
 
             delete _log['_id']
-            let tokenTx = await db.TokenTx.findOne({ transactionHash: transactionHash, from: _log.from, to: _log.to })
-            if (!tokenTx) {
+            if (tokenType === 'trc20') {
                 await db.TokenTx.updateOne(
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
-
-                // Add token holder data.
-                if (_log.from.toLowerCase() !== _log.to.toLowerCase()) {
-                    q.create('TokenHolderProcess', {
-                        token: JSON.stringify({
-                            from: _log.from.toLowerCase(),
-                            to: _log.to.toLowerCase(),
-                            address: _log.address,
-                            value: _log.value
-                        })
-                    })
-                        .priority('normal').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-                }
+            } else {
+                await db.TokenTrc21Tx.updateOne(
+                    { transactionHash: transactionHash, from: _log.from, to: _log.to },
+                    _log,
+                    { upsert: true, new: true })
             }
+
+            // Add token holder data.
+            if (_log.from.toLowerCase() !== _log.to.toLowerCase()) {
+                q.create('TokenHolderProcess', {
+                    token: JSON.stringify({
+                        from: _log.from.toLowerCase(),
+                        to: _log.to.toLowerCase(),
+                        address: _log.address,
+                        value: _log.value
+                    })
+                })
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+
             q.create('CountProcess', {
                 data: JSON.stringify([
                     { hash: _log.from, countType: 'tokenTx' },
@@ -63,7 +88,7 @@ consumer.task = async function (job, done) {
             })
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        } else {
+        } else if (tokenType === 'trc721') {
             if (log.topics[3]) {
                 _log.tokenId = await web3.utils.hexToNumber(log.topics[3])
                 await db.TokenNftTx.updateOne(
