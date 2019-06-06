@@ -3,7 +3,7 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
-const TokenTx = new Schema({
+const TokenTrc21Tx = new Schema({
     address: { type: String, index: true },
     blockHash: String,
     blockNumber: { type: Number, index: true },
@@ -22,4 +22,4 @@ const TokenTx = new Schema({
     versionKey: false
 })
 
-module.exports = mongoose.model('TokenTx', TokenTx)
+module.exports = mongoose.model('TokenTrc21Tx', TokenTrc21Tx)

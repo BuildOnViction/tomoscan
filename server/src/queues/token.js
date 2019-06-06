@@ -41,11 +41,10 @@ consumer.task = async function (job, done) {
             token.txCount = 0
         }
 
-        if (token.decimals === 0) {
-            token.type = 'trc721'
-        } else {
-            token.type = 'trc20'
-        }
+        // Check token type
+        let code = await web3.eth.getCode(address)
+        token.type = await TokenHelper.checkTokenType(code)
+
         let totalSupply = await web3.eth.call({ to: token.hash, data: tokenFuncs['totalSupply'] })
         totalSupply = await web3.utils.hexToNumberString(totalSupply).trim()
         token.totalSupply = totalSupply
