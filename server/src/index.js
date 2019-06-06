@@ -4,7 +4,7 @@ const authService = require('./services/Auth')
 
 const express = require('express')
 const events = require('events')
-const logger = require('morgan')
+const morgan = require('morgan')
 const compression = require('compression')
 const mongoose = require('mongoose')
 const cors = require('cors')
@@ -14,6 +14,7 @@ const producer = require('./producer')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const swaggerUi = require('swagger-ui-express')
+const apiCacheWithRedis = require('./middlewares/apicache')
 
 const app = express()
 producer.watch()
@@ -28,10 +29,17 @@ const io = require('socket.io')(server)
 
 app.set('port', config.get('PORT') || 3333)
 app.use(compression())
-app.use(logger('short'))
+app.use(morgan('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+app.use(apiCacheWithRedis('4 seconds', (req, res) => {
+    if (res.statusCode === 200 && req.method === 'GET') {
+        return true
+    }
+    return false
+}))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))

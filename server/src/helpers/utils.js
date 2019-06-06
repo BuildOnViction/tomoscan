@@ -32,7 +32,7 @@ const utils = {
             builder = builder.limit(perPage)
         }
         builder = builder.populate(params.populate)
-        let items = await builder.lean().exec()
+        let items = await builder.maxTimeMS(20000).lean().exec()
 
         if (pages > 500) {
             pages = 500
