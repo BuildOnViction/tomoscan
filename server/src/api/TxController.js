@@ -153,6 +153,7 @@ TxController.get('/txs', [
             let pages = Math.ceil(total / perPage)
 
             let items = await db.Tx.find(params.query)
+                .maxTimeMS(20000)
                 .sort(params.sort)
                 .skip(offset).limit(perPage)
                 .lean().exec()
@@ -278,7 +279,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         }
         tx.to_model = toModel
 
-        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash })
+        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
 
         tokenTxs = await TokenTransactionHelper.formatTokenTransaction(tokenTxs)
         tx.tokenTxs = tokenTxs
