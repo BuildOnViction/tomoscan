@@ -52,7 +52,7 @@ TokenHolderController.get('/token-holders', [
             }
 
             let map = items.map(async it => {
-                let tk = await TokenHelper.getTokenBalance( {hash: it.token, decimals: decimals} , it.hash)
+                let tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: decimals }, it.hash)
                 it.quantity = tk.quantity
                 it.quantityNumber = tk.quantityNumber
                 return it
