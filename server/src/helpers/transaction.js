@@ -386,28 +386,11 @@ let TransactionHelper = {
         const response = await axios.post(config.get('WEB3_URI'), data)
         let result = response.data
         if (!result.error) {
-            let web3 = await Web3Util.getWeb3()
             let res = result.result
             if (res.hasOwnProperty('calls')) {
                 let calls = res.calls
-                let map = calls.map(async function (call) {
-                    if (call.type === 'CALL') {
-                        if (call.value !== '0x0') {
-                            let from = (call.from || '').toLowerCase()
-                            let to = (call.to || '').toLowerCase()
-
-                            internalTx.push({
-                                hash: transaction.hash,
-                                blockNumber: transaction.blockNumber,
-                                from: from,
-                                to: to,
-                                value: web3.utils.hexToNumberString(call.value),
-                                timestamp: transaction.timestamp
-                            })
-                        }
-                    }
-                })
-                await Promise.all(map)
+                internalTx = await TransactionHelper.listInternal(
+                    calls, transaction.hash, transaction.blockNumber, transaction.timestamp)
             }
         }
         if (internalTx.length > 0) {
@@ -415,6 +398,28 @@ let TransactionHelper = {
             await db.InternalTx.insertMany(internalTx)
         }
         return internalTx
+    },
+    listInternal: async (resultCalls, txHash, blockNumber, timestamp) => {
+        let web3 = await Web3Util.getWeb3()
+        let internals = []
+        for (let i = 0; i < resultCalls.length; i++) {
+            let call = resultCalls[i]
+            if (call.value !== '0x0') {
+                internals.push({
+                    hash: txHash,
+                    blockNumber: blockNumber,
+                    from: (call.from || '').toLowerCase(),
+                    to: (call.to || '').toLowerCase(),
+                    value: web3.utils.hexToNumberString(call.value),
+                    timestamp: timestamp
+                })
+            }
+            if (call.calls) {
+                let childInternal = await TransactionHelper.listInternal(call.calls, txHash, blockNumber, timestamp)
+                internals = internals.concat(childInternal)
+            }
+        }
+        return internals
     }
 }
 
