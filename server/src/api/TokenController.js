@@ -6,7 +6,6 @@ const Web3Util = require('../helpers/web3')
 // const _ = require('lodash')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
-const BigNumber = require('bignumber.js')
 
 const TokenController = Router()
 
@@ -74,8 +73,8 @@ TokenController.get('/tokens/:token/holder/:holder', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let token = req.params.token.toLowerCase()
-        let holder = req.params.holder.toLowerCase()
+        let token = req.params.token.toLowerCase().trim()
+        let holder = req.params.holder.toLowerCase().trim()
 
         let t = await db.Token.findOne({ hash: token }).lean()
         if (!t) {
@@ -95,35 +94,26 @@ TokenController.get('/tokens/:token/holder/:holder', [
         }
 
         // Get token balance by read smart contract
-        let contract = await db.Contract.findOne({ hash: token })
-        if (contract) {
-            let abiObject = JSON.parse(contract.abiCode)
+        let tk = await db.Token.findOne({ hash: token })
+        if (!tk) {
             let web3 = await Web3Util.getWeb3()
-            let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
-            let rs = await web3Contract.methods.balanceOf(holder).call()
-            let quantity = new BigNumber(rs)
+            let tokenFuncs = await TokenHelper.getTokenFuncs()
+            let decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+            decimals = await web3.utils.hexToNumberString(decimals)
+            tk = { hash: token, decimals: decimals }
+        }
+        let balance = await TokenHelper.getTokenBalance(tk, holder)
 
-            let tk = await db.Token.findOne({ hash: token })
-            let decimals
-            if (tk) {
-                decimals = tk.decimals
-            } else {
-                let web3 = await Web3Util.getWeb3()
-                let tokenFuncs = await TokenHelper.getTokenFuncs()
-                decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
-                decimals = await web3.utils.hexToNumberString(decimals)
-            }
-            if (exist) {
-                tokenHolder.quantity = quantity.toString(10)
-                tokenHolder.quantityNumber = quantity.div(10 ** parseInt(decimals)).toNumber()
-                await tokenHolder.save()
-            }
+        tokenHolder.quantity = balance.quantity
+        tokenHolder.quantityNumber = balance.quantityNumber
+        if (exist) {
+            tokenHolder.save()
         }
 
         res.json(tokenHolder)
     } catch (e) {
         logger.warn('Get token holder error %s', e)
-        return res.status(500).json({ errors: { message: 'Something error!' } })
+        return res.status(400).json({ errors: { message: 'Something error!' } })
     }
 })
 
