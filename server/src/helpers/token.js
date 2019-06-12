@@ -1,9 +1,7 @@
 'use strict'
 
 const { formatAscIIJSON } = require('./utils')
-const config = require('config')
 const Web3Util = require('./web3')
-const axios = require('axios')
 const BigNumber = require('bignumber.js')
 
 let TokenHelper = {
@@ -41,23 +39,11 @@ let TokenHelper = {
             '000000000000000000000000' +
             holder.substr(2) // chop off the 0x
 
-        const res = await axios.post(config.get('WEB3_URI'), {
-            'jsonrpc': '2.0',
-            'method': 'eth_call',
-            'params': [{
-                to: token.hash,
-                data: data
-            }, 'latest'],
-            'id': 88
-        })
+        let result = await web3.eth.call({ to: token.hash, data: data })
 
-        if (!res.error) {
-            let result = res.data.result
-            let quantity = new BigNumber(await web3.utils.hexToNumberString(result))
-            let quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()
-            return { quantity: quantity.toString(10), quantityNumber: quantityNumber }
-        }
-        return { quantity: '0', quantityNumber: 0 }
+        let quantity = new BigNumber(await web3.utils.hexToNumberString(result))
+        let quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()
+        return { quantity: quantity.toString(10), quantityNumber: quantityNumber }
     }
 }
 
