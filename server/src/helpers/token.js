@@ -39,7 +39,7 @@ let TokenHelper = {
             '000000000000000000000000' +
             holder.substr(2) // chop off the 0x
 
-        let result = await web3.eth.call({ to: token.hash, data: data })
+        let result = await web3.eth.call({ to: token, data: data })
 
         let quantity = new BigNumber(await web3.utils.hexToNumberString(result))
         let quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()

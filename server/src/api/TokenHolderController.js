@@ -2,6 +2,7 @@ const { Router } = require('express')
 const { paginate } = require('../helpers/utils')
 const db = require('../models')
 const TokenHolderHelper = require('../helpers/tokenHolder')
+const TokenHelper = require('../helpers/token')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
@@ -49,6 +50,15 @@ TokenHolderController.get('/token-holders', [
                 items[i] = await TokenHolderHelper.formatHolder(items[i], totalSupply, decimals)
                 items[i]['rank'] = baseRank + i + 1
             }
+
+            let map = items.map(async it => {
+                let tk = await TokenHelper.getTokenBalance(it.token, it.hash)
+                it.quantity = tk.quantity
+                it.quantityNumber = tk.quantityNumber
+                return it
+            })
+
+            items = await Promise.all(map)
 
             // Get tokens.
             let tokenHashes = []

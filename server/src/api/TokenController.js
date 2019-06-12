@@ -6,7 +6,6 @@ const Web3Util = require('../helpers/web3')
 // const _ = require('lodash')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
-const BigNumber = require('bignumber.js')
 
 const TokenController = Router()
 
