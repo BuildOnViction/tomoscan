@@ -262,6 +262,31 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
+  /api/tokens/{token}/holder/{holder}:
+    get:
+      tags:
+        - Tokens
+      summary: Get token holder detail
+      parameters:
+        - name: token
+          in: path
+          required: true
+          description: token address
+          type: string
+        - name: holder
+          in: path
+          required: true
+          description: holder address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
   /api/token-txs:
     get:
       tags:
