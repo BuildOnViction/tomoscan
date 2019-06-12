@@ -102,7 +102,7 @@ TokenController.get('/tokens/:token/holder/:holder', [
             decimals = await web3.utils.hexToNumberString(decimals)
             tk = { hash: token, decimals: decimals }
         }
-        let balance = await TokenHelper.getTokenBalance(tk.hash, holder)
+        let balance = await TokenHelper.getTokenBalance(tk, holder)
 
         tokenHolder.quantity = balance.quantity
         tokenHolder.quantityNumber = balance.quantityNumber
