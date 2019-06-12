@@ -29,7 +29,7 @@
                                 </tr>
                                 <tr>
                                     <td>Balance</td>
-                                    <td>{{ toTomo(holderBalance, token.decimals) }} {{ symbol }}</td>
+                                    <td>{{ toTokenQuantity(holderBalance, token.decimals) }} {{ symbol }}</td>
                                 </tr>
                                 <tr>
                                     <td>Transfers</td>
