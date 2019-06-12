@@ -95,40 +95,40 @@ TokenController.get('/tokens/:token/holder/:holder', [
         }
 
         // Get token balance by read smart contract
-        let abiObject = [{   
-            "constant": true,
-            "inputs": [
-                {   
-                    "name": "owner",
-                    "type": "address"
+        let abiObject = [{
+            'constant': true,
+            'inputs': [
+                {
+                    'name': 'owner',
+                    'type': 'address'
                 }
             ],
-            "name": "balanceOf",
-            "outputs": [
-                {   
-                    "name": "",
-                    "type": "uint256"
+            'name': 'balanceOf',
+            'outputs': [
+                {
+                    'name': '',
+                    'type': 'uint256'
                 }
             ],
-            "payable": false,
-            "stateMutability": "view",
-            "type": "function",
-            "signature": "0x70a08231"
-            }, {
-                "constant": true,
-                "inputs": [],
-                "name": "decimals",
-                "outputs": [
-                    {
-                        "name": "",
-                        "type": "uint8"
-                    }
-                ],
-                "payable": false,
-                "stateMutability": "view",
-                "type": "function",
-                "signature": "0x313ce567"
-            }]
+            'payable': false,
+            'stateMutability': 'view',
+            'type': 'function',
+            'signature': '0x70a08231'
+        }, {
+            'constant': true,
+            'inputs': [],
+            'name': 'decimals',
+            'outputs': [
+                {
+                    'name': '',
+                    'type': 'uint8'
+                }
+            ],
+            'payable': false,
+            'stateMutability': 'view',
+            'type': 'function',
+            'signature': '0x313ce567'
+        }]
         let web3 = await Web3Util.getWeb3()
         let web3Contract = new web3.eth.Contract(abiObject, token)
         let rs = await web3Contract.methods.balanceOf(holder).call()
