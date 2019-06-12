@@ -332,7 +332,7 @@ paths:
           description: token address
           type: string
         - name: hash
-          in: path
+          in: query
           required: false
           description: account address
           type: string
