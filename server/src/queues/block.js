@@ -15,6 +15,26 @@ consumer.task = async function (job, done) {
         const q = require('./index')
 
         if (b) {
+            // Begin from epoch 2
+            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
+                (blockNumber % config.get('BLOCK_PER_EPOCH') === 10)) {
+                let epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
+                q.create('RewardProcess', { epoch: epoch })
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+            if (blockNumber % 20 === 0) {
+                q.create('BlockFinalityProcess', {})
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+
+            if (blockNumber > 15) {
+                q.create('BlockSignerProcess', { block: blockNumber - 15 })
+                    .priority('normal').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+
             let { txs, timestamp, signer } = b
             if (txs.length <= 100) {
                 q.create('TransactionProcess', {
@@ -51,27 +71,8 @@ consumer.task = async function (job, done) {
                 .priority('low').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
-
-        // Begin from epoch 2
-        if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
-            (blockNumber % config.get('BLOCK_PER_EPOCH') === 10)) {
-            let epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
-            q.create('RewardProcess', { epoch: epoch })
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        }
-        if (blockNumber % 20 === 0) {
-            q.create('BlockFinalityProcess', {})
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        }
         if (blockNumber % 5 === 0) {
             q.create('TransactionPendingProcess', {})
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-        }
-        if (blockNumber > 15) {
-            q.create('BlockSignerProcess', { block: blockNumber - 15 })
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         }
