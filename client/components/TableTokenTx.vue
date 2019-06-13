@@ -58,7 +58,7 @@
                     v-if="props.item.from_model && props.item.from_model.isContract"
                     class="tm tm-icon-contract mr-1 mr-lg-2"/>
                 <span
-                    v-if="address == props.item.from"
+                    v-if="holder == props.item.from"
                     class="text-truncate">{{ props.item.from }}</span>
                 <nuxt-link
                     v-else
@@ -70,7 +70,7 @@
                 slot="arrow"
                 slot-scope="props">
                 <i
-                    :class="props.item.from == address ? 'text-danger' : 'text-success'"
+                    :class="props.item.from == holder ? 'text-danger' : 'text-success'"
                     class="tm-arrow-right"/>
             </template>
 
@@ -82,7 +82,7 @@
                         v-if="props.item.to_model && props.item.to_model.isContract"
                         class="tm tm-icon-contract mr-1 mr-lg-2"/>
                     <span
-                        v-if="address == props.item.to"
+                        v-if="holder == props.item.to"
                         class="text-truncate">{{ props.item.to }}</span>
                     <nuxt-link
                         v-else
