@@ -311,7 +311,7 @@ export default {
     created () {
         let hash = this.$route.params.slug
         if (hash) {
-            this.hash = hash
+            this.hash = hash.toLowerCase()
         }
     },
     mounted () {
