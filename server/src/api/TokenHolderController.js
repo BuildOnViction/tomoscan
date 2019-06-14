@@ -51,15 +51,6 @@ TokenHolderController.get('/token-holders', [
                 items[i]['rank'] = baseRank + i + 1
             }
 
-            let map = items.map(async it => {
-                let tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: decimals }, it.hash)
-                it.quantity = tk.quantity
-                it.quantityNumber = tk.quantityNumber
-                return it
-            })
-
-            items = await Promise.all(map)
-
             // Get tokens.
             let tokenHashes = []
             for (let i = 0; i < length; i++) {
@@ -83,6 +74,17 @@ TokenHolderController.get('/token-holders', [
                     }
                 }
             }
+
+            let map = items.map(async it => {
+                let d = (it['tokenObj'] || {}).decimals || decimals
+                let tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: d }, it.hash)
+                it.quantity = tk.quantity
+                it.quantityNumber = tk.quantityNumber
+                return it
+            })
+
+            items = await Promise.all(map)
+
         }
         data.items = items
 
