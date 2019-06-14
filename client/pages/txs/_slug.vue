@@ -157,12 +157,12 @@
                                             <td>Actual Tx Cost/Fee</td>
                                             <td>{{ formatUnit(toTomo(tx.gasPrice * tx.gasUsed, 18)) }}</td>
                                         </tr>
-                                        <tr v-if="tx.tokenTxs && tx.tokenTxs.length">
-                                            <td>Token Transfer</td>
+                                        <tr v-if="tx.trc20Txs && tx.trc20Txs.length">
+                                            <td>TRC20 Transfer</td>
                                             <td>
                                                 <span class="token-transfer">
                                                     <p
-                                                        v-for="(tokenTx, index) in tx.tokenTxs"
+                                                        v-for="(tokenTx, index) in tx.trc20Txs"
                                                         :key="index"
                                                         class="mb-3">
                                                         <span class="text-secondary">From </span>
@@ -185,6 +185,69 @@
                                                             &nbsp;
                                                             <span
                                                                 v-if="tokenTx.symbol">TRC20 {{ tokenTx.symbol }}</span>
+                                                        </nuxt-link>
+                                                    </p>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="tx.trc21Txs && tx.trc21Txs.length">
+                                            <td>TRC21 Transfer</td>
+                                            <td>
+                                                <span class="token-transfer">
+                                                    <p
+                                                        v-for="(tokenTx, index) in tx.trc21Txs"
+                                                        :key="index"
+                                                        class="mb-3">
+                                                        <span class="text-secondary">From </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+                                                            class="hash-tag text-truncate">
+                                                            {{ tokenTx.from }}</nuxt-link>
+                                                        <span class="text-secondary"> To </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+                                                            class="hash-tag text-truncate">
+                                                            {{ tokenTx.to }}</nuxt-link>
+                                                        <span class="text-secondary"> For </span>
+                                                        <span class="internal-color">{{
+                                                        toTokenQuantity(tokenTx.value, tokenTx.decimals) }}</span>
+                                                        <nuxt-link
+                                                            :to="{
+                                                                name: 'tokens-slug',
+                                                                params: {slug: tokenTx.address}}">
+                                                            &nbsp;
+                                                            <span
+                                                                v-if="tokenTx.symbol">TRC21 {{ tokenTx.symbol }}</span>
+                                                        </nuxt-link>
+                                                    </p>
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr v-if="tx.trc721Txs && tx.trc721Txs.length">
+                                            <td>TRC21 Transfer</td>
+                                            <td>
+                                                <span class="token-transfer">
+                                                    <p
+                                                        v-for="(tokenTx, index) in tx.trc721Txs"
+                                                        :key="index"
+                                                        class="mb-3">
+                                                        <span class="text-secondary">From </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+                                                            class="hash-tag text-truncate">
+                                                            {{ tokenTx.from }}</nuxt-link>
+                                                        <span class="text-secondary"> To </span>
+                                                        <nuxt-link
+                                                            :to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+                                                            class="hash-tag text-truncate">
+                                                            {{ tokenTx.to }}</nuxt-link>
+                                                        <span class="text-secondary"> For TRC721 TokenID</span>
+                                                        [{{ tokenTx.tokenId }}]
+                                                        <nuxt-link
+                                                            :to="{
+                                                                name: 'tokens-slug',
+                                                                params: {slug: tokenTx.address}}">
+                                                            {{ tokenTx.symbol }}
                                                         </nuxt-link>
                                                     </p>
                                                 </span>

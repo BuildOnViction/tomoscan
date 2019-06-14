@@ -279,10 +279,17 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         }
         tx.to_model = toModel
 
-        let tokenTxs = await db.TokenTx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
+        let trc20Txs = await db.TokenTx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
+        trc20Txs = await TokenTransactionHelper.formatTokenTransaction(trc20Txs)
+        tx.trc20Txs = trc20Txs
 
-        tokenTxs = await TokenTransactionHelper.formatTokenTransaction(tokenTxs)
-        tx.tokenTxs = tokenTxs
+        let trc21Txs = await db.TokenTrc21Tx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
+        trc21Txs = await TokenTransactionHelper.formatTokenTransaction(trc21Txs)
+        tx.trc21Txs = trc21Txs
+
+        let trc721Txs = await db.TokenNftTx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
+        trc721Txs = await TokenTransactionHelper.formatTokenTransaction(trc721Txs)
+        tx.trc721Txs = trc721Txs
 
         let web3 = await Web3Util.getWeb3()
         let blk = await web3.eth.getBlock('latest')
