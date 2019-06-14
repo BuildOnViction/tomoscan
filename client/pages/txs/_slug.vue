@@ -167,12 +167,18 @@
                                                         class="mb-3">
                                                         <span class="text-secondary">From </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-trc20-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.from}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.from }}</nuxt-link>
                                                         <span class="text-secondary"> To </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-trc20-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.to}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.to }}</nuxt-link>
                                                         <span class="text-secondary"> For </span>
@@ -200,12 +206,18 @@
                                                         class="mb-3">
                                                         <span class="text-secondary">From </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-trc21-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.from}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.from }}</nuxt-link>
                                                         <span class="text-secondary"> To </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-trc21-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.to}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.to }}</nuxt-link>
                                                         <span class="text-secondary"> For </span>
@@ -224,7 +236,7 @@
                                             </td>
                                         </tr>
                                         <tr v-if="tx.trc721Txs && tx.trc721Txs.length">
-                                            <td>TRC21 Transfer</td>
+                                            <td>TRC721 Transfer</td>
                                             <td>
                                                 <span class="token-transfer">
                                                     <p
@@ -233,12 +245,18 @@
                                                         class="mb-3">
                                                         <span class="text-secondary">From </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.from}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-nftHolder-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.from}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.from }}</nuxt-link>
                                                         <span class="text-secondary"> To </span>
                                                         <nuxt-link
-                                                            :to="{name: 'address-slug', params: {slug: tokenTx.to}}"
+                                                            :to="{
+                                                                name: 'tokens-slug-nftHolder-holder',
+                                                                params: {slug: tokenTx.address, holder: tokenTx.to}
+                                                            }"
                                                             class="hash-tag text-truncate">
                                                             {{ tokenTx.to }}</nuxt-link>
                                                         <span class="text-secondary"> For TRC721 TokenID</span>
