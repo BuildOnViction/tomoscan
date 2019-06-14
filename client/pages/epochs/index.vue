@@ -44,7 +44,7 @@
             <template
                 slot="slashedNode"
                 slot-scope="props">
-                {{ props.item.slashedNode.length }}
+                {{ props.item.slashedNode ? props.item.slashedNode.length : 0 }}
             </template>
         </table-base>
 
