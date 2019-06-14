@@ -84,7 +84,6 @@ TokenHolderController.get('/token-holders', [
             })
 
             items = await Promise.all(map)
-
         }
         data.items = items
 
