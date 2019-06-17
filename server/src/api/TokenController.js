@@ -178,4 +178,73 @@ TokenController.post('/tokens/:token/updateInfo', [
     }
 })
 
+TokenController.get('/tokens/holding/:tokenType/:holder', [
+    check('tokenType').exists().isString().withMessage('trc20/trc21/trc721'),
+    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Address holding token'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let tokenType = req.params.tokenType.toLowerCase()
+    let holder = req.params.holder.toLowerCase()
+
+    try {
+        let data
+        if (tokenType === 'trc20') {
+            data = await utils.paginate(req, 'TokenHolder', { hash: holder })
+        } else if (tokenType === 'trc21') {
+            data = await utils.paginate(req, 'TokenTrc21Holder', { hash: holder })
+        } else if (tokenType === 'trc721') {
+            data = await utils.paginate(req, 'TokenNftolder', { holder: holder })
+        } else {
+            data = { total: 0, perPage: 20, currentPage: 1, pages: 0, items: [] }
+        }
+
+        let items = data.items
+        if (items.length) {
+            let length = items.length
+
+            // Get tokens.
+            let tokenHashes = []
+            for (let i = 0; i < length; i++) {
+                tokenHashes.push(items[i]['token'])
+            }
+            let tokens = await db.Token.find({ hash: { $in: tokenHashes } })
+            if (tokens.length) {
+                for (let i = 0; i < length; i++) {
+                    for (let j = 0; j < tokens.length; j++) {
+                        if (items[i]['token'] === tokens[j]['hash']) {
+                            tokens[j].name = tokens[j]
+                                .name
+                                .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
+                                .trim()
+                            tokens[j].symbol = tokens[j]
+                                .symbol
+                                .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
+                                .trim()
+                            items[i]['tokenObj'] = tokens[j]
+
+                            if (tokenType === 'trc20' || tokenType === 'trc21') {
+                                let tk = await TokenHelper.getTokenBalance(
+                                    { hash: tokens[j].hash, decimals: tokens[j].decimals }, items[i].hash)
+                                items[i].quantity = tk.quantity
+                                items[i].quantityNumber = tk.quantityNumber
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        data.items = items
+
+        return res.json(data)
+    } catch (e) {
+        logger.warn('Get list token holding: holder %s token type %s. Error %s', holder, tokenType, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
 module.exports = TokenController
