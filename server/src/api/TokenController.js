@@ -194,11 +194,11 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
     try {
         let data
         if (tokenType === 'trc20') {
-            data = await utils.paginate(req, 'TokenHolder', { hash: holder })
+            data = await utils.paginate(req, 'TokenHolder', { query: { hash: holder } })
         } else if (tokenType === 'trc21') {
-            data = await utils.paginate(req, 'TokenTrc21Holder', { hash: holder })
+            data = await utils.paginate(req, 'TokenTrc21Holder', { query: { hash: holder } })
         } else if (tokenType === 'trc721') {
-            data = await utils.paginate(req, 'TokenNftolder', { holder: holder })
+            data = await utils.paginate(req, 'TokenNftHolder', { query: { holder: holder } })
         } else {
             data = { total: 0, perPage: 20, currentPage: 1, pages: 0, items: [] }
         }

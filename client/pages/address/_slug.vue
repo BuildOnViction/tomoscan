@@ -188,13 +188,36 @@
             </b-tab>
             <!--:title="'Token Holding (' + formatNumber(tokensCount) + ')'"-->
             <b-tab
-                v-if="address && address.hashTokens"
-                id="tokenHolding"
-                title="Token Holding"
-                href="#tokenHolding">
+                v-if="address && address.hasTrc20"
+                id="trc20Holding"
+                title="TRC20 Holding"
+                href="#trc20Holding">
                 <table-tokens-by-account
-                    :address="hash"
-                    :parent="'tokenHolding'"
+                    :holder="hash"
+                    :token_type="'trc20'"
+                    :parent="'trc20Holding'"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
+                v-if="address && address.hasTrc21"
+                id="trc21Holding"
+                title="TRC21 Holding"
+                href="#trc21Holding">
+                <table-tokens-by-account
+                    :holder="hash"
+                    :token_type="'trc21'"
+                    :parent="'trc21Holding'"
+                    :page="this"/>
+            </b-tab>
+            <b-tab
+                v-if="address && address.hasTrc721"
+                id="trc721Inventory"
+                title="TRC721 Inventory"
+                href="#trc721Inventory">
+                <table-tokens-by-account
+                    :holder="hash"
+                    :token_type="'trc721'"
+                    :parent="'trc721Inventory'"
                     :page="this"/>
             </b-tab>
             <b-tab

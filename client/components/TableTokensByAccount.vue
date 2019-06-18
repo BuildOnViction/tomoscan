@@ -24,16 +24,32 @@
                 slot="hash"
                 slot-scope="props">
                 <nuxt-link
+                    v-if="token_type === 'trc20'"
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
-                    :to="{name: 'tokens-slug-trc20-holder', params: {slug: props.item.token, holder: address}}">
+                    :to="{name: 'tokens-slug-trc20-holder', params: {slug: props.item.token, holder: holder}}">
+                    {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+                <nuxt-link
+                    v-if="token_type === 'trc21'"
+                    :class="props.item.tokenObj ? '' : 'text-truncate'"
+                    :to="{name: 'tokens-slug-trc21-holder', params: {slug: props.item.token, holder: holder}}">
+                    {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
+                <nuxt-link
+                    v-if="token_type === 'trc721'"
+                    :class="props.item.tokenObj ? '' : 'text-truncate'"
+                    :to="{name: 'tokens-slug-nftHolder-holder', params: {slug: props.item.token, holder: holder}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
             </template>
 
             <template
                 slot="quantity"
                 slot-scope="props">
-                {{ formatUnit(toTokenQuantity(props.item.quantity, props.item.tokenObj.decimals),
-                              props.item.tokenObj.symbol) }}
+                <span
+                    v-if="token_type === 'trc20' || token_type === 'trc21'">
+                    {{ formatUnit(toTokenQuantity(props.item.quantity, props.item.tokenObj.decimals),
+                                  props.item.tokenObj.symbol) }}</span>
+                <span
+                    v-if="token_type === 'trc721'">
+                    {{ props.item.tokenId }}</span>
             </template>
 
         </table-base>
@@ -62,7 +78,11 @@ export default {
     },
     mixins: [mixin],
     props: {
-        address: {
+        holder: {
+            type: String,
+            default: ''
+        },
+        token_type: {
             type: String,
             default: ''
         },
@@ -80,7 +100,7 @@ export default {
     data: () => ({
         fields: {
             hash: { label: 'Token' },
-            quantity: { label: 'Quantity' }
+            quantity: { label: self.token_type === 'trc721' ? 'Token ID' : 'Quantity' }
         },
         loading: true,
         pagination: {},
@@ -114,12 +134,8 @@ export default {
                 limit: self.perPage
             }
 
-            if (self.address) {
-                params.hash = self.address
-            }
-
             let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/token-holders' + '?' + query)
+            let { data } = await this.$axios.get(`/api/tokens/holding/${self.token_type}/${self.holder}` + '?' + query)
             self.items = data.items
             self.total = data.total
             self.currentPage = data.currentPage
