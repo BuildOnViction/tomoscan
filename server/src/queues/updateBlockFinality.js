@@ -33,6 +33,7 @@ consumer.task = async function (job, done) {
             } else {
                 logger.warn('BlockReOrg %s. ReOrg block %s, finality block %s',
                     block.number, block.hash, blockOnChain.hash)
+                await db.Block.deleteOne({ hash: block.hash })
                 await db.Tx.deleteMany({ blockHash: block.hash })
                 await db.Internal.deleteMany({ blockHash: block.hash })
                 await db.ContractEvent.deleteMany({ blockHash: block.hash })
