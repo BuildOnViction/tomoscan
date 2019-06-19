@@ -6,7 +6,7 @@ const Schema = mongoose.Schema
 const Log = new Schema({
     address: { type: String, index: true },
     blockNumber: { type: Number, index: true },
-    blockHash: String,
+    blockHash: { type: String, index: true },
     data: String,
     id: { type: String, index: true },
     logIndex: Number,

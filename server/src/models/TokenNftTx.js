@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 
 const TokenNftTx = new Schema({
     address: { type: String, index: true },
-    blockHash: String,
+    blockHash: { type: String, index: true },
     blockNumber: { type: Number, index: true },
     transactionHash: { type: String, index: true },
     transactionIndex: Number,
