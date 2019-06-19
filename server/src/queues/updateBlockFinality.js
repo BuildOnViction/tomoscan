@@ -12,12 +12,12 @@ consumer.processNumber = 1
 consumer.task = async function (job, done) {
     const web3 = await Web3Util.getWeb3()
     let blocks = await db.Block.find({ finality: { $lt: 75 }, updateFinalityTime: { $lt: 10 } })
-        .sort({ number: -1 }).limit(100)
+        .sort({ number: -1 }).limit(50)
     logger.info('Update finality %s blocks', blocks.length)
     try {
         let map = blocks.map(async function (block) {
             let blockOnChain = await web3.eth.getBlock(block.number)
-            if (block.hash === blockOnChain.number) {
+            if (block.hash === blockOnChain.hash) {
                 let data = {
                     'jsonrpc': '2.0',
                     'method': 'eth_getBlockFinalityByHash',
