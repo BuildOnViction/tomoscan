@@ -31,6 +31,8 @@ consumer.task = async function (job, done) {
                 block.updateFinalityTime = block.updateFinalityTime ? block.updateFinalityTime + 1 : 1
                 block.save()
             } else {
+                logger.warn('BlockReOrg %s. ReOrg block %s, finality block %s',
+                    block.number, block.hash, blockOnChain.hash)
                 await db.Tx.deleteMany({ blockHash: block.hash })
                 await db.Internal.deleteMany({ blockHash: block.hash })
                 await db.ContractEvent.deleteMany({ blockHash: block.hash })
