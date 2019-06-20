@@ -8,7 +8,7 @@ const ContractEvent = new Schema({
     blockNumber: { type: Number, index: true },
     transactionHash: { type: String, index: true },
     transactionIndex: Number,
-    blockHash: String,
+    blockHash: { type: String, index: true },
     logIndex: Number,
     removed: Boolean,
     id: String,

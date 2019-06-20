@@ -4,8 +4,8 @@ const mongoose = require('mongoose')
 const Schema = mongoose.Schema
 
 const Block = new Schema({
-    number: { type: Number, unique: true },
-    hash: { type: String, index: true },
+    number: { type: Number, index: true },
+    hash: { type: String, unique: true },
     parentHash: { type: String, index: true },
     nonce: { type: String, index: true },
     sha3Uncles: String,
