@@ -246,7 +246,7 @@
                                                         <span class="text-secondary">From </span>
                                                         <nuxt-link
                                                             :to="{
-                                                                name: 'tokens-slug-nftHolder-holder',
+                                                                name: 'tokens-slug-trc721-holder',
                                                                 params: {slug: tokenTx.address, holder: tokenTx.from}
                                                             }"
                                                             class="hash-tag text-truncate">
@@ -254,7 +254,7 @@
                                                         <span class="text-secondary"> To </span>
                                                         <nuxt-link
                                                             :to="{
-                                                                name: 'tokens-slug-nftHolder-holder',
+                                                                name: 'tokens-slug-trc721-holder',
                                                                 params: {slug: tokenTx.address, holder: tokenTx.to}
                                                             }"
                                                             class="hash-tag text-truncate">

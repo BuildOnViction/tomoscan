@@ -54,15 +54,13 @@
             <template
                 slot="from"
                 slot-scope="props">
-                <i
-                    v-if="props.item.from_model && props.item.from_model.isContract"
-                    class="tm tm-icon-contract mr-1 mr-lg-2"/>
                 <span
-                    v-if="holder == props.item.from"
+                    v-if="holder === props.item.from"
                     class="text-truncate">{{ props.item.from }}</span>
                 <nuxt-link
                     v-else
-                    :to="{name: 'address-slug', params: {slug: props.item.from}}"
+                    :to="{name: 'tokens-slug-trc21-holder',
+                          params: {slug: props.item.address, holder: props.item.from}}"
                     class="text-truncate">{{ props.item.from }}</nuxt-link>
             </template>
 
@@ -70,7 +68,7 @@
                 slot="arrow"
                 slot-scope="props">
                 <i
-                    :class="props.item.from == holder ? 'text-danger' : 'text-success'"
+                    :class="props.item.from === holder ? 'text-danger' : 'text-success'"
                     class="tm-arrow-right"/>
             </template>
 
@@ -78,15 +76,13 @@
                 slot="to"
                 slot-scope="props">
                 <div>
-                    <i
-                        v-if="props.item.to_model && props.item.to_model.isContract"
-                        class="tm tm-icon-contract mr-1 mr-lg-2"/>
                     <span
-                        v-if="holder == props.item.to"
+                        v-if="holder === props.item.to"
                         class="text-truncate">{{ props.item.to }}</span>
                     <nuxt-link
                         v-else
-                        :to="{name: 'address-slug', params:{slug: props.item.to}}"
+                        :to="{name: 'tokens-slug-trc21-holder',
+                              params: {slug: props.item.address, holder: props.item.to}}"
                         class="text-truncate">{{ props.item.to }}</nuxt-link>
                 </div>
             </template>
@@ -189,11 +185,8 @@ export default {
             if (self.token) {
                 params.token = self.token
             }
-            if (self.address) {
-                params.address = self.address
-            }
             if (self.holder) {
-                params.address = self.holder
+                params.holder = self.holder
             }
 
             let query = this.serializeQuery(params)

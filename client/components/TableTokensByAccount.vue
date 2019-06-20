@@ -36,7 +36,7 @@
                 <nuxt-link
                     v-if="token_type === 'trc721'"
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
-                    :to="{name: 'tokens-slug-nftHolder-holder', params: {slug: props.item.token, holder: holder}}">
+                    :to="{name: 'tokens-slug-trc721-holder', params: {slug: props.item.token, holder: holder}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
             </template>
 

@@ -164,18 +164,6 @@
                     :parent="'#internalTransactions'"
                     :page="this"/>
             </b-tab>
-            <!--:title="'Token Transactions (' + formatNumber(tokenTxsCount) + ')'"-->
-            <b-tab
-                v-if="!address.isContract"
-                id="tokenTransactions"
-                title="Token Transactions"
-                href="#tokenTransactions">
-                <table-token-tx
-                    :holder="hash"
-                    :tx_total="tokenTxsCount"
-                    :parent="'#tokenTransactions'"
-                    :page="this"/>
-            </b-tab>
             <!--:title="'Created Blocks (' + formatNumber(blocksCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
