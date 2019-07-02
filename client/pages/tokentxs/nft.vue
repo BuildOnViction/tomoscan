@@ -13,7 +13,7 @@ export default {
     },
     head () {
         return {
-            title: 'Token (TRC721) Transfers'
+            title: 'Token TRC721 Transfers'
         }
     },
     async mounted () {

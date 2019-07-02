@@ -101,11 +101,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Internal transaction'
-        }
-    },
     props: {
         address: {
             type: String,
