@@ -369,12 +369,14 @@ TxController.get('/txs/internal/:address', [
     address = address ? address.toLowerCase() : address
     try {
         let params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
+        let bln = {}
         if (req.query.fromBlock) {
-            params.query = Object.assign({}, params.query, { block: { $gte: req.query.fromBlock } })
+            bln = Object.assign({}, bln, { $gte: req.query.fromBlock })
         }
         if (req.query.toBlock) {
-            params.query = Object.assign({}, params.query, { block: { $lte: req.query.toBlock } })
+            bln = Object.assign({}, bln, { $lte: req.query.toBlock })
         }
+        params.query = Object.assign({}, params.query, { blockNumber: bln })
         let data = await utils.paginate(req, 'InternalTx', params)
         return res.json(data)
     } catch (e) {
