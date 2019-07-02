@@ -153,11 +153,10 @@ let TransactionHelper = {
                 for (let i = 0; i < logs.length; i++) {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
-                    // Save log into db.
-                    await db.Log.updateOne({ id: log.id }, log,
-                        { upsert: true, new: true })
                     logCount.push({ hash: log.address.toLowerCase(), countType: 'log' })
                 }
+                await db.Log.deleteMany({ transactionHash: receipt.hash })
+                await db.Log.insertMany(logs)
                 if (logCount.length > 0) {
                     q.create('CountProcess', { data: JSON.stringify(logCount) })
                         .priority('low').removeOnComplete(true)
