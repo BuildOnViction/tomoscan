@@ -27,13 +27,12 @@
 
         </table-base>
 
-        <b-pagination-nav
+        <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
             :number-of-pages="pages"
-            :link-gen="linkGen"
             :limit="7"
             align="center"
             class="tomo-pagination"
@@ -82,26 +81,17 @@ export default {
         perPage: 20,
         pages: 1
     }),
-    watch: {
-        $route (to, from) {
-            const page = this.$route.query.page
-            this.onChangePaginate(page)
-        }
-    },
     async mounted () {
         this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
             let self = this
-
-            self.currentPage = parseInt(this.$route.query.page)
-
             // Show loading.
             self.loading = true
 
             let params = {
-                page: self.currentPage || 1,
+                page: self.currentPage,
                 limit: self.perPage
             }
 
@@ -110,7 +100,6 @@ export default {
             console.log('data', data)
             self.items = data.items
             self.total = data.total
-            self.currentPage = data.currentPage
             self.pages = data.pages
             self.perPage = data.perPage
 
@@ -120,18 +109,8 @@ export default {
             // return data
         },
         onChangePaginate (page) {
-            let self = this
-            self.currentPage = page
-
-            self.getDataFromApi()
-        },
-        linkGen (pageNum) {
-            return {
-                query: {
-                    page: pageNum
-                },
-                hash: this.parent
-            }
+            this.currentPage = page
+            this.getDataFromApi()
         }
     }
 }

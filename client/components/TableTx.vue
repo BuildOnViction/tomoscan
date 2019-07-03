@@ -119,13 +119,11 @@
                     {{ formatUnit(toTomo(props.item.gasPrice * props.item.gasUsed, 8)) }}</span></template>
         </table-base>
 
-        <b-pagination-nav
+        <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
-            :number-of-pages="pages"
             :per-page="perPage"
-            :link-gen="linkGen"
             :limit="7"
             align="center"
             class="tomo-pagination"
@@ -220,12 +218,6 @@ export default {
         pages: 1,
         blockNumber: null
     }),
-    watch: {
-        $route (to, from) {
-            const page = this.$route.query.page
-            this.onChangePaginate(page)
-        }
-    },
     async mounted () {
         let self = this
         self.fields = self.isPending() ? self.fields_pending : self.fields_basic
@@ -248,11 +240,8 @@ export default {
 
             // Show loading.
             self.loading = true
-
-            self.currentPage = parseInt(this.$route.query.page)
-
             let params = {
-                page: self.currentPage || 1,
+                page: self.currentPage,
                 limit: self.perPage
             }
             if (self.blockNumber) {
@@ -275,7 +264,6 @@ export default {
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs' + '?' + query)
             self.total = data.total || self.tx_total || (data.items || []).length
-            self.currentPage = data.currentPage
             self.pages = data.pages || (self.total % self.perPage)
 
             if (data.items.length === 0) {
@@ -327,21 +315,11 @@ export default {
             return _items
         },
         onChangePaginate (page) {
-            let self = this
-            self.currentPage = page
-
-            self.getDataFromApi()
+            this.currentPage = page
+            this.getDataFromApi()
         },
         isPending () {
             return this.type === 'pending'
-        },
-        linkGen (pageNum) {
-            return {
-                query: {
-                    page: pageNum
-                },
-                hash: this.parent
-            }
         }
     }
 }
