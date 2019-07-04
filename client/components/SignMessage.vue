@@ -136,7 +136,6 @@ export default {
 
         self.message = data.message
         self.messId = data.id
-        console.log(data.url + data.id)
 
         self.qrCode = encodeURI('tomochain:sign?message=' + data.message + '&' +
             'submitURL=' + data.url + data.id)

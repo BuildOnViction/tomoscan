@@ -97,7 +97,6 @@ export default {
 
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get(`/api/tokens/${self.token}/nftHolder/${self.holder}?${query}`)
-            console.log('data', data)
             self.items = data.items
             self.total = data.total
             self.pages = data.pages

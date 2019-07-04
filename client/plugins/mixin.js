@@ -185,6 +185,14 @@ const mixin = {
                 }
             })
         },
+        refreshInputTxCodeMirror () {
+            this.$nextTick(() => {
+                if (this.$refs['readSourceCode']) {
+                    let readSourceCode = this.$refs['readSourceCode']
+                    readSourceCode.refresh()
+                }
+            })
+        },
         async filterAddress (filter, tokenType) {
             if (filter) {
                 let search = filter.trim()

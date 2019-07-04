@@ -304,11 +304,13 @@
                                                 <span class="text-danger">
                                                     <no-ssr placeholder="Codemirror Loading...">
                                                         <codemirror
-                                                            :value="inputData"
+                                                            ref="readSourceCode"
+                                                            v-model="inputData"
                                                             :options="{
                                                                 mode:'application/ld+json',
                                                                 gutters:[],
-                                                                lineNumbers:false,styleActiveLine:false}" />
+                                                                lineNumbers:false,styleActiveLine:false}"
+                                                            @ready="refreshInputTxCodeMirror"/>
                                                     </no-ssr>
                                                 </span>
                                             </td>
