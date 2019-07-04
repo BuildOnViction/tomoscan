@@ -95,13 +95,12 @@
 
         </table-base>
 
-        <b-pagination-nav
+        <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
             :number-of-pages="pages"
-            :link-gen="linkGen"
             :limit="7"
             align="center"
             class="tomo-pagination"
@@ -152,12 +151,6 @@ export default {
         pages: 1,
         address: null
     }),
-    watch: {
-        $route (to, from) {
-            const page = this.$route.query.page
-            this.onChangePaginate(page)
-        }
-    },
     async mounted () {
         let self = this
         // Init from router.
@@ -176,10 +169,8 @@ export default {
             // Show loading.
             self.loading = true
 
-            self.currentPage = parseInt(this.$route.query.page)
-
             let params = {
-                page: self.currentPage || 1,
+                page: self.currentPage,
                 limit: self.perPage
             }
 
@@ -194,7 +185,6 @@ export default {
             let { data } = await this.$axios.get('/api/token-txs/trc721' + '?' + query)
             self.items = data.items
             self.total = data.total
-            self.currentPage = data.currentPage
             self.pages = data.pages
 
             if (self.page) {
@@ -227,18 +217,8 @@ export default {
             return _items
         },
         onChangePaginate (page) {
-            let self = this
-            self.currentPage = page
-
-            self.getDataFromApi()
-        },
-        linkGen (pageNum) {
-            return {
-                query: {
-                    page: pageNum
-                },
-                hash: this.parent
-            }
+            this.currentPage = page
+            this.getDataFromApi()
         }
     }
 }

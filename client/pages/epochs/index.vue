@@ -126,7 +126,7 @@ export default {
             let { data } = await this.$axios.get('/api/epochs' + '?' + query)
             self.items = data.items
             self.total = data.total
-            self.lastBlock = data.items[0].number
+            self.lastBlock = data.lastBlock
             self.currentPage = data.currentPage
             self.pages = data.pages
 
