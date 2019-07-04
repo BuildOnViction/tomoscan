@@ -5,7 +5,7 @@ const TokenHelper = require('../helpers/token')
 const Web3Util = require('../helpers/web3')
 // const _ = require('lodash')
 const logger = require('../helpers/logger')
-const { check, validationResult } = require('express-validator/check')
+const { check, validationResult, query } = require('express-validator/check')
 
 const TokenController = Router()
 
@@ -37,6 +37,40 @@ TokenController.get('/tokens', [
     } catch (e) {
         logger.warn('Get list tokens error %s', e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+TokenController.get('/tokens/search', [
+    query('query').isAlphanumeric().withMessage('query must be alpha numeric'),
+    query('limit').isInt({ min: 0, max: 50 }).withMessage('limit must be number and less than 200 items per page'),
+    query('page').isInt({ min: 0 }).withMessage('page must be number'),
+    query('type').isAlphanumeric().withMessage('type must be alpha numeric')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        const query = req.query.query || ''
+        const type = req.query.type || ''
+        let limit = (req.query.limit) ? parseInt(req.query.limit) : 200
+        let skip
+        skip = (req.query.page) ? limit * (req.query.page - 1) : 0
+        const total = db.Token.count({
+            name: { $regex: query, $options: 'i' },
+            type: type
+        })
+        const data = await db.Token.find({
+            name: { $regex: query, $options: 'i' },
+            type: type
+        }).limit(limit).skip(skip).lean().exec()
+
+        return res.json({
+            total: await total,
+            items: data
+        })
+    } catch (e) {
+        logger.warn('Search tokens error %s', e)
+        return res.status(400).json({ errors: { message: 'Something error!' } })
     }
 })
 
