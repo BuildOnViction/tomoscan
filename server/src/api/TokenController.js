@@ -39,6 +39,29 @@ TokenController.get('/tokens', [
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
+TokenController.get('/tokens/search', [
+], async (req, res) => {
+    try {
+        const query = req.query.q || ''
+        const type = req.query.t || ''
+        const total = db.Token.count({
+            name: { $regex: query, $options: 'i' },
+            type: type
+        })
+        const data = await db.Token.find({
+            name: { $regex: query, $options: 'i' },
+            type: type
+        })
+
+        return res.json({
+            total: await total,
+            items: data
+        })
+    } catch (e) {
+        logger.warn('Search tokens error %s', e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
 
 TokenController.get('/tokens/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
