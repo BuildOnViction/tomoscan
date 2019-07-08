@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const db = require('../models')
 const TransactionHelper = require('../helpers/transaction')
+const { paginate } = require('../helpers/utils')
 const Web3Util = require('../helpers/web3')
 const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
@@ -248,6 +249,57 @@ TxController.get('/txs', [
         logger.warn('cannot get list tx with query %s. Error', JSON.stringify(params.query), e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
+})
+
+TxController.get('/txs/listByAccount/:address', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let address = req.params.address
+    address = address ? address.toLowerCase() : address
+    let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+    let txType = req.query.tx_type
+
+    if (page === 1) {
+        let cache = await redisHelper.get(`txs-${txType}-${address}`)
+        if (cache !== null) {
+            let r = JSON.parse(cache)
+            logger.info('load %s txs of address %s from cache', txType, address)
+            return res.json(r)
+        }
+    }
+
+    let account = await db.Account.findOne({ hash: address })
+    let total = null
+
+    let params = { sort: { blockNumber: -1 } }
+    if (txType === 'in') {
+        params.query = { to: address }
+        if (account) {
+            total = account.inTxCount
+        }
+    } else if (txType === 'out') {
+        params.query = { from: address }
+        if (account) {
+            total = account.outTxCount
+        }
+    } else {
+        params.query = { $or: [{ from: address }, { to: address }] }
+        if (account) {
+            total = account.totalTxCount
+        }
+    }
+    let data = await paginate(req, 'Tx', params, total)
+    if (page === 1 && address && data.items.length > 0) {
+        redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
+    }
+    return res.json(data)
 })
 
 TxController.get(['/txs/:slug', '/tx/:slug'], [
