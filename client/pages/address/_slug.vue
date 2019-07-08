@@ -385,7 +385,6 @@ export default {
             const allTabs = this.$refs.allTabs
             const location = window.location
             const value = this.tabIndex
-            console.log(value)
             if (allTabs) {
                 // if (location.hash !== allTabs.tabs[value].href) {
                 //     this.$router.replace({
