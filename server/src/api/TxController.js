@@ -302,6 +302,50 @@ TxController.get('/txs/listByAccount/:address', [
     return res.json(data)
 })
 
+TxController.get('/txs/listByBlock/:blockNumber', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('blockNumber').exists().isInt().withMessage('Require blockNumber is number.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let blockNumber = req.params.blockNumber
+
+    let block = await db.Block.findOne({ number: blockNumber })
+    let isGetOnChain = false
+    if (block) {
+        let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
+        if (countTx < block.e_tx) {
+            isGetOnChain = true
+        }
+    } else {
+        isGetOnChain = true
+    }
+    let params = { sort: { blockNumber: -1 }, query: { blockNumber: blockNumber } }
+
+    let data
+    if (!isGetOnChain) {
+        data = await paginate(req, 'Tx', params, block.e_tx)
+    } else {
+        let startGet = new Date()
+        const web3 = await Web3Util.getWeb3()
+        const _block = await web3.eth.getBlock(blockNumber, true)
+        let endGet = new Date()
+        logger.info('Get block %s on chain in %s ms', blockNumber, endGet - startGet)
+        data = {
+            total: _block.transactions.length,
+            perPage: _block.transactions.length,
+            currentPage: 1,
+            pages: 1,
+            items: _block.transactions
+        }
+    }
+
+    return res.json(data)
+})
+
 TxController.get(['/txs/:slug', '/tx/:slug'], [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
 ], async (req, res) => {
