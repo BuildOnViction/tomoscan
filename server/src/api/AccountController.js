@@ -90,8 +90,14 @@ AccountController.get('/accounts/:slug/listTokens', [
             const tokenDetail = await db.Token.findOne({
                 hash: t.hash
             })
+            const holders = await db.TokenTrc21Holder.count({
+                token: t.hash
+            })
             if (tokenDetail) {
                 Object.assign(t, tokenDetail._doc)
+            }
+            if (holders) {
+                t.holders = holders
             }
             return t
         }))
