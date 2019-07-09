@@ -281,6 +281,18 @@ TxController.get('/txs/listByType/:type', [
         params.query = Object.assign({}, params.query, { isPending: false })
     }
     let data = await paginate(req, 'Tx', params, total)
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+        }
+    }
 
     return res.json(data)
 })
@@ -330,6 +342,18 @@ TxController.get('/txs/listByAccount/:address', [
         }
     }
     let data = await paginate(req, 'Tx', params, total)
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+        }
+    }
     if (page === 1 && address && data.items.length > 0) {
         redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
     }
@@ -405,6 +429,18 @@ TxController.get('/txs/listByBlock/:blockNumber', [
                     }
                 }
             }
+        }
+    }
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
     }
 
