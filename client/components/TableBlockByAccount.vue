@@ -50,7 +50,6 @@
             v-model="currentPage"
             :total-rows="total"
             :per-page="perPage"
-            :number-of-pages="pages"
             :limit="7"
             align="center"
             class="tomo-pagination"
@@ -68,7 +67,7 @@ export default {
     },
     mixins: [mixin],
     props: {
-        token: {
+        address: {
             type: String,
             default: ''
         },
@@ -94,7 +93,7 @@ export default {
         pagination: {},
         total: 0,
         items: [],
-        currentPage: 0,
+        currentPage: 1,
         perPage: 20,
         pages: 1
     }),
@@ -113,7 +112,7 @@ export default {
                 limit: self.perPage
             }
 
-            let hash = this.$route.params.slug
+            let hash = self.address
 
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/accounts/' + hash + '/mined?' + query)

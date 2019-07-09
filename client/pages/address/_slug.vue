@@ -170,7 +170,8 @@
                 id="minedBlocks"
                 title="Created Blocks"
                 href="#minedBlocks">
-                <table-tx-by-account
+                <table-block-by-account
+                    :address="hash"
                     :page="this"
                     :parent="'minedBlocks'"/>
             </b-tab>
@@ -259,7 +260,7 @@ import TableTx from '~/components/TableTx'
 import TableInternalTx from '~/components/TableInternalTx'
 import TableTokenTx from '~/components/TableTokenTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
-import TableTxByAccount from '~/components/TableTxByAccount'
+import TableBlockByAccount from '~/components/TableBlockByAccount'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
@@ -274,7 +275,7 @@ export default {
         TableInternalTx,
         TableTokenTx,
         TableTokensByAccount,
-        TableTxByAccount,
+        TableBlockByAccount,
         TableEvent,
         ReadMore,
         VueQrcode,
