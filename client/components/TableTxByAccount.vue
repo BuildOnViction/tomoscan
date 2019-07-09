@@ -184,7 +184,6 @@ export default {
             txFee: { label: 'TxFee' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

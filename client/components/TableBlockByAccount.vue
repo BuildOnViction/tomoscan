@@ -90,7 +90,6 @@ export default {
             gasUsed: { label: 'Gas Used' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

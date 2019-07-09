@@ -126,7 +126,6 @@ export default {
             value: { label: 'Value', cssClass: 'pr-lg-4' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

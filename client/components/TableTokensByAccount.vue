@@ -102,7 +102,6 @@ export default {
             quantity: { label: self.token_type === 'trc721' ? 'Token ID' : 'Quantity' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

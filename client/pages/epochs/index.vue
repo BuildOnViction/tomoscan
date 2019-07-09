@@ -86,7 +86,6 @@ export default {
             slashedNode: { label: 'SlashedNode' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         lastBlock: 0,
         items: [],

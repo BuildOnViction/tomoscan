@@ -251,6 +251,41 @@ TxController.get('/txs', [
     }
 })
 
+TxController.get('/txs/listByType/:type', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('type').exists().isString().withMessage('type is require.'),
+    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let type = req.params.type
+    let total = null
+    let params = { sort: { blockNumber: -1 } }
+    let specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
+    if (type === 'signTxs') {
+        total = specialAccount ? specialAccount.sign : 0
+        params.query = { to: contractAddress.BlockSigner, isPending: false }
+    } else if (type === 'otherTxs') {
+        total = specialAccount ? specialAccount.other : 0
+        params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+            isPending: false }
+    } else if (type === 'pending') {
+        total = specialAccount ? specialAccount.pending : 0
+        params.query = { isPending: true }
+        params.sort = { createdAt: -1 }
+        delete params.sort.blockNumber
+    } else {
+        total = specialAccount ? specialAccount.total : 0
+        params.query = Object.assign({}, params.query, { isPending: false })
+    }
+    let data = await paginate(req, 'Tx', params, total)
+
+    return res.json(data)
+})
+
 TxController.get('/txs/listByAccount/:address', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),

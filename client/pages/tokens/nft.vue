@@ -77,7 +77,6 @@ export default {
             totalSupply: { label: 'Total Supply' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

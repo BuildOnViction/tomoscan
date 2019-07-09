@@ -219,7 +219,6 @@ export default {
                 action: { label: 'Action' }
             },
             loading: true,
-            pagination: {},
             total: 0,
             items: [],
             currentPage: 1,
