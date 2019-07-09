@@ -200,6 +200,90 @@ paths:
           description: Bad Request
         500:
           description: Server Internal Error
+  /api/txs/listByType/{type}:
+    get:
+      tags:
+        - Transactions
+      summary: Get list txs by type.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 100
+          type: number
+        - name: type
+          in: path
+          required: true
+          description: signTxs|otherTxs|pending|all
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/listByBlock/{blockNumber}:
+    get:
+      tags:
+        - Transactions
+      summary: Get list txs by block number.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 100
+          type: number
+        - name: blockNumber
+          in: path
+          required: true
+          description: block number
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/listByAccount/{address}:
+    get:
+      tags:
+        - Transactions
+      summary: Get list txs by account address.
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 100
+          type: number
+        - name: address
+          in: path
+          required: true
+          description: account address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
   /api/txs/{hash}:
     get:
       tags:

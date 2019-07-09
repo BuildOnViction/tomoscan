@@ -78,7 +78,6 @@ export default {
             balance: { label: 'Balance' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

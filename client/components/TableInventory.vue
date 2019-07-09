@@ -74,7 +74,6 @@ export default {
             tokenId: { label: 'Token ID' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

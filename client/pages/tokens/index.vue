@@ -81,7 +81,6 @@ export default {
             decimals: { label: 'Decimals' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,
