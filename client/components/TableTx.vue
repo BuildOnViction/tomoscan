@@ -198,8 +198,10 @@ export default {
             let txType
             if (this.$route.name === 'txs-signTxs') {
                 txType = 'signTxs'
-            } else if (this.$route.name === 'txs-otherTxs') {
-                txType = 'otherTxs'
+            } else if (this.$route.name === 'txs-normalTxs') {
+                txType = 'normalTxs'
+            } else if (this.$route.name === 'txs-pending') {
+                txType = 'pending'
             } else {
                 txType = 'all'
             }

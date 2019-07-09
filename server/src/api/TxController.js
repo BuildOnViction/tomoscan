@@ -255,7 +255,6 @@ TxController.get('/txs/listByType/:type', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('type').exists().isString().withMessage('type is require.'),
-    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -268,7 +267,7 @@ TxController.get('/txs/listByType/:type', [
     if (type === 'signTxs') {
         total = specialAccount ? specialAccount.sign : 0
         params.query = { to: contractAddress.BlockSigner, isPending: false }
-    } else if (type === 'otherTxs') {
+    } else if (type === 'normalTxs') {
         total = specialAccount ? specialAccount.other : 0
         params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
             isPending: false }
