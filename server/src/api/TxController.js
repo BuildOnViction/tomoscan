@@ -341,6 +341,37 @@ TxController.get('/txs/listByBlock/:blockNumber', [
             pages: 1,
             items: _block.transactions
         }
+
+        let status = []
+        for (let i = 0; i < data.items.length; i++) {
+            if (!data.items[i].hasOwnProperty('status')) {
+                status.push({ hash: data.items[i].hash })
+            }
+        }
+        if (status.length > 0) {
+            let map = status.map(async function (s) {
+                let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
+                if (receipt) {
+                    let status
+                    if (typeof receipt.status === 'boolean') {
+                        status = receipt.status
+                    } else {
+                        status = web3.utils.hexToNumber(receipt.status)
+                    }
+                    s.status = status
+                } else {
+                    s.status = null
+                }
+            })
+            await Promise.all(map)
+            for (let i = 0; i < status.length; i++) {
+                for (let j = 0; j < data.items.length; j++) {
+                    if (status[i].hash === data.items[j].hash) {
+                        data.items[j].status = status[i].status
+                    }
+                }
+            }
+        }
     }
 
     return res.json(data)

@@ -206,9 +206,9 @@
             <b-tab
                 title="Transactions"
                 href="#transactions">
-                <table-tx
+                <table-tx-by-block
                     v-if="hashTab === '#transactions'"
-                    :block="block.number.toString()"
+                    :block="block.number"
                     :block_timestamp="block.timestamp"
                     :parent="'transactions'"
                     :page="this"/>
@@ -320,13 +320,13 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableTx from '~/components/TableTx'
+import TableTxByBlock from '~/components/TableTxByBlock'
 import ReadMore from '~/components/ReadMore'
 import BlockSigner from '~/components/BlockSigner'
 
 export default {
     components: {
-        TableTx,
+        TableTxByBlock,
         ReadMore,
         BlockSigner
     },
