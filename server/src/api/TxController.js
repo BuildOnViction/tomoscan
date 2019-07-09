@@ -254,7 +254,7 @@ TxController.get('/txs', [
 TxController.get('/txs/listByType/:type', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
-    check('type').exists().isString().withMessage('type is require.'),
+    check('type').exists().isString().withMessage('type is require.')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
