@@ -25,7 +25,7 @@
     "dotenv": "^5.0.1",
     "fstream": "^1.0.12",
     "js-cookie": "^2.2.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.14",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
     "node-gyp": "^4.0.0",
@@ -52,6 +52,9 @@
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.5.0",
     "js-yaml": "^3.13.1",
+    "lodash.mergewith": "^4.6.2",
+    "lodash.template": "^4.5.0",
+    "mem": "^5.1.1",
     "node-sass": "^4.8.3",
     "sass-loader": "^7.0.1"
   },
