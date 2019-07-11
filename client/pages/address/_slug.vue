@@ -134,10 +134,9 @@
                 id="inTransactions"
                 title="In Transactions"
                 href="#inTransactions">
-                <table-tx
+                <table-tx-by-account
                     :address="hash"
-                    :tx_total="inTxsCount"
-                    :tx_account="'in'"
+                    :type="'in'"
                     :parent="'#inTransactions'"
                     :page="this"/>
             </b-tab>
@@ -147,10 +146,9 @@
                 id="outTransactions"
                 title="Out Transactions"
                 href="#outTransactions">
-                <table-tx
+                <table-tx-by-account
                     :address="hash"
-                    :tx_total="outTxsCount"
-                    :tx_account="'out'"
+                    :type="'out'"
                     :parent="'#outTransactions'"
                     :page="this"/>
             </b-tab>
@@ -170,7 +168,8 @@
                 id="minedBlocks"
                 title="Created Blocks"
                 href="#minedBlocks">
-                <table-tx-by-account
+                <table-block-by-account
+                    :address="hash"
                     :page="this"
                     :parent="'minedBlocks'"/>
             </b-tab>
@@ -256,10 +255,11 @@
 <script>
 import mixin from '~/plugins/mixin'
 import TableTx from '~/components/TableTx'
+import TableTxByAccount from '~/components/TableTxByAccount'
 import TableInternalTx from '~/components/TableInternalTx'
 import TableTokenTx from '~/components/TableTokenTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
-import TableTxByAccount from '~/components/TableTxByAccount'
+import TableBlockByAccount from '~/components/TableBlockByAccount'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
@@ -271,10 +271,11 @@ export default {
     components: {
         ReadSourceCode,
         TableTx,
+        TableTxByAccount,
         TableInternalTx,
         TableTokenTx,
         TableTokensByAccount,
-        TableTxByAccount,
+        TableBlockByAccount,
         TableEvent,
         ReadMore,
         VueQrcode,

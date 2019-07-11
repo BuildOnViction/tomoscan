@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const db = require('../models')
 const TransactionHelper = require('../helpers/transaction')
+const { paginate } = require('../helpers/utils')
 const Web3Util = require('../helpers/web3')
 const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
@@ -248,6 +249,202 @@ TxController.get('/txs', [
         logger.warn('cannot get list tx with query %s. Error', JSON.stringify(params.query), e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
+})
+
+TxController.get('/txs/listByType/:type', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('type').exists().isString().withMessage('type is require.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let type = req.params.type
+    let total = null
+    let params = { sort: { blockNumber: -1 } }
+    let specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
+    if (type === 'signTxs') {
+        total = specialAccount ? specialAccount.sign : 0
+        params.query = { to: contractAddress.BlockSigner, isPending: false }
+    } else if (type === 'normalTxs') {
+        total = specialAccount ? specialAccount.other : 0
+        params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+            isPending: false }
+    } else if (type === 'pending') {
+        total = specialAccount ? specialAccount.pending : 0
+        params.query = { isPending: true }
+        params.sort = { createdAt: -1 }
+        delete params.sort.blockNumber
+    } else {
+        total = specialAccount ? specialAccount.total : 0
+        params.query = Object.assign({}, params.query, { isPending: false })
+    }
+    let data = await paginate(req, 'Tx', params, total)
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+        }
+    }
+
+    return res.json(data)
+})
+
+TxController.get('/txs/listByAccount/:address', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let address = req.params.address
+    address = address ? address.toLowerCase() : address
+    let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+    let txType = req.query.tx_type
+
+    if (page === 1) {
+        let cache = await redisHelper.get(`txs-${txType}-${address}`)
+        if (cache !== null) {
+            let r = JSON.parse(cache)
+            logger.info('load %s txs of address %s from cache', txType, address)
+            return res.json(r)
+        }
+    }
+
+    let account = await db.Account.findOne({ hash: address })
+    let total = null
+
+    let params = { sort: { blockNumber: -1 } }
+    if (txType === 'in') {
+        params.query = { to: address }
+        if (account) {
+            total = account.inTxCount
+        }
+    } else if (txType === 'out') {
+        params.query = { from: address }
+        if (account) {
+            total = account.outTxCount
+        }
+    } else {
+        params.query = { $or: [{ from: address }, { to: address }] }
+        if (account) {
+            total = account.totalTxCount
+        }
+    }
+    let data = await paginate(req, 'Tx', params, total)
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+        }
+    }
+    if (page === 1 && address && data.items.length > 0) {
+        redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
+    }
+    return res.json(data)
+})
+
+TxController.get('/txs/listByBlock/:blockNumber', [
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number'),
+    check('blockNumber').exists().isInt().withMessage('Require blockNumber is number.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let blockNumber = req.params.blockNumber
+
+    let block = await db.Block.findOne({ number: blockNumber })
+    let isGetOnChain = false
+    if (block) {
+        let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
+        if (countTx < block.e_tx) {
+            isGetOnChain = true
+        }
+    } else {
+        isGetOnChain = true
+    }
+    let params = { sort: { blockNumber: -1 }, query: { blockNumber: blockNumber } }
+
+    let data
+    if (!isGetOnChain) {
+        data = await paginate(req, 'Tx', params, block.e_tx)
+    } else {
+        let startGet = new Date()
+        const web3 = await Web3Util.getWeb3()
+        const _block = await web3.eth.getBlock(blockNumber, true)
+        let endGet = new Date()
+        logger.info('Get block %s on chain in %s ms', blockNumber, endGet - startGet)
+        data = {
+            total: _block.transactions.length,
+            perPage: _block.transactions.length,
+            currentPage: 1,
+            pages: 1,
+            items: _block.transactions
+        }
+
+        let status = []
+        for (let i = 0; i < data.items.length; i++) {
+            if (!data.items[i].hasOwnProperty('status')) {
+                status.push({ hash: data.items[i].hash })
+            }
+        }
+        if (status.length > 0) {
+            let map = status.map(async function (s) {
+                let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
+                if (receipt) {
+                    let status
+                    if (typeof receipt.status === 'boolean') {
+                        status = receipt.status
+                    } else {
+                        status = web3.utils.hexToNumber(receipt.status)
+                    }
+                    s.status = status
+                } else {
+                    s.status = null
+                }
+            })
+            await Promise.all(map)
+            for (let i = 0; i < status.length; i++) {
+                for (let j = 0; j < data.items.length; j++) {
+                    if (status[i].hash === data.items[j].hash) {
+                        data.items[j].status = status[i].status
+                    }
+                }
+            }
+        }
+    }
+    for (let i = 0; i < data.items.length; i++) {
+        if (data.items[i].from_model) {
+            data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+        } else {
+            data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+        }
+        if (data.items[i].to_model) {
+            data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+        } else {
+            data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+        }
+    }
+
+    return res.json(data)
 })
 
 TxController.get(['/txs/:slug', '/tx/:slug'], [

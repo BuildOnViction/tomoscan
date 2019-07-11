@@ -121,7 +121,6 @@ export default {
             timestamp: { label: 'Age' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

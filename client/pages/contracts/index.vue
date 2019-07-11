@@ -76,7 +76,6 @@ export default {
                 createdAt: { label: 'Date Verified' }
             },
             loading: true,
-            pagination: {},
             total: 0,
             items: [],
             currentPage: 1,

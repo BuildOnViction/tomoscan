@@ -200,7 +200,6 @@ export default {
             logs: { label: 'Event Logs' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

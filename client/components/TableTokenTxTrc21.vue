@@ -142,7 +142,6 @@ export default {
             value: { label: 'Value' }
         },
         loading: true,
-        pagination: {},
         total: 0,
         items: [],
         currentPage: 1,

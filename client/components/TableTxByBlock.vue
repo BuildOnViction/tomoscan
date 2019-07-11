@@ -27,7 +27,7 @@
                     :to="{name: 'txs-slug', params: {slug: props.item.hash}}"
                     class="text-truncate">
                     <i
-                        v-if="type !== 'pending' && !props.item.status"
+                        v-if="!props.item.status"
                         class="fa fa-exclamation mr-1 text-danger tx-failed"/>
                     {{ props.item.hash }}</nuxt-link>
             </template>
@@ -63,12 +63,7 @@
                 <i
                     v-if="props.item.from_model && props.item.from_model.isContract"
                     class="tm tm-icon-contract mr-1 mr-lg-2" />
-                <span
-                    v-if="address == props.item.from"
-                    class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
-                    props.item.from_model.accountName : props.item.from }}</span>
                 <nuxt-link
-                    v-else
                     :to="{name: 'address-slug', params: {slug: props.item.from}}"
                     class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
                     props.item.from_model.accountName : props.item.from }}</nuxt-link>
@@ -77,9 +72,7 @@
             <template
                 slot="arrow"
                 slot-scope="props">
-                <i
-                    :class="props.item.from == address ? 'text-danger' : 'text-success'"
-                    class="tm-arrow-right"/>
+                <i class="tm-arrow-right text-success"/>
             </template>
 
             <template
@@ -89,12 +82,7 @@
                     <i
                         v-if="props.item.to_model && props.item.to_model.isContract"
                         class="tm tm-icon-contract mr-1 mr-lg-2" />
-                    <span
-                        v-if="address == props.item.to"
-                        class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
-                        props.item.to_model.accountName : props.item.to }}</span>
                     <nuxt-link
-                        v-else
                         :to="{name: 'address-slug', params:{slug: props.item.to}}"
                         class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
                         props.item.to_model.accountName : props.item.to }}</nuxt-link>
@@ -142,30 +130,24 @@ export default {
     },
     mixins: [mixin],
     head () {
-        if (this.block) {
-            return {
-                title: 'Block ' + this.$route.params.slug + ' Info'
-            }
-        } else {
-            return {
-                title: this.isPending() ? 'Transactions Pending' : 'Transactions'
-            }
+        return {
+            title: 'Block ' + this.$route.params.slug + ' Info'
         }
     },
     props: {
-        address: {
-            type: String,
-            default: ''
-        },
-        type: {
-            type: String,
-            default: ''
+        block: {
+            type: Number,
+            default: 0
         },
         page: {
             type: Object,
             default: () => {
                 return {}
             }
+        },
+        block_timestamp: {
+            type: String,
+            default: ''
         },
         parent: {
             type: String,
@@ -192,7 +174,11 @@ export default {
         blockNumber: null
     }),
     async mounted () {
-        this.getDataFromApi()
+        let self = this
+
+        self.blockNumber = self.block
+
+        self.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
@@ -204,10 +190,8 @@ export default {
                 page: self.currentPage,
                 limit: self.perPage
             }
-
-            params.tx_type = self.type
             let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/txs/listByAccount/' + self.address + '?' + query)
+            let { data } = await this.$axios.get('/api/txs/listByBlock/' + self.block + '?' + query)
             self.total = data.total || self.tx_total || (data.items || []).length
             self.pages = data.pages || (self.total % self.perPage)
 
@@ -262,9 +246,6 @@ export default {
         onChangePaginate (page) {
             this.currentPage = page
             this.getDataFromApi()
-        },
-        isPending () {
-            return this.type === 'pending'
         }
     }
 }
