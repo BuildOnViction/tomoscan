@@ -42,7 +42,9 @@
                             <td>TOMO USD Value</td>
                             <td>
                                 <span>{{ formatNumber(usdPrice * toTomoNumber(address.balance)) }} (price from
-                                <a href="https://www.coingecko.com/en/coins/tomochain">CoinGecko</a>)</span>
+                                    <a
+                                        target="_blank"
+                                        href="https://www.coingecko.com/en/coins/tomochain">CoinGecko</a>)</span>
                             </td>
                         </tr>
                         <tr>
