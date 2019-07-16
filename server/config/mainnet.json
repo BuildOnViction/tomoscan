@@ -65,5 +65,11 @@
   "VOTER_REWARD_PERCENT": 50,
   "LIMITED_RECORDS": 10000,
 
-  "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET"
+  "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET",
+  "twitter": {
+    "consumer_key": "",
+    "consumer_secret": "",
+    "access_token_key": "",
+    "access_token_secret": ""
+  }
 }

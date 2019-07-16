@@ -15,5 +15,11 @@
   "CLIENT_URL": "CLIENT_URL",
 
   "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET",
-  "TOMOMASTER_API_URL": "TOMOMASTER_API_URL"
+  "TOMOMASTER_API_URL": "TOMOMASTER_API_URL",
+  "twitter": {
+    "consumer_key": "TWITTER_CONSUMER_KEY",
+    "consumer_secret": "TWITTER_CONSUMER_SECRET",
+    "access_token_key": "TWITTER_ACCESS_TOKEN_KEY",
+    "access_token_secret": "TWITTER_ACCESS_TOKEN_SECRET"
+  }
 }

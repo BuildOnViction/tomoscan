@@ -62,6 +62,7 @@
     "solc": "^0.4.25",
     "string-template": "^1.0.0",
     "swagger-ui-express": "^4.0.2",
+    "twitter": "^1.7.1",
     "url-join": "^4.0.0",
     "uuid": "^3.3.2",
     "web3": "^1.0.0-beta.46",
