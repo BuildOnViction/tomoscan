@@ -5,7 +5,7 @@ const contractAddress = require('../contracts/contractAddress')
 const db = require('../models')
 const logger = require('./logger')
 const BlockHelper = require('./block')
-const axios = require('axios')
+const request = require('request')
 const config = require('config')
 const redisHelper = require('./redis')
 
@@ -375,26 +375,38 @@ let TransactionHelper = {
         if (transaction.i_tx === itx.length) {
             return itx
         }
+
         let internalTx = []
-        let data = {
-            'jsonrpc': '2.0',
-            'method': 'debug_traceTransaction',
-            'params': [transaction.hash, { tracer: 'callTracer' }],
-            'id': 88
-        }
-        const response = await axios.post(config.get('WEB3_URI'), data)
-        let result = response.data
-        if (!result.error) {
-            let res = result.result
-            if (res.hasOwnProperty('calls')) {
-                let calls = res.calls
-                internalTx = await TransactionHelper.listInternal(
-                    calls, transaction.hash, transaction.blockNumber, transaction.timestamp)
+        try {
+            let result = await new Promise((resolve, reject) => {
+                request.post(config.get('WEB3_URI'), {
+                    json: {
+                        'jsonrpc': '2.0',
+                        'method': 'debug_traceTransaction',
+                        'params': [transaction.hash, { tracer: 'callTracer' }],
+                        'id': 88
+                    }
+                }, (error, res, body) => {
+                    if (error) {
+                        return reject
+                    }
+                    return resolve(body)
+                })
+            })
+            if (!result.error) {
+                let res = result.result
+                if (res.hasOwnProperty('calls')) {
+                    let calls = res.calls
+                    internalTx = await TransactionHelper.listInternal(
+                        calls, transaction.hash, transaction.blockNumber, transaction.timestamp)
+                }
             }
-        }
-        if (internalTx.length > 0) {
-            await db.InternalTx.deleteMany({ hash: transaction.hash })
-            await db.InternalTx.insertMany(internalTx)
+            if (internalTx.length > 0) {
+                await db.InternalTx.deleteMany({ hash: transaction.hash })
+                await db.InternalTx.insertMany(internalTx)
+            }
+        } catch (e) {
+            logger.warn('Cannot get internal tx. %s', e)
         }
         return internalTx
     },
