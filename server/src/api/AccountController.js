@@ -85,7 +85,7 @@ AccountController.get('/accounts/:slug/listTokens', [
         const tokens = await db.Account.find({
             isToken: true,
             contractCreation: creator
-        }).sort({ balanceNumber: -1 }).limit(limit).skip(skip).lean().exec()
+        }).sort({ createdAt: -1 }).limit(limit).skip(skip).lean().exec()
         const map = await Promise.all(tokens.map(async (t) => {
             const tokenDetail = await db.Token.findOne({
                 hash: t.hash
