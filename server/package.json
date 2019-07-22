@@ -10,7 +10,6 @@
     "start": "node src",
     "crawl": "node src/crawl.js",
     "producer": "node src/producer.js",
-    "subscribe-pending-tx": "node src/subscribePendingTx.js",
     "test": "eslint src"
   },
   "eslintConfig": {
