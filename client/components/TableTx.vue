@@ -131,7 +131,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+            title: 'Transactions'
         }
     },
     props: {
@@ -151,8 +151,7 @@ export default {
         }
     },
     data: () => ({
-        fields: {},
-        fields_basic: {
+        fields: {
             hash: { label: 'TxHash' },
             block: { label: 'Block' },
             timestamp: { label: 'Age' },
@@ -161,15 +160,6 @@ export default {
             to: { label: 'To' },
             value: { label: 'Value', cssClass: 'pr-lg-4' },
             txFee: { label: 'TxFee' }
-        },
-        fields_pending: {
-            hash: { label: 'TxHash' },
-            timestamp: { label: 'LastSeen' },
-            gas: { label: 'gasLimit' },
-            from: { label: 'From' },
-            arrow: { label: '' },
-            to: { label: 'To' },
-            value: { label: 'Value' }
         },
         loading: true,
         total: 0,
@@ -181,8 +171,6 @@ export default {
     }),
     async mounted () {
         let self = this
-        self.fields = self.isPending() ? self.fields_pending : self.fields_basic
-
         self.getDataFromApi()
     },
     methods: {
@@ -200,8 +188,6 @@ export default {
                 txType = 'signTxs'
             } else if (this.$route.name === 'txs-normalTxs') {
                 txType = 'normalTxs'
-            } else if (this.$route.name === 'txs-pending') {
-                txType = 'pending'
             } else {
                 txType = 'all'
             }
@@ -261,9 +247,6 @@ export default {
         onChangePaginate (page) {
             this.currentPage = page
             this.getDataFromApi()
-        },
-        isPending () {
-            return this.type === 'pending'
         }
     }
 }

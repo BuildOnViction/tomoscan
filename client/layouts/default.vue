@@ -43,7 +43,6 @@
                             <b-dropdown-item :to="{name: 'txs'}">All Transactions</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'txs-normalTxs'}">Normal Transactions</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'txs-signTxs'}">Signing Transactions</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'txs-pending'}">Pending Transactions</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item-dropdown
                             :class="(isAccounts || isContracts) ? 'active' : ''"

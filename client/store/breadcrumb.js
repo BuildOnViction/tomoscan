@@ -103,10 +103,6 @@ br.register('txs', (brs) => {
         brs.push('Transactions', { name: 'txs' })
     }
 })
-br.register('txs-pending', (brs) => {
-    brs.parent('index')
-    brs.push('Transactions Pending', { name: 'txs-pending' })
-})
 br.register('txs-slug', (brs, location) => {
     brs.parent('txs')
     brs.push('Transaction Detail', location)
