@@ -9,6 +9,7 @@
     "subscribe-pending-tx-dev": "nodemon --exec node ./src/subscribePendingTx.js",
     "start": "node src",
     "crawl": "node src/crawl.js",
+    "producer": "node src/producer.js",
     "subscribe-pending-tx": "node src/subscribePendingTx.js",
     "test": "eslint src"
   },

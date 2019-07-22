@@ -2,13 +2,10 @@ const Web3 = require('web3')
 const config = require('config')
 const logger = require('./logger')
 
-let Web3Http = null
 let Web3Socket = null
 let Web3Util = {
     getWeb3: async () => {
-        Web3Http = Web3Http || await new Web3(new Web3.providers.HttpProvider(config.get('WEB3_URI')))
-
-        return Web3Http
+        return new Web3(new Web3.providers.HttpProvider(config.get('WEB3_URI')))
     },
 
     getWeb3Socket: async () => {

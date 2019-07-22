@@ -28,7 +28,6 @@ const watch = async () => {
         let step = 100
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
-        let web3 = await Web3Util.getWeb3()
         if (!setting) {
             setting = await new db.Setting({
                 meta_key: 'min_block_crawl',
@@ -45,6 +44,7 @@ const watch = async () => {
         let minBlockCrawl = parseInt(setting.meta_value || 0)
 
         while (true) {
+            let web3 = await Web3Util.getWeb3()
             let l = await countJobs()
             if (l > 500) {
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
@@ -91,5 +91,4 @@ const watch = async () => {
     }
 }
 
-module.exports = { watch }
-// watch()
+watch()
