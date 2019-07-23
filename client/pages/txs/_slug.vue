@@ -141,7 +141,7 @@
                                                 </small>
                                             </td>
                                         </tr>
-                                        <tr v-if="tx.trc21Txs && tx.trc21Txs.length">
+                                        <tr v-if="tx.trc21FeeFund >= 0">
                                             <td>TRC21 Fee Fund</td>
                                             <td>{{ formatUnit(toTomo(tx.trc21FeeFund, 18)) }}</td>
                                         </tr>
@@ -404,7 +404,7 @@ export default {
 
         self.eventsCount = responses[1].data.events
 
-        if (self.tx.trc21Txs.length > 0 && self.tx.to_model) {
+        if (self.tx.trc21Txs && self.tx.trc21Txs.length > 0 && self.tx.to_model) {
             self.tokenFee.tokenOwner = self.tx.to_model.contractCreation
             for (let i = 0; i < self.tx.trc21Txs.length; i++) {
                 if (self.tokenFee.tokenOwner === self.tx.trc21Txs[i].to) {

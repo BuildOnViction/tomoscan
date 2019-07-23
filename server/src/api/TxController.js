@@ -486,11 +486,23 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         trc21Txs = await TokenTransactionHelper.formatTokenTransaction(trc21Txs)
         tx.trc21Txs = trc21Txs
 
-        let trc21FeeFund = 0
+        let trc21FeeFund = -1
         if (trc21Txs.length > 0) {
             let web3 = await await Web3Util.getWeb3()
             let contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
-            trc21FeeFund = await contract.methods.getTokenCapacity(tx.to).call()
+            let listToken = await contract.methods.tokens().call()
+            let isRegisterOnTomoIssuer = false
+            for (let i = 0; i < listToken.length; i++) {
+                if (listToken[i].toLowerCase() === tx.to.toLowerCase()) {
+                    isRegisterOnTomoIssuer = true
+                    break
+                }
+            }
+            if (isRegisterOnTomoIssuer) {
+                trc21FeeFund = await contract.methods.getTokenCapacity(tx.to).call()
+            } else {
+                trc21FeeFund = -1
+            }
         }
         tx.trc21FeeFund = trc21FeeFund
 
