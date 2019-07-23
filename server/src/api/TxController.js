@@ -496,6 +496,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
             let method = input.substr(0, 10)
             let stringParams = input.substr(10, input.length - 1)
             let params = []
+            let paramsType = []
             for (let i = 0; i < stringParams.length / 64; i++) {
                 params.push(stringParams.substr(i * 64, 64))
             }
@@ -520,6 +521,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
                                         } else {
                                             functionString += `, ${input.type} ${input.name}`
                                         }
+                                        paramsType.push(input.type)
                                     }
                                 }
                             })
@@ -537,7 +539,18 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
             if (tx.to !== null) {
                 inputData += 'MethodID: ' + method
                 for (let i = 0; i < params.length; i++) {
-                    inputData += `\n[${i}]: ${params[i]}`
+                    console.log('type', paramsType[i], params[i])
+                    let decodeValue = ''
+                    let uint = ['uint', 'uint8', 'uint8', 'uint16', 'uint32', 'uint64', 'uint128', 'uint256']
+                    if (uint.includes(paramsType[i])) {
+                        decodeValue = web3.utils.hexToNumberString(params[i])
+                    } else if (paramsType[i] === 'address') {
+                        decodeValue = params[i].replace('000000000000000000000000', '0x')
+                        console.log('=== address', decodeValue)
+                    } else {
+                        decodeValue = params[i]
+                    }
+                    inputData += `\n[${i}]: ${decodeValue}`
                 }
                 tx.inputData = inputData
             }
