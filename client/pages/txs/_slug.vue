@@ -404,7 +404,7 @@ export default {
 
         self.eventsCount = responses[1].data.events
 
-        if (self.tx.trc21Txs && self.tx.trc21Txs.length > 0 && self.tx.to_model) {
+        if (self.tx.trc21Txs && self.tx.trc21Txs.length > 1 && self.tx.to_model) {
             self.tokenFee.tokenOwner = self.tx.to_model.contractCreation
             for (let i = 0; i < self.tx.trc21Txs.length; i++) {
                 if (self.tokenFee.tokenOwner === self.tx.trc21Txs[i].to) {
