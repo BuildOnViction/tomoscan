@@ -141,6 +141,10 @@
                                                 </small>
                                             </td>
                                         </tr>
+                                        <tr v-if="tx.trc21Txs && tx.trc21Txs.length">
+                                            <td>TRC21 Fee Fund</td>
+                                            <td>{{ formatUnit(toTomo(tx.trc21FeeFund, 18)) }}</td>
+                                        </tr>
                                         <tr>
                                             <td>Value</td>
                                             <td>{{ formatUnit(toTomo(tx.value, 18)) }}</td>

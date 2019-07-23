@@ -11,6 +11,8 @@ const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const TomoIssuer = require('../contracts/abi/TomoIssuer')
+const config = require('config')
 
 const TxController = Router()
 
@@ -483,6 +485,14 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         let trc21Txs = await db.TokenTrc21Tx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
         trc21Txs = await TokenTransactionHelper.formatTokenTransaction(trc21Txs)
         tx.trc21Txs = trc21Txs
+
+        let trc21FeeFund = 0
+        if (trc21Txs.length > 0) {
+            let web3 = await await Web3Util.getWeb3()
+            let contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
+            trc21FeeFund = await contract.methods.getTokenCapacity(tx.to).call()
+        }
+        tx.trc21FeeFund = trc21FeeFund
 
         let trc721Txs = await db.TokenNftTx.find({ transactionHash: tx.hash }).maxTimeMS(20000)
         trc721Txs = await TokenTransactionHelper.formatTokenTransaction(trc721Txs)
