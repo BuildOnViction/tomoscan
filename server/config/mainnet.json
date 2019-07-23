@@ -11,39 +11,6 @@
     "prefix": "TomoScan"
   },
 
-  "defaultCandidate": [
-    {
-      "name": "TomoChain01",
-      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
-      "candidate": "0x1b82c4bf317fcafe3d77e8b444c82715d216afe8",
-      "cap": 50000
-    },
-    {
-      "name": "TomoChain02",
-      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
-      "candidate": "0xad670b2b166684657ffff95f4810380ae7381e9b",
-      "cap": 50000
-    },
-    {
-      "name": "TomoChain03",
-      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
-      "candidate": "0xce41231d5dd8cdd7499e418b648c00af75d184a2",
-      "cap": 50000
-    },
-    {
-      "name": "TomoChain04",
-      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
-      "candidate": "0x45b7bd987fa22c9bac89b71f0ded03f6e150ba31",
-      "cap": 50000
-    },
-    {
-      "name": "TomoChain05",
-      "owner": "0x8f2bcec5ec3924263fb5af9db81bf85234e5a354",
-      "candidate": "0xf9aba09a6fa4a46fb1a6a3919b027d9cac5aa689",
-      "cap": 50000
-    }
-  ],
-
   "WEB3_URI": "http://fullnode_tomoscan01:8545",
   "WEB3_WS_URI": "ws://fullnode_tomoscan01:8546",
   "DEBUG_QUERY": false,
@@ -71,5 +38,7 @@
     "consumer_secret": "",
     "access_token_key": "",
     "access_token_secret": ""
-  }
+  },
+
+  "TOMOISSUER": ""
 }

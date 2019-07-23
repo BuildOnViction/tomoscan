@@ -11,27 +11,6 @@
     "level": "debug"
   },
 
-  "defaultCandidate": [
-    {
-      "name": "sun",
-      "owner": "0x487d62d33467c4842c5e54eb370837e4e88bba0f",
-      "candidate": "0xfc5571921c6d3672e13b58ea23dea534f2b35fa0",
-      "cap": 50000
-    },
-    {
-      "name": "moon",
-      "owner": "0x487d62d33467c4842c5e54eb370837e4e88bba0f",
-      "candidate": "0xf99805b536609cc03acbb2604dfac11e9e54a448",
-      "cap": 50000
-    },
-    {
-      "name": "earth",
-      "owner": "0x487d62d33467c4842c5e54eb370837e4e88bba0f",
-      "candidate": "0x31b249fe6f267aa2396eb2dc36e9c79351d97ec5",
-      "cap": 50000
-    }
-  ],
-
   "WEB3_URI": "https://testnet.tomochain.com/",
   "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",
   "DEBUG_QUERY": false,
@@ -57,5 +36,7 @@
   "VOTER_REWARD_PERCENT": 50,
   "LIMITED_RECORDS": 10000,
 
-  "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET"
+  "RE_CAPTCHA_SECRET": "RE_CAPTCHA_SECRET",
+
+  "TOMOISSUER": "0x7081c72c9dc44686c7b7eab1d338ea137fa9f0d3"
 }
