@@ -17,6 +17,47 @@ module.exports = {
                 name: 'description',
                 content: 'Examining all blocks, transactions, finality, smart contracts and token information' +
                     ' with a user-friendly, details and perfection-oriented user interface.'
+            },
+            {
+                property: 'og:url',
+                content: 'https://scan.tomochain.com'
+            },
+            {
+                property: 'og:type',
+                content: 'website'
+            },
+            {
+                property: 'og:title',
+                content: 'TomoScan - TomoChain block explorer'
+            },
+            {
+                property: 'twitter:title',
+                content: 'TomoScan - TomoChain block explorer'
+            },
+            {
+                property: 'og:description',
+                content: 'Examining all blocks, transactions, finality, smart contracts and token information' +
+                  ' with a user-friendly, details and perfection-oriented user interface.'
+            },
+            {
+                property: 'og:image',
+                content: 'https://scan.tomochain.com/logoshare.png'
+            },
+            {
+                property: 'twitter:image',
+                content: 'https://scan.tomochain.com/logoshare.png'
+            },
+            {
+                property: 'og:image:height',
+                content: '256'
+            },
+            {
+                property: 'og:image:width',
+                content: '256'
+            },
+            {
+                property: 'og:image:type',
+                content: 'image/png'
             }
         ],
         link: [
