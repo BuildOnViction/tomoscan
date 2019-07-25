@@ -8,30 +8,57 @@ const BlockHelper = require('./block')
 const request = require('request')
 const config = require('config')
 const redisHelper = require('./redis')
+const BigNumber = require('bignumber.js')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
     parseLog: async (log) => {
         const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
-        if (log.topics[0] !== TOPIC_TRANSFER) {
-            return false
-        }
 
-        let address = log.address.toLowerCase()
-        // Add account and token if not exist in db.
-        let token = await db.Token.findOne({ hash: address })
-        const q = require('../queues')
-        if (!token) {
-            q.create('AccountProcess', { listHash: JSON.stringify([address]) })
-                .priority('low').removeOnComplete(true)
+        // Topic of Constant-NetworkProxy contract
+        const TopicExecuteTrade = '0x1849bd6a030a1bca28b83437fd3de96f3d27a5d172fa7e9c78e7b61468928a39'
+        if (log.topics[0] === TOPIC_TRANSFER) {
+            let address = log.address.toLowerCase()
+            // Add account and token if not exist in db.
+            let token = await db.Token.findOne({ hash: address })
+            const q = require('../queues')
+            if (!token) {
+                q.create('AccountProcess', { listHash: JSON.stringify([address]) })
+                    .priority('low').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                q.create('TokenProcess', { address: address })
+                    .priority('low').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+            q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
+                .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-            q.create('TokenProcess', { address: address })
-                .priority('low').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        } else if (log.topics[0] === TopicExecuteTrade) {
+            let data = log.data.replace('0x', '')
+            let params = []
+            for (let i = 0; i < data.length / 64; i++) {
+                params.push(data.substr(i * 64, 64))
+            }
+            let web3 = await Web3Util.getWeb3()
+            if (params.length >= 4) {
+                let tomoAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[2]))
+                tomoAmount = tomoAmount.dividedBy(10 ** 18)
+                let constantAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[3]))
+                constantAmount = constantAmount.dividedBy(10 ** 2)
+
+                let tomoRate = constantAmount.dividedBy(tomoAmount).toNumber()
+
+                let txExtraInfo = [
+                    {
+                        transactionHash: log.transactionHash,
+                        infoName: 'Swap rate',
+                        infoValue: `1 TOMO = ${tomoRate} CONST`
+                    }
+                ]
+                await db.TxExtraInfo.insertMany(txExtraInfo)
+            }
         }
-        q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
-            .priority('normal').removeOnComplete(true)
-            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        return false
     },
     crawlTransaction: async (hash, timestamp) => {
         hash = hash.toLowerCase()
