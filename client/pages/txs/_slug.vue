@@ -302,6 +302,12 @@
                                                 </span>
                                             </td>
                                         </tr>
+                                        <tr
+                                            v-for="(info, index) in tx.extraInfo"
+                                            :key="index">
+                                            <td>{{ info.infoName }}</td>
+                                            <td>{{ info.infoValue }}</td>
+                                        </tr>
                                         <tr>
                                             <td>Input Data</td>
                                             <td>

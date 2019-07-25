@@ -577,6 +577,8 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
                 tx.inputData = inputData
             }
         }
+        let extraInfo = await db.TxExtraInfo.find({ transactionHash: hash })
+        tx.extraInfo = extraInfo
 
         return res.json(tx)
     } catch (e) {
