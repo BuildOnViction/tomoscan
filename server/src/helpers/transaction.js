@@ -9,6 +9,7 @@ const request = require('request')
 const config = require('config')
 const redisHelper = require('./redis')
 const BigNumber = require('bignumber.js')
+const accountName = require('../contracts/accountName')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
@@ -95,6 +96,13 @@ let TransactionHelper = {
                         listHash.push(tx.from.toLowerCase())
                     }
                 }
+
+                let fromModel = await db.Account.findOne({ hash: tx.from })
+                tx.from_model = {
+                    accountName: accountName[tx.from] ? accountName[tx.from] : '',
+                    isContract: fromModel.isContract,
+                    contractCreation: fromModel.contractCreation
+                }
             }
             if (tx.to !== null) {
                 tx.to = tx.to.toLowerCase()
@@ -115,10 +123,16 @@ let TransactionHelper = {
                     other = 1
                 }
 
+                let toModel = await db.Account.findOne({ hash: tx.to })
+                tx.to_model = {
+                    accountName: accountName[tx.to] ? accountName[tx.to] : '',
+                    isContract: toModel.isContract,
+                    contractCreation: toModel.contractCreation
+                }
+
                 await db.SpecialAccount.updateOne(
                     { hash: 'transaction' }, { $inc: {
                         total: 1,
-                        pending: -1,
                         sign: sign,
                         other: other
                     } }, { upsert: true, new: true })
@@ -216,7 +230,6 @@ let TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
-            tx.to_model = await db.Account.findOne({ hash: tx.to })
             let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
             if (cacheOut !== null) {
                 let r1 = JSON.parse(cacheOut)
