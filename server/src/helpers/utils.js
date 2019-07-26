@@ -3,6 +3,7 @@ const mongoose = require('mongoose')
 const ethUtils = require('ethereumjs-util')
 const BlockHeader = require('ethereumjs-block/header')
 const logger = require('./logger')
+const BigNumber = require('bignumber.js')
 
 const utils = {
     paginate: async (
@@ -202,6 +203,23 @@ const utils = {
                 Math.pow(radix, parts[1].length)
         }
         return parseInt(parts[0], radix)
+    },
+    formatNumber: (number) => {
+        number = new BigNumber(number.toString())
+        let seps = number.toString().split('.')
+        seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
+        return seps.join('.')
+    },
+    hiddenString: (string, numberStringShowing) => {
+        if (string === null || string === '') {
+            return ''
+        }
+        if (string.length <= numberStringShowing * 2 + 3) {
+            return string
+        }
+        let stringBeforeDot = String(string).substr(0, numberStringShowing)
+        let stringAfterDot = String(string).substr(-numberStringShowing)
+        return stringBeforeDot + '...' + stringAfterDot
     }
 
 }
