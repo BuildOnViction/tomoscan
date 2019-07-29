@@ -98,10 +98,12 @@ let TransactionHelper = {
                 }
 
                 let fromModel = await db.Account.findOne({ hash: tx.from })
-                tx.from_model = {
-                    accountName: accountName[tx.from] ? accountName[tx.from] : '',
-                    isContract: fromModel.isContract,
-                    contractCreation: fromModel.contractCreation
+                if (fromModel) {
+                    tx.from_model = {
+                        accountName: accountName[tx.from] ? accountName[tx.from] : '',
+                        isContract: fromModel.isContract,
+                        contractCreation: fromModel.contractCreation
+                    }
                 }
             }
             if (tx.to !== null) {
@@ -124,10 +126,12 @@ let TransactionHelper = {
                 }
 
                 let toModel = await db.Account.findOne({ hash: tx.to })
-                tx.to_model = {
-                    accountName: accountName[tx.to] ? accountName[tx.to] : '',
-                    isContract: toModel.isContract,
-                    contractCreation: toModel.contractCreation
+                if (toModel) {
+                    tx.to_model = {
+                        accountName: accountName[tx.to] ? accountName[tx.to] : '',
+                        isContract: toModel.isContract,
+                        contractCreation: toModel.contractCreation
+                    }
                 }
 
                 await db.SpecialAccount.updateOne(
