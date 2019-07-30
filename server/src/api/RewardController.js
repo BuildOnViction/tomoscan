@@ -10,7 +10,7 @@ const Web3Util = require('../helpers/web3')
 const RewardController = Router()
 
 RewardController.get('/rewards/:slug', [
-    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 100 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res) => {
@@ -62,7 +62,7 @@ RewardController.get('/rewards/alerts/status', [], async (req, res) => {
 })
 
 RewardController.get('/rewards/epoch/:epochNumber', [
-    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 100 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('epochNumber').isInt().exists().withMessage('Epoch number is require')
 ], async (req, res) => {
