@@ -54,6 +54,7 @@ TxController.get('/txs', [
                 txAccount = 'all'
                 params.query = Object.assign({}, params.query, { $or: [{ from: address }, { to: address }] })
             }
+            /*
             if (page === 1) {
                 let cache = await redisHelper.get(`txs-${txAccount}-${address}`)
                 if (cache !== null) {
@@ -62,6 +63,7 @@ TxController.get('/txs', [
                     return res.json(r)
                 }
             }
+            */
         } else if (blockNumber) {
             params.query = Object.assign({}, params.query, { blockNumber: blockNumber })
             isBlock = true
@@ -314,6 +316,7 @@ TxController.get('/txs/listByAccount/:address', [
     let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
     let txType = req.query.tx_type
 
+    /*
     if (page === 1) {
         let cache = await redisHelper.get(`txs-${txType}-${address}`)
         if (cache !== null) {
@@ -322,6 +325,7 @@ TxController.get('/txs/listByAccount/:address', [
             return res.json(r)
         }
     }
+    */
 
     let account = await db.Account.findOne({ hash: address })
     let total = null
