@@ -31,9 +31,6 @@ module.exports = {
                 content: 'TomoScan - TomoChain block explorer'
             },
             {
-                property: 'twitter:title',
-                content: 'TomoScan - TomoChain block explorer'
-            },
             {
                 property: 'og:description',
                 content: 'Examining all blocks, transactions, finality, smart contracts and token information' +
@@ -41,10 +38,6 @@ module.exports = {
             },
             {
                 property: 'og:image',
-                content: 'https://scan.tomochain.com/logoshare.png'
-            },
-            {
-                property: 'twitter:image',
                 content: 'https://scan.tomochain.com/logoshare.png'
             },
             {
