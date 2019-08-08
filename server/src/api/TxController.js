@@ -305,7 +305,9 @@ TxController.get('/txs/listByAccount/:address', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
     check('page').optional().isInt().withMessage('Require page is number'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
-    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all')
+    check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all'),
+    check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage(''),
+    check('filterType').optional().isString().withMessage('')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -347,6 +349,18 @@ TxController.get('/txs/listByAccount/:address', [
             total = account.totalTxCount
         }
     }
+
+    if (req.query.filterType) {
+        let filterType = req.query.filterType
+        if (req.query.filterAddress) {
+            if (filterType === 'from') {
+                params.query = Object.assign({}, params.query, { from: req.query.filterAddress })
+            } else {
+                params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
+            }
+        }
+    }
+    console.log(params)
     let data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
