@@ -138,6 +138,31 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
+  /api/blocks/{blockNumber}/address/{address}:
+    get:
+      tags:
+        - Blocks
+      summary: Check exist transaction from/to address inside block
+      parameters:
+        - name: blockNumber
+          in: path
+          required: true
+          description: block number
+          type: number
+        - name: address
+          in: path
+          required: true
+          description: address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
   /api/blocks/signers/{blockNumber}:
     get:
       tags:
@@ -276,6 +301,11 @@ paths:
           in: path
           required: true
           description: account address
+          type: string
+        - name: filterAddress
+          in: query
+          required: false
+          description: optional
           type: string
       responses:
         200:
