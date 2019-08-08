@@ -306,8 +306,7 @@ TxController.get('/txs/listByAccount/:address', [
     check('page').optional().isInt().withMessage('Require page is number'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all'),
-    check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage('Filter address incorrect'),
-    check('filterType').optional().isString()
+    check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage('Filter address incorrect')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -350,14 +349,11 @@ TxController.get('/txs/listByAccount/:address', [
         }
     }
 
-    if (req.query.filterType) {
-        let filterType = req.query.filterType
-        if (req.query.filterAddress) {
-            if (filterType === 'from') {
-                params.query = Object.assign({}, params.query, { from: req.query.filterAddress })
-            } else {
-                params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
-            }
+    if (req.query.filterAddress) {
+        if (txType === 'in') {
+            params.query = Object.assign({}, params.query, { from: req.query.filterAddress })
+        } else if (txType === 'out') {
+            params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
         }
     }
     console.log(params)
