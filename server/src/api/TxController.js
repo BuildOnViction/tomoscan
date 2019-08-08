@@ -306,8 +306,8 @@ TxController.get('/txs/listByAccount/:address', [
     check('page').optional().isInt().withMessage('Require page is number'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all'),
-    check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage(''),
-    check('filterType').optional().isString().withMessage('')
+    check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage('Filter address incorrect'),
+    check('filterType').optional().isString()
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {

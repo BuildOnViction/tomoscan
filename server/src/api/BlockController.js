@@ -181,6 +181,28 @@ BlockController.get('/blocks/:slug', [
     }
 })
 
+BlockController.get('/blocks/:slug/address/:address', [
+    check('slug').exists().isNumeric().withMessage('Block number is not correct.'),
+    check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Address is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let blockNumber = req.params.slug
+    let address = req.params.address.toLowerCase()
+
+    let txes = await db.Tx.find({ blockNumber: blockNumber, $or: [{ from: address }, { to: address }] })
+    let exist = false
+    if (txes.length > 0) {
+        exist = true
+    }
+    return res.json({
+        exist: exist,
+        txes: txes
+    })
+})
+
 BlockController.get('/blocks/signers/:slug', [
     check('slug').exists().withMessage('Block is require.')
 ], async (req, res) => {
