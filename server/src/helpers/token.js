@@ -115,6 +115,14 @@ let TokenHelper = {
 
         return false
     },
+    checkMintable: async (code) => {
+        // mint(address,uint256)
+        let mintFunction = '0x40c10f19'.replace('0x', '')
+        if (code.indexOf(mintFunction) >= 0) {
+            return true
+        }
+        return false
+    },
 
     formatToken: async (item) => {
         item.name = await formatAscIIJSON(item.name)

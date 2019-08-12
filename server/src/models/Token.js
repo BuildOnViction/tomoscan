@@ -13,7 +13,8 @@ const Token = new Schema({
     decimals: Number,
     txCount: { type: Number, default: 0 },
     status: { type: Boolean, default: false },
-    type: { type: String, index: true }
+    type: { type: String, index: true },
+    isMintable: { type: Boolean, index: true }
 }, {
     timestamps: true,
     toJSON: { virtuals: true, getters: true },
