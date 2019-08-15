@@ -5,14 +5,24 @@
     <section v-else>
         <div class="card tomo-card tomo-card--token">
             <div class="tomo-card__header">
-                <h2 class="tomo-card__headline">{{ tokenName }}&nbsp;</h2>
+                <h2 class="tomo-card__headline">
+                    <img
+                        v-if="isVerified"
+                        :src="'https://raw.githubusercontent.com/tomochain/tokens/master/tokens/' + hash + '.png'"
+                        width="35px">
+                    {{ tokenName }}&nbsp;</h2>
                 <i
-                    v-if="moreInfo"
+                    v-if="isVerified"
                     class="fa fa-check-circle token-status"
                     aria-hidden="true"/>
                 <h6 class="mb-0">{{ symbol }}</h6>
             </div>
             <div class="tomo-card__body">
+                <div
+                    v-if="isPhising"
+                    class="alert alert-danger">
+                    Warning! There are reports that this address was used in a Phishing scam.
+                    Please exercise caution when interacting with this address.</div>
                 <b-row>
                     <b-col md="6">
                         <table
@@ -44,9 +54,10 @@
                                     <td
                                         v-else>
                                         Not Available,
-                                        <nuxt-link
-                                            :to="{name: 'tokens-slug-info', params: {slug: hash}}"
-                                            class="text-truncate">Update</nuxt-link> ?
+                                        <a
+                                            href="https://github.com/tomochain/tokens"
+                                            target="_blank"
+                                            class="text-truncate">Update</a> ?
                                     </td>
                                 </tr>
                             </tbody>
@@ -80,17 +91,17 @@
                                                 :key="key"
                                                 class="list-inline-item">
                                                 <a
-                                                    :title="community.title"
-                                                    :href="community.url">
-                                                    <i :class="community.icon"/>
+                                                    :href="community">
+                                                    <i :class="'fa fa-' + key"/>
                                                 </a>
                                             </li>
                                         </ul>
                                         <span v-else>
                                             Not Available,
-                                            <nuxt-link
-                                                :to="{name: 'tokens-slug-info', params: {slug: hash}}"
-                                                class="text-truncate">Update</nuxt-link> ?
+                                            <a
+                                                href="https://github.com/tomochain/tokens"
+                                                target="_blank"
+                                                class="text-truncate">Update</a> ?
                                         </span>
                                     </td>
                                 </tr>
@@ -230,6 +241,8 @@ export default {
             tokenTxsCount: 0,
             holdersCount: 0,
             moreInfo: null,
+            isVerified: false,
+            isPhising: false,
             addressFilter: null,
             address: null,
             smartContract: null,
@@ -279,6 +292,8 @@ export default {
         self.holdersCount = responses[1].data.tokenHolders
 
         self.loading = false
+        self.isVerified = responses[0].data.isVerified
+        self.isPhising = responses[0].data.isPhising
         self.moreInfo = responses[0].data.moreInfo
         self.getAccountFromApi()
     },

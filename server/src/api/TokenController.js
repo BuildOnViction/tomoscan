@@ -5,6 +5,7 @@ const TokenHelper = require('../helpers/token')
 const Web3Util = require('../helpers/web3')
 // const _ = require('lodash')
 const logger = require('../helpers/logger')
+const axios = require('axios')
 const { check, validationResult, query } = require('express-validator/check')
 
 const TokenController = Router()
@@ -89,7 +90,24 @@ TokenController.get('/tokens/:slug', [
         }
 
         token = await TokenHelper.formatToken(token)
-        token.moreInfo = await db.TokenInfo.findOne({ hash: hash })
+        let blacklistUrl = 'https://raw.githubusercontent.com/tomochain/tokens/master/blacklist.json'
+        let blacklist = await axios.get(blacklistUrl)
+        if (blacklist.data.includes(hash)) {
+            token.isPhising = true
+        } else {
+            token.isPhising = false
+        }
+        let verifiedUrl = 'https://raw.githubusercontent.com/tomochain/tokens/master/verifiedlist.json'
+        let verifiedList = await axios.get(verifiedUrl)
+        if (verifiedList.data.includes(hash)) {
+            token.isVerified = true
+
+            let moreInfoUrl = `https://raw.githubusercontent.com/tomochain/tokens/master/tokens/${hash}.json`
+            let moreInfo = await axios.get(moreInfoUrl)
+            token.moreInfo = moreInfo.data
+        } else {
+            token.isVerified = false
+        }
 
         res.json(token)
     } catch (e) {
