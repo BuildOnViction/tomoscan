@@ -16,8 +16,9 @@ let TwitterHelper = {
         amount = amount.dividedBy(10 ** 18).toNumber()
         let msg = `${utils.formatNumber(amount)} $TOMO transferred from ${utils.hiddenString(from, 5)} ` +
             `${accountName[from] ? '(' + accountName[from] + ')' : ''} to ${utils.hiddenString(to, 5)} ` +
-            `${accountName[to] ? '(' + accountName[to] + ')' : ''} ` +
-            `tx: scan.tomochain.com/txs/${txHash}`
+            `${accountName[to] ? '(' + accountName[to] + ')' : ''} 
+            
+            tx: scan.tomochain.com/txs/${txHash}`
 
         twitter.post('statuses/update', { status: msg },
             function (error, tweet, response) {

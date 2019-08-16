@@ -10,6 +10,7 @@ const config = require('config')
 const redisHelper = require('./redis')
 const BigNumber = require('bignumber.js')
 const accountName = require('../contracts/accountName')
+const twitter = require('./twitter')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
@@ -162,6 +163,12 @@ let TransactionHelper = {
                         },
                         { upsert: true, new: true })
                 }
+            }
+
+            let transferAmount = new BigNumber(tx.value)
+            transferAmount = transferAmount.dividedBy(10 ** 18).toNumber()
+            if (transferAmount >= 20000 && tx.status) {
+                await twitter.alertBigTransfer(tx.hash, tx.from, tx.to, tx.value)
             }
 
             if (listHash.length > 0) {
