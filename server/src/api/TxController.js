@@ -502,20 +502,24 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
 
         let trc21FeeFund = -1
         if (trc21Txs.length > 0) {
-            let web3 = await await Web3Util.getWeb3()
-            let contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
-            let listToken = await contract.methods.tokens().call()
-            let isRegisterOnTomoIssuer = false
-            for (let i = 0; i < listToken.length; i++) {
-                if (listToken[i].toLowerCase() === tx.to.toLowerCase()) {
-                    isRegisterOnTomoIssuer = true
-                    break
+            try {
+                let web3 = await await Web3Util.getWeb3()
+                let contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
+                let listToken = await contract.methods.tokens().call()
+                let isRegisterOnTomoIssuer = false
+                for (let i = 0; i < listToken.length; i++) {
+                    if (listToken[i].toLowerCase() === tx.to.toLowerCase()) {
+                        isRegisterOnTomoIssuer = true
+                        break
+                    }
                 }
-            }
-            if (isRegisterOnTomoIssuer) {
-                trc21FeeFund = await contract.methods.getTokenCapacity(tx.to).call()
-            } else {
-                trc21FeeFund = -1
+                if (isRegisterOnTomoIssuer) {
+                    trc21FeeFund = await contract.methods.getTokenCapacity(tx.to).call()
+                } else {
+                    trc21FeeFund = -1
+                }
+            } catch (e) {
+                logger.warn(e)
             }
         }
         tx.trc21FeeFund = trc21FeeFund
@@ -538,12 +542,12 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
             }
             let inputData = ''
             if (tx.to && (toModel || {}).isContract) {
-                let contract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
+                let dbContract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
                 let functionString = ''
-                if (contract) {
+                if (dbContract) {
                     inputData += 'Function: '
-                    let functionHashes = contract.functionHashes
-                    let abiCode = JSON.parse(contract.abiCode)
+                    let functionHashes = dbContract.functionHashes
+                    let abiCode = JSON.parse(dbContract.abiCode)
                     Object.keys(functionHashes).map(function (key) {
                         if (method === '0x' + functionHashes[key]) {
                             let methodName = key.indexOf('(') < 0 ? key : key.split('(')[0]
