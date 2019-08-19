@@ -10,6 +10,7 @@ const config = require('config')
 const redisHelper = require('./redis')
 const BigNumber = require('bignumber.js')
 const accountName = require('../contracts/accountName')
+const monitorAddress = require('../contracts/monitorAddress')
 const twitter = require('./twitter')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
@@ -104,6 +105,12 @@ let TransactionHelper = {
                         accountName: accountName[tx.from] ? accountName[tx.from] : '',
                         isContract: fromModel.isContract,
                         contractCreation: fromModel.contractCreation
+                    }
+                }
+
+                if (monitorAddress.includes(tx.from)) {
+                    if (process.env.NODE_ENV === 'mainnet') {
+                        logger.error(`@khaihkd @thanhson1085 address ${tx.from} has new transaction. Hash: ${tx.hash}`)
                     }
                 }
             }
