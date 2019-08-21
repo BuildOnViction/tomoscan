@@ -101,12 +101,16 @@ TokenController.get('/tokens/:slug', [
         let verifiedList = await axios.get(verifiedUrl)
         if (verifiedList.data.includes(hash)) {
             token.isVerified = true
+        } else {
+            token.isVerified = false
+        }
 
+        try {
             let moreInfoUrl = `https://raw.githubusercontent.com/tomochain/tokens/master/tokens/${hash}.json`
             let moreInfo = await axios.get(moreInfoUrl)
             token.moreInfo = moreInfo.data
-        } else {
-            token.isVerified = false
+        } catch (e) {
+            logger.warn('Token is not verify')
         }
 
         res.json(token)
