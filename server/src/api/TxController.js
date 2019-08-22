@@ -579,14 +579,12 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
             if (tx.to !== null) {
                 inputData += 'MethodID: ' + method
                 for (let i = 0; i < params.length; i++) {
-                    console.log('type', paramsType[i], params[i])
                     let decodeValue = ''
                     let uint = ['uint', 'uint8', 'uint8', 'uint16', 'uint32', 'uint64', 'uint128', 'uint256']
                     if (uint.includes(paramsType[i])) {
                         decodeValue = web3.utils.hexToNumberString(params[i])
                     } else if (paramsType[i] === 'address') {
                         decodeValue = params[i].replace('000000000000000000000000', '0x')
-                        console.log('=== address', decodeValue)
                     } else {
                         decodeValue = params[i]
                     }
