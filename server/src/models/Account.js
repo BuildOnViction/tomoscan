@@ -23,7 +23,8 @@ const Account = new Schema({
     isToken: {
         type: Boolean,
         index: true
-    }
+    },
+    hasManyTx: Boolean
 }, {
     timestamps: true,
     versionKey: false

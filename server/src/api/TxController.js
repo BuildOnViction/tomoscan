@@ -317,8 +317,10 @@ TxController.get('/txs/listByAccount/:address', [
     let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
     let txType = req.query.tx_type
 
-    /*
-    if (page === 1) {
+    let account = await db.Account.findOne({ hash: address })
+    let total = null
+
+    if (page === 1 && account.hasManyTx) {
         let cache = await redisHelper.get(`txs-${txType}-${address}`)
         if (cache !== null) {
             let r = JSON.parse(cache)
@@ -326,10 +328,6 @@ TxController.get('/txs/listByAccount/:address', [
             return res.json(r)
         }
     }
-    */
-
-    let account = await db.Account.findOne({ hash: address })
-    let total = null
 
     let params = { sort: { blockNumber: -1 } }
     if (txType === 'in') {
@@ -348,6 +346,9 @@ TxController.get('/txs/listByAccount/:address', [
             total = account.totalTxCount
         }
     }
+    if (!account.hasManyTx) {
+        total = null
+    }
 
     if (req.query.filterAddress) {
         if (txType === 'in') {
@@ -356,7 +357,6 @@ TxController.get('/txs/listByAccount/:address', [
             params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
         }
     }
-    console.log(params)
     let data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
@@ -370,7 +370,7 @@ TxController.get('/txs/listByAccount/:address', [
             data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
     }
-    if (page === 1 && address && data.items.length > 0) {
+    if (page === 1 && account.hasManyTx && data.items.length > 0) {
         redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
     }
     return res.json(data)
