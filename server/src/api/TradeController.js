@@ -3,9 +3,9 @@ const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 
-const OrderController = Router()
+const TradeController = Router()
 
-OrderController.get('/orders', [
+TradeController.get('/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
@@ -14,28 +14,28 @@ OrderController.get('/orders', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let total = await dexDb.Order.estimatedDocumentCount()
+        let total = await dexDb.Trade.estimatedDocumentCount()
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find().sort({ id: -1 })
+        let trades = await dexDb.Trade.find().sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: trades
         }
 
         return res.json(data)
     } catch (e) {
-        logger.warn('Get list orders error %s', e)
+        logger.warn('Get list trades error %s', e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
 
-OrderController.get('/orders/listByDex/:slug', [
+TradeController.get('/trades/listByDex/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Dex address is incorrect.'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
@@ -48,18 +48,18 @@ OrderController.get('/orders/listByDex/:slug', [
     try {
         hash = hash.toLowerCase()
         let query = { exchangeAddress: hash }
-        let total = await dexDb.Order.countDocuments(query)
+        let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
+        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: trades
         }
 
         return res.json(data)
@@ -69,7 +69,7 @@ OrderController.get('/orders/listByDex/:slug', [
     }
 })
 
-OrderController.get('/orders/listByAccount/:slug', [
+TradeController.get('/trades/listByAccount/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
@@ -81,19 +81,19 @@ OrderController.get('/orders/listByAccount/:slug', [
     let hash = req.params.slug
     try {
         hash = hash.toLowerCase()
-        let query = { userAddress: hash }
-        let total = await dexDb.Order.countDocuments(query)
+        let query = { $or: [{ maker: hash }, { taker: hash }] }
+        let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
+        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: trades
         }
 
         return res.json(data)
@@ -103,7 +103,7 @@ OrderController.get('/orders/listByAccount/:slug', [
     }
 })
 
-OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
+TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
     check('baseToken').exists().isLength({ min: 42, max: 42 }).withMessage('baseToken address is incorrect.'),
     check('quoteToken').exists().isLength({ min: 42, max: 42 }).withMessage('quoteToken address is incorrect.'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('userAddress is incorrect.'),
@@ -119,20 +119,21 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
     try {
         let query = { baseToken: baseToken, quoteToken: quoteToken }
         if (req.query.userAddress) {
-            query.userAddress = req.query.userAddress.toLowerCase()
+            let userAddress = req.query.userAddress.toLowerCase()
+            query['$or'] = [{ maker: userAddress }, { taker: userAddress }]
         }
-        let total = await dexDb.Order.countDocuments(query)
+        let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
+        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: trades
         }
 
         return res.json(data)
@@ -142,4 +143,4 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
     }
 })
 
-module.exports = OrderController
+module.exports = TradeController
