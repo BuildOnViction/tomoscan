@@ -1,6 +1,7 @@
 {
   "APP_ENV": "prod",
   "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
+  "MONGODB_DEX_URI": "mongodb://mongo:27017/tomodex",
   "redis": {
     "host": "redis",
     "port": 6379,
