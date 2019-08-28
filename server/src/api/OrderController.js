@@ -2,6 +2,7 @@ const { Router } = require('express')
 const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const DexHelper = require('../helpers/dex')
 
 const OrderController = Router()
 
@@ -18,14 +19,27 @@ OrderController.get('/orders', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find().sort({ id: -1 })
-            .limit(limit).skip((currentPage - 1) * limit).lean().exec()
+        let orders = await dexDb.Order.find({}, {
+            exchangeAddress: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            userAddress: 1,
+            status: 1,
+            side: 1,
+            type: 1,
+            quantity: 1,
+            price: 1,
+            filledAmount: 1,
+            makeFee: 1,
+            takeFee: 1,
+            pairName: 1
+        }).sort({ id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: await DexHelper.formatOrder(orders)
         }
 
         return res.json(data)
@@ -52,14 +66,27 @@ OrderController.get('/orders/listByDex/:slug', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
-            .limit(limit).skip((currentPage - 1) * limit).lean().exec()
+        let orders = await dexDb.Order.find(query, {
+            exchangeAddress: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            userAddress: 1,
+            status: 1,
+            side: 1,
+            type: 1,
+            quantity: 1,
+            price: 1,
+            filledAmount: 1,
+            makeFee: 1,
+            takeFee: 1,
+            pairName: 1
+        }).sort({ id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: await DexHelper.formatOrder(orders)
         }
 
         return res.json(data)
@@ -86,14 +113,27 @@ OrderController.get('/orders/listByAccount/:slug', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
-            .limit(limit).skip((currentPage - 1) * limit).lean().exec()
+        let orders = await dexDb.Order.find(query, {
+            exchangeAddress: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            userAddress: 1,
+            status: 1,
+            side: 1,
+            type: 1,
+            quantity: 1,
+            price: 1,
+            filledAmount: 1,
+            makeFee: 1,
+            takeFee: 1,
+            pairName: 1
+        }).sort({ id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: await DexHelper.formatOrder(orders)
         }
 
         return res.json(data)
@@ -125,14 +165,27 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query).sort({ id: -1 })
-            .limit(limit).skip((currentPage - 1) * limit).lean().exec()
+        let orders = await dexDb.Order.find(query, {
+            exchangeAddress: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            userAddress: 1,
+            status: 1,
+            side: 1,
+            type: 1,
+            quantity: 1,
+            price: 1,
+            filledAmount: 1,
+            makeFee: 1,
+            takeFee: 1,
+            pairName: 1
+        }).sort({ id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: orders
+            items: await DexHelper.formatOrder(orders)
         }
 
         return res.json(data)
