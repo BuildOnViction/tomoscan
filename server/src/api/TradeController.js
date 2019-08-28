@@ -2,6 +2,7 @@ const { Router } = require('express')
 const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
+const DexHelper = require('../helpers/dex')
 
 const TradeController = Router()
 
@@ -18,14 +19,24 @@ TradeController.get('/trades', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find().sort({ id: -1 })
+        let trades = await dexDb.Trade.find({}, {
+            taker: 1,
+            maker: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            txHash: 1,
+            pairName: 1,
+            amount: 1,
+            pricepoint: 1,
+            status: 1
+        }).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: trades
+            items: await DexHelper.formatTrade(trades)
         }
 
         return res.json(data)
@@ -52,14 +63,24 @@ TradeController.get('/trades/listByDex/:slug', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
+        let trades = await dexDb.Trade.find(query, {
+            taker: 1,
+            maker: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            txHash: 1,
+            pairName: 1,
+            amount: 1,
+            pricepoint: 1,
+            status: 1
+        }).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: trades
+            items: await DexHelper.formatTrade(trades)
         }
 
         return res.json(data)
@@ -86,14 +107,23 @@ TradeController.get('/trades/listByAccount/:slug', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
-            .limit(limit).skip((currentPage - 1) * limit).lean().exec()
+        let trades = await dexDb.Trade.find(query, {
+            taker: 1,
+            maker: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            txHash: 1,
+            pairName: 1,
+            amount: 1,
+            pricepoint: 1,
+            status: 1
+        }).sort({ id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: trades
+            items: await DexHelper.formatTrade(trades)
         }
 
         return res.json(data)
@@ -126,14 +156,24 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query).sort({ id: -1 })
+        let trades = await dexDb.Trade.find(query, {
+            taker: 1,
+            maker: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            txHash: 1,
+            pairName: 1,
+            amount: 1,
+            pricepoint: 1,
+            status: 1
+        }).sort({ id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
         let data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: trades
+            items: await DexHelper.formatTrade(trades)
         }
 
         return res.json(data)

@@ -13,19 +13,33 @@
 
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('order', 'orders', total) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('trade history', 'trades history', total) }}</p>
 
         <table-base
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--orders">
+            class="tomo-table--trades">
             <template
-                slot="userAddress"
+                slot="txHash"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.userAddress.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.userAddress.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'tx-slug', params: {slug: props.item.txHash.toLowerCase()}}"
+                    class="text-truncate">{{ props.item.txHash.toLowerCase() }}</nuxt-link>
+            </template>
+            <template
+                slot="taker"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'address-slug', params: {slug: props.item.taker.toLowerCase()}}"
+                    class="text-truncate">{{ props.item.taker.toLowerCase() }}</nuxt-link>
+            </template>
+            <template
+                slot="maker"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'address-slug', params: {slug: props.item.maker.toLowerCase()}}"
+                    class="text-truncate">{{ props.item.maker.toLowerCase() }}</nuxt-link>
             </template>
             <template
                 slot="pairName"
@@ -35,11 +49,6 @@
                 {{ props.item.pairName.split('/')[0] }}</nuxt-link>/<nuxt-link
                     :to="{name: 'token-slug', params: {slug: props.item.quoteToken}}"
                 >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
-            </template>
-            <template
-                slot="type"
-                slot-scope="props">
-                {{ props.item.type === 'LO' ? 'Limit' : 'Market' }}
             </template>
         </table-base>
 
@@ -67,19 +76,18 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Orders'
+            title: 'Trading history'
         }
     },
     data: () => ({
         fields: {
-            userAddress: { label: 'User' },
+            txHash: { label: 'Tx' },
+            taker: { label: 'Taker' },
+            maker: { label: 'Maker' },
             pairName: { label: 'Pair Name' },
             status: { label: 'Status' },
-            side: { label: 'Side' },
-            type: { label: 'Type' },
-            quantity: { label: 'Quantity' },
-            price: { label: 'Price' },
-            filledAmount: { label: 'Filled Amount' }
+            pricepoint: { label: 'Price point' },
+            amount: { label: 'Amount' }
         },
         loading: true,
         total: 0,
@@ -103,7 +111,7 @@ export default {
                 limit: self.perPage
             }
             let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/orders?' + query)
+            let { data } = await this.$axios.get('/api/trades?' + query)
             self.total = data.total
             self.pages = data.pages
 

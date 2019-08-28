@@ -761,3 +761,39 @@
     }
   }
 }
+
+.tomo-table--orders {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 19% 13% 13% 10% 10% 13% 14% 13%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 19% 13% 13% 10% 10% 13% 14% 13%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 19% 13% 13% 10% 10% 13% 14% 13%;
+    }
+  }
+}
+
+.tomo-table--trades {
+  thead tr,
+  tbody tr {
+
+    @include media-breakpoint-up(lg) {
+      grid-template-columns: 20% 20% 20% 10% 10% 10% 10%;
+    }
+
+    @include media-breakpoint-up(xl) {
+      grid-template-columns: 20% 20% 20% 10% 10% 10% 10%;
+    }
+
+    @include media-breakpoint-up(2xl) {
+      grid-template-columns: 20% 20% 20% 10% 10% 10% 10%;
+    }
+  }
+}

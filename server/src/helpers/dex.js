@@ -50,6 +50,50 @@ let DexHelper = {
             orders[i].quantity = quantity
         }
         return orders
+    },
+    formatTrade: async (trades) => {
+        let web3 = await Web3Util.getWeb3()
+        let decimals = {}
+        for (let i = 0; i < trades.length; i++) {
+            let bt = trades[i].baseToken.toLowerCase()
+            if (!decimals.hasOwnProperty(bt)) {
+                if (bt === TomoToken) {
+                    decimals[bt] = 18
+                } else {
+                    let baseDecimals = await web3.eth.call({ to: bt, data: decimalFunction })
+                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
+                    decimals[bt] = baseDecimals
+                }
+            }
+            let qt = trades[i].quoteToken.toLowerCase()
+            if (!decimals.hasOwnProperty(qt)) {
+                if (qt === TomoToken) {
+                    decimals[qt] = 18
+                } else {
+                    let quoteDecimals = await web3.eth.call({ to: qt, data: decimalFunction })
+                    quoteDecimals = await web3.utils.hexToNumber(quoteDecimals)
+                    decimals[qt] = quoteDecimals
+                }
+            }
+        }
+        for (let i = 0; i < trades.length; i++) {
+            let quantity = new BigNumber(trades[i].quantity)
+            let bt = trades[i].baseToken.toLowerCase()
+            let qt = trades[i].quoteToken.toLowerCase()
+            quantity = quantity.dividedBy(10 ** decimals[bt]).toNumber()
+
+            let amount = new BigNumber(trades[i].amount)
+            amount = amount.dividedBy(10 ** decimals[bt]).toNumber()
+
+            let pricepoint = new BigNumber(trades[i].pricepoint)
+            pricepoint = pricepoint.dividedBy(10 ** decimals[qt]).toNumber()
+
+            trades[i].baseDecimals = decimals[bt]
+            trades[i].quoteDecimals = decimals[qt]
+            trades[i].pricepoint = pricepoint
+            trades[i].amount = amount
+        }
+        return trades
     }
 }
 

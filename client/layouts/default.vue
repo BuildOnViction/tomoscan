@@ -66,6 +66,11 @@
                             <b-dropdown-item :to="{name: 'blocks'}">Blocks</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'epochs'}">Epochs</b-dropdown-item>
                         </b-nav-item-dropdown>
+                        <b-nav-item-dropdown
+                            text="Order Book">
+                            <b-dropdown-item :to="{name: 'orders'}">Open Orders</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'trades'}">Trade History</b-dropdown-item>
+                        </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">
                         <b-nav-item
