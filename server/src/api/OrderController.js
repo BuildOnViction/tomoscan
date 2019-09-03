@@ -19,7 +19,7 @@ OrderController.get('/orders', [
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find({}, {
+        let orders = await dexDb.Order.find({ $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }, {
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
@@ -61,7 +61,7 @@ OrderController.get('/orders/listByDex/:slug', [
     let hash = req.params.slug
     try {
         hash = hash.toLowerCase()
-        let query = { exchangeAddress: hash }
+        let query = { exchangeAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
         let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -108,7 +108,7 @@ OrderController.get('/orders/listByAccount/:slug', [
     let hash = req.params.slug
     try {
         hash = hash.toLowerCase()
-        let query = { userAddress: hash }
+        let query = { userAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
         let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -157,7 +157,11 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
     let baseToken = req.params.baseToken.toLowerCase()
     let quoteToken = req.params.quoteToken.toLowerCase()
     try {
-        let query = { baseToken: baseToken, quoteToken: quoteToken }
+        let query = {
+            baseToken: baseToken,
+            quoteToken: quoteToken,
+            $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }]
+        }
         if (req.query.userAddress) {
             query.userAddress = req.query.userAddress.toLowerCase()
         }

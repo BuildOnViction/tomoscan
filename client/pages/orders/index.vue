@@ -74,7 +74,6 @@ export default {
         fields: {
             userAddress: { label: 'User' },
             pairName: { label: 'Pair Name' },
-            status: { label: 'Status' },
             side: { label: 'Side' },
             type: { label: 'Type' },
             quantity: { label: 'Quantity' },
