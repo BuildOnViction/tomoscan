@@ -567,3 +567,258 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
+  /api/orders:
+    get:
+      tags:
+        - Orders
+      summary: Get list order
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/orders/listByDex/{dexAddress}:
+    get:
+      tags:
+        - Orders
+      summary: Get list order of dex
+      parameters:
+        - name: dexAddress
+          in: path
+          required: true
+          description: address of dex
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/orders/listByAccount/{accountAddress}:
+    get:
+      tags:
+        - Orders
+      summary: Get list order of account
+      parameters:
+        - name: accountAddress
+          in: path
+          required: true
+          description: address of account
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/orders/listByPair/{baseToken}/{quoteToken}:
+    get:
+      tags:
+        - Orders
+      summary: Get list order by pair
+      parameters:
+        - name: baseToken
+          in: path
+          required: true
+          description: base token
+          type: string
+        - name: quoteToken
+          in: path
+          required: true
+          description: quote token
+          type: string
+        - name: userAddress
+          in: query
+          required: false
+          description: filter account address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades:
+    get:
+      tags:
+        - Trades
+      summary: Get list trade
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/trades/listByDex/{dexAddress}:
+    get:
+      tags:
+        - Trades
+      summary: Get list trade of dex
+      parameters:
+        - name: dexAddress
+          in: path
+          required: true
+          description: address of dex
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades/listByAccount/{accountAddress}:
+    get:
+      tags:
+        - Trades
+      summary: Get list trade of account
+      parameters:
+        - name: accountAddress
+          in: path
+          required: true
+          description: address of account
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades/listByPair/{baseToken}/{quoteToken}:
+    get:
+      tags:
+        - Trades
+      summary: Get list order by pair
+      parameters:
+        - name: baseToken
+          in: path
+          required: true
+          description: base token
+          type: string
+        - name: quoteToken
+          in: path
+          required: true
+          description: quote token
+          type: string
+        - name: userAddress
+          in: query
+          required: false
+          description: filter account address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
