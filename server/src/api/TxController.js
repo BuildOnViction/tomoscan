@@ -637,4 +637,133 @@ TxController.get('/txs/internal/:address', [
     }
 })
 
+TxController.get('/txs/combine/:address', [
+    check('limit').optional().isInt({ max: 20 }).withMessage("'limit' should than 20 items per page"),
+    check('page').optional().isInt({ max: 50 }).withMessage("'page' should less than 50"),
+    check('address').exists().withMessage('Address is require')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    const address = req.params.address.toLowerCase()
+    try {
+        let limit = (req.query.limit) ? parseInt(req.query.limit) : 20
+        const page = (req.query.page) ? parseInt(req.query.page) : 1
+        let skip
+        skip = (req.query.page) ? limit * (req.query.page - 1) : 1
+        let timestamp = (req.query.timestamp) ? parseInt(req.query.timestamp) : new Date().getTime()
+
+        // get latest sent tx
+        const latestTxTo = await db.Tx.findOne({
+            to: address,
+            timestamp: {
+                $lte: new Date(timestamp)
+            }
+        }).sort({ blockNumber: -1 }).lean().exec() || {}
+        const latestTxFrom = await db.Tx.findOne({
+            from: address,
+            timestamp: {
+                $lte: new Date(timestamp)
+            }
+        }).sort({ blockNumber: -1 }).lean().exec() || {}
+
+        const blockNumber = (latestTxFrom.blockNumber || 0) > (latestTxTo.blockNumber || 0)
+            ? latestTxFrom.blockNumber : latestTxTo.blockNumber
+
+        // account's txs
+        const txsAccount1 = db.Tx.find({
+            $or: [{ to: address }, { from: address }],
+            timestamp: {
+                $lte: new Date(timestamp)
+            }
+        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+
+        // get internal tx by account
+        const internalTx1 = db.InternalTx.find({
+            $or: [{ to: address }, { from: address }],
+            blockNumber: { $lte: blockNumber }
+        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+
+        // get token trc20 tx by account
+        const token20Txs1 = db.TokenTx.find({
+            $or: [{ to: address }, { from: address }],
+            blockNumber: { $lte: blockNumber }
+        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+
+        // get token trc21 tx by account
+        const token21Txs1 = db.TokenTrc21Tx.find({
+            $or: [{ to: address }, { from: address }],
+            blockNumber: { $lte: blockNumber }
+        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+
+        const token721Txs1 = db.TokenNftTx.find({
+            $or: [{ to: address }, { from: address }],
+            blockNumber: { $lte: blockNumber }
+        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+
+        const promises2 = await Promise.all([
+            (await txsAccount1).map(tx => {
+                tx.txType = 'normalTx'
+                return tx
+            }),
+            (await internalTx1).map(tx => {
+                tx.txType = 'internalTx'
+                return tx
+            }),
+            (await token20Txs1).map(tx => {
+                tx.txType = 'trc20Tx'
+                return tx
+            }),
+            (await token21Txs1).map(tx => {
+                tx.txType = 'trc21Tx'
+                return tx
+            }),
+            (await token721Txs1).map(tx => {
+                tx.txType = 'trc721Tx'
+                return tx
+            })
+        ])
+
+        // combine
+        const array = [
+            ...promises2[0],
+            ...promises2[1],
+            ...promises2[2],
+            ...promises2[3],
+            ...promises2[4]
+        ]
+        const sortedArray = array.sort((a, b) => {
+            return b.blockNumber - a.blockNumber
+        })
+
+        // get model
+
+        const map = await Promise.all(sortedArray.map(async tx => {
+            const promises = await Promise.all([
+                db.Account.findOne({ hash: tx.from }),
+                db.Account.findOne({ hash: tx.to })
+            ])
+
+            const fromModel = promises[0]
+            const toModel = promises[1]
+            fromModel.code = ''
+            toModel.code = ''
+
+            tx.from_model = fromModel
+            tx.to_model = toModel
+            return tx
+        }))
+        const from = (skip - 1) > 0 ? skip : 0
+        const to = (limit + skip) - 1
+
+        return res.json({
+            items: map.slice(from, to)
+        })
+    } catch (e) {
+        logger.warn('cannot get list tx of address %s. Error %s', address, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
 module.exports = TxController
