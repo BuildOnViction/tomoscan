@@ -640,8 +640,8 @@ TxController.get('/txs/internal/:address', [
 })
 
 TxController.get('/txs/combine/:address', [
-    check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt({ max: 10 }).withMessage("'page' is less then 10"),
+    check('limit').optional().isInt({ max: 20 }).withMessage("'limit' should than 20 items per page"),
+    check('page').optional().isInt({ max: 50 }).withMessage("'page' should less then 50"),
     check('address').exists().withMessage('Address is require')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -650,7 +650,7 @@ TxController.get('/txs/combine/:address', [
     }
     const address = req.params.address.toLowerCase()
     try {
-        let limit = (req.query.limit) ? parseInt(req.query.limit) : 100
+        let limit = (req.query.limit) ? parseInt(req.query.limit) : 20
         const page = (req.query.page) ? parseInt(req.query.page) : 1
         let skip
         skip = (req.query.page) ? limit * (req.query.page - 1) : 1
