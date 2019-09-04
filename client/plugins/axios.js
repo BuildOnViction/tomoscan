@@ -24,8 +24,8 @@ export default function ({ $axios, redirect, app, store }) {
             case 422:
                 break
             default:
-                window.$nuxt.error(
-                    { message: error.response.statusText, statusCode: code })
+                // window.$nuxt.error(
+                //     { message: error.response.statusText, statusCode: code })
                 break
             }
         }

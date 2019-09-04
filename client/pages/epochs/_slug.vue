@@ -186,25 +186,29 @@ export default {
         this.epochNumber = parseInt(this.$route.params.slug)
     },
     async mounted () {
-        let self = this
+        try {
+            let self = this
 
-        self.loading = true
+            self.loading = true
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'epochs-slug',
-            to: { name: 'epochs-slug', params: { slug: self.epochNumber } }
-        })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', {
+                name: 'epochs-slug',
+                to: { name: 'epochs-slug', params: { slug: self.epochNumber } }
+            })
 
-        let responses = await Promise.all([
-            this.$axios.get('/api/epochs/' + self.epochNumber)
-        ])
+            let responses = await Promise.all([
+                this.$axios.get('/api/epochs/' + self.epochNumber)
+            ])
 
-        self.epoch = responses[0].data
+            self.epoch = responses[0].data
 
-        self.loading = false
-        self.voterCount = self.epoch.rewardVoter
-        self.foundationCount = self.epoch.rewardFoundation
+            self.voterCount = self.epoch.rewardVoter
+            self.foundationCount = self.epoch.rewardFoundation
+            self.loading = false
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         onSwitchTab: function () {

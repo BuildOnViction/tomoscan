@@ -380,49 +380,53 @@ export default {
         this.hash = this.$route.params.slug
     },
     async mounted () {
-        let self = this
-        self.loading = true
+        try {
+            let self = this
+            self.loading = true
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'txs-slug',
-            to: { name: 'txs-slug', params: { slug: self.hash } }
-        })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', {
+                name: 'txs-slug',
+                to: { name: 'txs-slug', params: { slug: self.hash } }
+            })
 
-        let params = {}
+            let params = {}
 
-        if (self.hash) {
-            params.address = self.hash
-        }
-        params.list = 'txs'
+            if (self.hash) {
+                params.address = self.hash
+            }
+            params.list = 'txs'
 
-        let query = this.serializeQuery(params)
+            let query = this.serializeQuery(params)
 
-        let responses = await Promise.all([
-            this.$axios.get('/api/txs/' + self.hash),
-            this.$axios.get('/api/counting' + '?' + query)
-        ])
+            let responses = await Promise.all([
+                this.$axios.get('/api/txs/' + self.hash),
+                this.$axios.get('/api/counting' + '?' + query)
+            ])
 
-        self.tx = responses[0].data
-        self.inputData = self.tx.inputData ? self.tx.inputData : self.tx.input
-        let moment = self.$moment(responses[0].data.timestamp)
-        self.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
+            self.tx = responses[0].data
+            self.inputData = self.tx.inputData ? self.tx.inputData : self.tx.input
+            let moment = self.$moment(responses[0].data.timestamp)
+            self.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
-        self.eventsCount = responses[1].data.events
+            self.eventsCount = responses[1].data.events
 
-        if (self.tx.trc21Txs && self.tx.trc21Txs.length > 1 && self.tx.to_model) {
-            self.tokenFee.tokenOwner = self.tx.to_model.contractCreation
-            for (let i = 0; i < self.tx.trc21Txs.length; i++) {
-                if (self.tokenFee.tokenOwner === self.tx.trc21Txs[i].to) {
-                    self.tokenFee.value = self.tx.trc21Txs[i].value
-                    self.tokenFee.decimals = self.tx.trc21Txs[i].decimals
-                    self.tokenFee.symbol = self.tx.trc21Txs[i].symbol
-                    self.tokenFee.token = self.tx.trc21Txs[i].address
+            if (self.tx.trc21Txs && self.tx.trc21Txs.length > 1 && self.tx.to_model) {
+                self.tokenFee.tokenOwner = self.tx.to_model.contractCreation
+                for (let i = 0; i < self.tx.trc21Txs.length; i++) {
+                    if (self.tokenFee.tokenOwner === self.tx.trc21Txs[i].to) {
+                        self.tokenFee.value = self.tx.trc21Txs[i].value
+                        self.tokenFee.decimals = self.tx.trc21Txs[i].decimals
+                        self.tokenFee.symbol = self.tx.trc21Txs[i].symbol
+                        self.tokenFee.token = self.tx.trc21Txs[i].address
+                    }
                 }
             }
-        }
 
-        self.loading = false
+            self.loading = false
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         updateHashChange () {
