@@ -250,7 +250,7 @@ BlockController.get('/blocks/signers/:slug', [
 
         return res.json({ signers: signers })
     } catch (e) {
-        logger.warn('Error get block signer %s. %s', blockNumber, e)
+        logger.warn('Error get block signer %s. %s', blockNumberOrHash, e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
