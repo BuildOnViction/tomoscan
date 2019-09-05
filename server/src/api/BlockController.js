@@ -210,24 +210,33 @@ BlockController.get('/blocks/signers/:slug', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let blockNumber = req.params.slug
+    let blockNumberOrHash = req.params.slug
     try {
-        let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
-
         let signers
-        let checkInChain = false
-        if (blockSigner) {
-            if (blockSigner.signers) {
-                signers = blockSigner.signers
-            } else {
-                checkInChain = true
+        let checkInChain = true
+        let block
+        if (!isNaN(blockNumberOrHash)) {
+            block = await db.Block.findOne({ number: blockNumberOrHash })
+            let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumberOrHash })
+
+            if (blockSigner) {
+                if (blockSigner.signers) {
+                    signers = blockSigner.signers
+                    checkInChain = false
+                }
             }
         } else {
-            checkInChain = true
+            block = await db.Block.findOne({ hash: blockNumberOrHash })
+        }
+        if (!block) {
+            let web3 = await Web3Util.getWeb3()
+            block = await web3.eth.getBlock(blockNumberOrHash)
+        }
+        if (!block) {
+            return res.status(404).json({ errors: 'Not found' })
         }
 
         if (checkInChain) {
-            let block = await db.Block.findOne({ number: blockNumber })
             let data = {
                 'jsonrpc': '2.0',
                 'method': 'eth_getBlockSignersByHash',
