@@ -330,16 +330,20 @@ export default {
         }
     },
     mounted () {
-        let self = this
+        try {
+            let self = this
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'address-slug',
-            to: { name: 'address-slug', params: { slug: self.hash } }
-        })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', {
+                name: 'address-slug',
+                to: { name: 'address-slug', params: { slug: self.hash } }
+            })
 
-        self.getAccountFromApi()
-        self.getUSDPrice()
+            self.getAccountFromApi()
+            self.getUSDPrice()
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         async getAccountFromApi () {

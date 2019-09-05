@@ -85,12 +85,16 @@ export default {
         pages: 1
     }),
     async mounted () {
-        let self = this
+        try {
+            let self = this
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'accounts', to: { name: 'accounts' } })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', { name: 'accounts', to: { name: 'accounts' } })
 
-        await self.getDataFromApi()
+            await self.getDataFromApi()
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         async getDataFromApi () {

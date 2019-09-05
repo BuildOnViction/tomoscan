@@ -100,14 +100,18 @@ export default {
         }
     },
     async mounted () {
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'epochs', to: { name: 'epochs' } })
+        try {
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', { name: 'epochs', to: { name: 'epochs' } })
 
-        const query = this.$route.query
+            const query = this.$route.query
 
-        this.currentPage = parseInt(query.page)
+            this.currentPage = parseInt(query.page)
 
-        await this.getDataFromApi()
+            await this.getDataFromApi()
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         async getDataFromApi () {
