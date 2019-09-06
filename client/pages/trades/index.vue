@@ -99,6 +99,10 @@ export default {
     }),
     async mounted () {
         let self = this
+        this.$store.commit('breadcrumb/setItems', {
+            name: 'trades',
+            to: { name: 'trades' }
+        })
         self.getDataFromApi()
     },
     methods: {
