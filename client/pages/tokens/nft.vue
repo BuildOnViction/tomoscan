@@ -85,7 +85,10 @@ export default {
     }),
     mounted () {
         // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'tokens', to: { name: 'tokens-nft' } })
+        this.$store.commit('breadcrumb/setItems', {
+            name: 'tokens-nft',
+            to: { name: 'tokens-nft' }
+        })
 
         this.getDataFromApi()
     },

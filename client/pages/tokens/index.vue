@@ -88,10 +88,14 @@ export default {
         pages: 1
     }),
     mounted () {
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'tokens', to: { name: 'tokens' } })
+        try {
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', { name: 'tokens', to: { name: 'tokens' } })
 
-        this.getDataFromApi()
+            this.getDataFromApi()
+        } catch (error) {
+            console.log(error)
+        }
     },
     methods: {
         async getDataFromApi () {

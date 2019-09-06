@@ -51,12 +51,15 @@
     "eslint-plugin-promise": "^3.8.0",
     "eslint-plugin-standard": "^3.1.0",
     "eslint-plugin-vue": "^4.5.0",
+    "eslint-utils": "^1.4.2",
     "js-yaml": "^3.13.1",
     "lodash.mergewith": "^4.6.2",
     "lodash.template": "^4.5.0",
     "mem": "^5.1.1",
+    "mixin-deep": "^2.0.1",
     "node-sass": "^4.8.3",
-    "sass-loader": "^7.0.1"
+    "sass-loader": "^7.0.1",
+    "set-value": "^3.0.1"
   },
   "engines": {
     "node": "6.1.0"

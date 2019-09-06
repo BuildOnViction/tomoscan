@@ -11,6 +11,7 @@ const redisHelper = require('./redis')
 const BigNumber = require('bignumber.js')
 const accountName = require('../contracts/accountName')
 const monitorAddress = require('../contracts/monitorAddress')
+const utils = require('./utils')
 const twitter = require('./twitter')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
@@ -44,12 +45,23 @@ let TransactionHelper = {
             }
             let web3 = await Web3Util.getWeb3()
             if (params.length >= 4) {
-                let tomoAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[2]))
-                tomoAmount = tomoAmount.dividedBy(10 ** 18)
-                let constantAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[3]))
-                constantAmount = constantAmount.dividedBy(10 ** 2)
+                let srcAddress = await utils.unformatAddress(params[0])
+                let tomoRate
+                if (srcAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
+                    let tomoAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[2]))
+                    tomoAmount = tomoAmount.dividedBy(10 ** 18)
+                    let constantAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[3]))
+                    constantAmount = constantAmount.dividedBy(10 ** 2)
 
-                let tomoRate = constantAmount.dividedBy(tomoAmount).toNumber()
+                    tomoRate = constantAmount.dividedBy(tomoAmount).toNumber()
+                } else {
+                    let tomoAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[3]))
+                    tomoAmount = tomoAmount.dividedBy(10 ** 18)
+                    let constantAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[2]))
+                    constantAmount = constantAmount.dividedBy(10 ** 2)
+
+                    tomoRate = constantAmount.dividedBy(tomoAmount).toNumber()
+                }
 
                 let txExtraInfo = [
                     {

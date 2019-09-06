@@ -115,6 +115,18 @@ br.register('tokens-slug', (brs, location) => {
     brs.parent('tokens')
     brs.push('Token Detail', location)
 })
+br.register('tokens-trc20', (brs, location) => {
+    brs.parent('tokens')
+    brs.push('TRC20 Token', location)
+})
+br.register('tokens-trc21', (brs, location) => {
+    brs.parent('tokens')
+    brs.push('TRC21 Token', location)
+})
+br.register('tokens-nft', (brs, location) => {
+    brs.parent('tokens')
+    brs.push('TRC721 Token', location)
+})
 br.register('tokens-slug-info', (brs, location) => {
     brs.parent('tokens')
     brs.push('Update Token Info', location)

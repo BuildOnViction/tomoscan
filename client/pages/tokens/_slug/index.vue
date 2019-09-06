@@ -259,43 +259,47 @@ export default {
         this.hash = this.$route.params.slug
     },
     async mounted () {
-        let self = this
+        try {
+            let self = this
 
-        self.loading = true
+            self.loading = true
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'tokens-slug',
-            to: { name: 'tokens-slug', params: { slug: self.hash } }
-        })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', {
+                name: 'tokens-slug',
+                to: { name: 'tokens-slug', params: { slug: self.hash } }
+            })
 
-        let params = {}
+            let params = {}
 
-        if (self.hash) {
-            params.token = self.hash
+            if (self.hash) {
+                params.token = self.hash
+            }
+
+            params.list = 'token'
+            let query = this.serializeQuery(params)
+
+            let responses = await Promise.all([
+                self.$axios.get('/api/tokens/' + self.hash),
+                self.$axios.get('/api/counting' + '?' + query)
+            ])
+
+            self.token = responses[0].data
+            self.tokenName = responses[0].data.name
+            self.symbol = responses[0].data.symbol
+
+            self.tokenTxsCount = responses[1].data.tokenTxs
+
+            self.holdersCount = responses[1].data.tokenHolders
+
+            self.loading = false
+            self.isVerified = responses[0].data.isVerified
+            self.isPhising = responses[0].data.isPhising
+            self.moreInfo = responses[0].data.moreInfo
+            self.getAccountFromApi()
+        } catch (error) {
+            console.log(error)
         }
-
-        params.list = 'token'
-        let query = this.serializeQuery(params)
-
-        let responses = await Promise.all([
-            self.$axios.get('/api/tokens/' + self.hash),
-            self.$axios.get('/api/counting' + '?' + query)
-        ])
-
-        self.token = responses[0].data
-        self.tokenName = responses[0].data.name
-        self.symbol = responses[0].data.symbol
-
-        self.tokenTxsCount = responses[1].data.tokenTxs
-
-        self.holdersCount = responses[1].data.tokenHolders
-
-        self.loading = false
-        self.isVerified = responses[0].data.isVerified
-        self.isPhising = responses[0].data.isPhising
-        self.moreInfo = responses[0].data.moreInfo
-        self.getAccountFromApi()
     },
     methods: {
         async getAccountFromApi () {

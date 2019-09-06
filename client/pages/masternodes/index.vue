@@ -125,17 +125,21 @@ export default {
         }
     },
     async mounted () {
-        let self = this
+        try {
+            let self = this
 
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'masternodes', to: { name: 'masternodes' } })
+            // Init breadcrumbs data.
+            this.$store.commit('breadcrumb/setItems', { name: 'masternodes', to: { name: 'masternodes' } })
 
-        const query = this.$route.query
-        if (query.page && !isNaN(query.page)) {
-            self.currentPage = parseInt(query.page)
+            const query = this.$route.query
+            if (query.page && !isNaN(query.page)) {
+                self.currentPage = parseInt(query.page)
+            }
+
+            await self.getDataFromApi()
+        } catch (error) {
+            console.log(error)
         }
-
-        await self.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {

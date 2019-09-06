@@ -24,8 +24,6 @@ TokenController.get('/tokens', [
         let tokenType = req.query.type
         if (tokenType) {
             params.query = { type: tokenType }
-        } else {
-            params.query = { type: 'trc20' }
         }
         let data = await utils.paginate(req, 'Token', params)
 
