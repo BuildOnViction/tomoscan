@@ -9,7 +9,7 @@ const TokenTxController = Router()
 
 TokenTxController.get('/token-txs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('token').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
@@ -44,6 +44,9 @@ TokenTxController.get('/token-txs', [
             items = await TokenTransactionHelper.formatTokenTransaction(items)
         }
         data.items = items
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {
@@ -55,7 +58,7 @@ TokenTxController.get('/token-txs', [
 TokenTxController.get('/token-txs/:tokenType', [
     check('tokenType').exists().isString().withMessage('trc20/trc21/trc721'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('holder').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('token').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
@@ -106,6 +109,9 @@ TokenTxController.get('/token-txs/:tokenType', [
             items = await TokenTransactionHelper.formatTokenTransaction(items)
         }
         data.items = items
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {
@@ -119,7 +125,7 @@ TokenTxController.get('/token-txs/:tokenType/:txHash', [
     check('txHash').exists().isString().withMessage('transaction hash'),
     check('holder').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number')
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -163,6 +169,9 @@ TokenTxController.get('/token-txs/:tokenType/:txHash', [
         }
         data.items = items
         data.transaction = tx
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {

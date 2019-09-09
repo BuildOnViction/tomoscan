@@ -257,7 +257,7 @@ TxController.get('/txs', [
 
 TxController.get('/txs/listByType/:type', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('type').exists().isString().withMessage('type is require.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -297,13 +297,16 @@ TxController.get('/txs/listByType/:type', [
             data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
     }
+    if (data.pages > 500) {
+        data.pages = 500
+    }
 
     return res.json(data)
 })
 
 TxController.get('/txs/listByAccount/:address', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all'),
     check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage('Filter address incorrect')
@@ -373,12 +376,15 @@ TxController.get('/txs/listByAccount/:address', [
     if (page === 1 && account.hasManyTx && data.items.length > 0) {
         redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
     }
+    if (data.pages > 500) {
+        data.pages = 500
+    }
     return res.json(data)
 })
 
 TxController.get('/txs/listByBlock/:blockNumber', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('blockNumber').exists().isInt().withMessage('Require blockNumber is number.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -458,6 +464,9 @@ TxController.get('/txs/listByBlock/:blockNumber', [
         } else {
             data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
+    }
+    if (data.pages > 500) {
+        data.pages = 500
     }
 
     return res.json(data)
@@ -605,7 +614,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
 
 TxController.get('/txs/internal/:address', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 101 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('fromBlock').optional().isInt().withMessage('Require fromBlock is number'),
     check('toBlock').optional().isInt().withMessage('Require toBlock is number')
@@ -630,6 +639,9 @@ TxController.get('/txs/internal/:address', [
             params.query = Object.assign({}, params.query, { blockNumber: bln })
         }
         let data = await utils.paginate(req, 'InternalTx', params)
+        if (data.pages > 500) {
+            data.pages = 500
+        }
         return res.json(data)
     } catch (e) {
         logger.warn('cannot get list internal tx of address %s. Error %s', address, e)

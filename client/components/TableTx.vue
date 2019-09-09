@@ -110,7 +110,7 @@
         <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
-            :total-rows="total"
+            :total-rows="pages * perPage"
             :per-page="perPage"
             :limit="7"
             align="center"
@@ -193,7 +193,7 @@ export default {
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/txs/listByType/' + txType + '?' + query)
-            self.total = data.total || self.tx_total || (data.items || []).length
+            self.total = data.total || data.items.length
             self.pages = data.pages || (self.total % self.perPage)
 
             if (data.items.length === 0) {
