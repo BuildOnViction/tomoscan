@@ -11,7 +11,7 @@ const BlockController = Router()
 
 BlockController.get('/blocks', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
