@@ -14,7 +14,48 @@
         <p
             v-if="total > 0"
             class="tomo-total-items">{{ _nFormatNumber('order', 'orders', total) }}</p>
-
+        <div class="form-inline mb-30">
+            <div class="form-group">
+                <label
+                    class="filter-col"
+                    for="pref-user">User:</label>
+                <input
+                    id="pref-user"
+                    type="text"
+                    class="form-control input-sm">
+            </div> <!-- form group [rows] -->
+            <div class="form-group">
+                <label
+                    class="filter-col"
+                    style="margin-right:0;"
+                    for="pref-search">Search:</label>
+                <input
+                    id="pref-search"
+                    type="text"
+                    class="form-control input-sm">
+            </div><!-- form group [search] -->
+            <div class="form-group">
+                <label
+                    class="filter-col"
+                    for="pref-orderby">Type:</label>
+                <select
+                    id="pref-orderby"
+                    class="form-control">
+                    <option>Limit</option>
+                    <option>Market</option>
+                </select>
+            </div> <!-- form group [order by] -->
+            <div class="form-group">
+                <button
+                    type="button"
+                    class="btn btn-default filter-col btn-primary">Filter
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-default filter-col btn-outline-primary">Reset
+                </button>
+            </div>
+        </div>
         <table-base
             v-if="total > 0"
             :fields="fields"
@@ -46,7 +87,7 @@
         <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
-            :total-rows="total"
+            :total-rows="pages * perPage"
             :per-page="perPage"
             :limit="7"
             align="center"
