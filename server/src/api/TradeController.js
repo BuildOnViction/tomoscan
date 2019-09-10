@@ -8,6 +8,8 @@ const TradeController = Router()
 
 TradeController.get('/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('pairName').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -15,11 +17,21 @@ TradeController.get('/trades', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let total = await dexDb.Trade.estimatedDocumentCount()
+        let query = {}
+        if (req.query.user) {
+            query.userAddress = req.query.user.toLowerCase()
+        }
+        if (req.query.pair) {
+            query.pairName = req.query.pair.toUpperCase()
+        }
+        if (req.query.type) {
+            query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
+        }
+        let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find({}, {
+        let trades = await dexDb.Trade.find(query, {
             taker: 1,
             maker: 1,
             baseToken: 1,

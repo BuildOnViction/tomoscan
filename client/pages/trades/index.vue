@@ -4,16 +4,48 @@
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
 
+        <p
+            v-if="total > 0"
+            class="tomo-total-items">{{ _nFormatNumber('trade history', 'trades history', total) }}</p>
+        <form class="form-inline mb-30 filter-box">
+            <div class="form-group">
+                <label
+                    for="inputUserAddress"
+                    class="mr-sm-3">Address</label>
+                <input
+                    id="inputUserAddress"
+                    v-model="user"
+                    type="text"
+                    class="form-control"
+                    placeholder="User address">
+            </div>
+            <div class="form-group mx-sm-3">
+                <label
+                    for="inputPairName"
+                    class="mr-sm-3">Pair</label>
+                <input
+                    id="inputPairName"
+                    v-model="pair"
+                    type="text"
+                    class="form-control"
+                    placeholder="Pair name">
+            </div>
+            <button
+                type="button"
+                class="btn btn-primary mr-sm-3"
+                @click="filter">Filter</button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                @click="reset">Reset</button>
+        </form>
+
         <div
             v-if="total == 0"
             class="tomo-empty">
             <i class="fa fa-exchange tomo-empty__icon"/>
             <p class="tomo-empty__description">No order found</p>
         </div>
-
-        <p
-            v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('trade history', 'trades history', total) }}</p>
 
         <table-base
             v-if="total > 0"
@@ -45,9 +77,9 @@
                 slot="pairName"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'token-slug', params: {slug: props.item.baseToken}}">
+                    :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
                 {{ props.item.pairName.split('/')[0] }}</nuxt-link>/<nuxt-link
-                    :to="{name: 'token-slug', params: {slug: props.item.quoteToken}}"
+                    :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
                 >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
             </template>
         </table-base>
@@ -95,7 +127,9 @@ export default {
         currentPage: 1,
         perPage: 20,
         pages: 1,
-        blockNumber: null
+        blockNumber: null,
+        user: '',
+        pair: ''
     }),
     async mounted () {
         let self = this
@@ -113,6 +147,12 @@ export default {
             let params = {
                 page: self.currentPage,
                 limit: self.perPage
+            }
+            if (this.user !== '') {
+                params.user = this.user
+            }
+            if (this.pair !== '') {
+                params.pair = this.pair
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/trades?' + query)
@@ -136,6 +176,15 @@ export default {
             })
 
             return data
+        },
+        async filter () {
+            await this.getDataFromApi()
+        },
+        async reset () {
+            this.user = ''
+            this.pair = ''
+            this.type = ''
+            await this.getDataFromApi()
         },
         formatData (items = []) {
             let _items = []

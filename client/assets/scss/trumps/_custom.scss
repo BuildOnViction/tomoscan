@@ -154,3 +154,18 @@
 .mb-30 {
   margin-bottom: 30px;
 }
+.filter-box {
+  border-radius: 10px;
+  background-color: #fff;
+  -webkit-box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
+  box-shadow: 8px 8px 40px 0 rgba(0, 0, 0, .07);
+  padding: 15px 10px;
+  margin-bottom: 20px;
+  -webkit-transition: all .3s ease-in;
+  transition: all .3s ease-in;
+}
+@include media-breakpoint-down(md) {
+  .filter-box {
+    display: none;
+  }
+}

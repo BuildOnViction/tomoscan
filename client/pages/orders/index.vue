@@ -3,58 +3,65 @@
         v-if="loading"
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
-
-        <div
-            v-if="total == 0"
-            class="tomo-empty">
-            <i class="fa fa-exchange tomo-empty__icon"/>
-            <p class="tomo-empty__description">No order found</p>
-        </div>
-
         <p
             v-if="total > 0"
             class="tomo-total-items">{{ _nFormatNumber('order', 'orders', total) }}</p>
-        <div class="form-inline mb-30">
+        <form class="form-inline mb-30 filter-box">
             <div class="form-group">
                 <label
-                    class="filter-col"
-                    for="pref-user">User:</label>
+                    for="inputUserAddress"
+                    class="mr-sm-3">Address</label>
                 <input
-                    id="pref-user"
+                    id="inputUserAddress"
+                    v-model="user"
                     type="text"
-                    class="form-control input-sm">
-            </div> <!-- form group [rows] -->
-            <div class="form-group">
-                <label
-                    class="filter-col"
-                    style="margin-right:0;"
-                    for="pref-search">Search:</label>
-                <input
-                    id="pref-search"
-                    type="text"
-                    class="form-control input-sm">
-            </div><!-- form group [search] -->
-            <div class="form-group">
-                <label
-                    class="filter-col"
-                    for="pref-orderby">Type:</label>
-                <select
-                    id="pref-orderby"
-                    class="form-control">
-                    <option>Limit</option>
-                    <option>Market</option>
-                </select>
-            </div> <!-- form group [order by] -->
-            <div class="form-group">
-                <button
-                    type="button"
-                    class="btn btn-default filter-col btn-primary">Filter
-                </button>
-                <button
-                    type="button"
-                    class="btn btn-default filter-col btn-outline-primary">Reset
-                </button>
+                    class="form-control"
+                    placeholder="User address">
             </div>
+            <div class="form-group mx-sm-3">
+                <label
+                    for="inputPairName"
+                    class="mr-sm-3">Pair</label>
+                <input
+                    id="inputPairName"
+                    v-model="pair"
+                    type="text"
+                    class="form-control"
+                    placeholder="Pair name">
+            </div>
+            <div class="form-group mr-sm-3">
+                <label
+                    for="inputType"
+                    class="mr-sm-3">Type</label>
+                <select
+                    id="inputType"
+                    v-model="type"
+                    class="form-control mx-sm-1">
+                    <option
+                        value=""
+                        selected
+                        hidden
+                        disabled>Select type</option>
+                    <option value="">Not filter</option>
+                    <option value="limit">Limit</option>
+                    <option value="market">Market</option>
+                </select>
+            </div>
+            <button
+                type="button"
+                class="btn btn-primary mr-sm-3"
+                @click="filter">Filter</button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                @click="reset">Reset</button>
+        </form>
+
+        <div
+            v-if="total === 0"
+            class="tomo-empty">
+            <i class="fa fa-exchange tomo-empty__icon"/>
+            <p class="tomo-empty__description">No order found</p>
         </div>
         <table-base
             v-if="total > 0"
@@ -71,11 +78,13 @@
             <template
                 slot="pairName"
                 slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'token-slug', params: {slug: props.item.baseToken}}">
-                {{ props.item.pairName.split('/')[0] }}</nuxt-link>/<nuxt-link
-                    :to="{name: 'token-slug', params: {slug: props.item.quoteToken}}"
-                >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
+                <span>
+                    <nuxt-link
+                        :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
+                    {{ props.item.pairName.split('/')[0] }}</nuxt-link>/<nuxt-link
+                        :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
+                    >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
+                </span>
             </template>
             <template
                 slot="type"
@@ -127,7 +136,10 @@ export default {
         currentPage: 1,
         perPage: 20,
         pages: 1,
-        blockNumber: null
+        blockNumber: null,
+        user: '',
+        pair: '',
+        type: ''
     }),
     async mounted () {
         let self = this
@@ -145,6 +157,15 @@ export default {
             let params = {
                 page: self.currentPage,
                 limit: self.perPage
+            }
+            if (this.user !== '') {
+                params.user = this.user
+            }
+            if (this.pair !== '') {
+                params.pair = this.pair
+            }
+            if (this.type !== '') {
+                params.type = this.type
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/orders?' + query)
@@ -168,6 +189,15 @@ export default {
             })
 
             return data
+        },
+        async filter () {
+            await this.getDataFromApi()
+        },
+        async reset () {
+            this.user = ''
+            this.pair = ''
+            this.type = ''
+            await this.getDataFromApi()
         },
         formatData (items = []) {
             let _items = []

@@ -8,6 +8,9 @@ const OrderController = Router()
 
 OrderController.get('/orders', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('pairName').optional(),
+    check('type').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -15,11 +18,21 @@ OrderController.get('/orders', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let total = await dexDb.Order.estimatedDocumentCount()
+        let query = { $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
+        if (req.query.user) {
+            query.userAddress = req.query.user.toLowerCase()
+        }
+        if (req.query.pair) {
+            query.pairName = req.query.pair.toUpperCase()
+        }
+        if (req.query.type) {
+            query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
+        }
+        let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find({ $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }, {
+        let orders = await dexDb.Order.find(query, {
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
