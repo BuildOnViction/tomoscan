@@ -69,6 +69,13 @@
             :items="items"
             class="tomo-table--orders">
             <template
+                slot="hash"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'orders-slug', params: {slug: props.item.hash.toLowerCase()}}"
+                    class="text-truncate">{{ props.item.userAddress.toLowerCase() }}</nuxt-link>
+            </template>
+            <template
                 slot="userAddress"
                 slot-scope="props">
                 <nuxt-link
@@ -126,6 +133,7 @@ export default {
     },
     data: () => ({
         fields: {
+            hash: { label: 'Hash' },
             userAddress: { label: 'User' },
             pairName: { label: 'Pair Name' },
             side: { label: 'Side' },

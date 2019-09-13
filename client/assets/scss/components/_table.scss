@@ -767,15 +767,15 @@
   tbody tr {
 
     @include media-breakpoint-up(lg) {
-      grid-template-columns: 20% 15% 10% 10% 15% 15% 15%;
+      grid-template-columns: 20% 20% 10% 10% 10% 10% 10% 10%;
     }
 
     @include media-breakpoint-up(xl) {
-      grid-template-columns: 20% 15% 10% 10% 15% 15% 15%;
+      grid-template-columns: 20% 20% 10% 10% 10% 10% 10% 10%;
     }
 
     @include media-breakpoint-up(2xl) {
-      grid-template-columns: 20% 15% 10% 10% 15% 15% 15%;
+      grid-template-columns: 20% 20% 10% 10% 10% 10% 10% 10%;
     }
   }
 }

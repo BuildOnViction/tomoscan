@@ -33,6 +33,7 @@ OrderController.get('/orders', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let orders = await dexDb.Order.find(query, {
+            hash: 1,
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
@@ -62,6 +63,40 @@ OrderController.get('/orders', [
     }
 })
 
+OrderController.get('/orders/:slug', [
+    check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug
+    hash = hash.toLowerCase()
+    try {
+        let order = await dexDb.Order.findOne({}, {
+            hash: 1,
+            exchangeAddress: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            userAddress: 1,
+            status: 1,
+            side: 1,
+            type: 1,
+            quantity: 1,
+            price: 1,
+            filledAmount: 1,
+            makeFee: 1,
+            takeFee: 1,
+            pairName: 1
+        }).lean().exec()
+        order = await DexHelper.formatOrder([order])
+        return res.json(order[0])
+    } catch (e) {
+        logger.warn('Get order %s detail has error %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
 OrderController.get('/orders/listByDex/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Dex address is incorrect.'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -80,6 +115,7 @@ OrderController.get('/orders/listByDex/:slug', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let orders = await dexDb.Order.find(query, {
+            hash: 1,
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
@@ -127,6 +163,7 @@ OrderController.get('/orders/listByAccount/:slug', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let orders = await dexDb.Order.find(query, {
+            hash: 1,
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
@@ -183,6 +220,7 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let orders = await dexDb.Order.find(query, {
+            hash: 1,
             exchangeAddress: 1,
             baseToken: 1,
             quoteToken: 1,
