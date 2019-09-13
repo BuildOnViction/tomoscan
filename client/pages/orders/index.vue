@@ -80,10 +80,14 @@
                 slot-scope="props">
                 <span>
                     <nuxt-link
+                        v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
-                    {{ props.item.pairName.split('/')[0] }}</nuxt-link>/<nuxt-link
+                        {{ props.item.pairName.split('/')[0] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[0] }}</span>/<nuxt-link
+                        v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
                     >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
                 </span>
             </template>
             <template
