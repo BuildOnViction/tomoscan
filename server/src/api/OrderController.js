@@ -3,6 +3,7 @@ const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const DexHelper = require('../helpers/dex')
+const Web3Util = require('../helpers/web3')
 
 const OrderController = Router()
 
@@ -17,10 +18,11 @@ OrderController.get('/orders', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
+    let web3 = await Web3Util.getWeb3()
     try {
         let query = { $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
         if (req.query.user) {
-            query.userAddress = req.query.user.toLowerCase()
+            query.userAddress = web3.utils.toChecksumAddress(req.query.user)
         }
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()
@@ -106,9 +108,10 @@ OrderController.get('/orders/listByDex/:slug', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
+    let web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
-        hash = hash.toLowerCase()
+        hash = web3.utils.toChecksumAddress(hash)
         let query = { exchangeAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
         let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -155,8 +158,9 @@ OrderController.get('/orders/listByAccount/:slug', [
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
+    let web3 = await Web3Util.getWeb3()
     try {
-        hash = hash.toLowerCase()
+        hash = web3.utils.toChecksumAddress(hash)
         let query = { userAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
         let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -204,8 +208,9 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let baseToken = req.params.baseToken.toLowerCase()
-    let quoteToken = req.params.quoteToken.toLowerCase()
+    let web3 = await Web3Util.getWeb3()
+    let baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
+    let quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
     try {
         let query = {
             baseToken: baseToken,
@@ -213,7 +218,7 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
             $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }]
         }
         if (req.query.userAddress) {
-            query.userAddress = req.query.userAddress.toLowerCase()
+            query.userAddress = web3.utils.toChecksumAddress(req.query.userAddress)
         }
         let total = await dexDb.Order.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20

@@ -3,6 +3,7 @@ const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const DexHelper = require('../helpers/dex')
+const Web3Util = require('../helpers/web3')
 
 const TradeController = Router()
 
@@ -17,9 +18,10 @@ TradeController.get('/trades', [
         return res.status(400).json({ errors: errors.array() })
     }
     try {
+        let web3 = await Web3Util.getWeb3()
         let query = {}
         if (req.query.user) {
-            query.userAddress = req.query.user.toLowerCase()
+            query.userAddress = web3.utils.toChecksumAddress(req.query.user)
         }
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()
@@ -69,7 +71,7 @@ TradeController.get('/trades/:slug', [
     let hash = req.params.slug
     hash = hash.toLowerCase()
     try {
-        let trade = await dexDb.Trade.findOne({}, {
+        let trade = await dexDb.Trade.findOne({ hash: hash }, {
             hash: 1,
             taker: 1,
             maker: 1,
@@ -99,8 +101,9 @@ TradeController.get('/trades/listByDex/:slug', [
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
+    let web3 = await Web3Util.getWeb3()
     try {
-        hash = hash.toLowerCase()
+        hash = web3.utils.toChecksumAddress(hash)
         let query = { exchangeAddress: hash }
         let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -144,8 +147,9 @@ TradeController.get('/trades/listByAccount/:slug', [
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
+    let web3 = await Web3Util.getWeb3()
     try {
-        hash = hash.toLowerCase()
+        hash = web3.utils.toChecksumAddress(hash)
         let query = { $or: [{ maker: hash }, { taker: hash }] }
         let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -189,12 +193,13 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let baseToken = req.params.baseToken.toLowerCase()
-    let quoteToken = req.params.quoteToken.toLowerCase()
+    let web3 = await Web3Util.getWeb3()
+    let baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
+    let quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
     try {
         let query = { baseToken: baseToken, quoteToken: quoteToken }
         if (req.query.userAddress) {
-            let userAddress = req.query.userAddress.toLowerCase()
+            let userAddress = web3.utils.toChecksumAddress(req.query.userAddress)
             query['$or'] = [{ maker: userAddress }, { taker: userAddress }]
         }
         let total = await dexDb.Trade.countDocuments(query)
