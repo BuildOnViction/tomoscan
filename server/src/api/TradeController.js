@@ -39,6 +39,8 @@ TradeController.get('/trades', [
             maker: 1,
             baseToken: 1,
             quoteToken: 1,
+            takerExchange: 1,
+            makerExchange: 1,
             txHash: 1,
             pairName: 1,
             amount: 1,
@@ -77,6 +79,8 @@ TradeController.get('/trades/:slug', [
             maker: 1,
             baseToken: 1,
             quoteToken: 1,
+            takerExchange: 1,
+            makerExchange: 1,
             txHash: 1,
             pairName: 1,
             amount: 1,
@@ -104,7 +108,7 @@ TradeController.get('/trades/listByDex/:slug', [
     let web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { exchangeAddress: hash }
+        let query = { $or: [{ takerExchange: hash }, { makerExchange: hash }] }
         let total = await dexDb.Trade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -115,6 +119,8 @@ TradeController.get('/trades/listByDex/:slug', [
             maker: 1,
             baseToken: 1,
             quoteToken: 1,
+            takerExchange: 1,
+            makerExchange: 1,
             txHash: 1,
             pairName: 1,
             amount: 1,
@@ -161,6 +167,8 @@ TradeController.get('/trades/listByAccount/:slug', [
             maker: 1,
             baseToken: 1,
             quoteToken: 1,
+            takerExchange: 1,
+            makerExchange: 1,
             txHash: 1,
             pairName: 1,
             amount: 1,
@@ -212,6 +220,8 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
             maker: 1,
             baseToken: 1,
             quoteToken: 1,
+            takerExchange: 1,
+            makerExchange: 1,
             txHash: 1,
             pairName: 1,
             amount: 1,
