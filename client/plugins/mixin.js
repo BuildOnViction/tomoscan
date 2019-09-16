@@ -206,6 +206,17 @@ const mixin = {
                 }
                 return this.$router.push(to)
             }
+        },
+        hiddenString (string, numberStringShowing) {
+            if (string === null || string === '') {
+                return ''
+            }
+            if (string.length <= numberStringShowing * 2 + 3) {
+                return string
+            }
+            let stringBeforeDot = String(string).substr(0, numberStringShowing)
+            let stringAfterDot = String(string).substr(-numberStringShowing)
+            return stringBeforeDot + '...' + stringAfterDot
         }
     }
 }

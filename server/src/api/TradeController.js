@@ -32,6 +32,7 @@ TradeController.get('/trades', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let trades = await dexDb.Trade.find(query, {
+            hash: 1,
             taker: 1,
             maker: 1,
             baseToken: 1,
@@ -58,6 +59,36 @@ TradeController.get('/trades', [
     }
 })
 
+TradeController.get('/trades/:slug', [
+    check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug
+    hash = hash.toLowerCase()
+    try {
+        let trade = await dexDb.Trade.findOne({}, {
+            hash: 1,
+            taker: 1,
+            maker: 1,
+            baseToken: 1,
+            quoteToken: 1,
+            txHash: 1,
+            pairName: 1,
+            amount: 1,
+            pricepoint: 1,
+            status: 1
+        }).lean().exec()
+        trade = await DexHelper.formatTrade([trade])
+        return res.json(trade[0])
+    } catch (e) {
+        logger.warn('Get order %s detail has error %s', hash, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
 TradeController.get('/trades/listByDex/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Dex address is incorrect.'),
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
@@ -76,6 +107,7 @@ TradeController.get('/trades/listByDex/:slug', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let trades = await dexDb.Trade.find(query, {
+            hash: 1,
             taker: 1,
             maker: 1,
             baseToken: 1,
@@ -120,6 +152,7 @@ TradeController.get('/trades/listByAccount/:slug', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let trades = await dexDb.Trade.find(query, {
+            hash: 1,
             taker: 1,
             maker: 1,
             baseToken: 1,
@@ -169,6 +202,7 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
         let trades = await dexDb.Trade.find(query, {
+            hash: 1,
             taker: 1,
             maker: 1,
             baseToken: 1,

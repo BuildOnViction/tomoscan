@@ -115,9 +115,17 @@ br.register('orders', (brs) => {
     brs.parent('index')
     brs.push('Orders', { name: 'orders' })
 })
+br.register('orders-slug', (brs, location) => {
+    brs.parent('orders')
+    brs.push('Orders Detail', location)
+})
 br.register('trades', (brs) => {
     brs.parent('index')
     brs.push('Trades History', { name: 'trades' })
+})
+br.register('trades-slug', (brs, location) => {
+    brs.parent('trades')
+    brs.push('Trade Detail', location)
 })
 br.register('tokens-slug', (brs, location) => {
     brs.parent('tokens')

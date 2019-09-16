@@ -53,25 +53,35 @@
             :items="items"
             class="tomo-table--trades">
             <template
+                slot="hash"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'trades-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    <i
+                        v-if="props.item.status === 'ERROR'"
+                        class="fa fa-exclamation mr-1 text-danger tx-failed"/>
+                    {{ hiddenString(props.item.hash.toLowerCase(), 10) }}</nuxt-link>
+            </template>
+            <template
                 slot="txHash"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'tx-slug', params: {slug: props.item.txHash.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.txHash.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'txs-slug', params: {slug: props.item.txHash.toLowerCase()}}">
+                    {{ hiddenString(props.item.txHash.toLowerCase(), 10) }}</nuxt-link>
             </template>
             <template
                 slot="taker"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.taker.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.taker.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.taker.toLowerCase()}}">
+                    {{ hiddenString(props.item.taker.toLowerCase(), 10) }}</nuxt-link>
             </template>
             <template
                 slot="maker"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.maker.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.maker.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.maker.toLowerCase()}}">
+                    {{ hiddenString(props.item.maker.toLowerCase(), 10) }}</nuxt-link>
             </template>
             <template
                 slot="pairName"
@@ -119,11 +129,11 @@ export default {
     },
     data: () => ({
         fields: {
-            txHash: { label: 'Tx' },
+            hash: { label: 'Trade hash' },
+            txHash: { label: 'Tx hash' },
             taker: { label: 'Taker' },
             maker: { label: 'Maker' },
             pairName: { label: 'Pair Name' },
-            status: { label: 'Status' },
             pricepoint: { label: 'Price point' },
             amount: { label: 'Amount' }
         },
