@@ -583,6 +583,21 @@ paths:
           required: false
           description: default 20, maximum = 50
           type: number
+        - name: userAddress
+          in: query
+          required: false
+          description: userAddress
+          type: string
+        - name: pairName
+          in: query
+          required: false
+          description: pairName = btc/tomo
+          type: string
+        - name: type
+          in: query
+          required: false
+          description: limit/market
+          type: string
       responses:
         200:
           description: OK
@@ -711,6 +726,16 @@ paths:
           required: false
           description: default 20, maximum = 50
           type: number
+        - name: userAddress
+          in: query
+          required: false
+          description: userAddress
+          type: string
+        - name: pairName
+          in: query
+          required: false
+          description: pairName = btc/tomo
+          type: string
       responses:
         200:
           description: OK
