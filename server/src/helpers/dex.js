@@ -88,10 +88,18 @@ let DexHelper = {
             let pricepoint = new BigNumber(trades[i].pricepoint)
             pricepoint = pricepoint.dividedBy(10 ** decimals[qt]).toNumber()
 
+            let makeFee = new BigNumber(trades[i].makeFee)
+            makeFee = makeFee.dividedBy(10 ** decimals[qt]).toNumber()
+
+            let takeFee = new BigNumber(trades[i].makeFee)
+            takeFee = takeFee.dividedBy(10 ** decimals[qt]).toNumber()
+
             trades[i].baseDecimals = decimals[bt]
             trades[i].quoteDecimals = decimals[qt]
             trades[i].pricepoint = pricepoint
             trades[i].amount = amount
+            trades[i].makeFee = makeFee
+            trades[i].takeFee = takeFee
         }
         return trades
     }
