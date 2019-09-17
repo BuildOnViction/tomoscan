@@ -16,9 +16,6 @@ tags:
   - name: Tokens
     description: Tokens API
 
-schemes:
-  - https
-  - http
 consumes:
   - application/json
 produces:
