@@ -60,28 +60,21 @@
                     <i
                         v-if="props.item.status === 'ERROR'"
                         class="fa fa-exclamation mr-1 text-danger tx-failed"/>
-                    {{ hiddenString(props.item.hash.toLowerCase(), 10) }}</nuxt-link>
-            </template>
-            <template
-                slot="txHash"
-                slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'txs-slug', params: {slug: props.item.txHash.toLowerCase()}}">
-                    {{ hiddenString(props.item.txHash.toLowerCase(), 10) }}</nuxt-link>
+                    {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="taker"
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'address-slug', params: {slug: props.item.taker.toLowerCase()}}">
-                    {{ hiddenString(props.item.taker.toLowerCase(), 10) }}</nuxt-link>
+                    {{ hiddenString(props.item.taker.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="maker"
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'address-slug', params: {slug: props.item.maker.toLowerCase()}}">
-                    {{ hiddenString(props.item.maker.toLowerCase(), 10) }}</nuxt-link>
+                    {{ hiddenString(props.item.maker.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="pairName"
@@ -97,6 +90,24 @@
                     >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
                     <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
                 </span>
+            </template>
+            <template
+                slot="pricepoint"
+                slot-scope="props">
+                {{ formatNumber(props.item.pricepoint) + ' ' + props.item.pairName.split('/')[1] }}
+            </template>
+            <template
+                slot="amount"
+                slot-scope="props">
+                {{ formatNumber(props.item.amount) + ' ' + props.item.pairName.split('/')[0] }}
+            </template>
+            <template
+                slot="createdAt"
+                slot-scope="props">
+                <span
+                    v-b-tooltip.hover
+                    :title="$moment(props.item.createdAt).format('lll')">
+                    {{ $moment(props.item.createdAt).fromNow() }}</span>
             </template>
         </table-base>
 
@@ -130,12 +141,12 @@ export default {
     data: () => ({
         fields: {
             hash: { label: 'Trade hash' },
-            txHash: { label: 'Tx hash' },
             taker: { label: 'Taker' },
             maker: { label: 'Maker' },
             pairName: { label: 'Pair Name' },
-            pricepoint: { label: 'Price point' },
-            amount: { label: 'Amount' }
+            pricepoint: { label: 'Price' },
+            amount: { label: 'Amount' },
+            createdAt: { label: 'Age' }
         },
         loading: true,
         total: 0,

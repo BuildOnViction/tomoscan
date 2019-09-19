@@ -71,16 +71,24 @@
             <template
                 slot="hash"
                 slot-scope="props">
+                <i
+                    v-if="props.item.status === 'FILLED'"
+                    class="fa fa-check text-success ml-15"
+                    aria-hidden="true"/>
+                <i
+                    v-if="props.item.status === 'CANCELLED'"
+                    class="fa fa-ban text-danger ml-15"
+                    aria-hidden="true"/>
                 <nuxt-link
-                    :to="{name: 'orders-slug', params: {slug: props.item.hash.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.userAddress.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="userAddress"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.userAddress.toLowerCase()}}"
-                    class="text-truncate">{{ props.item.userAddress.toLowerCase() }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.userAddress.toLowerCase()}}">
+                    {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="pairName"
@@ -98,9 +106,32 @@
                 </span>
             </template>
             <template
+                slot="quantity"
+                slot-scope="props">
+                {{ formatNumber(props.item.quantity) + ' ' + props.item.pairName.split('/')[0] }}
+            </template>
+            <template
+                slot="price"
+                slot-scope="props">
+                {{ formatNumber(props.item.price) + ' ' + props.item.pairName.split('/')[1] }}
+            </template>
+            <template
+                slot="filledAmount"
+                slot-scope="props">
+                {{ formatNumber(props.item.filledAmount) + ' ' + props.item.pairName.split('/')[0] }}
+            </template>
+            <template
                 slot="type"
                 slot-scope="props">
                 {{ props.item.type === 'LO' ? 'Limit' : 'Market' }}
+            </template>
+            <template
+                slot="createdAt"
+                slot-scope="props">
+                <span
+                    v-b-tooltip.hover
+                    :title="$moment(props.item.createdAt).format('lll')">
+                    {{ $moment(props.item.createdAt).fromNow() }}</span>
             </template>
         </table-base>
 
@@ -137,10 +168,10 @@ export default {
             userAddress: { label: 'User' },
             pairName: { label: 'Pair Name' },
             side: { label: 'Side' },
-            type: { label: 'Type' },
             quantity: { label: 'Quantity' },
             price: { label: 'Price' },
-            filledAmount: { label: 'Filled Amount' }
+            filledAmount: { label: 'Filled Amount' },
+            createdAt: { label: 'Age' }
         },
         loading: true,
         total: 0,
