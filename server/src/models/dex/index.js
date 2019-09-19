@@ -31,6 +31,8 @@ const Trade = conn.model('Trade', new Schema({
     txHash: { type: String, index: true },
     makerExchange: { type: String, index: true },
     takerExchange: { type: String, index: true },
+    takerOrderHash: { type: String, index: true },
+    makerOrderHash: { type: String, index: true },
     pairName: String,
     amount: String,
     pricepoint: String,

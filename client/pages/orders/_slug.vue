@@ -4,7 +4,7 @@
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
         <h3 class="tomo-headline">
-            <span class="mr-2">Order ID:</span>
+            <span class="mr-2">Order Hash:</span>
             <read-more
                 :text="hash"
                 class="d-sm-none" />
@@ -57,21 +57,27 @@
                                             <td>Dex address</td>
                                             <td>
                                                 <nuxt-link
-                                                    :to="{name: 'address-slug', params: {slug:order.exchangeAddress}}"
-                                                    class="mr-1">{{ order.exchangeAddress }}</nuxt-link>
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:order.exchangeAddress.toLowerCase()}}"
+                                                    class="mr-1">{{ order.exchangeAddress.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>User address</td>
                                             <td>
                                                 <nuxt-link
-                                                    :to="{name: 'address-slug', params: {slug:order.userAddress}}"
-                                                    class="mr-1">{{ order.userAddress }}</nuxt-link>
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:order.userAddress.toLowerCase()}}"
+                                                    class="mr-1">{{ order.userAddress.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Type</td>
                                             <td>{{ order.type === 'LO' ? 'Limit' : 'Market' }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Side</td>
+                                            <td>{{ order.side }}</td>
                                         </tr>
                                         <tr>
                                             <td>Pair name</td>
@@ -96,19 +102,24 @@
                                         </tr>
                                         <tr>
                                             <td>Price</td>
-                                            <td>{{ order.price }}</td>
+                                            <td>{{ order.price }} {{ order.pairName.split('/')[1] }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Quantity</td>
-                                            <td>{{ order.quantity }}</td>
+                                            <td>Order Amount</td>
+                                            <td>{{ order.quantity }} {{ order.pairName.split('/')[0] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Filled Amount</td>
-                                            <td>{{ order.filledAmount }}</td>
+                                            <td>{{ order.filledAmount }} {{ order.pairName.split('/')[0] }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Total</td>
-                                            <td>{{ (order.quantity - order.filledAmount) * order.price }}</td>
+                                            <td>Age</td>
+                                            <td>
+                                                <span
+                                                    v-b-tooltip.hover
+                                                    :title="$moment(order.createdAt).format('lll')">
+                                                    {{ $moment(order.createdAt).fromNow() }}</span>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

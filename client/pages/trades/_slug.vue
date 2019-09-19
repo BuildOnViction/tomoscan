@@ -4,7 +4,7 @@
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
         <h3 class="tomo-headline">
-            <span class="mr-2">Trade ID:</span>
+            <span class="mr-2">Trade Hash:</span>
             <read-more
                 :text="hash"
                 class="d-sm-none" />
@@ -37,7 +37,7 @@
                                 <table class="tomo-card__table">
                                     <tbody>
                                         <tr>
-                                            <td>Trade ID</td>
+                                            <td>Trade Hash</td>
                                             <td>{{ trade.hash }}</td>
                                         </tr>
                                         <tr>
@@ -58,12 +58,48 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>Taker order</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'orders-slug',
+                                                          params: {slug: trade.takerOrderHash.toLowerCase()}}">
+                                                    {{ trade.takerOrderHash.toLowerCase() }}</nuxt-link>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Taker exchange</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug: trade.takerExchange.toLowerCase()}}">
+                                                    {{ trade.takerExchange.toLowerCase() }}</nuxt-link>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Maker address</td>
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'address-slug',
                                                           params: {slug:trade.maker.toLowerCase()}}">
                                                     {{ trade.maker.toLowerCase() }}</nuxt-link>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maker order</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'orders-slug',
+                                                          params: {slug: trade.makerOrderHash.toLowerCase()}}">
+                                                    {{ trade.makerOrderHash.toLowerCase() }}</nuxt-link>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maker exchange</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:trade.makerExchange.toLowerCase()}}">
+                                                    {{ trade.makerExchange.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
@@ -89,11 +125,32 @@
                                         </tr>
                                         <tr>
                                             <td>Price</td>
-                                            <td>{{ trade.pricepoint }}</td>
+                                            <td>{{ formatNumber(trade.pricepoint) }}
+                                                {{ trade.pairName.split('/')[1] }}</td>
                                         </tr>
                                         <tr>
                                             <td>Amount</td>
-                                            <td>{{ trade.amount }}</td>
+                                            <td>{{ formatNumber(trade.amount) }}
+                                                {{ trade.pairName.split('/')[0] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Taker Fee</td>
+                                            <td>{{ formatNumber(trade.takeFee) }}
+                                                {{ trade.pairName.split('/')[1] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Maker Fee</td>
+                                            <td>{{ formatNumber(trade.makeFee) }}
+                                                {{ trade.pairName.split('/')[1] }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Age</td>
+                                            <td>
+                                                <span
+                                                    v-b-tooltip.hover
+                                                    :title="$moment(trade.createdAt).format('lll')">
+                                                    {{ $moment(trade.createdAt).fromNow() }}</span>
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

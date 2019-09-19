@@ -11,7 +11,7 @@ OrderController.get('/orders', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
     check('pairName').optional(),
-    check('type').optional(),
+    check('side').optional(),
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
@@ -28,8 +28,8 @@ OrderController.get('/orders', [
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()
         }
-        if (req.query.type) {
-            query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
+        if (req.query.side) {
+            query.side = req.query.side.toUpperCase()
         }
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()

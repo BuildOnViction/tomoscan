@@ -593,10 +593,10 @@ paths:
           required: false
           description: pairName = btc/tomo
           type: string
-        - name: type
+        - name: side
           in: query
           required: false
-          description: limit/market
+          description: buy/sell
           type: string
       responses:
         200:

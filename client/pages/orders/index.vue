@@ -31,20 +31,20 @@
             </div>
             <div class="form-group mr-sm-3">
                 <label
-                    for="inputType"
-                    class="mr-sm-3">Type</label>
+                    for="inputSide"
+                    class="mr-sm-3">Side</label>
                 <select
-                    id="inputType"
-                    v-model="type"
+                    id="inputSide"
+                    v-model="side"
                     class="form-control mx-sm-1">
                     <option
                         value=""
                         selected
                         hidden
-                        disabled>Select type</option>
-                    <option value="">Not filter</option>
-                    <option value="limit">Limit</option>
-                    <option value="market">Market</option>
+                        disabled>Select side</option>
+                    <option value="">No filter</option>
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
                 </select>
             </div>
             <button
@@ -182,7 +182,7 @@ export default {
         blockNumber: null,
         user: '',
         pair: '',
-        type: ''
+        side: ''
     }),
     async mounted () {
         let self = this
@@ -207,8 +207,8 @@ export default {
             if (this.pair !== '') {
                 params.pair = this.pair
             }
-            if (this.type !== '') {
-                params.type = this.type
+            if (this.side !== '') {
+                params.side = this.side
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/orders?' + query)
@@ -239,7 +239,7 @@ export default {
         async reset () {
             this.user = ''
             this.pair = ''
-            this.type = ''
+            this.side = ''
             await this.getDataFromApi()
         },
         formatData (items = []) {

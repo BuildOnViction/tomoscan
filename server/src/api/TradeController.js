@@ -60,20 +60,7 @@ TradeController.get('/trades/:slug', [
     let hash = req.params.slug
     hash = hash.toLowerCase()
     try {
-        let trade = await dexDb.Trade.findOne({ hash: hash }, {
-            hash: 1,
-            taker: 1,
-            maker: 1,
-            baseToken: 1,
-            quoteToken: 1,
-            takerExchange: 1,
-            makerExchange: 1,
-            txHash: 1,
-            pairName: 1,
-            amount: 1,
-            pricepoint: 1,
-            status: 1
-        }).lean().exec()
+        let trade = await dexDb.Trade.findOne({ hash: hash }).lean().exec()
         trade = await DexHelper.formatTrade([trade])
         return res.json(trade[0])
     } catch (e) {
