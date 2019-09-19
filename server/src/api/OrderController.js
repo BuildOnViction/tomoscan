@@ -67,7 +67,7 @@ OrderController.get('/orders/:slug', [
     let hash = req.params.slug
     hash = hash.toLowerCase()
     try {
-        let order = await dexDb.Order.findOne({}, {
+        let order = await dexDb.Order.findOne({ hash: hash }, {
             signature: 0,
             key: 0
         }).lean().exec()
