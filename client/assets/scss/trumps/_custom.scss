@@ -172,3 +172,8 @@
 .ml-15 {
   margin-left: -15px;
 }
+
+
+body.dark-mode .filter-box {
+  background-image: linear-gradient(-135deg, #2e2e4b, #323252);
+}
