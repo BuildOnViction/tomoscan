@@ -3,6 +3,7 @@ const axios = require('axios')
 const db = require('../models')
 const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
+const apiCacheWithRedis = require('../middlewares/apicache')
 
 const SettingController = Router()
 var tomoUsd = {}
@@ -28,9 +29,11 @@ SettingController.get('/setting', async (req, res) => {
     }
 })
 
-SettingController.get('/setting/usd', async (req, res) => {
+SettingController.get('/setting/usd', apiCacheWithRedis('10 minutes'), async (req, res) => {
     try {
-        let { data } = await axios.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
+        const httpClient = axios.create()
+        httpClient.defaults.timeout = 5000
+        let { data } = await httpClient.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
 
         tomoUsd = data
     } catch (e) {
