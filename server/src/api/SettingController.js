@@ -31,10 +31,8 @@ SettingController.get('/setting', async (req, res) => {
 
 SettingController.get('/setting/usd', apiCacheWithRedis('10 minutes'), async (req, res) => {
     try {
-        const httpClient = axios.create()
-        httpClient.defaults.timeout = 5000
-        let { data } = await httpClient.get('https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd')
-
+        let url = 'https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd'
+        let { data } = await axios.get(url, { timeout: 5000 })
         tomoUsd = data
     } catch (e) {
         logger.warn(e)
