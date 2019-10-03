@@ -201,8 +201,7 @@ TradeController.get('/trades/stats/:exchangeAddress/:pairName', [
         return res.json(stat)
     } else {
         let currentTime = new Date()
-        let oneDayAgo = currentTime
-        oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+        let oneDayAgo = new Date(new Date().setDate(new Date().getDate() - 1))
         let stats = await dexDb.Statistic.find({
             exchangeAddress: exchangeAddress,
             pairName: pairName,
