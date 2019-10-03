@@ -180,4 +180,44 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
     }
 })
 
+TradeController.get('/trades/stats/:exchangeAddress/:pairName', [
+    check('exchangeAddress').exists().isLength({ min: 42, max: 42 }).withMessage('exchange address is incorrect.'),
+    check('pairName').exists().withMessage('pair is required.'),
+    check('date').optional().withMessage('if does not have, will calculate current')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let web3 = await Web3Util.getWeb3()
+    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    let pairName = req.params.pairName.toUpperCase()
+    if (req.query.date) {
+        let stat = await dexDb.HistoryStatistic.findOne({
+            exchangeAddress: exchangeAddress,
+            pairName: pairName,
+            date: new Date(req.query.date)
+        })
+        return res.json(stat)
+    } else {
+        let currentTime = new Date()
+        let oneDayAgo = currentTime
+        oneDayAgo.setDate(oneDayAgo.getDate() - 1)
+        let stats = await dexDb.Statistic.find({
+            exchangeAddress: exchangeAddress,
+            pairName: pairName,
+            date: { $gte: oneDayAgo, $lte: currentTime }
+        })
+        let volume24h = 0
+        let tradeNumber = 0
+        let totalFee = 0
+        for (let i = 0; i < stats.length; i++) {
+            volume24h += stats[i].volume
+            tradeNumber += stats[i].tradeNumber
+            totalFee += stats[i].totalFee
+        }
+        return res.json({ volume24h: volume24h, tradeNumber: tradeNumber, totalFee: totalFee })
+    }
+})
+
 module.exports = TradeController

@@ -52,7 +52,7 @@ const HistoryStatistic = conn.model('HistoryStatistic', new Schema({
     exchangeAddress: { type: String, index: true },
     baseToken: { type: String, index: true },
     quoteToken: { type: String, index: true },
-    pairName: String,
+    pairName: { type: String, index: true },
     date: { type: Date, index: true },
     volume24h: Number,
     tradeNumber: Number,
