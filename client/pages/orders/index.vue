@@ -81,7 +81,7 @@
                     aria-hidden="true"/>
                 <nuxt-link
                     :to="{name: 'orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
-                    {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
+                    {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="userAddress"
