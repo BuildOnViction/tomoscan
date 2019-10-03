@@ -10,6 +10,7 @@
     "start": "node src",
     "crawl": "node src/crawl.js",
     "producer": "node src/producer.js",
+    "tradeProcess": "node src/tradeProcess.js",
     "test": "eslint src"
   },
   "eslintConfig": {
