@@ -40,4 +40,36 @@ const Trade = conn.model('Trade', new Schema({
 }))
 db.Trade = Trade
 
+const Token = conn.model('Token', new Schema({
+    contractAddress: { type: String, index: true },
+    symbol: { type: String, index: true },
+    name: String,
+    decimals: Number
+}))
+db.Token = Token
+
+const HistoryStatistic = conn.model('HistoryStatistic', new Schema({
+    exchangeAddress: { type: String, index: true },
+    baseToken: { type: String, index: true },
+    quoteToken: { type: String, index: true },
+    pairName: String,
+    date: { type: Date, index: true },
+    volume24h: Number,
+    tradeNumber: Number,
+    totalFee: Number
+}))
+db.HistoryStatistic = HistoryStatistic
+
+const Statistic = conn.model('Statistic', new Schema({
+    exchangeAddress: { type: String, index: true },
+    baseToken: { type: String, index: true },
+    quoteToken: { type: String, index: true },
+    pairName: { type: String, index: true },
+    date: { type: Date, index: true },
+    volume: Number,
+    tradeNumber: Number,
+    totalFee: Number
+}))
+db.Statistic = Statistic
+
 module.exports = db
