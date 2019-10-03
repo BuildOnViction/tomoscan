@@ -1,6 +1,7 @@
 const dbDex = require('./models/dex')
 const Web3Util = require('./helpers/web3')
 const BigNumber = require('bignumber.js')
+const logger = require('./helpers/logger')
 const TomoToken = '0x0000000000000000000000000000000000000001'
 
 const decimalFunction = '0x313ce567'
@@ -34,7 +35,7 @@ async function getSaveTime (date) {
 async function run () {
     let web3 = await Web3Util.getWeb3()
     dbDex.Trade.watch().on('change', async (data) => {
-        console.log('new trade %s', data.fullDocument.hash)
+        logger.info('new trade %s', data.fullDocument.hash)
         let makerExchange = data.fullDocument.makerExchange
         let takerExchange = data.fullDocument.takerExchange
         let pairName = data.fullDocument.pairName
