@@ -80,7 +80,7 @@
         <b-pagination
             v-if="total > 0 && total > perPage"
             v-model="currentPage"
-            :total-rows="total"
+            :total-rows="pages * perPage"
             :number-of-pages="pages"
             :per-page="perPage"
             :limit="7"

@@ -10,7 +10,7 @@ const AccountController = Router()
 
 AccountController.get('/accounts', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number')
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -28,6 +28,9 @@ AccountController.get('/accounts', [
             items[i]['rank'] = baseRank + i + 1
         }
         data.items = items
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {
@@ -65,7 +68,7 @@ AccountController.get('/accounts/:slug', [
 AccountController.get('/accounts/:slug/listTokens', [
     query('limit')
         .isInt({ min: 0, max: 200 }).optional().withMessage('limit should greater than 0 and less than 200'),
-    query('page').isNumeric({ no_symbols: true }).optional().withMessage('page must be number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res, next) => {
     const errors = validationResult(req)

@@ -11,7 +11,7 @@ const RewardController = Router()
 
 RewardController.get('/rewards/:slug', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 100 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -33,6 +33,9 @@ RewardController.get('/rewards/:slug', [
         }
         params.sort = { epoch: -1 }
         let data = await paginate(req, 'Reward', params, total)
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {
@@ -63,7 +66,7 @@ RewardController.get('/rewards/alerts/status', [], async (req, res) => {
 
 RewardController.get('/rewards/epoch/:epochNumber', [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 100 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number'),
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('epochNumber').isInt().exists().withMessage('Epoch number is require')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -83,6 +86,9 @@ RewardController.get('/rewards/epoch/:epochNumber', [
                 { reason: 'Foundation' })
         }
         let data = await paginate(req, 'Reward', params)
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {

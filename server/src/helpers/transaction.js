@@ -459,7 +459,7 @@ let TransactionHelper = {
                     json: {
                         'jsonrpc': '2.0',
                         'method': 'debug_traceTransaction',
-                        'params': [transaction.hash, { tracer: 'callTracer' }],
+                        'params': [transaction.hash, { tracer: 'callTracer', timeout: '120s' }],
                         'id': 88
                     }
                 }, (error, res, body) => {

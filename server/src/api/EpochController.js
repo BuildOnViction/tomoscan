@@ -10,7 +10,7 @@ const EpochController = Router()
 
 EpochController.get('/epochs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('page').optional().isInt().withMessage('Require page is number')
+    check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {
@@ -25,6 +25,9 @@ EpochController.get('/epochs', [
         let data = await utils.paginate(req, 'Epoch', params, lastEpoch)
         data.lastBlock = lastBlock
         data.lastEpoch = lastEpoch
+        if (data.pages > 500) {
+            data.pages = 500
+        }
 
         return res.json(data)
     } catch (e) {
