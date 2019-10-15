@@ -21,7 +21,8 @@ TradeController.get('/trades', [
         let web3 = await Web3Util.getWeb3()
         let query = {}
         if (req.query.user) {
-            query.userAddress = web3.utils.toChecksumAddress(req.query.user)
+            let user = web3.utils.toChecksumAddress(req.query.user)
+            query.userAddress = { $or: [{ taker: user }, { maker: user }] }
         }
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()
