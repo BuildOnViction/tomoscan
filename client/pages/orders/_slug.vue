@@ -54,6 +54,20 @@
                                             </td>
                                         </tr>
                                         <tr>
+                                            <td>Order Status</td>
+                                            <td>
+                                                <span
+                                                    v-if="order.status === 'FILLED'"
+                                                    class="text-success">Filled</span>
+                                                <span
+                                                    v-else-if="order.status === 'CANCELLED'"
+                                                    class="text-danger">Cancelled</span>
+                                                <span
+                                                    v-else
+                                                    class="text-purple">Partial Filled</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Dex address</td>
                                             <td>
                                                 <nuxt-link

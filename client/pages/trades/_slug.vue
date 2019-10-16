@@ -44,7 +44,7 @@
                                             <td>Tx Hash</td>
                                             <td>
                                                 <nuxt-link
-                                                    :to="{name: 'trades-slug', params: {slug:trade.txHash}}">
+                                                    :to="{name: 'txs-slug', params: {slug:trade.txHash}}">
                                                     {{ trade.txHash }}</nuxt-link>
                                             </td>
                                         </tr>
