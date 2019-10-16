@@ -176,10 +176,10 @@ export default {
                 limit: self.perPage
             }
             if (this.user !== '') {
-                params.user = this.user
+                params.user = this.user.trim()
             }
             if (this.pair !== '') {
-                params.pair = this.pair
+                params.pair = this.pair.trim()
             }
             let query = this.serializeQuery(params)
             let { data } = await this.$axios.get('/api/trades?' + query)
