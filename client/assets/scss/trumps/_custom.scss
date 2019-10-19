@@ -26,6 +26,18 @@
   color: $black !important;
 }
 
+.text-primary {
+  color: $color-primary !important;
+}
+
+.text-warning {
+  color: $color-warning !important;
+}
+
+.text-info {
+  color: $color-info !important;
+}
+
 .contract-creation:before {
   content: '';
   display: inline-block;

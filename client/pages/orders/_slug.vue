@@ -63,6 +63,9 @@
                                                     v-else-if="order.status === 'CANCELLED'"
                                                     class="text-danger">Cancelled</span>
                                                 <span
+                                                    v-else-if="order.status === 'OPEN'"
+                                                    class="text-info">Open</span>
+                                                <span
                                                     v-else
                                                     class="text-purple">Partial Filled</span>
                                             </td>
