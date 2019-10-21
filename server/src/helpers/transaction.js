@@ -244,18 +244,20 @@ let TransactionHelper = {
             tx.isPending = false
 
             // Internal transaction
-            let internalTx = await TransactionHelper.getInternalTx(tx)
-            tx.i_tx = internalTx.length
-            let internalCount = []
-            for (let i = 0; i < internalTx.length; i++) {
-                let item = internalTx[i]
-                internalCount.push({ hash: item.from, countType: 'internalTx' })
-                internalCount.push({ hash: item.to, countType: 'internalTx' })
-            }
-            if (internalCount.length > 0) {
-                q.create('CountProcess', { data: JSON.stringify(internalCount) })
-                    .priority('low').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
+                let internalTx = await TransactionHelper.getInternalTx(tx)
+                tx.i_tx = internalTx.length
+                let internalCount = []
+                for (let i = 0; i < internalTx.length; i++) {
+                    let item = internalTx[i]
+                    internalCount.push({ hash: item.from, countType: 'internalTx' })
+                    internalCount.push({ hash: item.to, countType: 'internalTx' })
+                }
+                if (internalCount.length > 0) {
+                    q.create('CountProcess', { data: JSON.stringify(internalCount) })
+                        .priority('low').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                }
             }
 
             await db.Tx.updateOne({ hash: hash }, tx,
@@ -412,8 +414,10 @@ let TransactionHelper = {
         }
 
         // Internal transaction
-        let internalTx = await TransactionHelper.getInternalTx(tx)
-        tx.i_tx = internalTx.length
+        if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
+            let internalTx = await TransactionHelper.getInternalTx(tx)
+            tx.i_tx = internalTx.length
+        }
 
         delete tx['_id']
 
