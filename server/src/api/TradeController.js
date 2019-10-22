@@ -275,9 +275,9 @@ TradeController.get('/trades/monthlyStats/:exchangeAddress/:pairName', [
     check('exchangeAddress').exists().isLength({ min: 42, max: 42 }).withMessage('exchange address is incorrect.'),
     check('pairName').exists().withMessage('pair is required.'),
     check('fromYear').exists().isNumeric().withMessage('fromDate is required.'),
-    check('fromWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('fromDate is required.'),
+    check('fromMonth').exists().isNumeric({ min: 1, max: 12 }).withMessage('fromDate is required.'),
     check('toYear').exists().isNumeric().withMessage('fromDate is required.'),
-    check('toWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('toDate is required.')
+    check('toMonth').exists().isNumeric({ min: 1, max: 12 }).withMessage('toDate is required.')
 ], async (req, res) => {
     let errors = validationResult(req)
     if (!errors.isEmpty()) {

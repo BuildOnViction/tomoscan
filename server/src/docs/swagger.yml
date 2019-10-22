@@ -844,3 +844,162 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
+
+  /api/trades/stats/{exchangeAddress}/{pairName}:
+    get:
+      tags:
+        - Trades
+      summary: Get trade stats
+      parameters:
+        - name: exchangeAddress
+          in: path
+          required: true
+          description: exchange address
+          type: string
+        - name: pairName
+          in: path
+          required: true
+          description: pair
+          type: string
+        - name: date
+          in: query
+          required: false
+          description: stats of a special day yyyy-mm-dd
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades/dailyStats/{exchangeAddress}/{pairName}:
+    get:
+      tags:
+        - Trades
+      summary: Get trade daily stats
+      parameters:
+        - name: exchangeAddress
+          in: path
+          required: true
+          description: exchange address
+          type: string
+        - name: pairName
+          in: path
+          required: true
+          description: pair
+          type: string
+        - name: fromDate
+          in: query
+          required: true
+          description: from day yyyy-mm-dd
+          type: string
+        - name: toDate
+          in: query
+          required: true
+          description: from day yyyy-mm-dd
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades/weeklyStats/{exchangeAddress}/{pairName}:
+    get:
+      tags:
+        - Trades
+      summary: Get trade weekly stats
+      parameters:
+        - name: exchangeAddress
+          in: path
+          required: true
+          description: exchange address
+          type: string
+        - name: pairName
+          in: path
+          required: true
+          description: pair
+          type: string
+        - name: fromYear
+          in: query
+          required: true
+          description: from year
+          type: number
+        - name: fromWeek
+          in: query
+          required: true
+          description: from week 1-53
+          type: number
+        - name: toYear
+          in: query
+          required: true
+          description: to year
+          type: number
+        - name: toWeek
+          in: query
+          required: true
+          description: to week 1-53
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/trades/monthlyStats/{exchangeAddress}/{pairName}:
+    get:
+      tags:
+        - Trades
+      summary: Get trade monthly stats
+      parameters:
+        - name: exchangeAddress
+          in: path
+          required: true
+          description: exchange address
+          type: string
+        - name: pairName
+          in: path
+          required: true
+          description: pair
+          type: string
+        - name: fromYear
+          in: query
+          required: true
+          description: from year
+          type: number
+        - name: fromMonth
+          in: query
+          required: true
+          description: from week 1-12
+          type: number
+        - name: toYear
+          in: query
+          required: true
+          description: to year
+          type: number
+        - name: toMonth
+          in: query
+          required: true
+          description: to week 1-12
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
