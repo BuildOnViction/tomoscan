@@ -32,6 +32,12 @@ async function getSaveTime (date) {
     return newTime
 }
 
+function getNumberOfWeek (date) {
+    const firstDayOfYear = new Date(date.getFullYear(), 0, 1)
+    const pastDaysOfYear = (date - firstDayOfYear) / 86400000
+    return Math.ceil((pastDaysOfYear + firstDayOfYear.getDay() + 1) / 7)
+}
+
 async function run () {
     let web3 = await Web3Util.getWeb3()
     dbDex.Trade.watch().on('change', async (data) => {
@@ -113,6 +119,34 @@ async function run () {
                 tradeNumber: 1,
                 totalFee: makeFee.plus(takeFee).toNumber()
             } }, { upsert: true, new: true })
+
+            await dbDex.WeeklyStatistic.updateOne({
+                exchangeAddress: makerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                week: getNumberOfWeek(new Date())
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: makeFee.plus(takeFee).toNumber()
+            } }, { upsert: true, new: true })
+
+            await dbDex.MonthlyStatistic.updateOne({
+                exchangeAddress: makerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                month: (new Date()).getMonth()
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: makeFee.plus(takeFee).toNumber()
+            } }, { upsert: true, new: true })
         } else {
             await dbDex.HistoryStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -163,6 +197,62 @@ async function run () {
                 quoteToken: quoteToken,
                 pairName: pairName,
                 date: await getSaveTime(currentTime)
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: takeFee.toNumber()
+            } }, { upsert: true, new: true })
+
+            await dbDex.WeeklyStatistic.updateOne({
+                exchangeAddress: makerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                week: getNumberOfWeek(new Date())
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: makeFee.toNumber()
+            } }, { upsert: true, new: true })
+
+            await dbDex.MonthlyStatistic.updateOne({
+                exchangeAddress: makerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                month: (new Date()).getMonth()
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: makeFee.toNumber()
+            } }, { upsert: true, new: true })
+
+            await dbDex.WeeklyStatistic.updateOne({
+                exchangeAddress: takerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                week: getNumberOfWeek(new Date())
+            },
+            { $inc: {
+                volume: volume,
+                tradeNumber: 1,
+                totalFee: takeFee.toNumber()
+            } }, { upsert: true, new: true })
+
+            await dbDex.MonthlyStatistic.updateOne({
+                exchangeAddress: takerExchange,
+                baseToken: baseToken,
+                quoteToken: quoteToken,
+                pairName: pairName,
+                year: (new Date()).getFullYear(),
+                month: (new Date()).getMonth()
             },
             { $inc: {
                 volume: volume,

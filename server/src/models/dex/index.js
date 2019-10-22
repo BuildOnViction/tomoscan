@@ -60,6 +60,32 @@ const HistoryStatistic = conn.model('HistoryStatistic', new Schema({
 }))
 db.HistoryStatistic = HistoryStatistic
 
+const WeeklyStatistic = conn.model('WeeklyStatistic', new Schema({
+    exchangeAddress: { type: String, index: true },
+    baseToken: { type: String, index: true },
+    quoteToken: { type: String, index: true },
+    pairName: { type: String, index: true },
+    year: Number,
+    week: Number,
+    volume: Number,
+    tradeNumber: Number,
+    totalFee: Number
+}))
+db.WeeklyStatistic = WeeklyStatistic
+
+const MonthlyStatistic = conn.model('MonthlyStatistic', new Schema({
+    exchangeAddress: { type: String, index: true },
+    baseToken: { type: String, index: true },
+    quoteToken: { type: String, index: true },
+    pairName: { type: String, index: true },
+    year: Number,
+    month: Number,
+    volume: Number,
+    tradeNumber: Number,
+    totalFee: Number
+}))
+db.MonthlyStatistic = MonthlyStatistic
+
 const Statistic = conn.model('Statistic', new Schema({
     exchangeAddress: { type: String, index: true },
     baseToken: { type: String, index: true },

@@ -220,4 +220,83 @@ TradeController.get('/trades/stats/:exchangeAddress/:pairName', [
     }
 })
 
+TradeController.get('/trades/dailyStats/:exchangeAddress/:pairName', [
+    check('exchangeAddress').exists().isLength({ min: 42, max: 42 }).withMessage('exchange address is incorrect.'),
+    check('pairName').exists().withMessage('pair is required.'),
+    check('fromDate').exists().withMessage('fromDate is required.'),
+    check('toDate').exists().withMessage('toDate is required.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let web3 = await Web3Util.getWeb3()
+    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    let pairName = req.params.pairName.toUpperCase()
+    let fromDate = req.query.fromDate
+    let toDate = req.query.toDate
+    let stat = await dexDb.HistoryStatistic.findOne({
+        exchangeAddress: exchangeAddress,
+        pairName: pairName,
+        date: { $gte: fromDate, $lte: toDate }
+    })
+    return res.json(stat)
+})
+
+TradeController.get('/trades/weeklyStats/:exchangeAddress/:pairName', [
+    check('exchangeAddress').exists().isLength({ min: 42, max: 42 }).withMessage('exchange address is incorrect.'),
+    check('pairName').exists().withMessage('pair is required.'),
+    check('fromYear').exists().isNumeric().withMessage('fromDate is required.'),
+    check('fromWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('fromDate is required.'),
+    check('toYear').exists().isNumeric().withMessage('fromDate is required.'),
+    check('toWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('toDate is required.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let web3 = await Web3Util.getWeb3()
+    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    let pairName = req.params.pairName.toUpperCase()
+    let fromYear = req.query.fromYear
+    let toYear = req.query.toYear
+    let fromWeek = req.query.fromWeek
+    let toWeek = req.query.toWeek
+    let stat = await dexDb.WeeklyStatistic.findOne({
+        exchangeAddress: exchangeAddress,
+        pairName: pairName,
+        year: { $gte: fromYear, $lte: toYear },
+        week: { $gte: fromWeek, $lte: toWeek }
+    })
+    return res.json(stat)
+})
+
+TradeController.get('/trades/monthlyStats/:exchangeAddress/:pairName', [
+    check('exchangeAddress').exists().isLength({ min: 42, max: 42 }).withMessage('exchange address is incorrect.'),
+    check('pairName').exists().withMessage('pair is required.'),
+    check('fromYear').exists().isNumeric().withMessage('fromDate is required.'),
+    check('fromWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('fromDate is required.'),
+    check('toYear').exists().isNumeric().withMessage('fromDate is required.'),
+    check('toWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('toDate is required.')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let web3 = await Web3Util.getWeb3()
+    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    let pairName = req.params.pairName.toUpperCase()
+    let fromYear = req.query.fromYear
+    let toYear = req.query.toYear
+    let fromMonth = req.query.fromMonth
+    let toMonth = req.query.toMonth
+    let stat = await dexDb.MonthlyStatistic.findOne({
+        exchangeAddress: exchangeAddress,
+        pairName: pairName,
+        year: { $gte: fromYear, $lte: toYear },
+        week: { $gte: fromMonth, $lte: toMonth }
+    })
+    return res.json(stat)
+})
+
 module.exports = TradeController
