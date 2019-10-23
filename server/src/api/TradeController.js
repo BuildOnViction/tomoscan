@@ -235,7 +235,7 @@ TradeController.get('/trades/dailyStats/:exchangeAddress/:pairName', [
     let pairName = req.params.pairName.toUpperCase()
     let fromDate = req.query.fromDate
     let toDate = req.query.toDate
-    let stat = await dexDb.HistoryStatistic.findOne({
+    let stat = await dexDb.HistoryStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         date: { $gte: fromDate, $lte: toDate }
@@ -262,7 +262,7 @@ TradeController.get('/trades/weeklyStats/:exchangeAddress/:pairName', [
     let toYear = req.query.toYear
     let fromWeek = req.query.fromWeek
     let toWeek = req.query.toWeek
-    let stat = await dexDb.WeeklyStatistic.findOne({
+    let stat = await dexDb.WeeklyStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         year: { $gte: fromYear, $lte: toYear },
@@ -290,7 +290,7 @@ TradeController.get('/trades/monthlyStats/:exchangeAddress/:pairName', [
     let toYear = req.query.toYear
     let fromMonth = req.query.fromMonth
     let toMonth = req.query.toMonth
-    let stat = await dexDb.MonthlyStatistic.findOne({
+    let stat = await dexDb.MonthlyStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         year: { $gte: fromYear, $lte: toYear },
