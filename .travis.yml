@@ -103,7 +103,8 @@ stages:
     if: type != pull_request AND branch = master AND tag IS blank AND repo = tomochain/tomoscan
   - name: Build and push image (tagged)
     if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
-  - name: Deploy in devnet
-    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
+#  - name: Deploy in devnet
+#    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
   - name: Deploy in testnet
-    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
+    if: type != pull_request AND branch = master AND repo = tomochain/tomoscan
+#    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
