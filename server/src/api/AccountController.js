@@ -5,6 +5,7 @@ const AccountHelper = require('../helpers/account')
 const logger = require('../helpers/logger')
 const { check, validationResult, query } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
+const Web3Utils = require('../helpers/web3')
 
 const AccountController = Router()
 
@@ -58,6 +59,8 @@ AccountController.get('/accounts/:slug', [
         }
         account = await AccountHelper.formatAccount(account)
         account.accountName = accountName[account.hash] || null
+        let web3 = await Web3Utils.getWeb3()
+        account.hash = web3.utils.toChecksumAddress(hash)
         return res.json(account)
     } catch (e) {
         logger.warn('Cannot find account detail %s. Error %s', hash, e)

@@ -10,17 +10,17 @@
                     ${(address && address.isContract ? ' tomo-card__headline--is-contract' : '')}`">
                     <span v-if="address && address.isContract">Contract: </span>
                     <read-more
-                        :text="hash"
+                        :text="address.hash"
                         class="d-sm-none" />
                     <read-more
-                        :text="hash"
+                        :text="address.hash"
                         :max-chars="20"
                         class="d-none d-sm-inline-block d-lg-none" />
                     <read-more
-                        :text="hash"
+                        :text="address.hash"
                         :max-chars="30"
                         class="d-none d-lg-inline-block d-xl-none" />
-                    <span class="d-none d-xl-inline-block">{{ hash }}</span>
+                    <span class="d-none d-xl-inline-block">{{ address.hash }}</span>
                 </h3>
             </div>
             <div class="tomo-card__body">
@@ -110,7 +110,7 @@
                 <div class="text-center text-lg-right tomo-qrcode">
                     <div>
                         <button
-                            v-clipboard="hash"
+                            v-clipboard="address.hash"
                             type="button"
                             class="btn btn-sm mr-2 code-actions__copy"
                             @success="copyAddress">
@@ -119,7 +119,7 @@
                     </div>
                     <div>
                         <vue-qrcode
-                            :value="hash"
+                            :value="address.hash"
                             :options="{size: 250}"
                             class="img-fluid"/>
                     </div>
