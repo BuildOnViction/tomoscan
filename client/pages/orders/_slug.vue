@@ -37,6 +37,13 @@
                                 <table class="tomo-card__table">
                                     <tbody>
                                         <tr>
+                                            <td>Order ID</td>
+                                            <td>
+                                                <span v-if="order.orderID">{{ order.orderID }}</span>
+                                                <span v-else>N/A</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
                                             <td>Order Hash</td>
                                             <td>
                                                 <read-more
@@ -65,6 +72,9 @@
                                                 <span
                                                     v-else-if="order.status === 'OPEN'"
                                                     class="text-info">Open</span>
+                                                <span
+                                                    v-else-if="order.status === 'REJECTED'"
+                                                    class="text-danger">Rejected</span>
                                                 <span
                                                     v-else
                                                     class="text-purple">Partial Filled</span>
