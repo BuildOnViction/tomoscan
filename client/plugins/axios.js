@@ -21,7 +21,9 @@ export default function ({ $axios, redirect, app, store }) {
                 store.dispatch('user/logout')
                 // Redirect to home.
                 return window.$nuxt.$router.replace({ name: 'index' })
-            case 422:
+            case 404:
+                window.$nuxt.error(
+                    { message: error.response.statusText, statusCode: code })
                 break
             default:
                 // window.$nuxt.error(
