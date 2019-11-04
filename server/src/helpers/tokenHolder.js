@@ -23,6 +23,8 @@ let TokenHolderHelper = {
 
     updateQuality: async (hash, token, quantity) => {
         try {
+            let web3 = await Web3Util.getWeb3()
+            let tokenFuncs = await TokenHelper.getTokenFuncs()
             let tk = await db.Token.findOne({ hash: token })
             let decimals
             let tokenType
@@ -30,24 +32,27 @@ let TokenHolderHelper = {
                 decimals = tk.decimals
                 tokenType = tk.type
             } else {
-                let web3 = await Web3Util.getWeb3()
-                let tokenFuncs = await TokenHelper.getTokenFuncs()
                 decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
                 decimals = await web3.utils.hexToNumberString(decimals)
                 let code = await web3.eth.getCode(token)
                 if (code === '0x') {
                     tokenType = null
+                } else {
+                    tokenType = await TokenHelper.checkTokenType(code)
                 }
-                tokenType = await TokenHelper.checkTokenType(code)
             }
             if (tokenType === 'trc20') {
                 let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
                 if (!holder) {
+                    let holderAmount = await TokenHelper.getTokenBalance(
+                        { hash: token, decimals: decimals }, hash)
+
                     // Create new.
                     holder = await db.TokenHolder.create({
                         hash: hash,
                         token: token,
-                        quantity: 0
+                        quantity: holderAmount.quantity,
+                        quantityNumber: holderAmount.quantityNumber
                     })
                 }
 
@@ -59,11 +64,14 @@ let TokenHolderHelper = {
             } else if (tokenType === 'trc21') {
                 let holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
                 if (!holder) {
+                    let holderAmount = await TokenHelper.getTokenBalance(
+                        { hash: token, decimals: decimals }, hash)
                     // Create new.
                     holder = await db.TokenTrc21Holder.create({
                         hash: hash,
                         token: token,
-                        quantity: 0
+                        quantity: holderAmount.quantity,
+                        quantityNumber: holderAmount.quantityNumber
                     })
                 }
 

@@ -3,6 +3,7 @@ const Web3Util = require('./helpers/web3')
 const BigNumber = require('bignumber.js')
 const logger = require('./helpers/logger')
 const TomoToken = '0x0000000000000000000000000000000000000001'
+const q = require('./queues')
 
 const decimalFunction = '0x313ce567'
 
@@ -51,6 +52,29 @@ async function run () {
         let makeFee = data.fullDocument.makeFee
         let takeFee = data.fullDocument.takeFee
         let price = data.fullDocument.pricepoint
+        let taker = data.fullDocument.taker
+        let maker = data.fullDocument.maker
+        let takerOrderSide = data.fullDocument.takerOrderSide
+
+        let buyer, seller
+        if (takerOrderSide.toUpperCase() === 'SELL') {
+            seller = taker.toLowerCase()
+            buyer = maker.toLowerCase()
+        } else {
+            buyer = taker.toLowerCase()
+            seller = maker.toLowerCase()
+        }
+
+        q.create('TokenHolderProcess', {
+            token: JSON.stringify({
+                from: seller,
+                to: buyer,
+                address: baseToken.toLowerCase(),
+                value: amount
+            })
+        })
+            .priority('normal').removeOnComplete(true)
+            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
         let quoteDecimal
         if (quoteToken === TomoToken) {

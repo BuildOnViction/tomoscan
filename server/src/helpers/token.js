@@ -9,6 +9,7 @@ let TokenHelper = {
         'decimals': '0x313ce567', // hex to decimal
         'symbol': '0x95d89b41', // hex to ascii
         'totalSupply': '0x18160ddd',
+        'balanceOf': '0x70a08231',
         'transfer': '0xa9059cbb',
         'name': '0x06fdde03'
     }),
@@ -133,8 +134,8 @@ let TokenHelper = {
 
     getTokenBalance: async (token, holder) => {
         let web3 = await Web3Util.getWeb3()
-        // 0x70a08231 is mean balanceOf(address)
-        let data = '0x70a08231' +
+        let tokenFunc = await TokenHelper.getTokenFuncs()
+        let data = tokenFunc['balanceOf'] +
             '000000000000000000000000' +
             holder.substr(2) // chop off the 0x
 

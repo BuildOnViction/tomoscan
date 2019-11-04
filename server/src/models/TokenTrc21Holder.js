@@ -8,7 +8,7 @@ const TokenTrc21Holder = new Schema({
     token: { type: String, index: true },
     tokenDecimals: Number,
     quantity: String,
-    quantityNumber: { type: Number, index: true }
+    quantityNumber: { type: Number }
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },

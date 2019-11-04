@@ -9,7 +9,8 @@ consumer.processNumber = 2
 consumer.task = async function (job, done) {
     try {
         let token = JSON.parse(job.data.token)
-        logger.info('Process token holder: %s %s %s', token.from, token.to, token.value)
+        logger.info('Process token %s transfer from %s to %s amount %s', token.address,
+            token.from, token.to, token.value)
         if (!token) {
             return done()
         }
