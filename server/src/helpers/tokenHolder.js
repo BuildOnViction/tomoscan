@@ -66,7 +66,7 @@ let TokenHolderHelper = {
                     let holderAmount = await TokenHelper.getTokenBalance(
                         { hash: token, decimals: decimals }, hash)
                     // Create new.
-                    holder = await db.TokenHolder.findOneAndUpdate({ hash: hash, token: token },
+                    holder = await db.TokenTrc21Holder.findOneAndUpdate({ hash: hash, token: token },
                         { $set: {
                             quantity: holderAmount.quantity,
                             quantityNumber: holderAmount.quantityNumber }
