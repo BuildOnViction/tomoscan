@@ -48,12 +48,11 @@ let TokenHolderHelper = {
                         { hash: token, decimals: decimals }, hash)
 
                     // Create new.
-                    holder = await db.TokenHolder.create({
-                        hash: hash,
-                        token: token,
-                        quantity: holderAmount.quantity,
-                        quantityNumber: holderAmount.quantityNumber
-                    })
+                    holder = await db.TokenHolder.findOneAndUpdate({ hash: hash, token: token },
+                        { $set: {
+                            quantity: holderAmount.quantity,
+                            quantityNumber: holderAmount.quantityNumber }
+                        }, { upsert: true, new: true })
                 }
 
                 let oldQuantity = new BigNumber(holder.quantity || 0)
@@ -67,12 +66,11 @@ let TokenHolderHelper = {
                     let holderAmount = await TokenHelper.getTokenBalance(
                         { hash: token, decimals: decimals }, hash)
                     // Create new.
-                    holder = await db.TokenTrc21Holder.create({
-                        hash: hash,
-                        token: token,
-                        quantity: holderAmount.quantity,
-                        quantityNumber: holderAmount.quantityNumber
-                    })
+                    holder = await db.TokenHolder.findOneAndUpdate({ hash: hash, token: token },
+                        { $set: {
+                            quantity: holderAmount.quantity,
+                            quantityNumber: holderAmount.quantityNumber }
+                        }, { upsert: true, new: true })
                 }
 
                 let oldQuantity = new BigNumber(holder.quantity || 0)
