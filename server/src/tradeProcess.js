@@ -55,6 +55,7 @@ async function run () {
         let taker = data.fullDocument.taker
         let maker = data.fullDocument.maker
         let takerOrderSide = data.fullDocument.takerOrderSide
+        let tradeAt = data.fullDocument.createdAt
 
         let buyer, seller
         if (takerOrderSide.toUpperCase() === 'SELL') {
@@ -115,15 +116,13 @@ async function run () {
 
         let volume = amount.multipliedBy(price).toNumber()
 
-        let currentTime = new Date()
-
         if (makerExchange === takerExchange) {
             await dbDex.HistoryStatistic.updateOne({
                 exchangeAddress: makerExchange,
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+                date: new Date(tradeAt.getFullYear(), tradeAt.getMonth(), tradeAt.getDate())
             },
             { $inc: {
                 volume24h: volume,
@@ -136,7 +135,7 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: await getSaveTime(currentTime)
+                date: await getSaveTime(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -149,8 +148,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                week: getNumberOfWeek(new Date())
+                year: tradeAt.getFullYear(),
+                week: getNumberOfWeek(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -163,8 +162,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                month: (new Date()).getMonth()
+                year: (tradeAt).getFullYear(),
+                month: (tradeAt).getMonth()
             },
             { $inc: {
                 volume: volume,
@@ -177,7 +176,7 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+                date: new Date(tradeAt.getFullYear(), tradeAt.getMonth(), tradeAt.getDate())
             },
             {
                 $inc: {
@@ -192,7 +191,7 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: await getSaveTime(currentTime)
+                date: await getSaveTime(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -205,7 +204,7 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate())
+                date: new Date(tradeAt.getFullYear(), tradeAt.getMonth(), tradeAt.getDate())
             },
             {
                 $inc: {
@@ -220,7 +219,7 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                date: await getSaveTime(currentTime)
+                date: await getSaveTime(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -233,8 +232,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                week: getNumberOfWeek(new Date())
+                year: tradeAt.getFullYear(),
+                week: getNumberOfWeek(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -247,8 +246,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                month: (new Date()).getMonth()
+                year: tradeAt.getFullYear(),
+                month: tradeAt.getMonth()
             },
             { $inc: {
                 volume: volume,
@@ -261,8 +260,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                week: getNumberOfWeek(new Date())
+                year: tradeAt.getFullYear(),
+                week: getNumberOfWeek(tradeAt)
             },
             { $inc: {
                 volume: volume,
@@ -275,8 +274,8 @@ async function run () {
                 baseToken: baseToken,
                 quoteToken: quoteToken,
                 pairName: pairName,
-                year: (new Date()).getFullYear(),
-                month: (new Date()).getMonth()
+                year: tradeAt.getFullYear(),
+                month: tradeAt.getMonth()
             },
             { $inc: {
                 volume: volume,
