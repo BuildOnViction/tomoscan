@@ -3,6 +3,7 @@
 const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
 const config = require('config')
+const db = require('../models')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
@@ -22,6 +23,17 @@ consumer.task = async function (job, done) {
                 q.create('RewardProcess', { epoch: epoch })
                     .priority('normal').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
+            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % 200 === 0)) {
+                let currentEpoch = Math.floor(blockNumber / config.get('BLOCK_PER_EPOCH'))
+                let lastEpochReward = currentEpoch - 1
+                let checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
+
+                if (checkExistOnDb.length === 0) {
+                    q.create('RewardProcess', { epoch: lastEpochReward })
+                        .priority('normal').removeOnComplete(true)
+                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                }
             }
             if (blockNumber % 20 === 0) {
                 q.create('BlockFinalityProcess', {})
