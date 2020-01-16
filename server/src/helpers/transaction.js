@@ -13,6 +13,7 @@ const accountName = require('../contracts/accountName')
 const monitorAddress = require('../contracts/monitorAddress')
 const utils = require('./utils')
 const twitter = require('./twitter')
+const elastic = require('./elastic')
 
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 let TransactionHelper = {
@@ -250,6 +251,7 @@ let TransactionHelper = {
                 let internalCount = []
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
+                    await elastic.index(tx.hash, 'internalTx', item)
                     internalCount.push({ hash: item.from, countType: 'internalTx' })
                     internalCount.push({ hash: item.to, countType: 'internalTx' })
                 }
@@ -262,6 +264,7 @@ let TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
+            await elastic.index(tx.hash, 'transactions', tx)
             let fromAccount = await db.Account.findOne({ hash: tx.from })
             if (fromAccount && fromAccount.hasManyTx) {
                 let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
