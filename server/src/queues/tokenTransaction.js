@@ -79,15 +79,6 @@ consumer.task = async function (job, done) {
                     .priority('normal').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
-
-            q.create('CountProcess', {
-                data: JSON.stringify([
-                    { hash: _log.from, countType: 'tokenTx' },
-                    { hash: _log.to, countType: 'tokenTx' }
-                ])
-            })
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         } else if (tokenType === 'trc721') {
             if (log.topics[3]) {
                 _log.tokenId = await web3.utils.hexToNumber(log.topics[3])

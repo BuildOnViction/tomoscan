@@ -80,7 +80,6 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
         const web3 = await Web3Util.getWeb3()
 
-        let countProcess = []
         try {
             let tx = await db.Tx.findOne({ hash : hash })
             if (!tx) {
@@ -102,10 +101,6 @@ let TransactionHelper = {
             let listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
-                countProcess.push({
-                    hash: tx.from,
-                    countType: 'outTx'
-                })
                 if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                     if (!listHash.includes(tx.from.toLowerCase())) {
                         listHash.push(tx.from.toLowerCase())
@@ -134,10 +129,6 @@ let TransactionHelper = {
                         listHash.push(tx.to)
                     }
                 }
-                countProcess.push({
-                    hash: tx.to,
-                    countType: 'inTx'
-                })
                 let sign = 0
                 let other = 0
                 if (tx.to === contractAddress.BlockSigner) {
@@ -169,10 +160,6 @@ let TransactionHelper = {
                     if (!listHash.includes(contractAddress)) {
                         listHash.push(contractAddress)
                     }
-                    countProcess.push({
-                        hash: tx.to,
-                        countType: 'inTx'
-                    })
 
                     await db.Account.updateOne(
                         { hash: contractAddress },
@@ -194,11 +181,6 @@ let TransactionHelper = {
             if (listHash.length > 0) {
                 q.create('AccountProcess', { listHash: JSON.stringify(listHash) })
                     .priority('normal').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-            }
-            if (countProcess.length > 0) {
-                q.create('CountProcess', { data: JSON.stringify(countProcess) })
-                    .priority('low').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
 
@@ -229,11 +211,6 @@ let TransactionHelper = {
                 }
                 await db.Log.deleteMany({ transactionHash: receipt.hash })
                 await db.Log.insertMany(logs)
-                if (logCount.length > 0) {
-                    q.create('CountProcess', { data: JSON.stringify(logCount) })
-                        .priority('low').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-                }
             }
             let status
             if (typeof receipt.status === 'boolean') {
@@ -251,14 +228,9 @@ let TransactionHelper = {
                 let internalCount = []
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
-                    await elastic.index(tx.hash, 'internalTx', item)
+                    await elastic.indexWithoutId('internalTx', item)
                     internalCount.push({ hash: item.from, countType: 'internalTx' })
                     internalCount.push({ hash: item.to, countType: 'internalTx' })
-                }
-                if (internalCount.length > 0) {
-                    q.create('CountProcess', { data: JSON.stringify(internalCount) })
-                        .priority('low').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
             }
 

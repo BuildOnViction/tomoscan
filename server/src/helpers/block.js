@@ -116,7 +116,7 @@ let BlockHelper = {
             }
         }
 
-        return { txs, timestamp, m1 }
+        return { txs, timestamp }
     },
     getBlockDetail: async (hashOrNumber) => {
         try {

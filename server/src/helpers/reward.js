@@ -8,6 +8,7 @@ const Web3Util = require('./web3')
 const BlockHelper = require('./block')
 const contractAddress = require('../contracts/contractAddress')
 const urlJoin = require('url-join')
+const elastic = require('../helpers/elastic')
 let RewardHelper = {
     updateVoteHistory: async (epoch) => {
         let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
@@ -389,6 +390,11 @@ let RewardHelper = {
         try {
             await db.Reward.deleteMany({ epoch: epoch })
             await db.EpochSign.deleteMany({ epoch: epoch })
+            await elastic.deleteByQuery('rewards', {
+                query: {
+                    term: { epoch: epoch }
+                }
+            })
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
@@ -408,14 +414,13 @@ let RewardHelper = {
                 }
 
                 let rdata = []
-                let countProcess = []
                 let mnNumber = 0
                 for (let m in rewards) {
                     mnNumber += 1
                     for (let v in rewards[m]) {
                         let r = new BigNumber(rewards[m][v])
                         r = r.dividedBy(10 ** 18).toString()
-                        rdata.push({
+                        let item = {
                             epoch: epoch,
                             startBlock: startBlock,
                             endBlock: endBlock,
@@ -427,18 +432,10 @@ let RewardHelper = {
                             reward: r,
                             rewardTime: block.timestamp * 1000,
                             signNumber: signNumber[m].sign
-                        })
-                        countProcess.push({
-                            hash: v.toLowerCase(),
-                            countType: 'reward'
-                        })
+                        }
+                        await elastic.indexWithoutId('rewards', item)
+                        rdata.push(item)
                     }
-                }
-                if (countProcess.length > 0) {
-                    const q = require('../queues')
-                    q.create('CountProcess', { data: JSON.stringify(countProcess) })
-                        .priority('low').removeOnComplete(true)
-                        .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
                 let sdata = []
                 for (let m in signNumber) {

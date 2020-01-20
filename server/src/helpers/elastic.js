@@ -12,6 +12,19 @@ let ElasticHelper = {
             body: body
         })
     },
+    indexWithoutId: async (index, body) => {
+        await client.index({
+            index: index,
+            opType: 'index',
+            body: body
+        })
+    },
+    deleteByQuery: async (index, body) => {
+        await client.index({
+            index: index,
+            body: body
+        })
+    },
     search: async (index, query, sort, limit, page) => {
         if (Object.keys(query).length > 0) {
             let { body } = await client.search({
