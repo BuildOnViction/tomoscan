@@ -80,7 +80,7 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
         const web3 = await Web3Util.getWeb3()
 
-        try {
+        // try {
             let tx = await db.Tx.findOne({ hash : hash })
             if (!tx) {
                 tx = await TransactionHelper.getTransaction(hash, true)
@@ -237,93 +237,11 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
             await elastic.index(tx.hash, 'transactions', tx)
-            let fromAccount = await db.Account.findOne({ hash: tx.from })
-            if (fromAccount && fromAccount.hasManyTx) {
-                let cacheOut = await redisHelper.get(`txs-out-${tx.from}`)
-                if (cacheOut !== null) {
-                    let r1 = JSON.parse(cacheOut)
-                    let isExist = false
-                    for (let i = 0; i < r1.items.length; i++) {
-                        if (r1.items[i].hash === hash) {
-                            isExist = true
-                            break
-                        }
-                    }
-                    if (!isExist) {
-                        r1.total += 1
-                        r1.items.unshift(tx)
-                        r1.items.pop()
-                        logger.debug('Update cache out tx of address %s', tx.from)
-                        await redisHelper.set(`txs-out-${tx.from}`, JSON.stringify(r1))
-                    }
-                }
-                let cacheAll1 = await redisHelper.get(`txs-all-${tx.from}`)
-                if (cacheAll1 !== null) {
-                    let ra1 = JSON.parse(cacheAll1)
-                    let isExist = false
-                    for (let i = 0; i < ra1.items.length; i++) {
-                        if (ra1.items[i].hash === hash) {
-                            isExist = true
-                            break
-                        }
-                    }
-                    if (!isExist) {
-                        ra1.total += 1
-                        ra1.items.unshift(tx)
-                        ra1.items.pop()
-                        logger.debug('Update cache all tx of address %s', tx.from)
-                        await redisHelper.set(`txs-all-${tx.from}`, JSON.stringify(ra1))
-                    }
-                }
-            }
-
-            if (tx.to) {
-                let toAccount = await db.Account.findOne({ hash: tx.to })
-                if (toAccount && toAccount.hasManyTx) {
-                    let cacheIn = await redisHelper.get(`txs-in-${tx.to}`)
-                    if (cacheIn !== null) {
-                        let r2 = JSON.parse(cacheIn)
-                        let isExist = false
-                        for (let i = 0; i < r2.items.length; i++) {
-                            if (r2.items[i].hash === hash) {
-                                isExist = true
-                                break
-                            }
-                        }
-                        if (!isExist) {
-                            r2.total += 1
-                            r2.items.unshift(tx)
-                            r2.items.pop()
-                            logger.debug('Update cache in tx of address %s', tx.to)
-                            await redisHelper.set(`txs-in-${tx.to}`, JSON.stringify(r2))
-                        }
-                    }
-
-                    let cacheAll2 = await redisHelper.get(`txs-all-${tx.to}`)
-                    if (cacheAll2 !== null) {
-                        let ra2 = JSON.parse(cacheAll2)
-                        let isExist = false
-                        for (let i = 0; i < ra2.items.length; i++) {
-                            if (ra2.items[i].hash === hash) {
-                                isExist = true
-                                break
-                            }
-                        }
-                        if (!isExist) {
-                            ra2.total += 1
-                            ra2.items.unshift(tx)
-                            ra2.items.pop()
-                            logger.debug('Update cache all tx of address %s', tx.to)
-                            await redisHelper.set(`txs-all-${tx.to}`, JSON.stringify(ra2))
-                        }
-                    }
-                }
-            }
-        } catch (e) {
-            logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
-            await sleep(2000)
-            return TransactionHelper.crawlTransaction(hash, timestamp)
-        }
+        // } catch (e) {
+        //     logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
+        //     await sleep(2000)
+        //     return TransactionHelper.crawlTransaction(hash, timestamp)
+        // }
     },
     getTxDetail: async (hash) => {
         const web3 = await Web3Util.getWeb3()

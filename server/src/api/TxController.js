@@ -752,17 +752,22 @@ TxController.get('/txs/internal/:address', [
                     ]
                 }
             }
-            let eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
-            if (eData.hasOwnProperty('hits')) {
-                let hits = eData.hits
-                data.total = hits.total.value
-                data.pages = Math.ceil(data.total / limit)
-                let items = []
-                for (let i = 0; i < hits.hits.length; i++) {
-                    items.push(hits.hits[i]._source)
+            try {
+                let eData = await elastic.search('internalTx', query, { blockNumber: 'desc' }, limit, page)
+                if (eData.hasOwnProperty('hits')) {
+                    let hits = eData.hits
+                    data.total = hits.total.value
+                    data.pages = Math.ceil(data.total / limit)
+                    let items = []
+                    for (let i = 0; i < hits.hits.length; i++) {
+                        items.push(hits.hits[i]._source)
+                    }
+                    data.items = items
                 }
-                data.items = items
+            } catch (err) {
+                logger.warn('cannot get list internal from elastic search. %s', err)
             }
+            return res.json(data)
         }
     } catch (e) {
         logger.warn('cannot get list internal tx of address %s. Error %s', address, e)
