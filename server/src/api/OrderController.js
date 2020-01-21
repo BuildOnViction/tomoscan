@@ -23,7 +23,11 @@ OrderController.get('/orders', [
     try {
         let query = {}
         if (req.query.user) {
-            query.userAddress = web3.utils.toChecksumAddress(req.query.user)
+            if (web3.utils.isAddress(req.query.user)) {
+                query.userAddress = web3.utils.toChecksumAddress(req.query.user)
+            } else {
+                query.userAddress = req.query.user
+            }
         }
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()

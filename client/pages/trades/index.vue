@@ -7,7 +7,9 @@
         <p
             v-if="total > 0"
             class="tomo-total-items">{{ _nFormatNumber('trade history', 'trades history', total) }}</p>
-        <form class="form-inline mb-30 filter-box">
+        <form
+            class="form-inline mb-30 filter-box"
+            method="get">
             <div class="form-group">
                 <label
                     for="inputUserAddress"
@@ -15,6 +17,7 @@
                 <input
                     id="inputUserAddress"
                     v-model="user"
+                    name="user"
                     type="text"
                     class="form-control"
                     placeholder="User address">
@@ -26,14 +29,14 @@
                 <input
                     id="inputPairName"
                     v-model="pair"
+                    name="pair"
                     type="text"
                     class="form-control"
                     placeholder="Pair name">
             </div>
             <button
-                type="button"
-                class="btn btn-primary mr-sm-3"
-                @click="filter">Filter</button>
+                type="submit"
+                class="btn btn-primary mr-sm-3">Filter</button>
             <button
                 type="button"
                 class="btn btn-secondary"
@@ -158,13 +161,18 @@ export default {
         user: '',
         pair: ''
     }),
-    async mounted () {
-        let self = this
+    async created () {
+        if (this.$route.query.user) {
+            this.user = this.$route.query.user
+        }
+        if (this.$route.query.pair) {
+            this.pair = this.$route.query.pair
+        }
         this.$store.commit('breadcrumb/setItems', {
             name: 'trades',
             to: { name: 'trades' }
         })
-        self.getDataFromApi()
+        this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
@@ -193,10 +201,9 @@ export default {
                 self.page.txsCount = self.total
             }
 
-            data.items.forEach(async (item, index, array) => {
+            data.items.forEach((item, index, array) => {
                 if (index === array.length - 1) {
                     self.items = self.formatData(array)
-
                     // Hide loading.
                     self.loading = false
                 }
