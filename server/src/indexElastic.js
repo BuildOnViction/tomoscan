@@ -1,4 +1,3 @@
-const Web3Util = require('./helpers/web3')
 const db = require('./models')
 const events = require('events')
 const logger = require('./helpers/logger')
@@ -24,10 +23,9 @@ const watch = async () => {
         }
         let minBlockCrawl = parseInt(setting.meta_value || '1')
         let maxBlockNum = parseInt(config.get('MaxBlockIndex'))
-        let web3 = await Web3Util.getWeb3()
 
         while (minBlockCrawl < maxBlockNum) {
-            logger.debug('Min block crawl %s, Max block number %s', minBlockCrawl, maxBlockNum)
+            logger.debug('Min block index %s, Max block number %s', minBlockCrawl, maxBlockNum)
             let nextCrawl = minBlockCrawl + step
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
