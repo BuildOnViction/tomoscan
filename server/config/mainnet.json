@@ -4,6 +4,9 @@
   "logs": {
     "level": "info"
   },
+  "ELASTICSEARCH": "http://localhost:9200",
+  "GetDataFromElasticSearch": false,
+  "MaxBlockIndex": 16500000,
   "redis": {
     "host": "redis",
     "port": 6379,

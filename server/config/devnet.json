@@ -7,6 +7,9 @@
     "password": null,
     "prefix": "TomoScan"
   },
+  "ELASTICSEARCH": "http://localhost:9200",
+  "GetDataFromElasticSearch": true,
+  "MaxBlockIndex": 150000,
   "logs": {
     "level": "debug"
   },
