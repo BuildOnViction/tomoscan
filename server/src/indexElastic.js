@@ -31,7 +31,7 @@ const watch = async () => {
             for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
                 let block = await db.Block.findOne({ number: i })
                 let txes = await db.Tx.find({ blockNumber: i })
-                if (block.e_tx > txes.length()) {
+                if (block.e_tx > txes.length) {
                     await db.Tx.remove({ blockNumber: i })
                     await db.TokenTx.remove({ blockNumber: i })
                     await db.TokenTrc21Tx.remove({ blockNumber: i })
