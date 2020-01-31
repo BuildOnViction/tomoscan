@@ -6,6 +6,7 @@ const db = require('../models')
 const logger = require('../helpers/logger')
 const TokenHelper = require('../helpers/token')
 const BigNumber = require('bignumber.js')
+const elastic = require('../helpers/elastic')
 
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
@@ -59,11 +60,13 @@ consumer.task = async function (job, done) {
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
+                await elastic.indexWithoutId('trc20Tx', _log)
             } else {
                 await db.TokenTrc21Tx.updateOne(
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
+                await elastic.indexWithoutId('trc21Tx', _log)
             }
 
             // Add token holder data.
@@ -90,6 +93,7 @@ consumer.task = async function (job, done) {
                 await db.TokenNftHolder.updateOne(
                     { token: _log.address, tokenId: _log.tokenId },
                     { holder: _log.to }, { upsert: true, new: true })
+                await elastic.indexWithoutId('nftTx', _log)
             }
         }
     } catch (e) {

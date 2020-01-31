@@ -80,7 +80,7 @@ let TransactionHelper = {
         hash = hash.toLowerCase()
         const web3 = await Web3Util.getWeb3()
 
-        // try {
+        try {
             let tx = await db.Tx.findOne({ hash : hash })
             if (!tx) {
                 tx = await TransactionHelper.getTransaction(hash, true)
@@ -237,11 +237,11 @@ let TransactionHelper = {
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
             await elastic.index(tx.hash, 'transactions', tx)
-        // } catch (e) {
-        //     logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
-        //     await sleep(2000)
-        //     return TransactionHelper.crawlTransaction(hash, timestamp)
-        // }
+        } catch (e) {
+            logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
+            await sleep(2000)
+            return TransactionHelper.crawlTransaction(hash, timestamp)
+        }
     },
     getTxDetail: async (hash) => {
         const web3 = await Web3Util.getWeb3()
