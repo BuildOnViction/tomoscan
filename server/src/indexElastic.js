@@ -29,9 +29,11 @@ const watch = async () => {
             let nextCrawl = minBlockCrawl + step
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
+                logger.info('Index for block %s', i)
                 let block = await db.Block.findOne({ number: i })
                 let txes = await db.Tx.find({ blockNumber: i })
-                if (block.e_tx > txes.length) {
+                if (!block || block.e_tx > txes.length) {
+                    logger.info('Missing block %s or tx in block %s. ReCrawl this block', i, i)
                     await db.Tx.remove({ blockNumber: i })
                     await db.TokenTx.remove({ blockNumber: i })
                     await db.TokenTrc21Tx.remove({ blockNumber: i })
