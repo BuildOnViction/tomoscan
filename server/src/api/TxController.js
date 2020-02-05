@@ -6,6 +6,7 @@ const Web3Util = require('../helpers/web3')
 const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
 const redisHelper = require('../helpers/redis')
+const elastic = require('../helpers/elastic')
 
 const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
@@ -265,26 +266,70 @@ TxController.get('/txs/listByType/:type', [
         return res.status(400).json({ errors: errors.array() })
     }
     let type = req.params.type
-    let total = null
-    let params = { sort: { blockNumber: -1 } }
-    let specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
-    if (type === 'signTxs') {
-        total = specialAccount ? specialAccount.sign : 0
-        params.query = { to: contractAddress.BlockSigner, isPending: false }
-    } else if (type === 'normalTxs') {
-        total = specialAccount ? specialAccount.other : 0
-        params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
-            isPending: false }
-    } else if (type === 'pending') {
-        total = specialAccount ? specialAccount.pending : 0
-        params.query = { isPending: true }
-        params.sort = { createdAt: -1 }
-        delete params.sort.blockNumber
+
+    let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+    limit = Math.min(100, limit)
+    let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+
+    let data = []
+    if (!config.get('GetDataFromElasticSearch')) {
+        let total = null
+        let params = { sort: { blockNumber: -1 } }
+        let specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
+        if (type === 'signTxs') {
+            total = specialAccount ? specialAccount.sign : 0
+            params.query = { to: contractAddress.BlockSigner, isPending: false }
+        } else if (type === 'normalTxs') {
+            total = specialAccount ? specialAccount.other : 0
+            params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+                isPending: false }
+        } else {
+            total = specialAccount ? specialAccount.total : 0
+            params.query = Object.assign({}, params.query, { isPending: false })
+        }
+        data = await paginate(req, 'Tx', params, total)
     } else {
-        total = specialAccount ? specialAccount.total : 0
-        params.query = Object.assign({}, params.query, { isPending: false })
+        let query
+        data = {
+            total: 0,
+            perPage: limit,
+            currentPage: page,
+            pages: 0,
+            items: []
+        }
+        if (type === 'signTxs') {
+            query = {
+                bool: {
+                    should: [
+                        { term: { to: contractAddress.BlockSigner } },
+                        { term: { to: contractAddress.TomoRandomize } }
+                    ]
+                }
+            }
+        } else if (type === 'normalTxs') {
+            query = {
+                bool: {
+                    must_not: [
+                        { term: { to: contractAddress.BlockSigner } },
+                        { term: { to: contractAddress.TomoRandomize } }
+                    ]
+                }
+            }
+        } else {
+            query = {}
+        }
+        let eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        if (eData.hasOwnProperty('hits')) {
+            let hits = eData.hits
+            data.total = hits.total.value
+            data.pages = Math.ceil(data.total / limit)
+            let items = []
+            for (let i = 0; i < hits.hits.length; i++) {
+                items.push(hits.hits[i]._source)
+            }
+            data.items = items
+        }
     }
-    let data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
             data.items[i].from_model.accountName = accountName[data.items[i].from] || null
@@ -318,49 +363,92 @@ TxController.get('/txs/listByAccount/:address', [
     let address = req.params.address
     address = address ? address.toLowerCase() : address
     let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+    let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+    limit = Math.min(100, limit)
     let txType = req.query.tx_type
 
-    let account = await db.Account.findOne({ hash: address })
-    let total = null
+    let data = []
+    if (!config.get('GetDataFromElasticSearch')) {
+        let account = await db.Account.findOne({ hash: address })
+        let total = null
 
-    if (page === 1 && account.hasManyTx) {
-        let cache = await redisHelper.get(`txs-${txType}-${address}`)
-        if (cache !== null) {
-            let r = JSON.parse(cache)
-            logger.info('load %s txs of address %s from cache', txType, address)
-            return res.json(r)
+        if (page === 1 && account.hasManyTx) {
+            let cache = await redisHelper.get(`txs-${txType}-${address}`)
+            if (cache !== null) {
+                let r = JSON.parse(cache)
+                logger.info('load %s txs of address %s from cache', txType, address)
+                return res.json(r)
+            }
         }
-    }
 
-    let params = { sort: { blockNumber: -1 } }
-    if (txType === 'in') {
-        params.query = { to: address }
-        if (account) {
-            total = account.inTxCount
-        }
-    } else if (txType === 'out') {
-        params.query = { from: address }
-        if (account) {
-            total = account.outTxCount
-        }
-    } else {
-        params.query = { $or: [{ from: address }, { to: address }] }
-        if (account) {
-            total = account.totalTxCount
-        }
-    }
-    if (!account.hasManyTx) {
-        total = null
-    }
-
-    if (req.query.filterAddress) {
+        let params = { sort: { blockNumber: -1 } }
         if (txType === 'in') {
-            params.query = Object.assign({}, params.query, { from: req.query.filterAddress })
+            params.query = { to: address }
+            if (account) {
+                total = account.inTxCount
+            }
         } else if (txType === 'out') {
-            params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
+            params.query = { from: address }
+            if (account) {
+                total = account.outTxCount
+            }
+        } else {
+            params.query = { $or: [{ from: address }, { to: address }] }
+            if (account) {
+                total = account.totalTxCount
+            }
+        }
+        if (!account.hasManyTx) {
+            total = null
+        }
+
+        if (req.query.filterAddress) {
+            if (txType === 'in') {
+                params.query = Object.assign({}, params.query, { from: req.query.filterAddress })
+            } else if (txType === 'out') {
+                params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
+            }
+        }
+        data = await paginate(req, 'Tx', params, total)
+    } else {
+        let query
+        data = {
+            total: 0,
+            perPage: limit,
+            currentPage: page,
+            pages: 0,
+            items: []
+        }
+        if (txType === 'in') {
+            query = {
+                match: { to: address }
+            }
+        } else if (txType === 'out') {
+            query = {
+                match: { from: address }
+            }
+        } else {
+            query = {
+                bool: {
+                    should: [
+                        { term: { from: address } },
+                        { term: { to: address } }
+                    ]
+                }
+            }
+        }
+        let eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        if (eData.hasOwnProperty('hits')) {
+            let hits = eData.hits
+            data.total = hits.total.value
+            data.pages = Math.ceil(data.total / limit)
+            let items = []
+            for (let i = 0; i < hits.hits.length; i++) {
+                items.push(hits.hits[i]._source)
+            }
+            data.items = items
         }
     }
-    let data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
             data.items[i].from_model.accountName = accountName[data.items[i].from] || null
@@ -373,9 +461,9 @@ TxController.get('/txs/listByAccount/:address', [
             data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
     }
-    if (page === 1 && account.hasManyTx && data.items.length > 0) {
-        redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
-    }
+    // if (page === 1 && account.hasManyTx && data.items.length > 0) {
+    //     redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
+    // }
     if (data.pages > 500) {
         data.pages = 500
     }
@@ -627,22 +715,60 @@ TxController.get('/txs/internal/:address', [
     let address = req.params.address
     address = address ? address.toLowerCase() : address
     try {
-        let params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
-        let bln = {}
-        if (req.query.fromBlock) {
-            bln = Object.assign({}, bln, { $gte: req.query.fromBlock })
+        if (!config.get('GetDataFromElasticSearch')) {
+            let params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
+            let bln = {}
+            if (req.query.fromBlock) {
+                bln = Object.assign({}, bln, { $gte: req.query.fromBlock })
+            }
+            if (req.query.toBlock) {
+                bln = Object.assign({}, bln, { $lte: req.query.toBlock })
+            }
+            if (Object.keys(bln).length > 0) {
+                params.query = Object.assign({}, params.query, { blockNumber: bln })
+            }
+            let data = await utils.paginate(req, 'InternalTx', params)
+            if (data.pages > 500) {
+                data.pages = 500
+            }
+            return res.json(data)
+        } else {
+            let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+            limit = Math.min(100, limit)
+            let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+            let query
+            let data = {
+                total: 0,
+                perPage: limit,
+                currentPage: page,
+                pages: 0,
+                items: []
+            }
+            query = {
+                bool: {
+                    should: [
+                        { term: { from: address } },
+                        { term: { to: address } }
+                    ]
+                }
+            }
+            try {
+                let eData = await elastic.search('internalTx', query, { blockNumber: 'desc' }, limit, page)
+                if (eData.hasOwnProperty('hits')) {
+                    let hits = eData.hits
+                    data.total = hits.total.value
+                    data.pages = Math.ceil(data.total / limit)
+                    let items = []
+                    for (let i = 0; i < hits.hits.length; i++) {
+                        items.push(hits.hits[i]._source)
+                    }
+                    data.items = items
+                }
+            } catch (err) {
+                logger.warn('cannot get list internal from elastic search. %s', err)
+            }
+            return res.json(data)
         }
-        if (req.query.toBlock) {
-            bln = Object.assign({}, bln, { $lte: req.query.toBlock })
-        }
-        if (Object.keys(bln).length > 0) {
-            params.query = Object.assign({}, params.query, { blockNumber: bln })
-        }
-        let data = await utils.paginate(req, 'InternalTx', params)
-        if (data.pages > 500) {
-            data.pages = 500
-        }
-        return res.json(data)
     } catch (e) {
         logger.warn('cannot get list internal tx of address %s. Error %s', address, e)
         return res.status(500).json({ errors: { message: 'Something error!' } })

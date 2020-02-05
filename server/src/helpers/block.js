@@ -6,6 +6,7 @@ const db = require('../models')
 const logger = require('./logger')
 const axios = require('axios')
 const config = require('config')
+const elastic = require('../helpers/elastic')
 let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 let BlockHelper = {
@@ -64,6 +65,7 @@ let BlockHelper = {
 
         await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
+        await elastic.index(_block.hash, 'blocks', _block)
 
         if (_block.number % config.get('BLOCK_PER_EPOCH') === 0) {
             let slashedNode = []
@@ -114,7 +116,7 @@ let BlockHelper = {
             }
         }
 
-        return { txs, timestamp, m1 }
+        return { txs, timestamp }
     },
     getBlockDetail: async (hashOrNumber) => {
         try {
