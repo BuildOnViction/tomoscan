@@ -86,6 +86,8 @@ let TransactionHelper = {
                 tx = await TransactionHelper.getTransaction(hash, true)
             } else {
                 tx = tx.toJSON()
+                delete tx['_id']
+                delete tx['id']
             }
             const q = require('../queues')
 
@@ -203,11 +205,9 @@ let TransactionHelper = {
             // Parse log.
             let logs = receipt.logs
             if (logs.length) {
-                let logCount = []
                 for (let i = 0; i < logs.length; i++) {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
-                    logCount.push({ hash: log.address.toLowerCase(), countType: 'log' })
                 }
                 await db.Log.deleteMany({ transactionHash: receipt.hash })
                 await db.Log.insertMany(logs)
@@ -225,12 +225,9 @@ let TransactionHelper = {
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                 let internalTx = await TransactionHelper.getInternalTx(tx)
                 tx.i_tx = internalTx.length
-                let internalCount = []
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
                     await elastic.indexWithoutId('internalTx', item)
-                    internalCount.push({ hash: item.from, countType: 'internalTx' })
-                    internalCount.push({ hash: item.to, countType: 'internalTx' })
                 }
             }
 
