@@ -70,9 +70,10 @@ const watch = async () => {
                     }
                     for (let j = 0; j < tokenTx.length; j++) {
                         let tx = tokenTx[j].toJSON()
+                        tx.valueNumber = String(tx.valueNumber)
                         delete tx['_id']
                         delete tx['id']
-                        await elastic.indexWithoutId('trc20Tx', tx)
+                        await elastic.indexWithoutId('trc20-tx', tx)
                     }
                     let trc21Tx = await db.TokenTrc21Tx.find({ blockNumber: i })
                     if (trc21Tx.length > 0) {
@@ -80,9 +81,10 @@ const watch = async () => {
                     }
                     for (let j = 0; j < trc21Tx.length; j++) {
                         let tx = trc21Tx[j].toJSON()
+                        tx.valueNumber = String(tx.valueNumber)
                         delete tx['_id']
                         delete tx['id']
-                        await elastic.indexWithoutId('trc21Tx', tx)
+                        await elastic.indexWithoutId('trc21-tx', tx)
                     }
                     let nftTx = await db.TokenNftTx.find({ blockNumber: i })
                     if (nftTx.length > 0) {
@@ -92,7 +94,7 @@ const watch = async () => {
                         let tx = nftTx[j].toJSON()
                         delete tx['_id']
                         delete tx['id']
-                        await elastic.indexWithoutId('nftTx', tx)
+                        await elastic.indexWithoutId('nft-tx', tx)
                     }
                     let internalTx = await db.InternalTx.find({ blockNumber: i })
                     if (internalTx.length > 0) {
@@ -102,7 +104,7 @@ const watch = async () => {
                         let tx = internalTx[j].toJSON()
                         delete tx['_id']
                         delete tx['id']
-                        await elastic.indexWithoutId('internalTx', tx)
+                        await elastic.indexWithoutId('internal-tx', tx)
                     }
                 }
             }

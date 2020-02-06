@@ -229,7 +229,7 @@ let TransactionHelper = {
                 tx.i_tx = internalTx.length
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
-                    await elastic.indexWithoutId('internalTx', item)
+                    await elastic.indexWithoutId('internal-tx', item)
                 }
             }
 

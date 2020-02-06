@@ -753,7 +753,7 @@ TxController.get('/txs/internal/:address', [
                 }
             }
             try {
-                let eData = await elastic.search('internalTx', query, { blockNumber: 'desc' }, limit, page)
+                let eData = await elastic.search('internal-tx', query, { blockNumber: 'desc' }, limit, page)
                 if (eData.hasOwnProperty('hits')) {
                     let hits = eData.hits
                     data.total = hits.total.value
