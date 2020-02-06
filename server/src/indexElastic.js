@@ -62,6 +62,9 @@ const watch = async () => {
                         if (tx.status === '1' || tx.status === 1) {
                             tx.status = true
                         }
+                        if (tx.cumulativeGasUsed === '0x0') {
+                            tx.cumulativeGasUsed = 0
+                        }
                         await elastic.index(tx.hash, 'transactions', tx)
                     }
                     let tokenTx = await db.TokenTx.find({ blockNumber: i })

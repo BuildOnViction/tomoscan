@@ -232,6 +232,9 @@ let TransactionHelper = {
                     await elastic.indexWithoutId('internal-tx', item)
                 }
             }
+            if (tx.cumulativeGasUsed === '0x0') {
+                tx.cumulativeGasUsed = 0
+            }
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
