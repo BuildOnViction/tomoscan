@@ -238,6 +238,9 @@ let TransactionHelper = {
             if (tx.cumulativeGasUsed === '0x0') {
                 tx.cumulativeGasUsed = 0
             }
+            if (isNaN(tx.gasUsed)) {
+                tx.gasUsed = web3.utils.hexToNumber(tx.gasUsed)
+            }
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })

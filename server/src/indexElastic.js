@@ -68,6 +68,9 @@ const watch = async () => {
                         if (tx.cumulativeGasUsed === '0x0') {
                             tx.cumulativeGasUsed = 0
                         }
+                        if (isNaN(tx.gasUsed)) {
+                            tx.gasUsed = web3.utils.hexToNumber(tx.gasUsed)
+                        }
                         await elastic.index(tx.hash, 'transactions', tx)
                     }
                     let tokenTx = await db.TokenTx.find({ blockNumber: i })
