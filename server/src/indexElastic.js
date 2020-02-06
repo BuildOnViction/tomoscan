@@ -59,8 +59,11 @@ const watch = async () => {
                         let tx = txes[j].toJSON()
                         delete tx['_id']
                         delete tx['id']
-                        if (tx.status === '1' || tx.status === 1) {
+                        if (tx.status === '1' || tx.status === 1 || tx.status === '0x1') {
                             tx.status = true
+                        }
+                        if (tx.status === '0' || tx.status === 0 || tx.status === '0x0') {
+                            tx.status = false
                         }
                         if (tx.cumulativeGasUsed === '0x0') {
                             tx.cumulativeGasUsed = 0
