@@ -217,6 +217,9 @@ let TransactionHelper = {
             } else {
                 status = web3.utils.hexToNumber(receipt.status)
             }
+            if (status === '1') {
+                status = true
+            }
             tx.status = status
             tx.isPending = false
 

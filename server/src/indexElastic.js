@@ -59,6 +59,9 @@ const watch = async () => {
                         let tx = txes[j].toJSON()
                         delete tx['_id']
                         delete tx['id']
+                        if (tx.status === '1' || tx.status === 1) {
+                            tx.status = true
+                        }
                         await elastic.index(tx.hash, 'transactions', tx)
                     }
                     let tokenTx = await db.TokenTx.find({ blockNumber: i })
