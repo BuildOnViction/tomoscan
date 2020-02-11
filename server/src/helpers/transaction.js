@@ -235,13 +235,23 @@ let TransactionHelper = {
                     await elastic.indexWithoutId('internal-tx', item)
                 }
             }
-            if (tx.cumulativeGasUsed === '0x0') {
-                tx.cumulativeGasUsed = 0
+            if (!Number.isInteger(tx.cumulativeGasUsed)) {
+                tx.cumulativeGasUsed = web3.utils.hexToNumber(tx.cumulativeGasUsed)
             }
-            if (tx.gasUsed === '0x0') {
-                tx.gasUsed = 0
-            } else if (!Number.isInteger(tx.gasUsed)) {
+            if (!Number.isInteger(tx.gasUsed)) {
                 tx.gasUsed = web3.utils.hexToNumber(tx.gasUsed)
+            }
+            if (!Number.isInteger(tx.blockNumber)) {
+                tx.blockNumber = web3.utils.hexToNumber(tx.blockNumber)
+            }
+            if (!Number.isInteger(tx.gas)) {
+                tx.gas = web3.utils.hexToNumber(tx.gas)
+            }
+            if (!Number.isInteger(tx.nonce)) {
+                tx.nonce = web3.utils.hexToNumber(tx.nonce)
+            }
+            if (!Number.isInteger(tx.transactionIndex)) {
+                tx.transactionIndex = web3.utils.hexToNumber(tx.transactionIndex)
             }
 
             await db.Tx.updateOne({ hash: hash }, tx,
@@ -285,9 +295,15 @@ let TransactionHelper = {
         }
 
         tx.cumulativeGasUsed = receipt.cumulativeGasUsed
+        if (!Number.isInteger(tx.cumulativeGasUsed)) {
+            tx.cumulativeGasUsed = web3.utils.hexToNumber(tx.cumulativeGasUsed)
+        }
         tx.gasUsed = receipt.gasUsed
         if (receipt.blockNumber) {
             tx.blockNumber = receipt.blockNumber
+        }
+        if (!Number.isInteger(tx.gasUsed)) {
+            tx.gasUsed = web3.utils.hexToNumber(tx.gasUsed)
         }
         let status
         if (typeof receipt.status === 'boolean') {
