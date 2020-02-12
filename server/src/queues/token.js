@@ -6,6 +6,7 @@ const utils = require('../helpers/utils')
 const db = require('../models')
 const BigNumber = require('bignumber.js')
 const logger = require('../helpers/logger')
+const elastic = require('../helpers/elastic')
 
 const consumer = {}
 consumer.name = 'TokenProcess'
@@ -52,7 +53,12 @@ consumer.task = async function (job, done) {
         token.totalSupplyNumber = new BigNumber(totalSupply).div(10 ** parseInt(token.decimals))
 
         token.status = true
-        token.save()
+        await token.save()
+
+        let t = token.toJSON()
+        delete t['_id']
+        delete t['id']
+        await elastic.index(t.hash, 'tokens', t)
     } catch (e) {
         logger.warn('cannot process token %s. Error %s', address, e)
         return done(e)
