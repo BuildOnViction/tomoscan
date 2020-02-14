@@ -40,8 +40,9 @@ let TokenHolderHelper = {
                 }
                 tokenType = await TokenHelper.checkTokenType(code)
             }
+            let holder = null
             if (tokenType === 'trc20') {
-                let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
+                holder = await db.TokenHolder.findOne({ hash: hash, token: token })
                 if (!holder) {
                     // Create new.
                     holder = await db.TokenHolder.create({
@@ -50,14 +51,8 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
-
-                let oldQuantity = new BigNumber(holder.quantity || 0)
-                let newQuantity = oldQuantity.plus(quantity)
-                holder.quantity = newQuantity.toString()
-                holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
-                holder.save()
             } else if (tokenType === 'trc21') {
-                let holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
+                holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
                 if (!holder) {
                     // Create new.
                     holder = await db.TokenTrc21Holder.create({
@@ -66,12 +61,12 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
-
-                let oldQuantity = new BigNumber(holder.quantity || 0)
-                let newQuantity = oldQuantity.plus(quantity)
-                holder.quantity = newQuantity.toString()
-                holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
-                holder.save()
+            }
+            if (holder !== null) {
+                let { quantity, quantityNumber } = TokenHelper.getTokenBalance(token, hash)
+                holder.quantity = quantity
+                holder.quantityNumber = quantityNumber
+                await holder.save()
             }
         } catch (e) {
             logger.warn('token updateQuality error %s', e)
