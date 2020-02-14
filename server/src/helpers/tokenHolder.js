@@ -21,7 +21,7 @@ let TokenHolderHelper = {
         return tokenHolder
     },
 
-    updateQuality: async (hash, token, quantity) => {
+    updateQuality: async (hash, token) => {
         try {
             let tk = await db.Token.findOne({ hash: token })
             let decimals
@@ -40,9 +40,8 @@ let TokenHolderHelper = {
                 }
                 tokenType = await TokenHelper.checkTokenType(code)
             }
-            let holder = null
             if (tokenType === 'trc20') {
-                holder = await db.TokenHolder.findOne({ hash: hash, token: token })
+                let holder = await db.TokenHolder.findOne({ hash: hash, token: token })
                 if (!holder) {
                     // Create new.
                     holder = await db.TokenHolder.create({
@@ -51,8 +50,12 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
+                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                holder.quantity = balance.quantity
+                holder.quantityNumber = balance.quantityNumber
+                await holder.save()
             } else if (tokenType === 'trc21') {
-                holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
+                let holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
                 if (!holder) {
                     // Create new.
                     holder = await db.TokenTrc21Holder.create({
@@ -61,11 +64,9 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
-            }
-            if (holder !== null) {
-                let { quantity, quantityNumber } = TokenHelper.getTokenBalance(token, hash)
-                holder.quantity = quantity
-                holder.quantityNumber = quantityNumber
+                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                holder.quantity = balance.quantity
+                holder.quantityNumber = balance.quantityNumber
                 await holder.save()
             }
         } catch (e) {
