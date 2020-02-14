@@ -221,6 +221,9 @@ let TransactionHelper = {
             let logs = receipt.logs
             if (logs.length) {
                 let logCount = []
+                await db.TokenTx.deleteMany({ transactionHash: tx.hash })
+                await db.TokenTrc21Tx.deleteMany({ transactionHash: tx.hash })
+                await db.TokenNftTx.deleteMany({ transactionHash: tx.hash })
                 for (let i = 0; i < logs.length; i++) {
                     let log = logs[i]
                     await TransactionHelper.parseLog(log)
