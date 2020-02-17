@@ -136,7 +136,6 @@ let TokenHelper = {
             let codeCheck = trc721Function[trc721]
             codeCheck = codeCheck.replace('0x', '')
             if (code.indexOf(codeCheck) < 0) {
-                console.log(trc721Function[trc721])
                 isTrc721 = false
                 break
             }
