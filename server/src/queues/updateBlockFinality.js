@@ -16,6 +16,12 @@ consumer.task = async function (job, done) {
     logger.info('Update finality %s blocks', blocks.length)
     try {
         let map = blocks.map(async function (block) {
+            let countTx = await db.Tx.countDocuments({ blockNumber: block.number })
+            if (countTx !== block.e_tx) {
+                q.create('BlockProcess', { block: block.number })
+                    .priority('high').removeOnComplete(true)
+                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            }
             let blockOnChain = await web3.eth.getBlock(block.number)
             if (block.hash === blockOnChain.hash) {
                 let data = {

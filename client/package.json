@@ -59,6 +59,7 @@
     "mixin-deep": "^2.0.1",
     "node-sass": "^4.8.3",
     "sass-loader": "^7.0.1",
+    "serialize-javascript": "^2.1.2",
     "set-value": "^3.0.1"
   },
   "engines": {

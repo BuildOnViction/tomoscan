@@ -21,7 +21,7 @@ let TokenHolderHelper = {
         return tokenHolder
     },
 
-    updateQuality: async (hash, token, quantity) => {
+    updateQuality: async (hash, token) => {
         try {
             let web3 = await Web3Util.getWeb3()
             let tokenFuncs = await TokenHelper.getTokenFuncs()
@@ -54,12 +54,10 @@ let TokenHolderHelper = {
                             quantityNumber: holderAmount.quantityNumber }
                         }, { upsert: true, new: true })
                 }
-
-                let oldQuantity = new BigNumber(holder.quantity || 0)
-                let newQuantity = oldQuantity.plus(quantity)
-                holder.quantity = newQuantity.toString()
-                holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
-                holder.save()
+                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                holder.quantity = balance.quantity
+                holder.quantityNumber = balance.quantityNumber
+                await holder.save()
             } else if (tokenType === 'trc21') {
                 let holder = await db.TokenTrc21Holder.findOne({ hash: hash, token: token })
                 if (!holder) {
@@ -72,12 +70,10 @@ let TokenHolderHelper = {
                             quantityNumber: holderAmount.quantityNumber }
                         }, { upsert: true, new: true })
                 }
-
-                let oldQuantity = new BigNumber(holder.quantity || 0)
-                let newQuantity = oldQuantity.plus(quantity)
-                holder.quantity = newQuantity.toString()
-                holder.quantityNumber = newQuantity.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
-                holder.save()
+                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                holder.quantity = balance.quantity
+                holder.quantityNumber = balance.quantityNumber
+                await holder.save()
             }
         } catch (e) {
             logger.warn('token updateQuality error %s', e)
