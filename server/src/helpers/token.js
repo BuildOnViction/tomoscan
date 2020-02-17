@@ -3,6 +3,50 @@
 const { formatAscIIJSON } = require('./utils')
 const Web3Util = require('./web3')
 const BigNumber = require('bignumber.js')
+const DEFAULT_ABI = [
+    {
+        'constant': true,
+        'inputs': [
+            {
+                'name': 'tokenOwner',
+                'type': 'address'
+            }
+        ],
+        'name': 'balanceOf',
+        'outputs': [
+            {
+                'name': 'balance',
+                'type': 'uint256'
+            }
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function'
+    },
+    {
+        'constant': true,
+        'inputs': [
+            {
+                'name': 'tokenOwner',
+                'type': 'address'
+            },
+            {
+                'name': 'spender',
+                'type': 'address'
+            }
+        ],
+        'name': 'allowance',
+        'outputs': [
+            {
+                'name': 'remaining',
+                'type': 'uint256'
+            }
+        ],
+        'payable': false,
+        'stateMutability': 'view',
+        'type': 'function'
+    }
+]
 
 let TokenHelper = {
     getTokenFuncs: async () => ({
@@ -93,7 +137,6 @@ let TokenHelper = {
             let codeCheck = trc721Function[trc721]
             codeCheck = codeCheck.replace('0x', '')
             if (code.indexOf(codeCheck) < 0) {
-                console.log(trc721Function[trc721])
                 isTrc721 = false
                 break
             }
@@ -134,14 +177,10 @@ let TokenHelper = {
 
     getTokenBalance: async (token, holder) => {
         let web3 = await Web3Util.getWeb3()
-        let tokenFunc = await TokenHelper.getTokenFuncs()
-        let data = tokenFunc['balanceOf'] +
-            '000000000000000000000000' +
-            holder.substr(2) // chop off the 0x
+        let web3Contract = new web3.eth.Contract(DEFAULT_ABI, token.hash)
+        let result = await web3Contract.methods.balanceOf(holder).call()
 
-        let result = await web3.eth.call({ to: token.hash, data: data })
-
-        let quantity = new BigNumber(await web3.utils.hexToNumberString(result))
+        let quantity = new BigNumber(await web3.utils.hexToNumberString(result.balance))
         let quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()
         return { quantity: quantity.toString(10), quantityNumber: quantityNumber }
     }

@@ -9,7 +9,12 @@ const logger = require('../helpers/logger')
 
 mongoose.Promise = global.Promise
 mongoose.connect(config.get('MONGODB_URI'),
-    { useCreateIndex: true, useNewUrlParser: true, autoReconnect: true, useUnifiedTopology: true }, (err) => {
+    {
+        useCreateIndex: true,
+        useNewUrlParser: true,
+        autoReconnect: true,
+        useUnifiedTopology: true
+    }, (err) => {
         if (err) {
             console.log('MongoDB Connection Error. Please make sure that MongoDB is running.')
             process.exit(1)
@@ -34,8 +39,12 @@ mongoose.connection.on('reconnected', function () {
 })
 mongoose.connection.on('disconnected', function () {
     logger.info('MongoDB disconnected!')
-    mongoose.connect(config.get('MONGODB_URI'),
-        { useCreateIndex: true, useNewUrlParser: true, autoReconnect: true, useUnifiedTopology: true })
+    mongoose.connect(config.get('MONGODB_URI'), {
+        useCreateIndex: true,
+        useNewUrlParser: true,
+        autoReconnect: true,
+        useUnifiedTopology: true
+    })
 })
 
 // import all file in this dir, except index.js

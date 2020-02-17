@@ -44,7 +44,7 @@ consumer.task = async function (job, done) {
                 return done()
             }
             let tokenFuncs = await TokenHelper.getTokenFuncs()
-            decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+            decimals = await web3.eth.call({ to: _log.address, data: tokenFuncs['decimals'] })
             decimals = await web3.utils.hexToNumberString(decimals)
             tokenType = await TokenHelper.checkTokenType(code)
         }
