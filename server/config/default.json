@@ -2,6 +2,9 @@
   "APP_ENV": "prod",
   "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
   "MONGODB_DEX_URI": "mongodb://mongo:27017/tomodex",
+  "ELASTICSEARCH": "http://localhost:9200",
+  "GetDataFromElasticSearch": true,
+  "MaxBlockIndex": 150000,
   "redis": {
     "host": "redis",
     "port": 6379,
