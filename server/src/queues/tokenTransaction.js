@@ -66,12 +66,14 @@ consumer.task = async function (job, done) {
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
+                _log.valueNumber = String(_log.valueNumber)
                 await elastic.indexWithoutId('trc20-tx', _log)
             } else {
                 await db.TokenTrc21Tx.updateOne(
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
+                _log.valueNumber = String(_log.valueNumber)
                 await elastic.indexWithoutId('trc21-tx', _log)
             }
 
