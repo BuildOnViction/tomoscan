@@ -48,6 +48,12 @@ consumer.task = async function (job, done) {
             decimals = await web3.utils.hexToNumberString(decimals)
             tokenType = await TokenHelper.checkTokenType(code)
         }
+        if (!Number.isInteger(_log.blockNumber)) {
+            _log.blockNumber = web3.utils.hexToNumber(_log.blockNumber)
+        }
+        if (!Number.isInteger(_log.transactionIndex)) {
+            _log.transactionIndex = web3.utils.hexToNumber(_log.transactionIndex)
+        }
         if (tokenType === 'trc20' || tokenType === 'trc21') {
             _log.value = web3.utils.hexToNumberString(log.data)
 
