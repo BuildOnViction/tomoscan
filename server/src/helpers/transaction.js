@@ -230,17 +230,23 @@ let TransactionHelper = {
             tx.isPending = false
 
             // Internal transaction
+            await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                 let internalTx = await TransactionHelper.getInternalTx(tx)
                 tx.i_tx = internalTx.length
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
-                    if (item.hasOwnProperty('_id')) {
-                        item = item.toJSON()
-                        delete item['_id']
-                        delete item['id']
+                    let idx = {
+                        hash: item.hash,
+                        blockNumber: item.blockNumber,
+                        from: item.from,
+                        to: item.to,
+                        value: item.value,
+                        timestamp: new Date(item.timestamp).getTime(),
+                        createdAt: item.createdAt,
+                        updatedAt: item.updatedAt
                     }
-                    await elastic.indexWithoutId('internal-tx', item)
+                    await elastic.indexWithoutId('internal-tx', idx)
                 }
             }
             if (!Number.isInteger(tx.cumulativeGasUsed)) {

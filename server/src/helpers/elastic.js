@@ -19,10 +19,10 @@ let ElasticHelper = {
             body: body
         })
     },
-    deleteByQuery: async (index, body) => {
-        await client.index({
+    deleteByQuery: async (index, query) => {
+        return client.deleteByQuery({
             index: index,
-            body: body
+            body: { query: query }
         })
     },
     search: async (index, query, sort, limit, page) => {
