@@ -178,6 +178,9 @@ let TokenHelper = {
     getTokenBalance: async (token, holder) => {
         let web3 = await Web3Util.getWeb3()
         let web3Contract = new web3.eth.Contract(DEFAULT_ABI, token.hash)
+        if (holder === '0x0000000000000000000000000000000000000000') {
+            return { quantity: '0', quantityNumber: 0 }
+        }
         let result = await web3Contract.methods.balanceOf(holder).call()
 
         let quantity = new BigNumber(await web3.utils.hexToNumberString(result.balance))

@@ -14,9 +14,13 @@ consumer.task = async function (job, done) {
             return done()
         }
         // Add holder from.
-        await TokenHolderHelper.updateQuality(token.from, token.address)
+        if (token.from !== '0x0000000000000000000000000000000000000000') {
+            await TokenHolderHelper.updateQuality(token.from, token.address)
+        }
         // Add holder to.
-        await TokenHolderHelper.updateQuality(token.to, token.address)
+        if (token.to !== '0x0000000000000000000000000000000000000000') {
+            await TokenHolderHelper.updateQuality(token.to, token.address)
+        }
     } catch (e) {
         logger.warn('Error TokenHolderProcess %s', e)
         return done(e)
