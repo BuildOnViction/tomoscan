@@ -58,6 +58,7 @@ consumer.task = async function (job, done) {
         let t = token.toJSON()
         delete t['_id']
         delete t['id']
+        t.totalSupplyNumber = String(t.totalSupplyNumber)
         await elastic.index(t.hash, 'tokens', t)
     } catch (e) {
         logger.warn('cannot process token %s. Error %s', address, e)
