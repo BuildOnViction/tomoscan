@@ -235,6 +235,11 @@ let TransactionHelper = {
                 tx.i_tx = internalTx.length
                 for (let i = 0; i < internalTx.length; i++) {
                     let item = internalTx[i]
+                    if (item.hasOwnProperty('_id')) {
+                        item = item.toJSON()
+                        delete item['_id']
+                        delete item['id']
+                    }
                     await elastic.indexWithoutId('internal-tx', item)
                 }
             }
