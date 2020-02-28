@@ -99,6 +99,7 @@ let TransactionHelper = {
                 return false
             }
 
+            await elastic.deleteByQuery('transactions', { match: { hash: hash } })
             let listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
