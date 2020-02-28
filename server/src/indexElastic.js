@@ -74,6 +74,7 @@ const watch = async () => {
                         if (!Number.isInteger(tx.gasUsed)) {
                             tx.gasUsed = web3.utils.hexToNumber(tx.gasUsed)
                         }
+                        tx.timestamp = new Date(tx.timestamp).getTime()
                         await elastic.index(tx.hash, 'transactions', tx)
                     }
                     let tokenTx = await db.TokenTx.find({ blockNumber: i })
