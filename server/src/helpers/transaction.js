@@ -99,7 +99,6 @@ let TransactionHelper = {
                 return false
             }
 
-            await elastic.deleteByQuery('transactions', { match: { hash: hash } })
             let listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
@@ -231,7 +230,12 @@ let TransactionHelper = {
             tx.isPending = false
 
             // Internal transaction
-            await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
+            try {
+                await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
+            } catch (e) {
+                logger.warn('dont have internal tx for tx %s', hash)
+            }
+
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
                 let internalTx = await TransactionHelper.getInternalTx(tx)
                 tx.i_tx = internalTx.length
