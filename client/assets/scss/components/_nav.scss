@@ -1,3 +1,19 @@
+body {
+  .logo-dark {
+    display: none;
+  }
+  .logo-light {
+    display: block;
+  }
+}
+body.dark-mode {
+  .logo-dark {
+    display: block !important;
+  }
+  .logo-light {
+    display: none !important;
+  }
+}
 .tomo-nav {
   transition: all .5s ease;
 
