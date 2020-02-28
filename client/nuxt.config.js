@@ -56,7 +56,7 @@ module.exports = {
             {
                 rel: 'icon',
                 type: 'image/x-icon',
-                href: '/favicon_48x48.ico?v=001'
+                href: '/favicon.svg'
             }
         ],
         script: [
