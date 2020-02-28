@@ -51,6 +51,7 @@ const watch = async () => {
                     delete b['_id']
                     delete b['id']
                     b.finality = block.finality > 100 ? 100 : block.finality
+                    b.timestamp = new Date(b.timestamp).getTime()
                     await elastic.index(block.hash, 'blocks', b)
                     if (txes.length > 0) {
                         logger.info('Index %s transactions of block %s', txes.length, i)
