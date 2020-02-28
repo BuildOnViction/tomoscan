@@ -390,11 +390,15 @@ let RewardHelper = {
         try {
             await db.Reward.deleteMany({ epoch: epoch })
             await db.EpochSign.deleteMany({ epoch: epoch })
-            await elastic.deleteByQuery('rewards', {
-                query: {
-                    term: { epoch: epoch }
-                }
-            })
+            try {
+                await elastic.deleteByQuery('rewards', {
+                    query: {
+                        term: { epoch: epoch }
+                    }
+                })
+            } catch (e) {
+                logger.warn('there are no reward at epoch %s to delete', epoch)
+            }
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
