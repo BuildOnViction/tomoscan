@@ -401,12 +401,14 @@ let TransactionHelper = {
                     json: {
                         'jsonrpc': '2.0',
                         'method': 'debug_traceTransaction',
-                        'params': [transaction.hash, { tracer: 'callTracer', timeout: '120s' }],
+                        'params': [transaction.hash, { tracer: 'callTracer', timeout: '10s' }],
                         'id': 88
-                    }
+                    },
+                    timeout: 10000
                 }, (error, res, body) => {
                     if (error) {
-                        return reject
+                        logger.warn(error)
+                        return resolve({ error: 1 })
                     }
                     return resolve(body)
                 })
