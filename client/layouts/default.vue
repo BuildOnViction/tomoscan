@@ -7,9 +7,13 @@
             <div class="container container--wide tomo-nav__wrapper">
                 <b-navbar-brand :to="{name: 'index'}">
                     <img
-                        src="~/assets/img/logo.svg"
+                        src="~/assets/img/logoLight.svg"
                         alt="TomoScan"
-                        class="tomo-nav__logo">
+                        class="tomo-nav__logo logo-light">
+                    <img
+                        src="~/assets/img/logoDark.svg"
+                        alt="TomoScan"
+                        class="tomo-nav__logo logo-dark">
                 </b-navbar-brand>
                 <b-navbar-toggle
                     class="tomo-nav__toggle"
