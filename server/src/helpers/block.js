@@ -122,12 +122,15 @@ let BlockHelper = {
             if (!block) {
                 block = await db.Block.findOne({ hash: String(hashOrNumber).toLowerCase() })
             }
+            console.log(hashOrNumber, block)
             if (block && block.finality === 100) {
                 return block
             }
 
             let web3 = await Web3Util.getWeb3()
+            console.log(hashOrNumber)
             let _block = await web3.eth.getBlock(hashOrNumber)
+            console.log(hashOrNumber, _block)
             if (!_block) {
                 return null
             }
@@ -145,16 +148,22 @@ let BlockHelper = {
             _block.timestamp = _block.timestamp * 1000
             _block.e_tx = _block.transactions.length
 
-            let data = {
-                'jsonrpc': '2.0',
-                'method': 'eth_getBlockFinalityByHash',
-                'params': [_block.hash],
-                'id': 88
-            }
-            const response = await axios.post(config.get('WEB3_URI'), data)
-            let result = response.data
+            try {
+                let data = {
+                    'jsonrpc': '2.0',
+                    'method': 'eth_getBlockFinalityByHash',
+                    'params': [_block.hash],
+                    'id': 88
+                }
+                const response = await axios.post(config.get('WEB3_URI'), data)
+                let result = response.data
 
-            _block.finality = parseInt(result.result)
+                _block.finality = parseInt(result.result)
+            } catch (e) {
+                logger.warn('Cannot get block finality %s', hashOrNumber)
+                logger.warn(e)
+            }
+
             _block.status = true
             if (block) {
                 if (!block.hasOwnProperty('updateFinalityTime')) {
