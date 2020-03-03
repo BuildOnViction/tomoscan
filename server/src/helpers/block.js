@@ -131,10 +131,15 @@ let BlockHelper = {
             if (!_block) {
                 return null
             }
-            let { m1, m2 } = await utils.getM1M2(_block)
+            try {
+                let { m1, m2 } = await utils.getM1M2(_block)
 
-            _block.m2 = m2
-            _block.signer = m1
+                _block.m2 = m2
+                _block.signer = m1
+            } catch (e) {
+                logger.warn('Cannot get M1, M2 of block %s', hashOrNumber)
+                logger.warn(e)
+            }
 
             // Update end tx count.
             _block.timestamp = _block.timestamp * 1000
