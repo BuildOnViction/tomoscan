@@ -136,7 +136,12 @@ BlockController.get('/blocks/:slug', [
         if (block === null) {
             return res.status(404).json({ errors: { message: 'Block is not found!' } })
         }
-        block = block.toJSON()
+        try {
+            block = block.toJSON()
+        } catch (e) {
+            logger.warn(e)
+        }
+
         if (block.number % config.get('BLOCK_PER_EPOCH') === 0) {
             let slashedNode = []
             let blk = await BlockHelper.getBlock(block.number)
