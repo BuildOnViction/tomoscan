@@ -68,8 +68,8 @@ jobs:
         - echo -e "Host $DEVNET_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./travis.pem
       script:
-        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP cd /root/tomoscan && git pull origin tomodex > /dev/null
-        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP cd /root/tomoscan/client && npm run build > /dev/null
+        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP cd tomoscan && git pull origin tomodex > /dev/null
+        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP cd tomoscan/client && npm run build > /dev/null
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP pm2 restart tomoscan-client tomoscan-crawler tomoscan-producer tomoscan-server tomoscan-trade-process > /dev/null
       after_success:
         -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
@@ -85,8 +85,8 @@ jobs:
         - echo -e "Host $TESTNET_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./travis.pem
       script:
-        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP cd /root/tomoscan && git pull origin tomodex > /dev/null
-        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP cd /root/tomoscan/client && npm run build > /dev/null
+        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP cd tomoscan && git pull origin tomodex > /dev/null
+        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP cd tomoscan/client && npm run build > /dev/null
         - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP pm2 restart tomoscan-client tomoscan-crawler tomoscan-producer tomoscan-server tomoscan-trade-process > /dev/null
       after_success:
         -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
