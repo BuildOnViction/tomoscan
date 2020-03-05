@@ -20,5 +20,7 @@
   "0xdee6238780f98c0ca2c2c28453149bea49a3abc9": "Binance",
   "0xe56ee03024bd5454431d6d25b368d1d7276d60dd": "Coin98Pool",
   "0xd7d6634109572e3bed7cece7d1c90f18b7b1c10d": "TomoStakePool",
-  "0x4024fb87066079f3959d0734716f3dc3d7c0ea2c": "WalkingPool"
+  "0x4024fb87066079f3959d0734716f3dc3d7c0ea2c": "WalkingPool",
+  "0x486184c3877a1e44fbdecd65d5246fb96a6c119d": "InfinitePool",
+  "0x937f6afdf475f21343d6e83e9a8f5024fc04423a": "DeepPool"
 }
