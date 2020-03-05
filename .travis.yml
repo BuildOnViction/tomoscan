@@ -62,7 +62,7 @@ jobs:
     - stage: Deploy in devnet
       install: skip
       before_script:
-        - openssl enc aes-256-cbc -K $encrypted_1abf86bccdee_key -iv $encrypted_1abf86bccdee_iv -in newTravis.pem.enc -out travis.pem -d
+        - openssl enc -aes-256-cbc -d -in newTravis.pem.enc -K $encrypted_1abf86bccdee_key -iv $encrypted_1abf86bccdee_iv -out travis.pem
         - eval "$(ssh-agent -s)"
         - chmod 600 ./travis.pem
         - echo -e "Host $DEVNET_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
@@ -79,7 +79,7 @@ jobs:
     - stage: Deploy in testnet
       install: skip
       before_script:
-        - openssl enc aes-256-cbc -K $encrypted_1abf86bccdee_key -iv $encrypted_1abf86bccdee_iv -in newTravis.pem.enc -out travis.pem -d
+        - openssl enc -aes-256-cbc -d -in newTravis.pem.enc -K $encrypted_1abf86bccdee_key -iv $encrypted_1abf86bccdee_iv -out travis.pem
         - eval "$(ssh-agent -s)"
         - chmod 600 ./travis.pem
         - echo -e "Host $TESTNET_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
