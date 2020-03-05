@@ -37,7 +37,7 @@ module.exports = {
             },
             {
                 property: 'og:image',
-                content: 'https://scan.tomochain.com/logoshare.png'
+                content: 'https://scan.tomochain.com/newlogo.png'
             },
             {
                 property: 'og:image:height',
