@@ -573,7 +573,11 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         let tx
         try {
             tx = await TransactionHelper.getTxDetail(hash)
-            tx = tx.toJSON()
+            try {
+                tx = tx.toJSON()
+            } catch (e) {
+                logger.warn(e)
+            }
         } catch (e) {
             logger.warn('cannot get tx detail. Error', e)
             return res.status(404).json({ errors: { message: 'Transaction is not found!' } })
