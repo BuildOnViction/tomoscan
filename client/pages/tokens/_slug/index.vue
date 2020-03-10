@@ -7,8 +7,9 @@
             <div class="tomo-card__header">
                 <h2 class="tomo-card__headline">
                     <img
-                        v-if="isVerified"
-                        :src="'https://raw.githubusercontent.com/tomochain/tokens/master/tokens/' + hash + '.png'"
+                        v-if="checkAvatarExist(hash)"
+                        :src="'https://raw.githubusercontent.com/tomochain/tokens/' + process.env.TOKEN_BRANCH +
+                        '/tokens/' + hash + '.png'"
                         width="35px">
                     {{ tokenName }}&nbsp;</h2>
                 <i
@@ -321,6 +322,19 @@ export default {
                 } else {
                     location.hash = allTabs.tabs[value].href
                 }
+            }
+        },
+        checkAvatarExist: function (token) {
+            let url = 'https://raw.githubusercontent.com/tomochain/tokens/' + process.env.TOKEN_BRANCH +
+                '/tokens/' + token.toLowerCase() + 'png'
+            let xhr = new XMLHttpRequest()
+            xhr.open('HEAD', url, false)
+            xhr.send()
+
+            if (xhr.status === 404) {
+                return false
+            } else {
+                return true
             }
         }
     }
