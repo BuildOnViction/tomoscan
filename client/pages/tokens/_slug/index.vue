@@ -8,8 +8,7 @@
                 <h2 class="tomo-card__headline">
                     <img
                         v-if="checkAvatarExist(hash)"
-                        :src="'https://raw.githubusercontent.com/tomochain/tokens/' + process.env.TOKEN_BRANCH +
-                        '/tokens/' + hash + '.png'"
+                        :src="`https://raw.githubusercontent.com/tomochain/tokens/${tokenBranch}/tokens/${hash}.png`"
                         width="35px">
                     {{ tokenName }}&nbsp;</h2>
                 <i
@@ -248,7 +247,8 @@ export default {
             address: null,
             smartContract: null,
             holderBalance: 0,
-            tabIndex: 0
+            tabIndex: 0,
+            tokenBranch: process.env.TOKEN_BRANCH
         }
     },
     computed: {
@@ -325,7 +325,7 @@ export default {
             }
         },
         checkAvatarExist: function (token) {
-            let url = 'https://raw.githubusercontent.com/tomochain/tokens/' + process.env.TOKEN_BRANCH +
+            let url = 'https://raw.githubusercontent.com/tomochain/tokens/' + this.tokenBranch +
                 '/tokens/' + token.toLowerCase() + '.png'
             let xhr = new XMLHttpRequest()
             xhr.open('HEAD', url, false)
