@@ -326,7 +326,7 @@ export default {
         },
         checkAvatarExist: function (token) {
             let url = 'https://raw.githubusercontent.com/tomochain/tokens/' + process.env.TOKEN_BRANCH +
-                '/tokens/' + token.toLowerCase() + 'png'
+                '/tokens/' + token.toLowerCase() + '.png'
             let xhr = new XMLHttpRequest()
             xhr.open('HEAD', url, false)
             xhr.send()
