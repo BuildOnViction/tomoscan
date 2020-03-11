@@ -86,10 +86,7 @@ jobs:
         - ssh-add ./travis.pem
       script:
         - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'cd scan && git pull origin tomodex' > /dev/null
-        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && cd scan/client/ && npm run build' > /dev/null
-        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
-          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" && pm2 restart scan.client scan.crawl scan.producer scan.server scan.tradeProcess' > /dev/null
+        - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'cd scan/ && bash deploy.sh' > /dev/null
       after_success:
         -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
       after_failure:
