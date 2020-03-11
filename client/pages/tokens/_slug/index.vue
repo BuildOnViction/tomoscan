@@ -257,7 +257,7 @@ export default {
         }
     },
     created () {
-        this.hash = this.$route.params.slug
+        this.hash = this.$route.params.slug.toLowerCase()
     },
     async mounted () {
         try {
