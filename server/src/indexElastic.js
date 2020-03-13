@@ -115,6 +115,7 @@ const watch = async () => {
                     }
                     for (let j = 0; j < internalTx.length; j++) {
                         let tx = internalTx[j].toJSON()
+                        tx.timestamp = new Date(tx.timestamp).getTime()
                         delete tx['_id']
                         delete tx['id']
                         await elastic.indexWithoutId('internal-tx', tx)
