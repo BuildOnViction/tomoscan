@@ -66,21 +66,26 @@ BlockController.get('/blocks', [
         }
         let finality = []
         let map2 = finalityBlock.map(async function (hash) {
-            let data = {
-                'jsonrpc': '2.0',
-                'method': 'eth_getBlockFinalityByHash',
-                'params': [hash],
-                'id': 88
+            try {
+                let data = {
+                    'jsonrpc': '2.0',
+                    'method': 'eth_getBlockFinalityByHash',
+                    'params': [hash],
+                    'id': 88
+                }
+                const response = await axios.post(config.get('WEB3_URI'), data)
+                let result = response.data
+
+                let finalityNumber = parseInt(result.result)
+
+                finality.push({
+                    hash: hash,
+                    finality: finalityNumber
+                })
+            } catch (e) {
+                logger.warn('Cannot get block finality %s', hash)
+                logger.warn(e)
             }
-            const response = await axios.post(config.get('WEB3_URI'), data)
-            let result = response.data
-
-            let finalityNumber = parseInt(result.result)
-
-            finality.push({
-                hash: hash,
-                finality: finalityNumber
-            })
         })
         await Promise.all(map2)
 
