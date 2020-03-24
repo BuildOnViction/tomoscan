@@ -73,7 +73,7 @@ BlockController.get('/blocks', [
                     'params': [hash],
                     'id': 88
                 }
-                const response = await axios.post(config.get('WEB3_URI'), data)
+                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
                 let result = response.data
 
                 let finalityNumber = parseInt(result.result)
