@@ -31,7 +31,7 @@ consumer.task = async function (job, done) {
                         'params': [block.hash],
                         'id': 88
                     }
-                    const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
+                    const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
                     let result = response.data
 
                     block.finality = parseInt(result.result)

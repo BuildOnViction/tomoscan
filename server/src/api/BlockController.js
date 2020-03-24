@@ -73,7 +73,7 @@ BlockController.get('/blocks', [
                     'params': [hash],
                     'id': 88
                 }
-                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
+                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
                 let result = response.data
 
                 let finalityNumber = parseInt(result.result)
@@ -222,7 +222,7 @@ BlockController.get('/blocks/signers/:slug', [
     }
     let blockNumberOrHash = req.params.slug
     try {
-        let signers
+        let signers = []
         let checkInChain = true
         let block
         if (!isNaN(blockNumberOrHash)) {
@@ -247,15 +247,20 @@ BlockController.get('/blocks/signers/:slug', [
         }
 
         if (checkInChain) {
-            let data = {
-                'jsonrpc': '2.0',
-                'method': 'eth_getBlockSignersByHash',
-                'params': [block.hash],
-                'id': 88
+            try {
+                let data = {
+                    'jsonrpc': '2.0',
+                    'method': 'eth_getBlockSignersByHash',
+                    'params': [block.hash],
+                    'id': 88
+                }
+                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
+                let result = response.data
+                signers = result.result
+            } catch (e) {
+                logger.warn('cannot get signer of block %s', block.number)
+                logger.warn(e)
             }
-            const response = await axios.post(config.get('WEB3_URI'), data)
-            let result = response.data
-            signers = result.result
         }
 
         return res.json({ signers: signers })
