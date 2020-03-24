@@ -45,7 +45,7 @@ let BlockHelper = {
                 'params': [_block.hash],
                 'id': 88
             }
-            const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
+            const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
             let result = response.data
 
             let finalityNumber = parseInt(result.result)
@@ -162,7 +162,7 @@ let BlockHelper = {
                     'params': [_block.hash],
                     'id': 88
                 }
-                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
+                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
                 let result = response.data
 
                 _block.finality = parseInt(result.result)
@@ -213,7 +213,7 @@ let BlockHelper = {
                     'params': [_block.hash],
                     'id': 88
                 }
-                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 1000 })
+                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
                 let result = response.data
 
                 let finalityNumber = parseInt(result.result)
