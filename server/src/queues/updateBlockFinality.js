@@ -24,16 +24,21 @@ consumer.task = async function (job, done) {
             }
             let blockOnChain = await web3.eth.getBlock(block.number)
             if (block.hash === blockOnChain.hash) {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockFinalityByHash',
-                    'params': [block.hash],
-                    'id': 88
-                }
-                const response = await axios.post(config.get('WEB3_URI'), data)
-                let result = response.data
+                try {
+                    let data = {
+                        'jsonrpc': '2.0',
+                        'method': 'eth_getBlockFinalityByHash',
+                        'params': [block.hash],
+                        'id': 88
+                    }
+                    const response = await axios.post(config.get('WEB3_URI'), data)
+                    let result = response.data
 
-                block.finality = parseInt(result.result)
+                    block.finality = parseInt(result.result)
+                } catch (e) {
+                    logger.warn('Cannot get block finality %s', block.number)
+                    logger.warn(e)
+                }
                 block.updateFinalityTime = block.updateFinalityTime ? block.updateFinalityTime + 1 : 1
                 block.save()
             } else {

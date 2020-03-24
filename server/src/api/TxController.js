@@ -812,7 +812,7 @@ TxController.get('/txs/combine/:address', [
         }).sort({ blockNumber: -1 }).lean().exec() || {}
 
         const blockNumber = (latestTxFrom.blockNumber || 0) > (latestTxTo.blockNumber || 0)
-            ? latestTxFrom.blockNumber : latestTxTo.blockNumber
+            ? (latestTxFrom.blockNumber || 0) : (latestTxTo.blockNumber || 0)
 
         // account's txs
         const txsAccount1 = db.Tx.find({

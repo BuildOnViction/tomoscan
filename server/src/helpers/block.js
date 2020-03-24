@@ -38,23 +38,28 @@ let BlockHelper = {
         _block.timestamp = timestamp
         _block.e_tx = _block.transactions.length
 
-        let data = {
-            'jsonrpc': '2.0',
-            'method': 'eth_getBlockFinalityByHash',
-            'params': [_block.hash],
-            'id': 88
+        try {
+            let data = {
+                'jsonrpc': '2.0',
+                'method': 'eth_getBlockFinalityByHash',
+                'params': [_block.hash],
+                'id': 88
+            }
+            const response = await axios.post(config.get('WEB3_URI'), data)
+            let result = response.data
+
+            let finalityNumber = parseInt(result.result)
+            // blockNumber = 0 is genesis block
+            if (parseInt(blockNumber) === 0) {
+                finalityNumber = 100
+            }
+
+            _block.finality = finalityNumber
+        } catch (e) {
+            logger.warn('Cannot get block finality %s', blockNumber)
+            logger.warn(e)
         }
-        const response = await axios.post(config.get('WEB3_URI'), data)
-        let result = response.data
 
-        let finalityNumber = parseInt(result.result)
-
-        // blockNumber = 0 is genesis block
-        if (parseInt(blockNumber) === 0) {
-            finalityNumber = 100
-        }
-
-        _block.finality = finalityNumber
         let txs = _block.transactions
         delete _block['transactions']
         _block.status = true
@@ -201,23 +206,29 @@ let BlockHelper = {
             _block.timestamp = _block.timestamp * 1000
             _block.e_tx = _block.transactions.length
 
-            let data = {
-                'jsonrpc': '2.0',
-                'method': 'eth_getBlockFinalityByHash',
-                'params': [_block.hash],
-                'id': 88
+            try {
+                let data = {
+                    'jsonrpc': '2.0',
+                    'method': 'eth_getBlockFinalityByHash',
+                    'params': [_block.hash],
+                    'id': 88
+                }
+                const response = await axios.post(config.get('WEB3_URI'), data)
+                let result = response.data
+
+                let finalityNumber = parseInt(result.result)
+
+                // blockNumber = 0 is genesis block
+                if (parseInt(_block.number) === 0) {
+                    finalityNumber = 100
+                }
+
+                _block.finality = finalityNumber
+            } catch (e) {
+                logger.warn('Cannot get block finality %s', number)
+                logger.warn(e)
             }
-            const response = await axios.post(config.get('WEB3_URI'), data)
-            let result = response.data
 
-            let finalityNumber = parseInt(result.result)
-
-            // blockNumber = 0 is genesis block
-            if (parseInt(_block.number) === 0) {
-                finalityNumber = 100
-            }
-
-            _block.finality = finalityNumber
             _block.status = true
 
             return _block
