@@ -137,6 +137,63 @@ let DexHelper = {
             trades[i].takeFee = takeFee
         }
         return trades
+    },
+
+    formatLendingTrade: async (trades) => {
+        let web3 = await Web3Util.getWeb3()
+        let decimals = {}
+        for (let i = 0; i < trades.length; i++) {
+            let ct = trades[i].collateralToken.toLowerCase()
+            if (!decimals.hasOwnProperty(ct)) {
+                if (ct === TomoToken) {
+                    decimals[ct] = 18
+                } else {
+                    let baseDecimals = await web3.eth.call({ to: ct, data: decimalFunction })
+                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
+                    decimals[ct] = baseDecimals
+                }
+            }
+            let lt = trades[i].lendingToken.toLowerCase()
+            if (!decimals.hasOwnProperty(lt)) {
+                if (lt === TomoToken) {
+                    decimals[lt] = 18
+                } else {
+                    let quoteDecimals = await web3.eth.call({ to: lt, data: decimalFunction })
+                    quoteDecimals = await web3.utils.hexToNumber(quoteDecimals)
+                    decimals[lt] = quoteDecimals
+                }
+            }
+        }
+        for (let i = 0; i < trades.length; i++) {
+            let quantity = new BigNumber(trades[i].quantity)
+            let ct = trades[i].collateralToken.toLowerCase()
+            let lt = trades[i].lendingToken.toLowerCase()
+            quantity = quantity.dividedBy(10 ** decimals[ct]).toNumber()
+
+            let amount = new BigNumber(trades[i].amount)
+            amount = amount.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let borrowingFee = new BigNumber(trades[i].borrowingFee)
+            borrowingFee = borrowingFee.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let collateralPrice = new BigNumber(trades[i].collateralPrice)
+            collateralPrice = collateralPrice.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let liquidationPrice = new BigNumber(trades[i].liquidationPrice)
+            liquidationPrice = liquidationPrice.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let collateralLockedAmount = new BigNumber(trades[i].collateralLockedAmount)
+            collateralLockedAmount = collateralLockedAmount.dividedBy(10 ** decimals[ct]).toNumber()
+
+            trades[i].collateralDecimals = decimals[ct]
+            trades[i].lendingDecimals = decimals[lt]
+            trades[i].amount = amount
+            trades[i].borrowingFee = borrowingFee
+            trades[i].liquidationPrice = liquidationPrice
+            trades[i].collateralPrice = collateralPrice
+            trades[i].collateralLockedAmount = collateralLockedAmount
+        }
+        return trades
     }
 }
 
