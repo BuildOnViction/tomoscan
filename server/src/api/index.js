@@ -20,6 +20,7 @@ const HomeController = require('./HomeController')
 const EpochController = require('./EpochController')
 const OrderController = require('./OrderController')
 const TradeController = require('./TradeController')
+const LendingController = require('./LendingController')
 
 const router = Router()
 
@@ -44,5 +45,6 @@ router.use(HomeController)
 router.use(EpochController)
 router.use(OrderController)
 router.use(TradeController)
+router.use(LendingController)
 
 module.exports = router

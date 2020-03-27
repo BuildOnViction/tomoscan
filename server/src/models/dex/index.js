@@ -98,4 +98,101 @@ const Statistic = conn.model('Statistic', new Schema({
 }))
 db.Statistic = Statistic
 
+const LendingRepay = conn.model('lending_repay', new Schema({
+    quantity: String,
+    interest: String,
+    side: String,
+    type: String,
+    lendingToken: { type: String, index: true },
+    collateralToken: { type: String, index: true },
+    autoTopUp: { type: Boolean, index: true },
+    filledAmount: String,
+    status: { type: String, index: true },
+    relayer: { type: String, index: true },
+    term: String,
+    userAddress: { type: String, index: true },
+    hash: { type: String, index: true },
+    txHash: { type: String, index: true },
+    lendingId: { type: String, index: true },
+    tradeId: { type: String, index: true },
+    extraData: String
+
+}))
+db.LendingRepay = LendingRepay
+
+const LendingTopup = conn.model('lending_topup', new Schema({
+    quantity: String,
+    interest: String,
+    side: String,
+    type: String,
+    lendingToken: { type: String, index: true },
+    collateralToken: { type: String, index: true },
+    autoTopUp: { type: Boolean, index: true },
+    filledAmount: String,
+    status: { type: String, index: true },
+    relayer: { type: String, index: true },
+    term: String,
+    userAddress: { type: String, index: true },
+    hash: { type: String, index: true },
+    txHash: { type: String, index: true },
+    lendingId: { type: String, index: true },
+    tradeId: { type: String, index: true },
+    extraData: String
+
+}))
+db.LendingTopup = LendingTopup
+
+const LendingItem = conn.model('lending_items', new Schema({
+    quantity: String,
+    interest: String,
+    side: String,
+    type: String,
+    lendingToken: { type: String, index: true },
+    collateralToken: { type: String, index: true },
+    autoTopUp: { type: Boolean, index: true },
+    filledAmount: String,
+    status: { type: String, index: true },
+    relayer: { type: String, index: true },
+    term: String,
+    userAddress: { type: String, index: true },
+    hash: { type: String, index: true },
+    txHash: { type: String, index: true },
+    lendingId: { type: String, index: true },
+    tradeId: { type: String, index: true },
+    extraData: String
+
+}))
+db.LendingItem = LendingItem
+
+const LendingTrade = conn.model('lending_trades', new Schema({
+    hash: { type: String, index: true },
+    amount: String,
+    autoTopUp: { type: Boolean, index: true },
+    borrower: { type: String, index: true },
+    borrowingFee: String,
+    borrowingOrderHash: { type: String, index: true },
+    borrowingRelayer: { type: String, index: true },
+    collateralLockedAmount: String,
+    collateralPrice: String,
+    collateralToken: { type: String, index: true },
+    depositRate: String,
+    extraData: String,
+    interest: String,
+    investingFee: String,
+    investingOrderHash: { type: String, index: true },
+    investingRelayer: { type: String, index: true },
+    investor: { type: String, index: true },
+    lendingToken: { type: String, index: true },
+    liquidationPrice: String,
+    liquidationTime: String,
+    makerOrderType : { type: String, index: true },
+    status: { type: String, index: true },
+    takerOrderSide : { type: String, index: true },
+    takerOrderType: { type: String, index: true },
+    term: String,
+    tradeId: String,
+    txHash: { type: String, index: true }
+}))
+db.LendingTrade = LendingTrade
+
 module.exports = db

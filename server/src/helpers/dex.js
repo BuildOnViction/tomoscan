@@ -51,6 +51,41 @@ let DexHelper = {
         }
         return orders
     },
+
+    formatLendingOrder: async (orders) => {
+        let web3 = await Web3Util.getWeb3()
+        let decimals = {}
+        for (let i = 0; i < orders.length; i++) {
+            let lt = orders[i].lendingToken.toLowerCase()
+            if (!decimals.hasOwnProperty(lt)) {
+                if (lt === TomoToken) {
+                    decimals[lt] = 18
+                } else {
+                    let baseDecimals = await web3.eth.call({ to: lt, data: decimalFunction })
+                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
+                    decimals[lt] = baseDecimals
+                }
+            }
+        }
+        for (let i = 0; i < orders.length; i++) {
+            let quantity = new BigNumber(orders[i].quantity)
+            let lt = orders[i].baseToken.toLowerCase()
+            quantity = quantity.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let fillAmount = new BigNumber(orders[i].filledAmount)
+            fillAmount = fillAmount.dividedBy(10 ** decimals[lt]).toNumber()
+
+            let interest = new BigNumber(orders[i].interest)
+            interest = interest.dividedBy(10 ** 8).toNumber()
+
+            orders[i].lendingDecimals = decimals[lt]
+            orders[i].interest = interest
+            orders[i].filledAmount = fillAmount
+            orders[i].quantity = quantity
+        }
+        return orders
+    },
+
     formatTrade: async (trades) => {
         let web3 = await Web3Util.getWeb3()
         let decimals = {}
