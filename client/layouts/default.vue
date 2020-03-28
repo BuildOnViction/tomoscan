@@ -74,6 +74,7 @@
                             text="Order Book">
                             <b-dropdown-item :to="{name: 'orders'}">Orders</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'trades'}">Trade History</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'lending-orders'}">Lending Order</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">

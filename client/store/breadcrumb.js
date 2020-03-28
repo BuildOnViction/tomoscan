@@ -195,6 +195,14 @@ br.register('epochs-slug', (brs) => {
     brs.parent('epochs')
     brs.push('Epochs detail', { name: 'epochs-slug' })
 })
+br.register('lending-orders', (brs) => {
+    brs.parent('index')
+    brs.push('Lending Orders', { name: 'lending-orders' })
+})
+br.register('lending-orders-slug', (brs) => {
+    brs.parent('lending-orders')
+    brs.push('Lending Order Detail', { name: 'lending-orders-slug' })
+})
 
 export const state = () => ({
     items: null
