@@ -68,7 +68,7 @@ jobs:
         - echo -e "Host $DEVNET_IP\n\tStrictHostKeyChecking no\n" >> ~/.ssh/config
         - ssh-add ./travis.pem
       script:
-        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'cd tomoscan && git pull origin tomodex' > /dev/null
+        - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'cd tomoscan && git pull origin devnet' > /dev/null
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'cd tomoscan/client && npm run build' > /dev/null
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'pm2 restart tomoscan-client tomoscan-crawler tomoscan-producer tomoscan-server tomoscan-trade-process' > /dev/null
       after_success:
@@ -101,7 +101,7 @@ stages:
 #  - name: Build and push image (tagged)
 #    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
   - name: Deploy in devnet
-    if: type != pull_request AND branch = tomodex AND repo = tomochain/tomoscan
+    if: type != pull_request AND branch = devnet AND repo = tomochain/tomoscan
   - name: Deploy in testnet
     if: type != pull_request AND branch = tomodex AND repo = tomochain/tomoscan
 #    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
