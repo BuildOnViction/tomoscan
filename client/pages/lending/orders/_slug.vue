@@ -39,18 +39,22 @@
                                         <tr>
                                             <td>Transaction Hash</td>
                                             <td>
-                                                <read-more
-                                                    :text="lendingOrder.txHash"
-                                                    class="d-sm-none" />
-                                                <read-more
-                                                    :text="lendingOrder.txHash"
-                                                    :max-chars="20"
-                                                    class="d-none d-sm-block d-md-none"/>
-                                                <read-more
-                                                    :text="lendingOrder.txHash"
-                                                    :max-chars="40"
-                                                    class="d-none d-md-block d-lg-none"/>
-                                                <span class="d-none d-lg-block">{{ lendingOrder.txHash }}</span>
+                                                <nuxt-link
+                                                    :to="{name: 'txs-slug', params: {slug: lendingOrder.txHash}}">
+                                                    <read-more
+                                                        :text="lendingOrder.txHash"
+                                                        class="d-sm-none" />
+                                                    <read-more
+                                                        :text="lendingOrder.txHash"
+                                                        :max-chars="20"
+                                                        class="d-none d-sm-block d-md-none"/>
+                                                    <read-more
+                                                        :text="lendingOrder.txHash"
+                                                        :max-chars="40"
+                                                        class="d-none d-md-block d-lg-none"/>
+                                                    <span class="d-none d-lg-block">{{ lendingOrder.txHash }}</span>
+
+                                                </nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
@@ -128,7 +132,10 @@
                                         </tr>
                                         <tr>
                                             <td>Filled Amount</td>
-                                            <td>{{ formatNumber(lendingOrder.filledAmount) }}</td>
+                                            <td>
+                                                {{ formatNumber(lendingOrder.filledAmount) }}
+                                                {{ lendingOrder.lendingSymbol }}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Auto topup</td>

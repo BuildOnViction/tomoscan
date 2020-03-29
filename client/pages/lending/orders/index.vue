@@ -125,7 +125,7 @@
                     {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="lendingToken"
+                slot="collateralToken"
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
@@ -135,11 +135,14 @@
                 slot="quantity"
                 slot-scope="props">
                 {{ formatNumber(props.item.quantity) }}
+                <nuxt-link
+                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
+                    {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
             </template>
             <template
                 slot="interest"
                 slot-scope="props">
-                {{ formatNumber(props.item.interest) }}
+                {{ formatNumber(props.item.interest) }} %
             </template>
             <template
                 slot="status"

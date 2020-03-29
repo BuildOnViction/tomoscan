@@ -2,7 +2,10 @@
 
 const Web3Util = require('./web3')
 const BigNumber = require('bignumber.js')
+const db = require('../models')
+const utils = require('./utils')
 const decimalFunction = '0x313ce567'
+const symbolFunction = '0x95d89b41'
 const TomoToken = '0x0000000000000000000000000000000000000001'
 
 let DexHelper = {
@@ -61,24 +64,33 @@ let DexHelper = {
                 if (lt === TomoToken) {
                     decimals[lt] = 18
                 } else {
-                    let baseDecimals = await web3.eth.call({ to: lt, data: decimalFunction })
-                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
-                    decimals[lt] = baseDecimals
+                    let token = await db.Token.findOne({ hash: lt })
+                    if (token) {
+                        decimals[lt] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let dcm = await web3.eth.call({ to: lt, data: decimalFunction })
+                        dcm = await web3.utils.hexToNumber(dcm)
+
+                        let symbol = await web3.eth.call({ to: token.hash, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[lt] = { decimals: dcm, symbol: symbol }
+                    }
                 }
             }
         }
         for (let i = 0; i < orders.length; i++) {
             let quantity = new BigNumber(orders[i].quantity)
             let lt = orders[i].lendingToken.toLowerCase()
-            quantity = quantity.dividedBy(10 ** decimals[lt]).toNumber()
+            quantity = quantity.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let fillAmount = new BigNumber(orders[i].filledAmount)
-            fillAmount = fillAmount.dividedBy(10 ** decimals[lt]).toNumber()
+            fillAmount = fillAmount.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let interest = new BigNumber(orders[i].interest)
             interest = interest.dividedBy(10 ** 8).toNumber()
 
-            orders[i].lendingDecimals = decimals[lt]
+            orders[i].lendingDecimals = decimals[lt].decimals
+            orders[i].lendingSymbol = decimals[lt].symbol
             orders[i].interest = interest
             orders[i].filledAmount = fillAmount
             orders[i].quantity = quantity
