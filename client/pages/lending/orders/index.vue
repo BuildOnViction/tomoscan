@@ -122,14 +122,14 @@
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ hiddenString(props.item.lendingToken) }}</nuxt-link>
+                    {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="lendingToken"
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
-                    {{ hiddenString(props.item.collateralToken) }}</nuxt-link>
+                    {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="quantity"

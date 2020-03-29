@@ -82,7 +82,7 @@ LendingController.get('/lending/orders', [
     }
 })
 
-LendingController.get('lending/orders/:slug', [
+LendingController.get('/lending/orders/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -251,7 +251,7 @@ LendingController.get('/lending/trades', [
     }
 })
 
-LendingController.get('lending/trades/:slug', [
+LendingController.get('/lending/trades/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -422,7 +422,7 @@ LendingController.get('/lending/topup', [
     }
 })
 
-LendingController.get('lending/topup/:slug', [
+LendingController.get('/lending/topup/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)
@@ -593,7 +593,7 @@ LendingController.get('/lending/repay', [
     }
 })
 
-LendingController.get('lending/repay/:slug', [
+LendingController.get('/lending/repay/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
     let errors = validationResult(req)

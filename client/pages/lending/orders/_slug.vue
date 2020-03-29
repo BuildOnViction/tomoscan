@@ -94,11 +94,11 @@
                                         </tr>
                                         <tr>
                                             <td>Type</td>
-                                            <td>{{ order.type === 'LO' ? 'Limit' : 'Market' }}</td>
+                                            <td>{{ lendingOrder.type === 'LO' ? 'Limit' : 'Market' }}</td>
                                         </tr>
                                         <tr>
                                             <td>Side</td>
-                                            <td>{{ order.side }}</td>
+                                            <td>{{ lendingOrder.side }}</td>
                                         </tr>
                                         <tr>
                                             <td>Lending token</td>
@@ -139,8 +139,8 @@
                                             <td>
                                                 <span
                                                     v-b-tooltip.hover
-                                                    :title="$moment(order.createdAt).format('lll')">
-                                                    {{ $moment(order.createdAt).fromNow() }}</span>
+                                                    :title="$moment(lendingOrder.createdAt).format('lll')">
+                                                    {{ $moment(lendingOrder.createdAt).fromNow() }}</span>
                                             </td>
                                         </tr>
                                     </tbody>
