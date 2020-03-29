@@ -94,7 +94,7 @@
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--orders">
+            class="tomo-table--lending-orders">
             <template
                 slot="hash"
                 slot-scope="props">
@@ -122,14 +122,14 @@
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ props.item.lendingToken }}</nuxt-link>
+                    {{ hiddenString(props.item.lendingToken) }}</nuxt-link>
             </template>
             <template
                 slot="lendingToken"
                 slot-scope="props">
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
-                    {{ props.item.collateralToken }}</nuxt-link>
+                    {{ hiddenString(props.item.collateralToken) }}</nuxt-link>
             </template>
             <template
                 slot="quantity"

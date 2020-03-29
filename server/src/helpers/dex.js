@@ -69,7 +69,7 @@ let DexHelper = {
         }
         for (let i = 0; i < orders.length; i++) {
             let quantity = new BigNumber(orders[i].quantity)
-            let lt = orders[i].baseToken.toLowerCase()
+            let lt = orders[i].lendingToken.toLowerCase()
             quantity = quantity.dividedBy(10 ** decimals[lt]).toNumber()
 
             let fillAmount = new BigNumber(orders[i].filledAmount)
