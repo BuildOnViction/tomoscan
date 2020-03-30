@@ -769,10 +769,16 @@
   }
 }
 
-.tomo-table--orders {
+.tomo-table--lending-orders {
   thead tr,
   tbody tr {
     grid-template-columns: 15% 15% 15% 15% 10% 5% 7% 8% 10%;
+  }
+}
+.tomo-table--lending-trades {
+  thead tr,
+  tbody tr {
+    grid-template-columns: 13% 13% 13% 13% 13% 10% 8% 8% 9%;
   }
 }
 

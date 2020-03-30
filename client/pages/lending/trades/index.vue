@@ -38,22 +38,6 @@
             </div>
             <div class="form-group mr-2 mb-2">
                 <select
-                    id="inputSide"
-                    v-model="side"
-                    name="side"
-                    class="form-control mx-sm-1">
-                    <option
-                        value=""
-                        selected
-                        hidden
-                        disabled>Select side</option>
-                    <option value="">No filter</option>
-                    <option value="INVEST">INVEST</option>
-                    <option value="BORROW">BORROW</option>
-                </select>
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <select
                     id="inputStatus"
                     v-model="status"
                     name="status"
@@ -104,7 +88,7 @@
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--lending-orders">
+            class="tomo-table--lending-trades">
             <template
                 slot="hash"
                 slot-scope="props">
@@ -117,15 +101,22 @@
                     class="fa fa-ban text-danger ml-15"
                     aria-hidden="true"/>
                 <nuxt-link
-                    :to="{name: 'lending-orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    :to="{name: 'lending-trades-slug', params: {slug: props.item.hash.toLowerCase()}}">
                     {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="userAddress"
+                slot="borrower"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.userAddress.toLowerCase()}}">
-                    {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.borrower.toLowerCase()}}">
+                    {{ hiddenString(props.item.borrower.toLowerCase(), 8) }}</nuxt-link>
+            </template>
+            <template
+                slot="investor"
+                slot-scope="props">
+                <nuxt-link
+                    :to="{name: 'address-slug', params: {slug: props.item.investor.toLowerCase()}}">
+                    {{ hiddenString(props.item.investor.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
                 slot="lendingToken"
@@ -142,27 +133,25 @@
                     {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="quantity"
+                slot="amount"
                 slot-scope="props">
-                {{ formatNumber(props.item.quantity) }}
+                {{ props.item.amount === null ? 0 : formatNumber(props.item.amount) }}
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
             </template>
             <template
-                slot="interest"
+                slot="borrowingFee"
                 slot-scope="props">
-                {{ formatNumber(props.item.interest) }} %
+                {{ props.item.borrowingFee === null ? 0 : formatNumber(props.item.borrowingFee) }}
+                <nuxt-link
+                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
+                    {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
             </template>
             <template
                 slot="status"
                 slot-scope="props">
                 {{ props.item.status }}
-            </template>
-            <template
-                slot="type"
-                slot-scope="props">
-                {{ props.item.type === 'LO' ? 'Limit' : 'Market' }}
             </template>
             <template
                 slot="createdAt"
@@ -204,12 +193,12 @@ export default {
     data: () => ({
         fields: {
             hash: { label: 'Hash' },
-            userAddress: { label: 'User' },
+            borrower: { label: 'Borrower' },
+            investor: { label: 'Investor' },
             lendingToken: { label: 'Lending Token' },
             collateralToken: { label: 'Collateral Token' },
-            quantity: { label: 'Quantity' },
-            interest: { label: 'Interest' },
-            side: { label: 'Side' },
+            amount: { label: 'Amount' },
+            borrowingFee: { label: 'Fee' },
             status: { label: 'Status' },
             createdAt: { label: 'Age' }
         },
@@ -223,8 +212,7 @@ export default {
         user: '',
         lendingToken: '',
         collateralToken: '',
-        status: '',
-        side: ''
+        status: ''
     }),
     async created () {
         if (this.$route.query.user) {
@@ -236,15 +224,12 @@ export default {
         if (this.$route.query.collateralToken) {
             this.collateralToken = this.$route.query.collateralToken
         }
-        if (this.$route.query.side) {
-            this.side = this.$route.query.side
-        }
         if (this.$route.query.status) {
             this.status = this.$route.query.status
         }
         this.$store.commit('breadcrumb/setItems', {
-            name: 'lending-orders',
-            to: { name: 'lending-orders' }
+            name: 'lending-trades',
+            to: { name: 'lending-trades' }
         })
         this.getDataFromApi()
     },
@@ -260,9 +245,6 @@ export default {
             if (this.user !== '') {
                 params.user = this.user.trim()
             }
-            if (this.side !== '') {
-                params.side = this.side
-            }
             if (this.lendingToken !== '') {
                 params.lendingToken = this.lendingToken
             }
@@ -273,7 +255,7 @@ export default {
                 params.status = this.status
             }
             let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/lending/orders?' + query)
+            let { data } = await this.$axios.get('/api/lending/trades?' + query)
             self.total = data.total
             self.pages = data.pages
 
@@ -301,7 +283,6 @@ export default {
         async reset () {
             this.user = ''
             this.status = ''
-            this.side = ''
             this.lendingToken = ''
             this.collateralToken = ''
             await this.getDataFromApi()

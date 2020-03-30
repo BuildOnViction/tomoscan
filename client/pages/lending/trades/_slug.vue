@@ -4,7 +4,7 @@
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
         <h3 class="tomo-headline">
-            <span class="mr-2">Lending Order Hash:</span>
+            <span class="mr-2">Lending Trade Hash:</span>
             <read-more
                 :text="hash"
                 class="d-sm-none" />
@@ -40,37 +40,37 @@
                                             <td>Transaction Hash</td>
                                             <td>
                                                 <nuxt-link
-                                                    :to="{name: 'txs-slug', params: {slug: lendingOrder.txHash}}">
+                                                    :to="{name: 'txs-slug', params: {slug: lendingTrade.txHash}}">
                                                     <read-more
-                                                        :text="lendingOrder.txHash"
+                                                        :text="lendingTrade.txHash"
                                                         class="d-sm-none" />
                                                     <read-more
-                                                        :text="lendingOrder.txHash"
+                                                        :text="lendingTrade.txHash"
                                                         :max-chars="20"
                                                         class="d-none d-sm-block d-md-none"/>
                                                     <read-more
-                                                        :text="lendingOrder.txHash"
+                                                        :text="lendingTrade.txHash"
                                                         :max-chars="40"
                                                         class="d-none d-md-block d-lg-none"/>
-                                                    <span class="d-none d-lg-block">{{ lendingOrder.txHash }}</span>
+                                                    <span class="d-none d-lg-block">{{ lendingTrade.txHash }}</span>
 
                                                 </nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Lending Order Status</td>
+                                            <td>Lending Trade Status</td>
                                             <td>
                                                 <span
-                                                    v-if="lendingOrder.status === 'FILLED'"
+                                                    v-if="lendingTrade.status === 'FILLED'"
                                                     class="text-success">Filled</span>
                                                 <span
-                                                    v-else-if="lendingOrder.status === 'CANCELLED'"
+                                                    v-else-if="lendingTrade.status === 'CANCELLED'"
                                                     class="text-danger">Cancelled</span>
                                                 <span
-                                                    v-else-if="lendingOrder.status === 'OPEN'"
+                                                    v-else-if="lendingTrade.status === 'OPEN'"
                                                     class="text-info">Open</span>
                                                 <span
-                                                    v-else-if="lendingOrder.status === 'REJECTED'"
+                                                    v-else-if="lendingTrade.status === 'REJECTED'"
                                                     class="text-danger">Rejected</span>
                                                 <span
                                                     v-else
@@ -78,39 +78,52 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Dex address</td>
+                                            <td>Borrowing Relayer</td>
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'address-slug',
-                                                          params: {slug:lendingOrder.relayer.toLowerCase()}}"
-                                                    class="mr-1">{{ lendingOrder.relayer.toLowerCase() }}</nuxt-link>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>User address</td>
-                                            <td>
-                                                <nuxt-link
-                                                    :to="{name: 'address-slug',
-                                                          params: {slug:lendingOrder.userAddress.toLowerCase()}}"
-                                                    class="mr-1">{{ lendingOrder.userAddress.toLowerCase() }}
+                                                          params: {slug:lendingTrade.borrowingRelayer.toLowerCase()}}"
+                                                    class="mr-1">{{ lendingTrade.borrowingRelayer.toLowerCase() }}
                                                 </nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Type</td>
-                                            <td>{{ lendingOrder.type === 'LO' ? 'Limit' : 'Market' }}</td>
+                                            <td>Investing Relayer</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:lendingTrade.investingRelayer.toLowerCase()}}"
+                                                    class="mr-1">{{ lendingTrade.investingRelayer.toLowerCase() }}
+                                                </nuxt-link>
+                                            </td>
                                         </tr>
                                         <tr>
-                                            <td>Side</td>
-                                            <td>{{ lendingOrder.side }}</td>
+                                            <td>Borrower</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:lendingTrade.borrower.toLowerCase()}}"
+                                                    class="mr-1">{{ lendingTrade.borrower.toLowerCase() }}
+                                                </nuxt-link>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Investor</td>
+                                            <td>
+                                                <nuxt-link
+                                                    :to="{name: 'address-slug',
+                                                          params: {slug:lendingTrade.investor.toLowerCase()}}"
+                                                    class="mr-1">{{ lendingTrade.investor.toLowerCase() }}
+                                                </nuxt-link>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Lending token</td>
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'tokens-slug',
-                                                          params: {slug: lendingOrder.lendingToken}}">
-                                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                                          params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
+                                                    {{ lendingTrade.lendingToken.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
@@ -118,39 +131,46 @@
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'tokens-slug',
-                                                          params: {slug: lendingOrder.collateralToken}}">
-                                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                                          params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
+                                                    {{ lendingTrade.collateralToken.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Quantity</td>
+                                            <td>Amount</td>
                                             <td>
-                                                {{ formatNumber(lendingOrder.quantity) }}
-                                                {{ lendingOrder.lendingSymbol }}
+                                                {{ formatNumber(lendingTrade.amount) }}
+                                                {{ lendingTrade.lendingSymbol }}
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Borrowing Fee</td>
+                                            <td>
+                                                {{ formatNumber(lendingTrade.borrowingFee) }}
+                                                {{ lendingTrade.lendingSymbol }}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Interest</td>
-                                            <td>{{ lendingOrder.interest }} %</td>
+                                            <td>{{ lendingTrade.interest }} %</td>
                                         </tr>
                                         <tr>
-                                            <td>Filled Amount</td>
+                                            <td>Collateral Lock Amount</td>
                                             <td>
-                                                {{ formatNumber(lendingOrder.filledAmount) }}
-                                                {{ lendingOrder.lendingSymbol }}
+                                                {{ formatNumber(lendingTrade.collateralLockedAmount) }}
+                                                {{ lendingTrade.collateralSymbol }}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Auto topup</td>
-                                            <td>{{ lendingOrder.autoTopUp }}</td>
+                                            <td>{{ lendingTrade.autoTopUp }}</td>
                                         </tr>
                                         <tr>
                                             <td>Age</td>
                                             <td>
                                                 <span
                                                     v-b-tooltip.hover
-                                                    :title="$moment(lendingOrder.createdAt).format('lll')">
-                                                    {{ $moment(lendingOrder.createdAt).fromNow() }}</span>
+                                                    :title="$moment(lendingTrade.createdAt).format('lll')">
+                                                    {{ $moment(lendingTrade.createdAt).fromNow() }}</span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -182,7 +202,7 @@ export default {
     data () {
         return {
             hash: null,
-            lendingOrder: {},
+            lendingTrade: {},
             loading: true
         }
     },
@@ -195,13 +215,13 @@ export default {
 
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', {
-                name: 'lending-orders-slug',
-                to: { name: 'lending-orders-slug', params: { slug: this.hash } }
+                name: 'lending-trades-slug',
+                to: { name: 'lending-trades-slug', params: { slug: this.hash } }
             })
 
-            let { data } = await this.$axios.get('/api/lending/orders/' + this.hash)
+            let { data } = await this.$axios.get('/api/lending/trades/' + this.hash)
 
-            this.lendingOrder = data
+            this.lendingTrade = data
 
             this.loading = false
         } catch (error) {
