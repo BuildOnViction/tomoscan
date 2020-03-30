@@ -62,7 +62,7 @@ let DexHelper = {
             let lt = orders[i].lendingToken.toLowerCase()
             if (!decimals.hasOwnProperty(lt)) {
                 if (lt === TomoToken) {
-                    decimals[lt] = 18
+                    decimals[lt] = { decimals: 18, symbol: 'TOMO' }
                 } else {
                     let token = await db.Token.findOne({ hash: lt })
                     if (token) {
@@ -71,7 +71,7 @@ let DexHelper = {
                         let dcm = await web3.eth.call({ to: lt, data: decimalFunction })
                         dcm = await web3.utils.hexToNumber(dcm)
 
-                        let symbol = await web3.eth.call({ to: token.hash, data: symbolFunction })
+                        let symbol = await web3.eth.call({ to: lt, data: symbolFunction })
                         symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
                         decimals[lt] = { decimals: dcm, symbol: symbol }
                     }
@@ -158,21 +158,37 @@ let DexHelper = {
             let ct = trades[i].collateralToken.toLowerCase()
             if (!decimals.hasOwnProperty(ct)) {
                 if (ct === TomoToken) {
-                    decimals[ct] = 18
+                    decimals[ct] = { decimals: 18, symbol: 'TOMO' }
                 } else {
-                    let baseDecimals = await web3.eth.call({ to: ct, data: decimalFunction })
-                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
-                    decimals[ct] = baseDecimals
+                    let token = await db.Token.findOne({ hash: ct })
+                    if (token) {
+                        decimals[ct] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let dcm = await web3.eth.call({ to: ct, data: decimalFunction })
+                        dcm = await web3.utils.hexToNumber(dcm)
+
+                        let symbol = await web3.eth.call({ to: ct, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[ct] = { decimals: dcm, symbol: symbol }
+                    }
                 }
             }
             let lt = trades[i].lendingToken.toLowerCase()
             if (!decimals.hasOwnProperty(lt)) {
                 if (lt === TomoToken) {
-                    decimals[lt] = 18
+                    decimals[lt] = { decimals: 18, symbol: 'TOMO' }
                 } else {
-                    let quoteDecimals = await web3.eth.call({ to: lt, data: decimalFunction })
-                    quoteDecimals = await web3.utils.hexToNumber(quoteDecimals)
-                    decimals[lt] = quoteDecimals
+                    let token = await db.Token.findOne({ hash: lt })
+                    if (token) {
+                        decimals[lt] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let dcm = await web3.eth.call({ to: lt, data: decimalFunction })
+                        dcm = await web3.utils.hexToNumber(dcm)
+
+                        let symbol = await web3.eth.call({ to: lt, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[lt] = { decimals: dcm, symbol: symbol }
+                    }
                 }
             }
         }
@@ -180,26 +196,33 @@ let DexHelper = {
             let quantity = new BigNumber(trades[i].quantity)
             let ct = trades[i].collateralToken.toLowerCase()
             let lt = trades[i].lendingToken.toLowerCase()
-            quantity = quantity.dividedBy(10 ** decimals[ct]).toNumber()
+            quantity = quantity.dividedBy(10 ** decimals[ct].decimals).toNumber()
 
             let amount = new BigNumber(trades[i].amount)
-            amount = amount.dividedBy(10 ** decimals[lt]).toNumber()
+            console.log('amount', trades[i].amount)
+            amount = amount.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let borrowingFee = new BigNumber(trades[i].borrowingFee)
-            borrowingFee = borrowingFee.dividedBy(10 ** decimals[lt]).toNumber()
+            borrowingFee = borrowingFee.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let collateralPrice = new BigNumber(trades[i].collateralPrice)
-            collateralPrice = collateralPrice.dividedBy(10 ** decimals[lt]).toNumber()
+            collateralPrice = collateralPrice.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let liquidationPrice = new BigNumber(trades[i].liquidationPrice)
-            liquidationPrice = liquidationPrice.dividedBy(10 ** decimals[lt]).toNumber()
+            liquidationPrice = liquidationPrice.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let collateralLockedAmount = new BigNumber(trades[i].collateralLockedAmount)
-            collateralLockedAmount = collateralLockedAmount.dividedBy(10 ** decimals[ct]).toNumber()
+            collateralLockedAmount = collateralLockedAmount.dividedBy(10 ** decimals[ct].decimals).toNumber()
 
-            trades[i].collateralDecimals = decimals[ct]
-            trades[i].lendingDecimals = decimals[lt]
+            let interest = new BigNumber(trades[i].interest)
+            interest = interest.dividedBy(10 ** 8).toNumber()
+
+            trades[i].collateralDecimals = decimals[ct].decimals
+            trades[i].collateralSymbol = decimals[ct].symbol
+            trades[i].lendingDecimals = decimals[lt].decimals
+            trades[i].lendingSymbol = decimals[lt].symbol
             trades[i].amount = amount
+            trades[i].interest = interest
             trades[i].borrowingFee = borrowingFee
             trades[i].liquidationPrice = liquidationPrice
             trades[i].collateralPrice = collateralPrice

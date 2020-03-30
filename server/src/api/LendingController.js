@@ -25,28 +25,28 @@ LendingController.get('/lending/orders', [
     let web3 = await Web3Util.getWeb3()
     try {
         let query = {}
-        if (req.query.user) {
+        if (req.query.user && req.query.user !== '') {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
             } else {
                 query.userAddress = req.query.user
             }
         }
-        if (req.query.lendingToken) {
+        if (req.query.lendingToken && req.query.lendingToken !== '') {
             if (web3.utils.isAddress(req.query.lendingToken)) {
                 query.lendingToken = web3.utils.toChecksumAddress(req.query.lendingToken)
             } else {
                 query.lendingToken = req.query.lendingToken
             }
         }
-        if (req.query.collateralToken) {
+        if (req.query.collateralToken && req.query.collateralToken !== '') {
             if (web3.utils.isAddress(req.query.collateralToken)) {
                 query.collateralToken = web3.utils.toChecksumAddress(req.query.collateralToken)
             } else {
                 query.collateralToken = req.query.collateralToken
             }
         }
-        if (req.query.relayer) {
+        if (req.query.relayer && req.query.relayer !== '') {
             if (web3.utils.isAddress(req.query.relayer)) {
                 query.relayer = web3.utils.toChecksumAddress(req.query.relayer)
             } else {
@@ -57,7 +57,7 @@ LendingController.get('/lending/orders', [
             query.side = req.query.side.toUpperCase()
         }
         if (req.query.status) {
-            query.type = req.query.status.toUpperCase()
+            query.status = req.query.status.toUpperCase()
         }
         let total = await dexDb.LendingItem.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -222,11 +222,8 @@ LendingController.get('/lending/trades', [
                 query.collateralToken = req.query.collateralToken
             }
         }
-        if (req.query.side) {
-            query.side = req.query.side.toUpperCase()
-        }
         if (req.query.status) {
-            query.type = req.query.status.toUpperCase()
+            query.status = req.query.status.toUpperCase()
         }
         let total = await dexDb.LendingTrade.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
