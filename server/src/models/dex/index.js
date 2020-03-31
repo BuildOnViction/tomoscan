@@ -117,7 +117,7 @@ const LendingRepay = conn.model('lending_repay', new Schema({
     tradeId: { type: String, index: true },
     extraData: String
 
-}))
+}), 'lending_repay')
 db.LendingRepay = LendingRepay
 
 const LendingTopup = conn.model('lending_topup', new Schema({
@@ -139,7 +139,7 @@ const LendingTopup = conn.model('lending_topup', new Schema({
     tradeId: { type: String, index: true },
     extraData: String
 
-}))
+}), 'lending_topup')
 db.LendingTopup = LendingTopup
 
 const LendingItem = conn.model('lending_items', new Schema({

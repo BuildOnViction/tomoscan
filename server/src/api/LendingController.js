@@ -567,11 +567,11 @@ LendingController.get('/lending/repay', [
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
         }
-        let total = await dexDb.LendingTopup.countDocuments(query)
+        let total = await dexDb.LendingRepay.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        let orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
@@ -600,7 +600,7 @@ LendingController.get('/lending/repay/:slug', [
     let hash = req.params.slug
     hash = hash.toLowerCase()
     try {
-        let order = await dexDb.LendingTopup.findOne({ hash: hash }, {
+        let order = await dexDb.LendingRepay.findOne({ hash: hash }, {
             signature: 0,
             key: 0
         }).lean().exec()
@@ -626,11 +626,11 @@ LendingController.get('/lending/repay/listByDex/:slug', [
     try {
         hash = web3.utils.toChecksumAddress(hash)
         let query = { relayer: hash }
-        let total = await dexDb.LendingTopup.countDocuments(query)
+        let total = await dexDb.LendingRepay.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        let orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
@@ -663,11 +663,11 @@ LendingController.get('/lending/repay/listByAccount/:slug', [
     try {
         hash = web3.utils.toChecksumAddress(hash)
         let query = { userAddress: hash }
-        let total = await dexDb.LendingTopup.countDocuments(query)
+        let total = await dexDb.LendingRepay.countDocuments(query)
         let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        let orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
