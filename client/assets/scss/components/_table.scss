@@ -775,6 +775,12 @@
     grid-template-columns: 15% 15% 15% 15% 10% 5% 7% 8% 10%;
   }
 }
+.tomo-table--lending-repay {
+  thead tr,
+  tbody tr {
+    grid-template-columns: 15% 15% 15% 15% 10% 10% 10% 10%;
+  }
+}
 .tomo-table--lending-trades {
   thead tr,
   tbody tr {
