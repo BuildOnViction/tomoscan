@@ -211,6 +211,14 @@ br.register('lending-trades-slug', (brs) => {
     brs.parent('lending-trades')
     brs.push('Lending Trade Detail', { name: 'lending-trades-slug' })
 })
+br.register('lending-topup', (brs) => {
+    brs.parent('index')
+    brs.push('Lending TopUp', { name: 'lending-topup' })
+})
+br.register('lending-topup-slug', (brs) => {
+    brs.parent('lending-topup')
+    brs.push('Lending TopUp Detail', { name: 'lending-topup-slug' })
+})
 br.register('lending-repay', (brs) => {
     brs.parent('index')
     brs.push('Lending Repay', { name: 'lending-repay' })

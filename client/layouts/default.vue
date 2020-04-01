@@ -76,6 +76,7 @@
                             <b-dropdown-item :to="{name: 'trades'}">Trade History</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-orders'}">Lending Order</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-trades'}">Lending Trade</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'lending-topup'}">Lending TopUp</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-repay'}">Lending Repay</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
