@@ -76,6 +76,7 @@ module.exports = {
         '@nuxtjs/font-awesome',
         '@nuxtjs/toast',
         '@nuxtjs/proxy',
+        '@nuxtjs/recaptcha',
         [
             '@nuxtjs/google-analytics', {
                 id: process.env.GA_ID || '',
@@ -90,6 +91,13 @@ module.exports = {
         //         gifsicle: { optimizationLevel: 2 }
         //     }]
     ],
+    recaptcha: {
+        hideBadge: true, // Hide badge element (v3 & v2 via size=invisible)
+        language: 'en', // Recaptcha language (v2)
+        siteKey: process.env.RECAPTCHA_SITEKEY, // Site key for requests
+        version: '1.0', // Version
+        size: 'invisible' // Size: 'compact', 'normal', 'invisible' (v2)
+    },
     css: [
         '~/assets/scss/app.scss'
     ],

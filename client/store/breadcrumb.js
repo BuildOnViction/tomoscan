@@ -175,6 +175,10 @@ br.register('epochs', (brs) => {
     brs.parent('index')
     brs.push('Epochs', { name: 'epochs' })
 })
+br.register('download', (brs) => {
+    brs.parent('index')
+    brs.push('Download', { name: 'download' })
+})
 br.register('epochs-slug', (brs) => {
     brs.parent('epochs')
     brs.push('Epochs detail', { name: 'epochs-slug' })
