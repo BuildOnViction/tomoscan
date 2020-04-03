@@ -7,61 +7,75 @@
             <div class="tomo-card__header">
                 <h3 class="tomo-card__headline">Download Data</h3>
                 <p>The information you requested can be downloaded from this page.
-                But before continuing <strong>please verify that you are not a robot by</strong>
-                    completing the captcha below.</p>
+                Export the earliest 1000 records.</p>
             </div>
             <div class="tomo-card__body">
-
-                <ul
-                    v-if="errors.length"
-                    class="alert alert-danger">
-                    <li
-                        v-for="(error, index) in errors"
-                        :key="index">{{ error }}
-                    </li>
-                </ul>
-
                 <form
                     :class="loadingForm ? 'tomo-loading tomo-loading--form' : ''"
                     novalidate
                     @submit.prevent="onSubmit">
                     <div class="row">
-                        <div class="col-sm-6 col-lg-3">
+                        <div class="col-sm-12 col-md-4 col-lg-4">
                             <div class="form-group">
-                                <label for="contractAddress">Contract Address *</label>
+                                <label>From Block</label>
+                                <div class="clearfix"/>
                                 <input
-                                    id="contractAddress"
-                                    v-model="contractAddress"
-                                    type="text"
+                                    v-model="fromBlock"
                                     class="form-control"
-                                    placeholder="Contract Address">
+                                    required="required"
+                                    type="number"
+                                    placeholder="From Block">
                                 <div
-                                    class="text-danger">Contract Address is required
-                                </div>
+                                    v-if="error && errors.fromBlock"
+                                    class="text-danger">From Block is required</div>
                             </div>
                         </div>
-                        <div class="col-sm-6 col-lg-3">
+                        <div class="col-sm-12 col-md-4 col-lg-4">
                             <div class="form-group">
-                                <label>Date range *</label>
-                                <date-picker
-                                    v-model="dateRange"
-                                    :show-time-panel="showTimeRangePanel"
-                                    type="datetime"
-                                    placeholder="Select datetime range"
-                                    range
-                                    @close="handleRangeClose"
-                                >
-                                    <template v-slot:footer>
-                                        <button
-                                            class="mx-btn mx-btn-text"
-                                            @click="toggleTimeRangePanel">
-                                            {{ showTimeRangePanel ? 'select date' : 'select time' }}
-                                        </button>
-                                    </template>
-                                </date-picker>
+                                <label>To Block</label>
+                                <div class="clearfix"/>
+                                <input
+                                    v-model="toBlock"
+                                    class="form-control"
+                                    required="required"
+                                    type="number"
+                                    placeholder="To Block">
                                 <div
-                                    class="text-danger">Contract Name is required
-                                </div>
+                                    v-if="error && errors.toBlock"
+                                    class="text-danger">To Block is required</div>
+                            </div>
+                        </div>
+                        <div class="col-sm-12 col-md-4 col-lg-4">
+                            <div class="form-group">
+                                <label>Type</label>
+                                <div class="clearfix"/>
+                                <select
+                                    id="inputStatus"
+                                    v-model="downloadType"
+                                    required="required"
+                                    name="status"
+                                    class="form-control mx-sm-1">
+                                    <option
+                                        :selected="downloadType === '' ? 'selected' : ''"
+                                        value=""
+                                        hidden
+                                        disabled>Select type</option>
+                                    <option
+                                        :selected="downloadType === 'IN' ? 'selected' : ''"
+                                        value="IN">In Transaction</option>
+                                    <option
+                                        :selected="downloadType === 'OUT' ? 'selected' : ''"
+                                        value="OUT">Out Transaction</option>
+                                    <option
+                                        :selected="downloadType === 'INTERNAL' ? 'selected' : ''"
+                                        value="INTERNAL">Internal Transaction</option>
+                                    <option
+                                        :selected="downloadType === 'REWARD' ? 'selected' : ''"
+                                        value="REWARD">Rewards</option>
+                                </select>
+                                <div
+                                    v-if="error && errors.downloadType"
+                                    class="text-danger">Type is required</div>
                             </div>
                         </div>
                     </div>
@@ -83,48 +97,77 @@
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
-import DatePicker from 'vue2-datepicker'
-import 'vue2-datepicker/index.css'
 
 export default {
-    components: { DatePicker },
+    components: {},
     mixins: [validationMixin],
     data () {
         return {
-            contractAddress: '',
-            dateRange: '',
-            errors: [],
+            accountAddress: '',
+            fromBlock: '',
+            toBlock: '',
+            error: false,
+            errors: {},
             loadingForm: false,
             loading: true,
-            showTimeRangePanel: false
+            downloadType: ''
         }
     },
     async mounted () {
         await this.$recaptcha.init()
-        let self = this
 
-        self.loading = true
+        this.loading = true
 
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'download', to: { name: 'download' } })
 
-        let address = self.$route.query.address
+        let address = this.$route.query.address
         if (address) {
-            self.contractAddress = address
+            this.accountAddress = address
         }
 
-        self.loading = false
+        this.loading = false
     },
     methods: {
-        toggleTimeRangePanel () {
-            this.showTimeRangePanel = !this.showTimeRangePanel
-        },
-        handleRangeClose () {
-            this.showTimeRangePanel = false
-        },
         async onSubmit () {
-            let token = await this.$recaptcha.execute('login')
-            console.log('ReCaptcha token:', token)
+            if (!this.fromBlock) {
+                this.error = true
+                this.errors.fromBlock = true
+            } else {
+                this.errors.fromBlock = false
+            }
+            if (!this.toBlock) {
+                this.error = true
+                this.errors.toBlock = true
+            } else {
+                this.errors.toBlock = false
+            }
+            if (!this.downloadType) {
+                this.error = true
+                this.errors.downloadType = true
+            } else {
+                this.errors.downloadType = false
+            }
+            if (!this.errors.downloadType && !this.errors.dateRange) {
+                this.error = false
+            }
+            if (!this.error) {
+                let token = await this.$recaptcha.execute('download')
+                let body = {
+                    token: token,
+                    fromBlock: this.fromBlock,
+                    toBlock: this.toBlock,
+                    downloadType: this.downloadType
+                }
+
+                self.loadingForm = true
+                let { data } = await this.$axios.post(`/api/accounts/${this.accountAddress}/download`, body)
+                if (data.errors) {
+                    this.errors = data.errors
+                } else {
+                    console.log(data)
+                }
+            }
         }
     }
 }
