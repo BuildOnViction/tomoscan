@@ -791,6 +791,10 @@
 .tomo-table--trades {
   thead tr,
   tbody tr {
-      grid-template-columns: 15% 15% 15% 10% 15% 15% 15%;
+    grid-template-columns: 15% 15% 15% 10% 15% 15% 15%;
+  }
+
+  .grecaptcha-badge {
+    display: none !important;
   }
 }

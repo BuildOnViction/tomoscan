@@ -105,10 +105,17 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td/>
+                            <td>
+                                <nuxt-link
+                                    :to="{name: 'download', query: {address: address.hash}}">Download Data</nuxt-link>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
                 <div class="text-center text-lg-right tomo-qrcode">
-                    <div>
+                    <div class="text-center">
                         <button
                             v-clipboard="address.hash"
                             type="button"
@@ -117,7 +124,7 @@
                             <i class="fa fa-clipboard"/> Copy
                         </button>
                     </div>
-                    <div>
+                    <div class="text-center">
                         <vue-qrcode
                             :value="address.hash"
                             :options="{size: 250}"

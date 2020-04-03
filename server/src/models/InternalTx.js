@@ -7,7 +7,7 @@ const InternalTx = new Schema({
     hash: { type: String, index: true },
     from: { type: String, index: true },
     to: { type: String, index: true },
-    blockNumber: Number,
+    blockNumber: { type: Number, index: true },
     blockHash: { type: String, index: true },
     value: String,
     timestamp: Date
