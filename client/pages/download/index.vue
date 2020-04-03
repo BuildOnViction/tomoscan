@@ -97,6 +97,7 @@
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
+const FileDownload = require('js-file-download')
 
 export default {
     components: {},
@@ -165,7 +166,7 @@ export default {
                 if (data.errors) {
                     this.errors = data.errors
                 } else {
-                    console.log(data)
+                    FileDownload(data, 'data.csv')
                 }
             }
         }

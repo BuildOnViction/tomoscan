@@ -181,7 +181,6 @@ AccountController.post('/accounts/:slug/download', [
             return resolve(JSON.parse(body))
         })
     })
-    console.log('gg', typeof verifyToken, verifyToken)
 
     if (verifyToken.success) {
         let data = []
