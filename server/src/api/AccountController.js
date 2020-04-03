@@ -6,6 +6,9 @@ const logger = require('../helpers/logger')
 const { check, validationResult, query } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
 const Web3Utils = require('../helpers/web3')
+const request = require('request')
+const config = require('config')
+const { Parser } = require('json2csv')
 
 const AccountController = Router()
 
@@ -145,6 +148,96 @@ AccountController.get('/accounts/:slug/mined', [
     } catch (e) {
         logger.warn('Cannot get list block mined of account %s. Error %s', hash, e)
         return res.status(400).send()
+    }
+})
+
+AccountController.post('/accounts/:slug/download', [
+    check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
+    check('token').exists().withMessage('Missing token params'),
+    check('fromBlock').exists().withMessage('Missing fromBlock params'),
+    check('toBlock').exists().withMessage('Missing toBlock params'),
+    check('downloadType').exists().withMessage('Missing downloadType params')
+], async (req, res) => {
+    let errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    let hash = req.params.slug.toLowerCase()
+    let token = req.body.token
+    let fromBlock = req.body.fromBlock
+    let toBlock = req.body.toBlock
+    let downloadType = req.body.downloadType
+
+    let verifyToken = await new Promise((resolve, reject) => {
+        request.post('https://www.google.com/recaptcha/api/siteverify', {
+            formData: {
+                secret: config.get('RE_CAPTCHA_SECRET'),
+                response: token
+            }
+        }, (error, res, body) => {
+            if (error) {
+                return reject
+            }
+            return resolve(JSON.parse(body))
+        })
+    })
+    console.log('gg', typeof verifyToken, verifyToken)
+
+    if (verifyToken.success) {
+        let data = []
+        let fields = []
+        if (downloadType.toUpperCase() === 'IN' || downloadType.toUpperCase() === 'OUT') {
+            if (downloadType.toUpperCase() === 'IN') {
+                data = await db.Tx.find({ to: hash, blockNumber: { $gte: fromBlock, $lte: toBlock } }).limit(1000)
+            } else {
+                data = await db.Tx.find({ from: hash, blockNumber: { $gte: fromBlock, $lte: toBlock } }).limit(1000)
+            }
+            fields = [
+                { label: 'Hash', value: 'hash' },
+                { label: 'Block Hash', value: 'blockHash' },
+                { label: 'Block Number', value: 'blockNumber' },
+                { label: 'From', value: 'from' },
+                { label: 'To', value: 'to' },
+                { label: 'Value', value: 'value' },
+                { label: 'Gas', value: 'gas' },
+                { label: 'Gas Price', value: 'gasPrice' },
+                { label: 'Input', value: 'input' },
+                { label: 'Cumulative Gas Used', value: 'cumulativeGasUsed' },
+                { label: 'Gas Used', value: 'gasUsed' },
+                { label: 'Status', value: 'status' },
+                { label: 'Timestamp', value: 'timestamp' }
+            ]
+        } else if (downloadType.toUpperCase() === 'INTERNAL') {
+            data = await db.InternalTx.find({ to: hash, blockNumber: { $gte: fromBlock, $lte: toBlock } }).limit(1000)
+            fields = [
+                { label: 'Hash', value: 'hash' },
+                { label: 'From', value: 'from' },
+                { label: 'To', value: 'to' },
+                { label: 'Block Hash', value: 'blockHash' },
+                { label: 'Block Number', value: 'blockNumber' },
+                { label: 'Value', value: 'value' },
+                { label: 'Timestamp', value: 'timestamp' }
+            ]
+        } else if (downloadType.toUpperCase() === 'REWARD') {
+            let fromEpoch = Math.ceil(fromBlock / config.get('BLOCK_PER_EPOCH'))
+            let toEpoch = Math.floor(toBlock / config.get('BLOCK_PER_EPOCH'))
+            data = await db.Reward.find({ address: hash, epoch: { $gte: fromEpoch, $lte: toEpoch } }).limit(1000)
+            fields = [
+                { label: 'Epoch', value: 'epoch' },
+                { label: 'Voter', value: 'address' },
+                { label: 'MasterNode', value: 'validator' },
+                { label: 'MasterNode Name', value: 'validatorName' },
+                { label: 'Reward', value: 'reward' },
+                { label: 'Reward Time', value: 'rewardTime' },
+                { label: 'Sign Number', value: 'signNumber' }
+            ]
+        }
+        let j2c = new Parser({ fields: fields })
+        let csv = j2c.parse(data)
+        res.attachment('data.csv')
+        return res.send(csv)
+    } else {
+        return res.status(200).json({ errors: 'Token is incorrect' })
     }
 })
 

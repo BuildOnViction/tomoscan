@@ -39,8 +39,12 @@ consumer.task = async function (job, done) {
                     logger.warn('Cannot get block finality %s', block.number)
                     logger.warn(e)
                 }
-                block.updateFinalityTime = block.updateFinalityTime ? block.updateFinalityTime + 1 : 1
-                block.save()
+                if (block.hasOwnProperty('updateFinalityTime')) {
+                    block.updateFinalityTime = block.updateFinalityTime + 1
+                } else {
+                    block.updateFinalityTime = 1
+                }
+                await block.save()
             } else {
                 logger.warn('BlockReOrg %s. ReOrg block %s, finality block %s',
                     block.number, block.hash, blockOnChain.hash)
