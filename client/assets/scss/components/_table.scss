@@ -800,6 +800,12 @@
     grid-template-columns: 15% 15% 15% 15% 15% 10% 15%;
   }
 }
+.tomo-table--relayers {
+  thead tr,
+  tbody tr {
+    grid-template-columns: 20% 25% 20% 15% 7% 7% 6%;
+  }
+}
 .grecaptcha-badge {
   display: none !important;
 }

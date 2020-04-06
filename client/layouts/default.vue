@@ -71,7 +71,8 @@
                             <b-dropdown-item :to="{name: 'epochs'}">Epochs</b-dropdown-item>
                         </b-nav-item-dropdown>
                         <b-nav-item-dropdown
-                            text="Order Book">
+                            text="Exchanges">
+                            <b-dropdown-item :to="{name: 'relayers'}">Relayers</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'orders'}">Orders</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'trades'}">Trade History</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-orders'}">Lending Order</b-dropdown-item>

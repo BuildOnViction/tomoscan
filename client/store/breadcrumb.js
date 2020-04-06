@@ -231,6 +231,10 @@ br.register('lending-repay-slug', (brs) => {
     brs.parent('lending-repay')
     brs.push('Lending Repay Detail', { name: 'lending-repay-slug' })
 })
+br.register('relayers', (brs) => {
+    brs.parent('index')
+    brs.push('Relayers', { name: 'relayers' })
+})
 
 export const state = () => ({
     items: null
