@@ -61,20 +61,11 @@
                                             <td>Lending Order Status</td>
                                             <td>
                                                 <span
-                                                    v-if="lendingOrder.status === 'FILLED'"
-                                                    class="text-success">Filled</span>
-                                                <span
-                                                    v-else-if="lendingOrder.status === 'CANCELLED'"
-                                                    class="text-danger">Cancelled</span>
-                                                <span
-                                                    v-else-if="lendingOrder.status === 'OPEN'"
-                                                    class="text-info">Open</span>
+                                                    v-if="lendingOrder.status === 'TOPUP'"
+                                                    class="text-success">Topup</span>
                                                 <span
                                                     v-else-if="lendingOrder.status === 'REJECTED'"
                                                     class="text-danger">Rejected</span>
-                                                <span
-                                                    v-else
-                                                    class="text-purple">Partial Filled</span>
                                             </td>
                                         </tr>
                                         <tr>
@@ -97,20 +88,12 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Type</td>
-                                            <td>{{ lendingOrder.type === 'LO' ? 'Limit' : 'Market' }}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Side</td>
-                                            <td>{{ lendingOrder.side }}</td>
-                                        </tr>
-                                        <tr>
                                             <td>Lending token</td>
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'tokens-slug',
-                                                          params: {slug: lendingOrder.lendingToken}}">
-                                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                                          params: {slug: lendingOrder.lendingToken.toLowerCase()}}">
+                                                    {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
@@ -118,25 +101,14 @@
                                             <td>
                                                 <nuxt-link
                                                     :to="{name: 'tokens-slug',
-                                                          params: {slug: lendingOrder.collateralToken}}">
-                                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                                          params: {slug: lendingOrder.collateralToken.toLowerCase()}}">
+                                                    {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Quantity</td>
                                             <td>
                                                 {{ formatNumber(lendingOrder.quantity) }}
-                                                {{ lendingOrder.lendingSymbol }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Interest</td>
-                                            <td>{{ lendingOrder.interest }} %</td>
-                                        </tr>
-                                        <tr>
-                                            <td>Filled Amount</td>
-                                            <td>
-                                                {{ formatNumber(lendingOrder.filledAmount) }}
                                                 {{ lendingOrder.lendingSymbol }}
                                             </td>
                                         </tr>
@@ -195,11 +167,11 @@ export default {
 
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', {
-                name: 'lending-orders-slug',
-                to: { name: 'lending-orders-slug', params: { slug: this.hash } }
+                name: 'lending-topup-slug',
+                to: { name: 'lending-topup-slug', params: { slug: this.hash } }
             })
 
-            let { data } = await this.$axios.get('/api/lending/orders/' + this.hash)
+            let { data } = await this.$axios.get('/api/lending/topup/' + this.hash)
 
             this.lendingOrder = data
 

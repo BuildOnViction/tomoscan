@@ -38,22 +38,6 @@
             </div>
             <div class="form-group mr-2 mb-2">
                 <select
-                    id="inputSide"
-                    v-model="side"
-                    name="side"
-                    class="form-control mx-sm-1">
-                    <option
-                        value=""
-                        selected
-                        hidden
-                        disabled>Select side</option>
-                    <option value="">No filter</option>
-                    <option value="INVEST">INVEST</option>
-                    <option value="BORROW">BORROW</option>
-                </select>
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <select
                     id="inputStatus"
                     v-model="status"
                     name="status"
@@ -65,17 +49,8 @@
                         disabled>Select status</option>
                     <option value="">No filter</option>
                     <option
-                        :selected="status === 'OPEN' ? 'selected' : ''"
-                        value="OPEN">OPEN</option>
-                    <option
-                        :selected="status === 'FILLED' ? 'selected' : ''"
-                        value="FILLED">FILLED</option>
-                    <option
-                        :selected="status === 'PARTIAL_FILLED' ? 'selected' : ''"
-                        value="PARTIAL_FILLED">PARTIAL_FILLED</option>
-                    <option
-                        :selected="status === 'CANCELLED' ? 'selected' : ''"
-                        value="CANCELLED">CANCELLED</option>
+                        :selected="status === 'TOPUP' ? 'selected' : ''"
+                        value="TOPUP">TOPUP</option>
                     <option
                         :selected="status === 'REJECTED' ? 'selected' : ''"
                         value="REJECTED">REJECTED</option>
@@ -104,7 +79,7 @@
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--lending-orders">
+            class="tomo-table--lending-topup">
             <template
                 slot="hash"
                 slot-scope="props">
@@ -117,7 +92,7 @@
                     class="fa fa-ban text-danger ml-15"
                     aria-hidden="true"/>
                 <nuxt-link
-                    :to="{name: 'lending-orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    :to="{name: 'lending-topup-slug', params: {slug: props.item.hash.toLowerCase()}}">
                     {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
@@ -148,11 +123,6 @@
                 <nuxt-link
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
-            </template>
-            <template
-                slot="interest"
-                slot-scope="props">
-                {{ formatNumber(props.item.interest) }} %
             </template>
             <template
                 slot="status"
@@ -208,8 +178,6 @@ export default {
             lendingToken: { label: 'Lending Token' },
             collateralToken: { label: 'Collateral Token' },
             quantity: { label: 'Quantity' },
-            interest: { label: 'Interest' },
-            side: { label: 'Side' },
             status: { label: 'Status' },
             createdAt: { label: 'Age' }
         },
@@ -223,8 +191,7 @@ export default {
         user: '',
         lendingToken: '',
         collateralToken: '',
-        status: '',
-        side: ''
+        status: ''
     }),
     async created () {
         if (this.$route.query.user) {
@@ -235,9 +202,6 @@ export default {
         }
         if (this.$route.query.collateralToken) {
             this.collateralToken = this.$route.query.collateralToken
-        }
-        if (this.$route.query.side) {
-            this.side = this.$route.query.side
         }
         if (this.$route.query.status) {
             this.status = this.$route.query.status
@@ -259,9 +223,6 @@ export default {
             }
             if (this.user !== '') {
                 params.user = this.user.trim()
-            }
-            if (this.side !== '') {
-                params.side = this.side
             }
             if (this.lendingToken !== '') {
                 params.lendingToken = this.lendingToken
@@ -301,7 +262,6 @@ export default {
         async reset () {
             this.user = ''
             this.status = ''
-            this.side = ''
             this.lendingToken = ''
             this.collateralToken = ''
             await this.getDataFromApi()
