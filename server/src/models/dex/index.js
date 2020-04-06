@@ -195,4 +195,18 @@ const LendingTrade = conn.model('lending_trades', new Schema({
 }))
 db.LendingTrade = LendingTrade
 
+const Relayer = conn.model('relayers', new Schema({
+    rid: { type: Number, index: true },
+    owner: { type: String, index: true },
+    deposit: String,
+    address: { type: String, index: true },
+    domain: { type: String, index: true },
+    makeFee: String,
+    takeFee: String,
+    lendingFee: String,
+    lockTime: Number,
+    resign: { type: Boolean, index: true }
+}))
+db.Relayer = Relayer
+
 module.exports = db
