@@ -35,7 +35,7 @@ fs.readdirSync(path.join(__dirname, 'queues'))
         return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.indexOf('.map') < 0)
     })
     .forEach(function (file) {
-        let consumer = require(path.join(__dirname, 'queues', file))
+        const consumer = require(path.join(__dirname, 'queues', file))
 
         q.process(consumer.name, consumer.processNumber, consumer.task)
     })

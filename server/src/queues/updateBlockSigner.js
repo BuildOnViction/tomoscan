@@ -11,7 +11,7 @@ consumer.name = 'BlockSignerProcess'
 consumer.processNumber = 1
 
 consumer.task = async function (job, done) {
-    let blockNumber = parseInt(job.data.block)
+    const blockNumber = parseInt(job.data.block)
     let block = await db.Block.findOne({ number: blockNumber })
     if (!block) {
         block = await BlockHelper.getBlock(blockNumber)
@@ -20,16 +20,16 @@ consumer.task = async function (job, done) {
         logger.info('Update signers for block %s %s', block.number, block.hash)
         try {
             try {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockSignersByHash',
-                    'params': [block.hash],
-                    'id': 88
+                const data = {
+                    jsonrpc: '2.0',
+                    method: 'eth_getBlockSignersByHash',
+                    params: [block.hash],
+                    id: 88
                 }
                 const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                let result = response.data
+                const result = response.data
                 if (!result.error) {
-                    let signers = result.result
+                    const signers = result.result
                     await db.BlockSigner.updateOne({
                         blockHash: block.hash,
                         blockNumber: block.number

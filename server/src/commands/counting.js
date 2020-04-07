@@ -23,7 +23,7 @@ async function countTX () {
 
     while (txes.length > 0) {
         console.log('Process tx page %s', page)
-        let map = txes.map(async (tx) => {
+        const map = txes.map(async (tx) => {
             await db.Account.updateOne({ hash: tx.to }, { $inc : { inTxCount: 1, totalTxCount: 1 } }, { upsert: true })
             await db.Account.updateOne(
                 { hash: tx.from }, { $inc : { outTxCount: 1, totalTxCount: 1 } }, { upsert: true })
@@ -40,7 +40,7 @@ async function countReward () {
 
     while (rws.length > 0) {
         console.log('Process reward page %s', page)
-        let map = rws.map(async (rw) => {
+        const map = rws.map(async (rw) => {
             await db.Account.updateOne({ hash: rw.address }, { $inc: { rewardCount: 1 } }, { upsert: true })
         })
         await Promise.all(map)
@@ -55,7 +55,7 @@ async function countInternal () {
 
     while (its.length > 0) {
         console.log('Process internal page %s', page)
-        let map = its.map(async (it) => {
+        const map = its.map(async (it) => {
             await db.Account.updateOne({ hash: it.from }, { $inc: { internalTxCount: 1 } }, { upsert: true })
             await db.Account.updateOne({ hash: it.to }, { $inc: { internalTxCount: 1 } }, { upsert: true })
         })
@@ -71,7 +71,7 @@ async function countTokenTx () {
 
     while (its.length > 0) {
         console.log('Process token tx page %s', page)
-        let map = its.map(async (it) => {
+        const map = its.map(async (it) => {
             await db.Account.updateOne({ hash: it.from }, { $inc: { tokenTxCount: 1 } }, { upsert: true })
             await db.Account.updateOne({ hash: it.to }, { $inc: { tokenTxCount: 1 } }, { upsert: true })
         })
@@ -87,7 +87,7 @@ async function countMine () {
 
     while (its.length > 0) {
         console.log('Process mine page %s', page)
-        let map = its.map(async (it) => {
+        const map = its.map(async (it) => {
             await db.Account.updateOne({ hash: it.signer }, { $inc: { minedBlock: 1 } }, { upsert: true })
         })
         await Promise.all(map)
@@ -97,16 +97,18 @@ async function countMine () {
 }
 
 const counting = async () => {
-    await db.Account.update({}, { $set: {
-        inTxCount: 0,
-        outTxCount: 0,
-        totalTxCount: 0,
-        internalTxCount: 0,
-        tokenTxCount: 0,
-        minedBlock: 0,
-        rewardCount: 0,
-        logCount: 0
-    } })
+    await db.Account.update({}, {
+        $set: {
+            inTxCount: 0,
+            outTxCount: 0,
+            totalTxCount: 0,
+            internalTxCount: 0,
+            tokenTxCount: 0,
+            minedBlock: 0,
+            rewardCount: 0,
+            logCount: 0
+        }
+    })
     await Promise.all([
         countMine(),
         countTokenTx(),

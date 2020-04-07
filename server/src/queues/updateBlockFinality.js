@@ -11,35 +11,35 @@ consumer.name = 'BlockFinalityProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     const web3 = await Web3Util.getWeb3()
-    let blocks = await db.Block.find({ finality: { $lt: 75 }, updateFinalityTime: { $lt: 10 } })
+    const blocks = await db.Block.find({ finality: { $lt: 75 }, updateFinalityTime: { $lt: 10 } })
         .sort({ number: -1 }).limit(50)
     logger.info('Update finality %s blocks', blocks.length)
     try {
-        let map = blocks.map(async function (block) {
-            let countTx = await db.Tx.countDocuments({ blockNumber: block.number })
+        const map = blocks.map(async function (block) {
+            const countTx = await db.Tx.countDocuments({ blockNumber: block.number })
             if (countTx !== block.e_tx) {
                 q.create('BlockProcess', { block: block.number })
                     .priority('high').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
-            let blockOnChain = await web3.eth.getBlock(block.number)
+            const blockOnChain = await web3.eth.getBlock(block.number)
             if (block.hash === blockOnChain.hash) {
                 try {
-                    let data = {
-                        'jsonrpc': '2.0',
-                        'method': 'eth_getBlockFinalityByHash',
-                        'params': [block.hash],
-                        'id': 88
+                    const data = {
+                        jsonrpc: '2.0',
+                        method: 'eth_getBlockFinalityByHash',
+                        params: [block.hash],
+                        id: 88
                     }
                     const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                    let result = response.data
+                    const result = response.data
 
                     block.finality = parseInt(result.result)
                 } catch (e) {
                     logger.warn('Cannot get block finality %s', block.number)
                     logger.warn(e)
                 }
-                if (block.hasOwnProperty('updateFinalityTime')) {
+                if (Object.prototype.hasOwnProperty.call(block, 'updateFinalityTime')) {
                     block.updateFinalityTime = block.updateFinalityTime + 1
                 } else {
                     block.updateFinalityTime = 1

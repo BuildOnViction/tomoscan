@@ -8,15 +8,15 @@ const consumer = {}
 consumer.name = 'TransactionPendingProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let txes = await db.Tx.find({ isPending: true })
+    const txes = await db.Tx.find({ isPending: true })
         .sort({ timestamp: 1 }).limit(100)
     logger.info('Update %s tx pending', txes.length)
     try {
-        let map = txes.map(async function (tx) {
+        const map = txes.map(async function (tx) {
             if (tx.status === true) {
                 tx.isPending = false
             } else {
-                let t = await TransactionHelper.getTransactionReceipt(tx.hash, true)
+                const t = await TransactionHelper.getTransactionReceipt(tx.hash, true)
                 if (t) {
                     tx.status = true
                     tx.isPending = false

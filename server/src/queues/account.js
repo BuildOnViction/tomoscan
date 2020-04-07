@@ -6,8 +6,8 @@ const consumer = {}
 consumer.name = 'AccountProcess'
 consumer.processNumber = 4
 consumer.task = async function (job, done) {
-    let listHash = JSON.parse(job.data.listHash)
-    let map = listHash.map(async function (hash) {
+    const listHash = JSON.parse(job.data.listHash)
+    const map = listHash.map(async function (hash) {
         hash = hash.toLowerCase()
         logger.info('Process account: %s', hash)
 

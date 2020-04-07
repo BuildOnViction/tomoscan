@@ -6,11 +6,11 @@ const TokenHelper = require('./token')
 const Web3Util = require('../helpers/web3')
 const logger = require('../helpers/logger')
 
-let TokenHolderHelper = {
+const TokenHolderHelper = {
     formatHolder: async (tokenHolder, totalSupply, decimals) => {
         if (totalSupply) {
             totalSupply = new BigNumber(totalSupply)
-            let quantity = new BigNumber(tokenHolder.quantity)
+            const quantity = new BigNumber(tokenHolder.quantity)
 
             let percentage = await quantity.div(totalSupply) * 100
             percentage = percentage.toFixed(4)
@@ -23,18 +23,18 @@ let TokenHolderHelper = {
 
     updateQuality: async (hash, token) => {
         try {
-            let tk = await db.Token.findOne({ hash: token })
+            const tk = await db.Token.findOne({ hash: token })
             let decimals
             let tokenType
             if (tk) {
                 decimals = tk.decimals
                 tokenType = tk.type
             } else {
-                let web3 = await Web3Util.getWeb3()
-                let tokenFuncs = await TokenHelper.getTokenFuncs()
-                decimals = await web3.eth.call({ to: token, data: tokenFuncs['decimals'] })
+                const web3 = await Web3Util.getWeb3()
+                const tokenFuncs = await TokenHelper.getTokenFuncs()
+                decimals = await web3.eth.call({ to: token, data: tokenFuncs.decimals })
                 decimals = await web3.utils.hexToNumberString(decimals)
-                let code = await web3.eth.getCode(token)
+                const code = await web3.eth.getCode(token)
                 if (code === '0x') {
                     tokenType = null
                 }
@@ -50,7 +50,7 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
-                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                const balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
                 holder.quantity = balance.quantity
                 holder.quantityNumber = balance.quantityNumber
                 await holder.save()
@@ -64,7 +64,7 @@ let TokenHolderHelper = {
                         quantity: 0
                     })
                 }
-                let balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
+                const balance = await TokenHelper.getTokenBalance({ hash: token, decimals: decimals }, hash)
                 holder.quantity = balance.quantity
                 holder.quantityNumber = balance.quantityNumber
                 await holder.save()

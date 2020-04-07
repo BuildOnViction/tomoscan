@@ -9,25 +9,25 @@ const consumer = {}
 consumer.name = 'BlockProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let blockNumber = parseInt(job.data.block)
+    const blockNumber = parseInt(job.data.block)
     try {
         logger.info('Process block: %s attempts %s', blockNumber, job.toJSON().attempts.made)
-        let b = await BlockHelper.crawlBlock(blockNumber)
+        const b = await BlockHelper.crawlBlock(blockNumber)
         const q = require('./index')
 
         if (b) {
             // Begin from epoch 2
             if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
                 (blockNumber % config.get('BLOCK_PER_EPOCH') === 10)) {
-                let epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
+                const epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
                 q.create('RewardProcess', { epoch: epoch })
                     .priority('normal').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
             if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % 200 === 0)) {
-                let currentEpoch = Math.floor(blockNumber / config.get('BLOCK_PER_EPOCH'))
-                let lastEpochReward = currentEpoch - 1
-                let checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
+                const currentEpoch = Math.floor(blockNumber / config.get('BLOCK_PER_EPOCH'))
+                const lastEpochReward = currentEpoch - 1
+                const checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
 
                 if (checkExistOnDb.length === 0) {
                     q.create('RewardProcess', { epoch: lastEpochReward })
@@ -47,7 +47,7 @@ consumer.task = async function (job, done) {
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
 
-            let { txs, timestamp, signer } = b
+            const { txs, timestamp, signer } = b
             if (txs.length <= 100) {
                 q.create('TransactionProcess', {
                     txs: JSON.stringify(txs),

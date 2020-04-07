@@ -1,11 +1,11 @@
 const db = require('../models')
 const AccountHelper = require('./account')
 
-let FollowHelper = {
+const FollowHelper = {
     async firstOrUpdate (req, user, startBlock) {
-        let address = req.body.address.toLowerCase()
-        let name = req.body.name
-        let update = {
+        const address = req.body.address.toLowerCase()
+        const name = req.body.name
+        const update = {
             user: user,
             name: name,
             address: address,
@@ -15,15 +15,15 @@ let FollowHelper = {
             startBlock: startBlock
         }
 
-        let allow = await db.Follow.findOneAndUpdate({ user: user, address: address },
+        const allow = await db.Follow.findOneAndUpdate({ user: user, address: address },
             update, { upsert: true, new: true })
         return allow
     },
 
     async formatItems (items) {
-        let length = items.length
+        const length = items.length
         for (let i = 0; i < length; i++) {
-            let hash = items[i].address
+            const hash = items[i].address
             let addressObj = await db.Account.findOne({ hash: hash })
             if (!addressObj) {
                 addressObj = await AccountHelper.getAccountDetail(hash)

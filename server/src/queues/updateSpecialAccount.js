@@ -21,7 +21,8 @@ consumer.task = async function (job, done) {
         await db.SpecialAccount.updateOne({ hash: 'signTransaction' }, {
             totalTransactionCount: await db.Tx.countDocuments({ to: contractAddress.BlockSigner, isPending: false })
         }, { upsert: true })
-        await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, { totalTransactionCount:
+        await db.SpecialAccount.updateOne({ hash: 'otherTransaction' }, {
+            totalTransactionCount:
                 await db.Tx.countDocuments({ to: { $ne: contractAddress.BlockSigner }, isPending: false })
         }, { upsert: true })
 

@@ -8,9 +8,9 @@ const Web3Util = require('./web3')
 const BlockHelper = require('./block')
 const contractAddress = require('../contracts/contractAddress')
 const urlJoin = require('url-join')
-let RewardHelper = {
+const RewardHelper = {
     updateVoteHistory: async (epoch) => {
-        let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+        const endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
         if (parseInt(epoch) === 2) {
             startBlock = endBlock - (config.get('BLOCK_PER_EPOCH') * 2) + 1
@@ -19,9 +19,9 @@ let RewardHelper = {
         await db.VoteHistory.deleteOne({ blockNumber: { $gte: startBlock, $lte: endBlock } })
 
         if (parseInt(epoch) === 2) {
-            let defaultCandidate = config.get('defaultCandidate')
-            let candidates = []
-            let map = defaultCandidate.map(candidate => {
+            const defaultCandidate = config.get('defaultCandidate')
+            const candidates = []
+            const map = defaultCandidate.map(candidate => {
                 candidates.push({
                     txHash: null,
                     blockNumber: 1,
@@ -40,12 +40,12 @@ let RewardHelper = {
         const contract = await tomoValidator.getValidatorContractWs()
         await contract.getPastEvents('allEvents', { fromBlock: startBlock, toBlock: endBlock })
             .then(async (events) => {
-                let map = events.map(async function (event) {
-                    let voter = String(event.returnValues._voter || '').toLowerCase()
-                    let owner = String(event.returnValues._owner || '').toLowerCase()
-                    let candidate = String(event.returnValues._candidate || '').toLowerCase()
-                    let cap = new BigNumber(event.returnValues._cap || 0)
-                    let capTomo = cap.dividedBy(10 ** 18)
+                const map = events.map(async function (event) {
+                    const voter = String(event.returnValues._voter || '').toLowerCase()
+                    const owner = String(event.returnValues._owner || '').toLowerCase()
+                    const candidate = String(event.returnValues._candidate || '').toLowerCase()
+                    const cap = new BigNumber(event.returnValues._cap || 0)
+                    const capTomo = cap.dividedBy(10 ** 18)
                     BigNumber.config({ EXPONENTIAL_AT: [-100, 100] })
 
                     return {
@@ -69,7 +69,7 @@ let RewardHelper = {
             }).catch(async (e) => {
                 logger.warn('Cannot get vote history from block %s to %s. Sleep 2 seconds and try more. Error %s',
                     startBlock, endBlock, e)
-                let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+                const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                 await sleep(2000)
                 await Web3Util.reconnectWeb3Socket()
                 return RewardHelper.updateVoteHistory(epoch)
@@ -80,10 +80,10 @@ let RewardHelper = {
 
     rewardProcess: async (epoch) => {
         epoch = parseInt(epoch)
-        let startBlock = (epoch - 1) * config.get('BLOCK_PER_EPOCH') + 1
-        let endBlock = (epoch) * config.get('BLOCK_PER_EPOCH')
+        const startBlock = (epoch - 1) * config.get('BLOCK_PER_EPOCH') + 1
+        const endBlock = (epoch) * config.get('BLOCK_PER_EPOCH')
 
-        let maxBlockNum = await BlockHelper.getLastBlockNumber()
+        const maxBlockNum = await BlockHelper.getLastBlockNumber()
         if (maxBlockNum - config.get('BLOCK_PER_EPOCH') < endBlock) {
             logger.warn('Epoch %s is waiting for calculate', epoch)
             return
@@ -94,22 +94,22 @@ let RewardHelper = {
         logger.info('Remove old reward of epoch %s', epoch)
         await db.Reward.deleteOne({ epoch: epoch })
 
-        let totalReward = new BigNumber(config.get('REWARD'))
-        let validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
-        let foundationRewardPercent = new BigNumber(config.get('FOUNDATION_REWARD_PERCENT'))
-        let voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
+        const totalReward = new BigNumber(config.get('REWARD'))
+        const validatorRewardPercent = new BigNumber(config.get('MASTER_NODE_REWARD_PERCENT'))
+        const foundationRewardPercent = new BigNumber(config.get('FOUNDATION_REWARD_PERCENT'))
+        const voterRewardPercent = new BigNumber(config.get('VOTER_REWARD_PERCENT'))
 
         // Update block signer
         for (let i = startBlock; i <= endBlock; i = i + 50) {
-            let its = []
+            const its = []
             for (let j = i; j < i + 50; j++) {
                 its.push(j)
             }
             logger.info('Update block signer from block %s to block %s', i, i + 49)
-            let map = its.map(async (b) => {
-                let block = await BlockHelper.getBlock(b)
+            const map = its.map(async (b) => {
+                const block = await BlockHelper.getBlock(b)
 
-                let ss = await blockSigner.getSigners(block.hash)
+                const ss = await blockSigner.getSigners(block.hash)
                 await db.BlockSigner.updateOne({
                     blockHash: block.hash,
                     blockNumber: b
@@ -134,10 +134,10 @@ let RewardHelper = {
 
         logger.info('Duplicate vote amount from prev to epoch %s', epoch)
         // Find in history and duplicate to this epoch if not found
-        let voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
-        let data = []
+        const voteInEpoch = await db.UserVoteAmount.find({ epoch: epoch - 1 })
+        const data = []
         for (let j = 0; j < voteInEpoch.length; j++) {
-            let nextEpoch = await db.UserVoteAmount.findOne({
+            const nextEpoch = await db.UserVoteAmount.findOne({
                 voter: voteInEpoch[j].voter,
                 epoch: epoch,
                 candidate: voteInEpoch[j].candidate
@@ -157,19 +157,19 @@ let RewardHelper = {
 
         let totalSignNumber = 0
 
-        let validators = []
-        let voteHistory = await db.UserVoteAmount.find({ epoch: epoch })
+        const validators = []
+        const voteHistory = await db.UserVoteAmount.find({ epoch: epoch })
         for (let i = 0; i < voteHistory.length; i++) {
             if (validators.indexOf(voteHistory[i].candidate) < 0) {
                 validators.push(voteHistory[i].candidate)
             }
         }
 
-        let rewardValidator = []
-        let validatorSigners = []
-        let validatorMap = validators.map(async (validator) => {
+        const rewardValidator = []
+        const validatorSigners = []
+        const validatorMap = validators.map(async (validator) => {
             validator = validator.toString().toLowerCase()
-            let validatorSignNumber = await db.BlockSigner
+            const validatorSignNumber = await db.BlockSigner
                 .countDocuments({
                     blockNumber: { $gte: startBlock, $lte: endBlock },
                     signers: validator
@@ -185,18 +185,18 @@ let RewardHelper = {
         await Promise.all(validatorMap)
 
         logger.info('calculate reward for list validator at epoch %s', epoch)
-        let validatorFinal = validatorSigners.map(async (validator) => {
-            let reward4group = totalReward.multipliedBy(validator.signNumber).dividedBy(totalSignNumber)
-            let reward4validator = reward4group.multipliedBy(validatorRewardPercent).dividedBy(100)
-            let reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
-            let reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
+        const validatorFinal = validatorSigners.map(async (validator) => {
+            const reward4group = totalReward.multipliedBy(validator.signNumber).dividedBy(totalSignNumber)
+            const reward4validator = reward4group.multipliedBy(validatorRewardPercent).dividedBy(100)
+            const reward4foundation = reward4group.multipliedBy(foundationRewardPercent).dividedBy(100)
+            const reward4voter = reward4group.multipliedBy(voterRewardPercent).dividedBy(100)
 
-            let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
+            const blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
 
-            let block = await db.Block.findOne({ number: blockRewardCalculate })
+            const block = await db.Block.findOne({ number: blockRewardCalculate })
             let timestamp = new Date()
             if (!block) {
-                let _block = await BlockHelper.getBlock(blockRewardCalculate)
+                const _block = await BlockHelper.getBlock(blockRewardCalculate)
                 if (_block) {
                     timestamp = _block.timestamp * 1000
                 }
@@ -215,12 +215,12 @@ let RewardHelper = {
             let ownerValidator = await tomoValidator.getCandidateOwner(validator.address)
             ownerValidator = ownerValidator.toString().toLowerCase()
 
-            let userVoteAmount = await db.UserVoteAmount.findOne({
+            const userVoteAmount = await db.UserVoteAmount.findOne({
                 candidate: validator.address,
                 voter: ownerValidator,
                 epoch: epoch
             })
-            let lockBalance = (userVoteAmount || { voteAmount: 0 }).voteAmount
+            const lockBalance = (userVoteAmount || { voteAmount: 0 }).voteAmount
 
             await rewardValidator.push({
                 epoch: epoch,
@@ -261,23 +261,23 @@ let RewardHelper = {
         if (epoch === 1) {
             await db.UserVoteAmount.deleteOne({ epoch: 0 })
         }
-        let endBlock = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
+        const endBlock = (parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH')
         let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
         if (parseInt(epoch) === 1) {
             startBlock = endBlock - config.get('BLOCK_PER_EPOCH') * 2 + 1
         }
 
         // Calculate user vote for validator
-        let histories = await db.VoteHistory.find({
+        const histories = await db.VoteHistory.find({
             blockNumber: { $gte: startBlock, $lte: endBlock }
         }).sort({ blockNumber: 1 })
 
         logger.info('There are %s histories in epoch %s', histories.length, epoch)
         for (let i = 0; i < histories.length; i++) {
-            let history = histories[i]
+            const history = histories[i]
 
             if (history.event === 'Propose') {
-                let data = {
+                const data = {
                     voter: history.owner,
                     candidate: history.candidate,
                     epoch: Math.floor(history.blockNumber / config.get('BLOCK_PER_EPOCH')),
@@ -285,7 +285,7 @@ let RewardHelper = {
                 }
                 await db.UserVoteAmount.create(data)
             } else if (history.event === 'Vote') {
-                let h = await db.UserVoteAmount.findOne({
+                const h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
                     candidate: history.candidate,
                     epoch: { $lte: epoch }
@@ -300,7 +300,7 @@ let RewardHelper = {
                     voteAmount: (h || { voteAmount: 0 }).voteAmount + history.cap
                 }, { upsert: true, new: true })
             } else if (history.event === 'Unvote') {
-                let h = await db.UserVoteAmount.findOne({
+                const h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
                     candidate: history.candidate,
                     epoch: { $lte: epoch }
@@ -314,7 +314,7 @@ let RewardHelper = {
                     voteAmount: (h ? h.voteAmount : 0) - history.cap
                 }, { upsert: true, new: true })
             } else if (history.event === 'Resign') {
-                let h = await db.UserVoteAmount.findOne({
+                const h = await db.UserVoteAmount.findOne({
                     voter: history.voter,
                     candidate: history.candidate,
                     epoch: { $lt: epoch }
@@ -334,10 +334,10 @@ let RewardHelper = {
         logger.info('Process reward for voter of validator %s', validator)
         totalReward = new BigNumber(totalReward)
 
-        let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
-        let startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
+        const endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+        const startBlock = endBlock - config.get('BLOCK_PER_EPOCH') + 1
 
-        let voteEpoch = await db.UserVoteAmount.find({ epoch: epoch, candidate: validator })
+        const voteEpoch = await db.UserVoteAmount.find({ epoch: epoch, candidate: validator })
         let totalVoterCap = 0
         for (let i = 0; i < voteEpoch.length; i++) {
             totalVoterCap += voteEpoch[i].voteAmount
@@ -346,10 +346,10 @@ let RewardHelper = {
 
         let rewardVoter = []
         for (let i = 0; i < voteEpoch.length; i++) {
-            let voterAddress = voteEpoch[i].voter
-            let voterAmount = new BigNumber(voteEpoch[i].voteAmount)
+            const voterAddress = voteEpoch[i].voter
+            const voterAmount = new BigNumber(voteEpoch[i].voteAmount)
             if (String(voterAmount) !== '0') {
-                let reward = totalReward.multipliedBy(voterAmount).dividedBy(totalVoterCap)
+                const reward = totalReward.multipliedBy(voterAmount).dividedBy(totalVoterCap)
 
                 await rewardVoter.push({
                     epoch: epoch,
@@ -376,14 +376,14 @@ let RewardHelper = {
     },
 
     rewardOnChain: async (epoch, calculateTime = 0) => {
-        let block = await BlockHelper.getBlock((parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH'))
-        let endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
-        let startBlock = endBlock - config.get('BLOCK_PER_EPOCH')
-        let data = {
-            'jsonrpc': '2.0',
-            'method': 'eth_getRewardByHash',
-            'params': [block.hash],
-            'id': 88
+        const block = await BlockHelper.getBlock((parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH'))
+        const endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+        const startBlock = endBlock - config.get('BLOCK_PER_EPOCH')
+        const data = {
+            jsonrpc: '2.0',
+            method: 'eth_getRewardByHash',
+            params: [block.hash],
+            id: 88
         }
 
         try {
@@ -392,27 +392,27 @@ let RewardHelper = {
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
-            let result = response.data
+            const result = response.data
             if (!result.error) {
-                let signNumber = result.result.signers
-                let rewards = result.result.rewards
+                const signNumber = result.result.signers
+                const rewards = result.result.rewards
 
-                let url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates')
-                let c = await axios.get(url)
-                let canR = c.data.items
-                let canName = {}
+                const url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates')
+                const c = await axios.get(url)
+                const canR = c.data.items
+                const canName = {}
                 if (canR) {
                     for (let i = 0; i < canR.length; i++) {
                         canName[canR[i].candidate] = canR[i].name
                     }
                 }
 
-                let rdata = []
-                let countProcess = []
+                const rdata = []
+                const countProcess = []
                 let mnNumber = 0
-                for (let m in rewards) {
+                for (const m in rewards) {
                     mnNumber += 1
-                    for (let v in rewards[m]) {
+                    for (const v in rewards[m]) {
                         let r = new BigNumber(rewards[m][v])
                         r = r.dividedBy(10 ** 18).toString()
                         rdata.push({
@@ -440,8 +440,8 @@ let RewardHelper = {
                         .priority('low').removeOnComplete(true)
                         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }
-                let sdata = []
-                for (let m in signNumber) {
+                const sdata = []
+                for (const m in signNumber) {
                     sdata.push({
                         epoch: epoch,
                         validator: m.toLowerCase(),
@@ -452,15 +452,15 @@ let RewardHelper = {
                     await db.EpochSign.insertMany(sdata)
                 }
 
-                let sBlock = await BlockHelper.getBlockDetail(startBlock)
-                let eBlock = await BlockHelper.getBlockDetail(endBlock)
+                const sBlock = await BlockHelper.getBlockDetail(startBlock)
+                const eBlock = await BlockHelper.getBlockDetail(endBlock)
 
                 if (rdata.length > 0) {
                     logger.info('Insert %s rewards to db', rdata.length)
                     await db.Reward.insertMany(rdata)
                 } else {
                     logger.info('There is no reward found. Wait 10 seconds and retry')
-                    let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+                    const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                     await sleep(10000)
                     calculateTime += 1
                     if (calculateTime === 5) {
@@ -469,7 +469,7 @@ let RewardHelper = {
                     }
                     return RewardHelper.rewardOnChain(epoch, calculateTime)
                 }
-                let vNumber = await db.Reward.distinct('address', { epoch: epoch })
+                const vNumber = await db.Reward.distinct('address', { epoch: epoch })
 
                 await db.Epoch.updateOne({ epoch: epoch }, {
                     epoch: epoch,

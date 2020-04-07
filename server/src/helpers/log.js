@@ -1,7 +1,7 @@
 const db = require('../models')
 const _ = require('lodash')
 
-let LogHelper = {
+const LogHelper = {
     getFunctionHashes () {
         return {
             'allowance(address,address)': 'dd62ed3e',
@@ -20,14 +20,14 @@ let LogHelper = {
     },
 
     async formatLog (log) {
-        let block = await db.Block.findOne({ number: log.blockNumber })
-        let tx = await db.Tx.findOne({ hash: log.transactionHash.toLowerCase() })
+        const block = await db.Block.findOne({ number: log.blockNumber })
+        const tx = await db.Tx.findOne({ hash: log.transactionHash.toLowerCase() })
 
         log.block = block
         log.tx = tx
         log.methodCode = tx ? tx.input.substring(0, 10) : ''
-        let code = log.methodCode.replace('0x', '')
-        let funcs = LogHelper.getFunctionHashes()
+        const code = log.methodCode.replace('0x', '')
+        const funcs = LogHelper.getFunctionHashes()
         log.methodName = await _.findKey(funcs, (value, key) => value === code)
 
         return log

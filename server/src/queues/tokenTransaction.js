@@ -13,9 +13,9 @@ consumer.processNumber = 2
 consumer.task = async function (job, done) {
     const web3 = await Web3Utils.getWeb3()
     try {
-        let log = JSON.parse(job.data.log)
+        const log = JSON.parse(job.data.log)
         logger.info('Process token transaction: ')
-        let _log = log
+        const _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
             return done()
@@ -29,31 +29,31 @@ consumer.task = async function (job, done) {
             _log.to = await utils.unformatAddress(log.topics[2])
         }
         _log.address = _log.address.toLowerCase()
-        let transactionHash = _log.transactionHash.toLowerCase()
+        const transactionHash = _log.transactionHash.toLowerCase()
 
-        let token = await db.Token.findOne({ hash: _log.address })
+        const token = await db.Token.findOne({ hash: _log.address })
         let tokenType
         let decimals
         if (token && token.type) {
             tokenType = token.type
             decimals = token.decimals
         } else {
-            let code = await web3.eth.getCode(_log.address)
+            const code = await web3.eth.getCode(_log.address)
             if (code === '0x') {
                 return done()
             }
-            let tokenFuncs = await TokenHelper.getTokenFuncs()
-            decimals = await web3.eth.call({ to: _log.address, data: tokenFuncs['decimals'] })
+            const tokenFuncs = await TokenHelper.getTokenFuncs()
+            decimals = await web3.eth.call({ to: _log.address, data: tokenFuncs.decimals })
             decimals = await web3.utils.hexToNumberString(decimals)
             tokenType = await TokenHelper.checkTokenType(code)
         }
         if (tokenType === 'trc20' || tokenType === 'trc21') {
             _log.value = web3.utils.hexToNumberString(log.data)
 
-            let vl = new BigNumber(_log.value || 0)
+            const vl = new BigNumber(_log.value || 0)
             _log.valueNumber = vl.dividedBy(10 ** parseInt(decimals)).toNumber() || 0
 
-            delete _log['_id']
+            delete _log._id
             if (tokenType === 'trc20') {
                 await db.TokenTx.updateOne(
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },

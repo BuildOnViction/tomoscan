@@ -6,12 +6,12 @@ consumer.name = 'CountProcess'
 consumer.processNumber = 16
 consumer.task = async function (job, done) {
     try {
-        let data = JSON.parse(job.data.data)
+        const data = JSON.parse(job.data.data)
         logger.info('count process %s items', data.length)
         for (let i = 0; i < data.length; i++) {
-            let item = data[i]
-            let hash = item.hash
-            let countType = item.countType
+            const item = data[i]
+            const hash = item.hash
+            const countType = item.countType
             switch (countType) {
             case 'mined':
                 await db.Account.updateOne({ hash: hash }, { $inc : { minedBlock: 1 } }, { upsert: true })

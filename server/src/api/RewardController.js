@@ -14,25 +14,25 @@ RewardController.get('/rewards/:slug', [
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let address = req.params.slug
     address = address.toLowerCase()
     try {
-        let params = {}
+        const params = {}
         if (address) {
             params.query = { address: address }
         }
 
-        let acc = await db.Account.findOne({ hash: address })
+        const acc = await db.Account.findOne({ hash: address })
         let total = null
         if (acc) {
             total = acc.rewardCount
         }
         params.sort = { epoch: -1 }
-        let data = await paginate(req, 'Reward', params, total)
+        const data = await paginate(req, 'Reward', params, total)
         if (data.pages > 500) {
             data.pages = 500
         }
@@ -45,11 +45,11 @@ RewardController.get('/rewards/:slug', [
 })
 
 RewardController.get('/rewards/alerts/status', [], async (req, res) => {
-    let web3 = await Web3Util.getWeb3()
-    let lastBlock = await web3.eth.getBlockNumber()
-    let currentEpoch = Math.floor(lastBlock / config.get('BLOCK_PER_EPOCH'))
-    let lastEpochReward = currentEpoch - 1
-    let checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
+    const web3 = await Web3Util.getWeb3()
+    const lastBlock = await web3.eth.getBlockNumber()
+    const currentEpoch = Math.floor(lastBlock / config.get('BLOCK_PER_EPOCH'))
+    const lastEpochReward = currentEpoch - 1
+    const checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
 
     let slow = false
 
@@ -69,15 +69,15 @@ RewardController.get('/rewards/epoch/:epochNumber', [
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('epochNumber').isInt().exists().withMessage('Epoch number is require')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let epochNumber = req.params.epochNumber || 0
+    const epochNumber = req.params.epochNumber || 0
     try {
-        let params = {}
+        const params = {}
         params.query = { epoch: epochNumber }
-        let reason = req.query.reason
+        const reason = req.query.reason
         if (reason === 'voter') {
             params.query = Object.assign({}, params.query,
                 { reason: { $ne: 'Foundation' } })
@@ -85,7 +85,7 @@ RewardController.get('/rewards/epoch/:epochNumber', [
             params.query = Object.assign({}, params.query,
                 { reason: 'Foundation' })
         }
-        let data = await paginate(req, 'Reward', params)
+        const data = await paginate(req, 'Reward', params)
         if (data.pages > 500) {
             data.pages = 500
         }
@@ -102,21 +102,21 @@ RewardController.get('/rewards/total/:slug/:fromEpoch/:toEpoch', [
     check('fromEpoch').exists().isInt().withMessage('From epoch is require'),
     check('toEpoch').exists().isInt().withMessage('To epoch is require')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
         let address = req.params.slug
-        let fromEpoch = req.params.fromEpoch
-        let toEpoch = req.params.toEpoch
+        const fromEpoch = req.params.fromEpoch
+        const toEpoch = req.params.toEpoch
         address = address.toLowerCase()
-        let acc = await db.Account.findOne({ hash: address })
+        const acc = await db.Account.findOne({ hash: address })
         if (!acc) {
             return res.json({ address: address, totalReward: 0 })
         }
 
-        let rewards = await db.Reward.find({
+        const rewards = await db.Reward.find({
             address: address,
             epoch: { $gte: fromEpoch, $lte: toEpoch }
         })
@@ -142,7 +142,7 @@ RewardController.post('/expose/rewards', async (req, res) => {
         if (limit > 200) {
             limit = 200
         }
-        let page = !isNaN(req.body.page) ? parseInt(req.body.page) : 1
+        const page = !isNaN(req.body.page) ? parseInt(req.body.page) : 1
         const skip = limit * (page - 1)
         let params = {}
 
@@ -203,10 +203,10 @@ RewardController.post('/expose/MNRewardsByEpochs', [
 
             if (result) {
                 result = result.toObject()
-                let signNumbers = await db.EpochSign.find({ epoch: e })
+                const signNumbers = await db.EpochSign.find({ epoch: e })
 
                 let totalSign = 0
-                let map = signNumbers.map(function (signNumber) {
+                const map = signNumbers.map(function (signNumber) {
                     totalSign += signNumber.signNumber
                 })
 
@@ -234,13 +234,13 @@ RewardController.post('/expose/MNRewardsByEpochs', [
 RewardController.post('/expose/signNumber/:epochNumber', [
     check('epochNumber').exists().isInt().withMessage('Epoch number is require & need a number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let epoch = req.params.epochNumber || null
-        let signNumbers = await db.EpochSign.find({ epoch: epoch })
+        const epoch = req.params.epochNumber || null
+        const signNumbers = await db.EpochSign.find({ epoch: epoch })
 
         return res.json(signNumbers)
     } catch (e) {
@@ -252,15 +252,15 @@ RewardController.post('/expose/signNumber/:epochNumber', [
 RewardController.post('/expose/totalSignNumber/:epochNumber', [
     check('epochNumber').exists().isInt().withMessage('Epoch number is require & need a number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let epoch = req.params.epochNumber || null
-        let signNumbers = await db.EpochSign.find({ epoch: epoch })
+        const epoch = req.params.epochNumber || null
+        const signNumbers = await db.EpochSign.find({ epoch: epoch })
         let totalSign = 0
-        let map = signNumbers.map(function (signNumber) {
+        const map = signNumbers.map(function (signNumber) {
             totalSign += signNumber.signNumber
         })
         await Promise.all(map)

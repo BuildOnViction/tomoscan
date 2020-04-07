@@ -11,18 +11,18 @@ AuthController.post('/login', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
 
-        let user = await db.User.findOne({ email: email })
+        const user = await db.User.findOne({ email: email })
         if (!user) {
             return res.status(404).json({ message: 'User not found!' })
         }
 
-        let isMatch = await user.authenticate(password)
+        const isMatch = await user.authenticate(password)
 
         if (!isMatch) {
             return res.status(400).json({ message: 'Password or email is incorrect!' })
         }
 
-        let token = await user.generateToken(user)
+        const token = await user.generateToken(user)
 
         if (!token) { return res.sendStatus(400) }
 
@@ -46,7 +46,7 @@ AuthController.post('/register', async (req, res) => {
             email: email,
             password: password
         })
-        let error = user.validateSync()
+        const error = user.validateSync()
         if (error) {
             let message
             if (error.errors.password) {
@@ -59,10 +59,10 @@ AuthController.post('/register', async (req, res) => {
         }
         await user.save()
 
-        let token = await user.generateToken(user)
+        const token = await user.generateToken(user)
 
         // Send email welcome.
-        let emailService = new EmailService()
+        const emailService = new EmailService()
         emailService.newUserRegister(user)
 
         return res.json({ user, token })
@@ -77,7 +77,7 @@ AuthController.post('/lostpw', async (req, res) => {
         const email = req.body.email
         const captchaToken = req.body.captchaToken
 
-        let user = await db.User.findOne({ email })
+        const user = await db.User.findOne({ email })
 
         if (!captchaToken) {
             return res.json({ error: { message: 'Captcha is required' } })
@@ -98,7 +98,7 @@ AuthController.post('/lostpw', async (req, res) => {
             // generate token
             const token = await user.generateToken(user, 'resetPwd')
 
-            let emailService = new EmailService()
+            const emailService = new EmailService()
             emailService.recoverPassword(user, token)
         }
 
@@ -112,7 +112,7 @@ AuthController.post('/tokenValidation', async (req, res) => {
     try {
         const email = req.body.email
         const token = req.body.token
-        let user = await db.User.findOne({ email })
+        const user = await db.User.findOne({ email })
 
         if (!user) {
             return res.status(406).json({ error: { message: 'User not found!' } })
@@ -144,8 +144,8 @@ AuthController.post('/reset-password', async (req, res) => {
         const email = req.body.email
         const password = req.body.password
 
-        let user = await db.User.findOne({ email })
-        let token = req.body.token
+        const user = await db.User.findOne({ email })
+        const token = req.body.token
 
         if (!user) {
             return res.status(404).json({ error: { message: 'User not found!' } })
@@ -172,7 +172,7 @@ AuthController.post('/reset-password', async (req, res) => {
             await db.User.update({ email: email }, { $set: { password: hash, latestResetToken: token } })
 
             // Send comfirmation email
-            let emailService = new EmailService()
+            const emailService = new EmailService()
             emailService.resetEmailComfirmation(user)
             return res.json({ message: 'Password successfuly changed' })
         } else {

@@ -13,34 +13,34 @@ BlockController.get('/blocks', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 10
-        let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         perPage = Math.min(20, perPage)
-        let calcPage = page * perPage
+        const calcPage = page * perPage
 
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         // Get latest block number count.
-        let maxBlockNumber = await web3.eth.getBlockNumber()
-        let offset = maxBlockNumber - calcPage
-        let last = offset + perPage
+        const maxBlockNumber = await web3.eth.getBlockNumber()
+        const offset = maxBlockNumber - calcPage
+        const last = offset + perPage
 
-        let listBlkNum = []
+        const listBlkNum = []
         for (let i = last; i > offset; i--) {
             listBlkNum.push(i)
         }
         let items = []
-        let blocks = await db.Block.find({ number: { $in: listBlkNum } })
-        let finalityBlock = []
+        const blocks = await db.Block.find({ number: { $in: listBlkNum } })
+        const finalityBlock = []
 
         if (blocks.length === perPage) {
             items = blocks
         } else {
-            let existBlock = []
+            const existBlock = []
             for (let i = 0; i < blocks.length; i++) {
                 items.push(blocks[i])
                 existBlock.push(blocks[i].number)
@@ -58,25 +58,25 @@ BlockController.get('/blocks', [
                     }
                 }
             }
-            let map = notExistBlock.map(async function (num) {
-                let bl = await BlockHelper.getBlockOnChain(num)
+            const map = notExistBlock.map(async function (num) {
+                const bl = await BlockHelper.getBlockOnChain(num)
                 items.push(bl)
             })
             await Promise.all(map)
         }
-        let finality = []
-        let map2 = finalityBlock.map(async function (hash) {
+        const finality = []
+        const map2 = finalityBlock.map(async function (hash) {
             try {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockFinalityByHash',
-                    'params': [hash],
-                    'id': 88
+                const data = {
+                    jsonrpc: '2.0',
+                    method: 'eth_getBlockFinalityByHash',
+                    params: [hash],
+                    id: 88
                 }
                 const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                let result = response.data
+                const result = response.data
 
-                let finalityNumber = parseInt(result.result)
+                const finalityNumber = parseInt(result.result)
 
                 finality.push({
                     hash: hash,
@@ -89,7 +89,7 @@ BlockController.get('/blocks', [
         })
         await Promise.all(map2)
 
-        let result = []
+        const result = []
         for (let i = 0; i < listBlkNum.length; i++) {
             for (let j = 0; j < items.length; j++) {
                 if (listBlkNum[i] === items[j].number) {
@@ -113,7 +113,7 @@ BlockController.get('/blocks', [
         }
         await Promise.all(map2)
 
-        let data = {
+        const data = {
             total: maxBlockNumber,
             perPage: perPage,
             currentPage: page,
@@ -130,11 +130,11 @@ BlockController.get('/blocks', [
 BlockController.get('/blocks/:slug', [
     check('slug').exists().withMessage('Block is require.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let hashOrNumb = req.params.slug
+    const hashOrNumb = req.params.slug
     try {
         let block = await BlockHelper.getBlockDetail(hashOrNumb)
 
@@ -148,34 +148,34 @@ BlockController.get('/blocks/:slug', [
         }
 
         if (block.number % config.get('BLOCK_PER_EPOCH') === 0) {
-            let slashedNode = []
-            let blk = await BlockHelper.getBlock(block.number)
+            const slashedNode = []
+            const blk = await BlockHelper.getBlock(block.number)
             if (blk.penalties && blk.penalties !== '0x') {
-                let sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
+                const sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
                 if (sbuff.length > 0) {
                     for (let i = 1; i <= sbuff.length / 20; i++) {
-                        let address = sbuff.slice((i - 1) * 20, i * 20)
+                        const address = sbuff.slice((i - 1) * 20, i * 20)
                         slashedNode.push('0x' + address.toString('hex'))
                     }
                 }
             }
 
             let buff = Buffer.from(blk.extraData.substring(2), 'hex')
-            let sbuff = buff.slice(32, buff.length - 65)
-            let signers = []
+            const sbuff = buff.slice(32, buff.length - 65)
+            const signers = []
             if (sbuff.length > 0) {
                 for (let i = 1; i <= sbuff.length / 20; i++) {
-                    let address = sbuff.slice((i - 1) * 20, i * 20)
+                    const address = sbuff.slice((i - 1) * 20, i * 20)
                     signers.push('0x' + address.toString('hex'))
                 }
             }
 
-            let web3 = await Web3Util.getWeb3()
+            const web3 = await Web3Util.getWeb3()
 
             buff = Buffer.from(blk.validators.substring(2), 'hex')
-            let randoms = []
+            const randoms = []
             for (let i = 1; i <= buff.length / 4; i++) {
-                let k = buff.slice((i - 1) * 4, i * 4)
+                const k = buff.slice((i - 1) * 4, i * 4)
                 randoms.push(web3.utils.toUtf8('0x' + k.toString('hex')))
             }
 
@@ -195,14 +195,14 @@ BlockController.get('/blocks/:slug/address/:address', [
     check('slug').exists().isNumeric().withMessage('Block number is not correct.'),
     check('address').exists().isLength({ min: 42, max: 42 }).withMessage('Address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let blockNumber = req.params.slug
-    let address = req.params.address.toLowerCase()
+    const blockNumber = req.params.slug
+    const address = req.params.address.toLowerCase()
 
-    let txes = await db.Tx.find({ blockNumber: blockNumber, $or: [{ from: address }, { to: address }] })
+    const txes = await db.Tx.find({ blockNumber: blockNumber, $or: [{ from: address }, { to: address }] })
     let exist = false
     if (txes.length > 0) {
         exist = true
@@ -216,18 +216,18 @@ BlockController.get('/blocks/:slug/address/:address', [
 BlockController.get('/blocks/signers/:slug', [
     check('slug').exists().withMessage('Block is require.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let blockNumberOrHash = req.params.slug
+    const blockNumberOrHash = req.params.slug
     try {
         let signers = []
         let checkInChain = true
         let block
         if (!isNaN(blockNumberOrHash)) {
             block = await db.Block.findOne({ number: blockNumberOrHash })
-            let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumberOrHash })
+            const blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumberOrHash })
 
             if (blockSigner) {
                 if (blockSigner.signers) {
@@ -239,7 +239,7 @@ BlockController.get('/blocks/signers/:slug', [
             block = await db.Block.findOne({ hash: blockNumberOrHash })
         }
         if (!block) {
-            let web3 = await Web3Util.getWeb3()
+            const web3 = await Web3Util.getWeb3()
             block = await web3.eth.getBlock(blockNumberOrHash)
         }
         if (!block) {
@@ -248,14 +248,14 @@ BlockController.get('/blocks/signers/:slug', [
 
         if (checkInChain) {
             try {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockSignersByHash',
-                    'params': [block.hash],
-                    'id': 88
+                const data = {
+                    jsonrpc: '2.0',
+                    method: 'eth_getBlockSignersByHash',
+                    params: [block.hash],
+                    id: 88
                 }
                 const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                let result = response.data
+                const result = response.data
                 signers = result.result
             } catch (e) {
                 logger.warn('cannot get signer of block %s', block.number)
@@ -271,10 +271,10 @@ BlockController.get('/blocks/signers/:slug', [
 })
 
 BlockController.get('/blocks/finality/latestIrreversibleBlock', async (req, res) => {
-    let last200Block = await db.Block.find().limit(200).sort({ number: -1 })
+    const last200Block = await db.Block.find().limit(200).sort({ number: -1 })
     let lastFinality
     for (let i = 0; i < last200Block.length; i++) {
-        let b = last200Block[i]
+        const b = last200Block[i]
         if (b.finality >= 75) {
             lastFinality = b.number
             break

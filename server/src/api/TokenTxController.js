@@ -13,20 +13,20 @@ TokenTxController.get('/token-txs', [
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('token').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let token = req.query.token
-    let address = req.query.address
+    const token = req.query.token
+    const address = req.query.address
     try {
-        let params = {}
+        const params = {}
         params.query = {}
         let total = null
         if (token) {
             params.query = { address: token.toLowerCase() }
 
-            let tk = await db.Account.findOne({ hash: token.toLowerCase() })
+            const tk = await db.Account.findOne({ hash: token.toLowerCase() })
             if (tk) {
                 total = tk.totalTxCount
             }
@@ -37,7 +37,7 @@ TokenTxController.get('/token-txs', [
             total = null
         }
         params.sort = { blockNumber: -1 }
-        let data = await paginate(req, 'TokenTx', params, total)
+        const data = await paginate(req, 'TokenTx', params, total)
 
         let items = data.items
         if (items.length) {
@@ -62,21 +62,21 @@ TokenTxController.get('/token-txs/:tokenType', [
     check('holder').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('token').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let token = req.query.token
-    let holder = req.query.holder
-    let tokenType = req.params.tokenType
+    const token = req.query.token
+    const holder = req.query.holder
+    const tokenType = req.params.tokenType
     try {
-        let params = {}
+        const params = {}
         params.query = {}
         let total = null
         if (token) {
             params.query = { address: token.toLowerCase() }
 
-            let tk = await db.Account.findOne({ hash: token.toLowerCase() })
+            const tk = await db.Account.findOne({ hash: token.toLowerCase() })
             if (tk) {
                 total = tk.totalTxCount
             }
@@ -127,19 +127,19 @@ TokenTxController.get('/token-txs/:tokenType/:txHash', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let holder = req.query.holder
-    let tokenType = req.params.tokenType
-    let txHash = req.params.txHash
-    let tx = await db.Tx.findOne({ hash: txHash })
+    const holder = req.query.holder
+    const tokenType = req.params.tokenType
+    const txHash = req.params.txHash
+    const tx = await db.Tx.findOne({ hash: txHash })
     if (!tx) {
         return res.status(404).json({ errors: { message: 'Tx hash does not exist!' } })
     }
     try {
-        let params = {}
+        const params = {}
         params.query = { transactionHash: txHash }
         if (holder) {
             params.query = Object.assign(params.query,

@@ -24,23 +24,23 @@ TxController.get('/txs', [
     check('type').optional().isString().withMessage('type = signTxs|otherTxs|pending'),
     check('tx_account').optional().isString().withMessage('type = in|out. if equal null return all')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
 
-    let params = { sort: { blockNumber: -1 }, query: {} }
+    const params = { sort: { blockNumber: -1 }, query: {} }
     let start = new Date()
     try {
-        let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
-        let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let offset = page > 1 ? (page - 1) * perPage : 0
+        const perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
+        const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const offset = page > 1 ? (page - 1) * perPage : 0
 
-        let blockNumber = !isNaN(req.query.block) ? req.query.block : null
+        const blockNumber = !isNaN(req.query.block) ? req.query.block : null
         let address = req.query.address
         let specialAccount = null
         let total = null
-        let type = req.query.type
+        const type = req.query.type
         let txAccount = req.query.tx_account
         let isBlock = false
 
@@ -75,8 +75,10 @@ TxController.get('/txs', [
                 condition = { to: contractAddress.BlockSigner, isPending: false }
             } else if (type === 'otherTxs') {
                 total = specialAccount ? specialAccount.other : 0
-                condition = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
-                    isPending: false }
+                condition = {
+                    to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+                    isPending: false
+                }
             } else if (type === 'pending') {
                 total = specialAccount ? specialAccount.pending : 0
                 condition = { isPending: true }
@@ -94,7 +96,7 @@ TxController.get('/txs', [
         }
 
         if (total === null) {
-            let sa = await db.Account.findOne({ hash: address })
+            const sa = await db.Account.findOne({ hash: address })
             if (sa) {
                 if (txAccount === 'in') {
                     total = sa.inTxCount || 0
@@ -106,12 +108,12 @@ TxController.get('/txs', [
             }
         }
         let end = new Date() - start
-        logger.info(`Txs preparation execution time: %dms`, end)
+        logger.info('Txs preparation execution time: %dms', end)
         start = new Date()
         if (total === null) {
             total = 0 // await db.Tx.countDocuments(params.query)
             end = new Date() - start
-            logger.info(`Txs count execution time: %dms query %s`, end, JSON.stringify(params.query))
+            logger.info('Txs count execution time: %dms query %s', end, JSON.stringify(params.query))
         }
         start = new Date()
 
@@ -119,16 +121,16 @@ TxController.get('/txs', [
         let data = {}
         let getOnChain = false
         if (isBlock) {
-            let block = await db.Block.findOne({ number: blockNumber })
+            const block = await db.Block.findOne({ number: blockNumber })
             if (block === null || block.e_tx > total) {
                 getOnChain = true
 
                 const _block = await web3.eth.getBlock(blockNumber)
 
                 const trans = _block.transactions
-                let countTx = trans.length
+                const countTx = trans.length
                 const items = []
-                let txids = []
+                const txids = []
                 for (let i = offset; i < (offset + perPage); i++) {
                     if (i < trans.length) {
                         txids.push(trans[i])
@@ -136,7 +138,7 @@ TxController.get('/txs', [
                         break
                     }
                 }
-                let map = txids.map(async function (tx) {
+                const map = txids.map(async function (tx) {
                     items.push(await TransactionHelper.getTransaction(tx))
                 })
                 await Promise.all(map)
@@ -151,13 +153,13 @@ TxController.get('/txs', [
             }
         }
         end = new Date() - start
-        logger.info(`Txs isBlock execution time: %dms`, end)
+        logger.info('Txs isBlock execution time: %dms', end)
         start = new Date()
 
         if (getOnChain === false) {
             let pages = Math.ceil(total / perPage)
 
-            let items = await db.Tx.find(params.query)
+            const items = await db.Tx.find(params.query)
                 .maxTimeMS(20000)
                 .sort(params.sort)
                 .skip(offset).limit(perPage)
@@ -175,7 +177,7 @@ TxController.get('/txs', [
                 items: items
             }
             end = new Date() - start
-            logger.info(`Txs getOnChain === false execution time: %dms address %s query %s sort %s %s %s`,
+            logger.info('Txs getOnChain === false execution time: %dms address %s query %s sort %s %s %s',
                 end, address,
                 JSON.stringify(params.query),
                 JSON.stringify(params.sort),
@@ -183,9 +185,9 @@ TxController.get('/txs', [
             start = new Date()
         }
 
-        let listAddress = []
+        const listAddress = []
         for (let i = 0; i < data.items.length; i++) {
-            let item = data.items[i]
+            const item = data.items[i]
             if (!listAddress.includes(item.from)) {
                 listAddress.push(item.from)
             }
@@ -194,10 +196,10 @@ TxController.get('/txs', [
             }
         }
         if (listAddress) {
-            let newItem = []
-            let accounts = await db.Account.find({ hash: { $in: listAddress } })
-            let map1 = data.items.map(async function (d) {
-                let map2 = accounts.map(async function (ac) {
+            const newItem = []
+            const accounts = await db.Account.find({ hash: { $in: listAddress } })
+            const map1 = data.items.map(async function (d) {
+                const map2 = accounts.map(async function (ac) {
                     ac = ac.toJSON()
                     ac.accountName = accountName[ac.hash] || null
                     if (d.from === ac.hash) {
@@ -213,15 +215,15 @@ TxController.get('/txs', [
             await Promise.all(map1)
             data.items = newItem
         }
-        let status = []
+        const status = []
         for (let i = 0; i < data.items.length; i++) {
-            if (!data.items[i].hasOwnProperty('status')) {
+            if (Object.prototype.hasOwnProperty.call(!data.items[i], 'status')) {
                 status.push({ hash: data.items[i].hash })
             }
         }
         if (status.length > 0) {
-            let map = status.map(async function (s) {
-                let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
+            const map = status.map(async function (s) {
+                const receipt = await TransactionHelper.getTransactionReceipt(s.hash)
                 if (receipt) {
                     let status
                     if (typeof receipt.status === 'boolean') {
@@ -244,7 +246,7 @@ TxController.get('/txs', [
             }
         }
         end = new Date() - start
-        logger.info(`Txs getOnChain execution time: %dms address %s`, end, address)
+        logger.info('Txs getOnChain execution time: %dms address %s', end, address)
         if (page === 1 && address && data.items.length > 0) {
             redisHelper.set(`txs-${txAccount}-${address}`, JSON.stringify(data))
         }
@@ -260,21 +262,23 @@ TxController.get('/txs/listByType/:type', [
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('type').exists().isString().withMessage('type is require.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let type = req.params.type
+    const type = req.params.type
     let total = null
-    let params = { sort: { blockNumber: -1 } }
-    let specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
+    const params = { sort: { blockNumber: -1 } }
+    const specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
     if (type === 'signTxs') {
         total = specialAccount ? specialAccount.sign : 0
         params.query = { to: contractAddress.BlockSigner, isPending: false }
     } else if (type === 'normalTxs') {
         total = specialAccount ? specialAccount.other : 0
-        params.query = { to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
-            isPending: false }
+        params.query = {
+            to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
+            isPending: false
+        }
     } else if (type === 'pending') {
         total = specialAccount ? specialAccount.pending : 0
         params.query = { isPending: true }
@@ -284,7 +288,7 @@ TxController.get('/txs/listByType/:type', [
         total = specialAccount ? specialAccount.total : 0
         params.query = Object.assign({}, params.query, { isPending: false })
     }
-    let data = await paginate(req, 'Tx', params, total)
+    const data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
             data.items[i].from_model.accountName = accountName[data.items[i].from] || null
@@ -311,28 +315,28 @@ TxController.get('/txs/listByAccount/:address', [
     check('tx_type').optional().isString().withMessage('tx_type = in|out. if equal null return all'),
     check('filterAddress').optional().isLength({ min: 42, max: 42 }).isString().withMessage('Filter address incorrect')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let address = req.params.address
     address = address ? address.toLowerCase() : address
-    let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-    let txType = req.query.tx_type
+    const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+    const txType = req.query.tx_type
 
-    let account = await db.Account.findOne({ hash: address })
+    const account = await db.Account.findOne({ hash: address })
     let total = null
 
     if (page === 1 && account.hasManyTx) {
-        let cache = await redisHelper.get(`txs-${txType}-${address}`)
+        const cache = await redisHelper.get(`txs-${txType}-${address}`)
         if (cache !== null) {
-            let r = JSON.parse(cache)
+            const r = JSON.parse(cache)
             logger.info('load %s txs of address %s from cache', txType, address)
             return res.json(r)
         }
     }
 
-    let params = { sort: { blockNumber: -1 } }
+    const params = { sort: { blockNumber: -1 } }
     if (txType === 'in') {
         params.query = { to: address }
         if (account) {
@@ -360,7 +364,7 @@ TxController.get('/txs/listByAccount/:address', [
             params.query = Object.assign({}, params.query, { to: req.query.filterAddress })
         }
     }
-    let data = await paginate(req, 'Tx', params, total)
+    const data = await paginate(req, 'Tx', params, total)
     for (let i = 0; i < data.items.length; i++) {
         if (data.items[i].from_model) {
             data.items[i].from_model.accountName = accountName[data.items[i].from] || null
@@ -387,32 +391,32 @@ TxController.get('/txs/listByBlock/:blockNumber', [
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('blockNumber').exists().isInt().withMessage('Require blockNumber is number.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let blockNumber = req.params.blockNumber
+    const blockNumber = req.params.blockNumber
 
-    let block = await db.Block.findOne({ number: blockNumber })
+    const block = await db.Block.findOne({ number: blockNumber })
     let isGetOnChain = false
     if (block) {
-        let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
+        const countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (countTx < block.e_tx) {
             isGetOnChain = true
         }
     } else {
         isGetOnChain = true
     }
-    let params = { sort: { blockNumber: -1 }, query: { blockNumber: blockNumber } }
+    const params = { sort: { blockNumber: -1 }, query: { blockNumber: blockNumber } }
 
     let data
     if (!isGetOnChain) {
         data = await paginate(req, 'Tx', params, block.e_tx)
     } else {
-        let startGet = new Date()
+        const startGet = new Date()
         const web3 = await Web3Util.getWeb3()
         const _block = await web3.eth.getBlock(blockNumber, true)
-        let endGet = new Date()
+        const endGet = new Date()
         logger.info('Get block %s on chain in %s ms', blockNumber, endGet - startGet)
         data = {
             total: _block.transactions.length,
@@ -422,15 +426,15 @@ TxController.get('/txs/listByBlock/:blockNumber', [
             items: _block.transactions
         }
 
-        let status = []
+        const status = []
         for (let i = 0; i < data.items.length; i++) {
-            if (!data.items[i].hasOwnProperty('status')) {
+            if (!Object.prototype.hasOwnProperty.call(data.items[i], 'status')) {
                 status.push({ hash: data.items[i].hash })
             }
         }
         if (status.length > 0) {
-            let map = status.map(async function (s) {
-                let receipt = await TransactionHelper.getTransactionReceipt(s.hash)
+            const map = status.map(async function (s) {
+                const receipt = await TransactionHelper.getTransactionReceipt(s.hash)
                 if (receipt) {
                     let status
                     if (typeof receipt.status === 'boolean') {
@@ -475,7 +479,7 @@ TxController.get('/txs/listByBlock/:blockNumber', [
 TxController.get(['/txs/:slug', '/tx/:slug'], [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -517,9 +521,9 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         let trc21FeeFund = -1
         if (trc21Txs.length > 0) {
             try {
-                let web3 = await await Web3Util.getWeb3()
-                let contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
-                let listToken = await contract.methods.tokens().call()
+                const web3 = await await Web3Util.getWeb3()
+                const contract = new web3.eth.Contract(TomoIssuer, config.get('TOMOISSUER'))
+                const listToken = await contract.methods.tokens().call()
                 let isRegisterOnTomoIssuer = false
                 for (let i = 0; i < listToken.length; i++) {
                     if (listToken[i].toLowerCase() === tx.to.toLowerCase()) {
@@ -542,34 +546,34 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         trc721Txs = await TokenTransactionHelper.formatTokenTransaction(trc721Txs)
         tx.trc721Txs = trc721Txs
 
-        let web3 = await Web3Util.getWeb3()
-        let blk = await web3.eth.getBlock('latest')
+        const web3 = await Web3Util.getWeb3()
+        const blk = await web3.eth.getBlock('latest')
         tx.latestBlockNumber = (blk || {}).number || tx.blockNumber
-        let input = tx.input
+        const input = tx.input
         if (input !== '0x') {
-            let method = input.substr(0, 10)
-            let stringParams = input.substr(10, input.length - 1)
-            let params = []
-            let paramsType = []
+            const method = input.substr(0, 10)
+            const stringParams = input.substr(10, input.length - 1)
+            const params = []
+            const paramsType = []
             for (let i = 0; i < stringParams.length / 64; i++) {
                 params.push(stringParams.substr(i * 64, 64))
             }
             let inputData = ''
             if (tx.to && (toModel || {}).isContract) {
-                let dbContract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
+                const dbContract = await db.Contract.findOne({ hash: tx.to.toLowerCase() })
                 let functionString = ''
                 if (dbContract) {
                     inputData += 'Function: '
-                    let functionHashes = dbContract.functionHashes
-                    let abiCode = JSON.parse(dbContract.abiCode)
+                    const functionHashes = dbContract.functionHashes
+                    const abiCode = JSON.parse(dbContract.abiCode)
                     Object.keys(functionHashes).map(function (key) {
                         if (method === '0x' + functionHashes[key]) {
-                            let methodName = key.indexOf('(') < 0 ? key : key.split('(')[0]
+                            const methodName = key.indexOf('(') < 0 ? key : key.split('(')[0]
                             functionString += methodName + '('
                             abiCode.map(function (fnc) {
                                 if (fnc.name === methodName) {
                                     for (let i = 0; i < fnc.inputs.length; i++) {
-                                        let input = fnc.inputs[i]
+                                        const input = fnc.inputs[i]
                                         if (i === 0) {
                                             functionString += `${input.type} ${input.name}`
                                         } else {
@@ -594,7 +598,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
                 inputData += 'MethodID: ' + method
                 for (let i = 0; i < params.length; i++) {
                     let decodeValue = ''
-                    let uint = ['uint', 'uint8', 'uint8', 'uint16', 'uint32', 'uint64', 'uint128', 'uint256']
+                    const uint = ['uint', 'uint8', 'uint8', 'uint16', 'uint32', 'uint64', 'uint128', 'uint256']
                     if (uint.includes(paramsType[i])) {
                         decodeValue = web3.utils.hexToNumberString(params[i])
                     } else if (paramsType[i] === 'address') {
@@ -607,7 +611,7 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
                 tx.inputData = inputData
             }
         }
-        let extraInfo = await db.TxExtraInfo.find({ transactionHash: hash })
+        const extraInfo = await db.TxExtraInfo.find({ transactionHash: hash })
         tx.extraInfo = extraInfo
 
         return res.json(tx)
@@ -625,14 +629,14 @@ TxController.get('/txs/internal/:address', [
     check('toBlock').optional().isInt().withMessage('Require toBlock is number')
 
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let address = req.params.address
     address = address ? address.toLowerCase() : address
     try {
-        let params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
+        const params = { query: { $or: [{ from: address }, { to: address }] }, sort: { blockNumber: -1 } }
         let bln = {}
         if (req.query.fromBlock) {
             bln = Object.assign({}, bln, { $gte: req.query.fromBlock })
@@ -643,7 +647,7 @@ TxController.get('/txs/internal/:address', [
         if (Object.keys(bln).length > 0) {
             params.query = Object.assign({}, params.query, { blockNumber: bln })
         }
-        let data = await utils.paginate(req, 'InternalTx', params)
+        const data = await utils.paginate(req, 'InternalTx', params)
         if (data.pages > 500) {
             data.pages = 500
         }
@@ -659,17 +663,16 @@ TxController.get('/txs/combine/:address', [
     check('page').optional().isInt({ max: 50 }).withMessage("'page' should less than 50"),
     check('address').exists().withMessage('Address is require')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     const address = req.params.address.toLowerCase()
     try {
-        let limit = (req.query.limit) ? parseInt(req.query.limit) : 20
+        const limit = (req.query.limit) ? parseInt(req.query.limit) : 20
         const page = (req.query.page) ? parseInt(req.query.page) : 1
-        let skip
-        skip = (req.query.page) ? limit * (req.query.page - 1) : 1
-        let timestamp = (req.query.timestamp) ? parseInt(req.query.timestamp) : new Date().getTime()
+        const skip = (req.query.page) ? limit * (req.query.page - 1) : 1
+        const timestamp = (req.query.timestamp) ? parseInt(req.query.timestamp) : new Date().getTime()
 
         // get latest sent tx
         const latestTxTo = await db.Tx.findOne({
