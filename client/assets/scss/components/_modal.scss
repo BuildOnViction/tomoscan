@@ -115,19 +115,19 @@
 
 #loginModal {
   .modal-header h5:before {
-    content: url('~/assets/img/lock.svg');
+    content: url('~assets/img/lock.svg');
   }
 }
 
 #registerModal {
   .modal-header h5:before {
-    content: url('~/assets/img/register.svg');
+    content: url('~assets/img/register.svg');
   }
 }
 
 #forgotPwModal {
   .modal-header h5:before {
-    content: url('~/assets/img/lock.svg');
+    content: url('~assets/img/lock.svg');
   }
 }
 
@@ -136,7 +136,7 @@
   .control-label {
     display: block;
   }
-  
+
   @include media-breakpoint-up(md) {
 
     .modal-dialog {
