@@ -11,7 +11,7 @@ export const mutations = {
 export const actions = {
     async getUSDPrice ({ commit }) {
         try {
-            let { data } = await this.$axios.get('/api/setting/usd')
+            const { data } = await this.$axios.get('/api/setting/usd')
 
             commit('setUSDPrice', data.tomochain.usd)
 

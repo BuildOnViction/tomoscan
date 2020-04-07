@@ -246,18 +246,18 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
 
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/follows' + '?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/follows' + '?' + query)
             self.items = data.items
             self.total = data.total
             self.pages = data.pages
@@ -274,7 +274,7 @@ export default {
         },
 
         async onAddNewFollowAddress (e) {
-            let self = this
+            const self = this
             e.preventDefault()
 
             if (this.$v.$invalid) {
@@ -282,7 +282,7 @@ export default {
             }
 
             try {
-                let body = {
+                const body = {
                     name: self.formName,
                     address: self.formAddress,
                     sendEmail: self.formSendEmail,
@@ -294,7 +294,7 @@ export default {
                     url += '/' + self.currentNotify._id
                 }
 
-                let { data } = await self.$axios.post(url, body)
+                const { data } = await self.$axios.post(url, body)
 
                 if (data) {
                     await self.getDataFromApi()
@@ -308,7 +308,7 @@ export default {
         },
 
         async onEditNotify (item) {
-            let self = this
+            const self = this
             self.formAddress = item.address
             self.formName = item.name
             self.formSendEmail = item.sendEmail
@@ -321,14 +321,14 @@ export default {
         },
 
         async onUnfollow () {
-            let self = this
+            const self = this
             if (!self.currentNotify) {
                 return
             }
-            let id = self.currentNotify._id
-            let result = confirm('Are you sure want to delete this item?')
+            const id = self.currentNotify._id
+            const result = confirm('Are you sure want to delete this item?')
             if (result) {
-                let { data } = await this.$axios.delete('/api/follows/' + id)
+                const { data } = await this.$axios.delete('/api/follows/' + id)
 
                 if (data) {
                     await self.getDataFromApi()

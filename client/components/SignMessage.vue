@@ -129,10 +129,10 @@ export default {
         }
     },
     async mounted () {
-        let self = this
-        let acc = await this.$axios.get('/api/contractCreator/' + self.address)
+        const self = this
+        const acc = await this.$axios.get('/api/contractCreator/' + self.address)
         self.creator = acc.data.contractCreation || self.address
-        let { data } = await self.$axios.post('/api/generateSignMess', { address: self.address })
+        const { data } = await self.$axios.post('/api/generateSignMess', { address: self.address })
 
         self.message = data.message
         self.messId = data.id
@@ -154,15 +154,15 @@ export default {
             this.step++
         },
         async verifyScannedQR () {
-            let self = this
-            let body = {}
+            const self = this
+            const body = {}
             if (self.message) {
                 body.message = self.message
             }
             body.signature = self.sigHash
             body.hash = self.address
             body.messId = self.messId
-            let { data } = await self.$axios.post('/api/verifyScanedMess', body)
+            const { data } = await self.$axios.post('/api/verifyScanedMess', body)
 
             if (!data.error) {
                 if (self.interval) {
@@ -176,8 +176,8 @@ export default {
             }
         },
         async verifySignedMessage () {
-            let self = this
-            let body = {}
+            const self = this
+            const body = {}
             if (self.message) {
                 body.message = self.message
             }
@@ -186,7 +186,7 @@ export default {
             } else {
                 body.signature = self.sigHash
                 body.hash = self.address
-                let { data } = await self.$axios.post('/api/verifySignedMess', body)
+                const { data } = await self.$axios.post('/api/verifySignedMess', body)
 
                 if (data.error) {
                     self.error = true

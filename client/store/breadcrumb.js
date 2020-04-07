@@ -69,7 +69,7 @@ class BreadCrumbManager {
 }
 
 // Init breadcrumbs routes.
-let br = new BreadCrumbManager()
+const br = new BreadCrumbManager()
 br.register('index', (brs) => {
     brs.push('Home', { name: 'index' })
 })
@@ -95,7 +95,7 @@ br.register('address-slug', (brs, location) => {
 })
 br.register('txs', (brs) => {
     brs.parent('index')
-    let block = mixin.methods.getParameterByName('block')
+    const block = mixin.methods.getParameterByName('block')
     if (block) {
         brs.push('Blocks', { name: 'blocks' })
         brs.push(`Transaction for Block #${block}`, window.location.pathname + window.location.search)
@@ -190,8 +190,7 @@ export const state = () => ({
 
 export const mutations = {
     setItems (state, payload) {
-        let items = br.generate(payload.name, payload.to)
-        state.items = items
+        state.items = br.generate(payload.name, payload.to)
     }
 }
 

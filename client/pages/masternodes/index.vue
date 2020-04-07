@@ -126,7 +126,7 @@ export default {
     },
     async mounted () {
         try {
-            let self = this
+            const self = this
 
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', { name: 'masternodes', to: { name: 'masternodes' } })
@@ -148,7 +148,7 @@ export default {
             // Show loading.
             self.loading = true
 
-            let { data } = await this.$axios.get('/api/masternodes')
+            const { data } = await this.$axios.get('/api/masternodes')
             let num = 1
             const items = (data || {}).items || []
 
@@ -182,7 +182,7 @@ export default {
             }
         },
         onChangePaginate (page) {
-            let self = this
+            const self = this
             self.currentPage = page
         }
     }

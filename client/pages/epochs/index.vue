@@ -115,18 +115,18 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
 
-            let params = {
+            const params = {
                 page: self.currentPage || 1,
                 limit: self.perPage
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/epochs' + '?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/epochs' + '?' + query)
             self.items = data.items
             self.total = data.total
             self.lastBlock = data.lastBlock
@@ -139,7 +139,7 @@ export default {
             return data
         },
         onChangePaginate (page) {
-            let self = this
+            const self = this
             self.currentPage = page
 
             self.getDataFromApi()

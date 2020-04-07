@@ -19,7 +19,7 @@ export const mutations = {
 export const actions = {
     async getCachedUser ({ commit }) {
         try {
-            let user = store.get('user')
+            const user = store.get('user')
             if (user) {
                 commit('setData', user)
             }
@@ -30,7 +30,7 @@ export const actions = {
         }
     },
     async login ({ commit }, { email, password }) {
-        let { data } = await this.$axios.post('/api/login', { email, password })
+        const { data } = await this.$axios.post('/api/login', { email, password })
 
         commit('setData', data.user)
         commit('setToken', data.token)
@@ -38,7 +38,7 @@ export const actions = {
         return data
     },
     async register ({ commit }, { email, password }) {
-        let { data } = await this.$axios.post('/api/register', { email, password })
+        const { data } = await this.$axios.post('/api/register', { email, password })
 
         commit('setData', data.user)
         commit('setToken', data.token)
