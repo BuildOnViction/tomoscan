@@ -11,7 +11,7 @@ consumer.name = 'BlockFinalityProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     const web3 = await Web3Util.getWeb3()
-    const blocks = await db.Block.find({ finality: { $lt: 75 }, updateFinalityTime: { $lt: 10 } })
+    const blocks = await db.Block.find({ finality: { $lt: 60 }, updateFinalityTime: { $lt: 10 } })
         .sort({ number: -1 }).limit(50)
     logger.info('Update finality %s blocks', blocks.length)
     try {
