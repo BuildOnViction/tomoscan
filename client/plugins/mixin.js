@@ -213,8 +213,8 @@ const mixin = {
             if (string.length <= numberStringShowing * 2 + 3) {
                 return string
             }
-            let stringBeforeDot = String(string).substr(0, numberStringShowing)
-            let stringAfterDot = String(string).substr(-numberStringShowing)
+            const stringBeforeDot = String(string).substr(0, numberStringShowing)
+            const stringAfterDot = String(string).substr(-numberStringShowing)
             return stringBeforeDot + '...' + stringAfterDot
         }
     }

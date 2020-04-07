@@ -235,10 +235,10 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             self.loading = true
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
@@ -254,8 +254,8 @@ export default {
             if (this.status !== '') {
                 params.status = this.status
             }
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/lending/trades?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/lending/trades?' + query)
             self.total = data.total
             self.pages = data.pages
 
@@ -288,9 +288,9 @@ export default {
             await this.getDataFromApi()
         },
         formatData (items = []) {
-            let _items = []
+            const _items = []
             items.forEach((item) => {
-                let _item = item
+                const _item = item
 
                 if (item.timestamp) {
                     _item.timestamp = item.timestamp

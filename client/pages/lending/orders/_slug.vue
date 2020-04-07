@@ -199,7 +199,7 @@ export default {
                 to: { name: 'lending-orders-slug', params: { slug: this.hash } }
             })
 
-            let { data } = await this.$axios.get('/api/lending/orders/' + this.hash)
+            const { data } = await this.$axios.get('/api/lending/orders/' + this.hash)
 
             this.lendingOrder = data
 
