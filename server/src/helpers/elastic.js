@@ -3,7 +3,7 @@ const config = require('config')
 const { Client } = require('@elastic/elasticsearch')
 const client = new Client({ node: config.get('ELASTICSEARCH') })
 
-let ElasticHelper = {
+const ElasticHelper = {
     index: async (id, index, body) => {
         await client.index({
             id: id,
@@ -27,7 +27,7 @@ let ElasticHelper = {
     },
     search: async (index, query, sort, limit, page) => {
         if (Object.keys(query).length > 0) {
-            let { body } = await client.search({
+            const { body } = await client.search({
                 index: index,
                 body: {
                     query: query,
@@ -39,7 +39,7 @@ let ElasticHelper = {
             // })
             return body
         } else {
-            let { body } = await client.search({
+            const { body } = await client.search({
                 index: index,
                 body: {
                     sort: sort,

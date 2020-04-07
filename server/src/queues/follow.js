@@ -8,30 +8,30 @@ const consumer = {}
 consumer.name = 'FollowProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let transaction = job.data.transaction
-    let fromAccount = job.data.fromAccount
-    let toAccount = job.data.toAccount
-    let blockNumber = job.data.blockNumber
+    const transaction = job.data.transaction
+    const fromAccount = job.data.fromAccount
+    const toAccount = job.data.toAccount
+    const blockNumber = job.data.blockNumber
     // Send email to follower.
     try {
-        let cOr = (toAccount !== null)
+        const cOr = (toAccount !== null)
             ? [{ address: fromAccount.toLowerCase() }, { address: toAccount.toLowerCase() }]
             : [{ address: fromAccount.toLowerCase() }]
 
         // TODO: should paginate it
-        let followers = await db.Follow.find({
+        const followers = await db.Follow.find({
             startBlock: { $lte: blockNumber },
             sendEmail: true,
             $or: cOr
         }).limit(100)
 
         if (followers.length) {
-            let email = new EmailService()
+            const email = new EmailService()
             for (let i = 0; i < followers.length; i++) {
-                let follow = followers[i]
-                let user = await db.User.findOne({ _id: follow.user.toLowerCase() })
+                const follow = followers[i]
+                const user = await db.User.findOne({ _id: follow.user.toLowerCase() })
                 if (user) {
-                    let tx = await db.Tx.findOne({ hash: transaction })
+                    const tx = await db.Tx.findOne({ hash: transaction })
                     if (follow.notifySent && follow.address === fromAccount.toLowerCase()) {
                         // isSent email template.
                         email.followAlert(user, tx, follow.address, 'sent')

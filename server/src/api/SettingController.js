@@ -11,13 +11,13 @@ var tomoUsd = {}
 SettingController.get('/setting', async (req, res) => {
     try {
     // Get total blocks in db.
-        let web3 = await Web3Util.getWeb3()
-        let blk = await web3.eth.getBlock('latest')
-        let totalBlock = (blk || {}).number || await db.Block.estimatedDocumentCount()
-        let totalAddress = await db.Account.estimatedDocumentCount()
-        let totalToken = await db.Token.estimatedDocumentCount()
-        let totalSmartContract = await db.Contract.estimatedDocumentCount()
-        let lastBlock = await db.Block.findOne().sort({ number: -1 })
+        const web3 = await Web3Util.getWeb3()
+        const blk = await web3.eth.getBlock('latest')
+        const totalBlock = (blk || {}).number || await db.Block.estimatedDocumentCount()
+        const totalAddress = await db.Account.estimatedDocumentCount()
+        const totalToken = await db.Token.estimatedDocumentCount()
+        const totalSmartContract = await db.Contract.estimatedDocumentCount()
+        const lastBlock = await db.Block.findOne().sort({ number: -1 })
 
         return res.json(
             {
@@ -31,15 +31,15 @@ SettingController.get('/setting', async (req, res) => {
 
 SettingController.get('/setting/usd', async (req, res) => {
     try {
-        let cache = await redisHelper.get('tomo-price')
+        const cache = await redisHelper.get('tomo-price')
         if (cache !== null) {
-            let r = JSON.parse(cache)
+            const r = JSON.parse(cache)
             logger.info('load tomo price from cache')
             return res.json(r)
         }
-        let url = 'https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd'
+        const url = 'https://api.coingecko.com/api/v3/simple/price?ids=tomochain&vs_currencies=usd'
 
-        let { data } = await axios.get(url, { timeout: 5000 })
+        const { data } = await axios.get(url, { timeout: 5000 })
 
         tomoUsd = data
         await redisHelper.set('tomo-price', JSON.stringify(data), 10 * 60)

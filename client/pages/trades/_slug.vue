@@ -198,7 +198,7 @@ export default {
                 to: { name: 'trades-slug', params: { slug: this.hash } }
             })
 
-            let { data } = await this.$axios.get('/api/trades/' + this.hash)
+            const { data } = await this.$axios.get('/api/trades/' + this.hash)
 
             this.trade = data
 

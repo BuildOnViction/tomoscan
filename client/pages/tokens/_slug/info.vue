@@ -201,7 +201,7 @@ export default {
         this.hash = this.$route.params.slug
     },
     async mounted () {
-        let self = this
+        const self = this
 
         self.loading = true
 
@@ -211,7 +211,7 @@ export default {
             to: { name: 'tokens-slug-info', params: { slug: self.hash } }
         })
 
-        let { data } = await self.$axios.get('/api/tokens/' + self.hash)
+        const { data } = await self.$axios.get('/api/tokens/' + self.hash)
         self.token = data
         self.tokenName = data.name
         self.symbol = data.symbol
@@ -221,9 +221,9 @@ export default {
     },
     methods: {
         async getAccountFromApi () {
-            let self = this
+            const self = this
 
-            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
+            const { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
         },
         addSocial () {
@@ -236,8 +236,8 @@ export default {
             }
         },
         async updateInfo () {
-            let communities = []
-            for (let s of this.socialValue) {
+            const communities = []
+            for (const s of this.socialValue) {
                 if (s.type) {
                     communities.push({
                         name: s.type,
@@ -247,7 +247,7 @@ export default {
                     })
                 }
             }
-            let body = {
+            const body = {
                 signData: {
                     sigMessage: this.signMessage,
                     sigHash: this.signHash
@@ -260,7 +260,7 @@ export default {
                     icoInfo: this.icoInfo
                 }
             }
-            let { data } = await this.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
+            const { data } = await this.$axios.post('/api/tokens/' + this.hash + '/updateInfo', body)
             if (data.errors) {
                 this.errors = data.errors
             } else {

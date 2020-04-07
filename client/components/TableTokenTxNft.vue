@@ -151,9 +151,9 @@ export default {
         address: null
     }),
     async mounted () {
-        let self = this
+        const self = this
         // Init from router.
-        let query = self.$route.query
+        const query = self.$route.query
 
         if (query.address) {
             self.address = query.address
@@ -163,12 +163,12 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
 
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
@@ -180,8 +180,8 @@ export default {
                 params.holder = self.holder
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/token-txs/trc721' + '?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/token-txs/trc721' + '?' + query)
             self.items = data.items
             self.total = data.total
             self.pages = data.pages
@@ -199,9 +199,9 @@ export default {
             return data
         },
         formatData (items = []) {
-            let _items = []
+            const _items = []
             items.forEach((item) => {
-                let _item = item
+                const _item = item
 
                 // Format for timestamp.
                 if (!item.block) {

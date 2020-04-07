@@ -8,7 +8,7 @@ const q = require('./queues')
 const decimalFunction = '0x313ce567'
 
 async function getSaveTime (date) {
-    let min = date.getMinutes()
+    const min = date.getMinutes()
     let newMin
     if (min < 15) {
         newMin = 15
@@ -19,7 +19,7 @@ async function getSaveTime (date) {
     } else {
         newMin = 0
     }
-    let newTime = date
+    const newTime = date
     if (newMin === 0) {
         newTime.setMinutes(0)
         newTime.setHours(newTime.getHours() + 1)
@@ -40,22 +40,22 @@ function getNumberOfWeek (date) {
 }
 
 async function run () {
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     dbDex.Trade.watch().on('change', async (data) => {
         logger.info('new trade %s', data.fullDocument.hash)
-        let makerExchange = data.fullDocument.makerExchange
-        let takerExchange = data.fullDocument.takerExchange
-        let pairName = data.fullDocument.pairName
-        let baseToken = data.fullDocument.baseToken
-        let quoteToken = data.fullDocument.quoteToken
+        const makerExchange = data.fullDocument.makerExchange
+        const takerExchange = data.fullDocument.takerExchange
+        const pairName = data.fullDocument.pairName
+        const baseToken = data.fullDocument.baseToken
+        const quoteToken = data.fullDocument.quoteToken
         let amount = data.fullDocument.amount
         let makeFee = data.fullDocument.makeFee
         let takeFee = data.fullDocument.takeFee
         let price = data.fullDocument.pricepoint
-        let taker = data.fullDocument.taker
-        let maker = data.fullDocument.maker
-        let takerOrderSide = data.fullDocument.takerOrderSide
-        let tradeAt = data.fullDocument.createdAt
+        const taker = data.fullDocument.taker
+        const maker = data.fullDocument.maker
+        const takerOrderSide = data.fullDocument.takerOrderSide
+        const tradeAt = data.fullDocument.createdAt
 
         let buyer, seller
         if (takerOrderSide.toUpperCase() === 'SELL') {
@@ -81,11 +81,11 @@ async function run () {
         if (quoteToken === TomoToken) {
             quoteDecimal = 18
         } else {
-            let token = await dbDex.Token.findOne({ contractAddress: quoteToken })
+            const token = await dbDex.Token.findOne({ contractAddress: quoteToken })
             if (token) {
                 quoteDecimal = token.decimals
             } else {
-                let decimals = await web3.eth.call({ to: quoteToken, data: decimalFunction })
+                const decimals = await web3.eth.call({ to: quoteToken, data: decimalFunction })
                 quoteDecimal = await web3.utils.hexToNumber(decimals)
             }
         }
@@ -93,11 +93,11 @@ async function run () {
         if (baseToken === TomoToken) {
             baseDecimal = 18
         } else {
-            let token = await dbDex.Token.findOne({ contractAddress: baseToken })
+            const token = await dbDex.Token.findOne({ contractAddress: baseToken })
             if (token) {
                 baseDecimal = token.decimals
             } else {
-                let decimals = await web3.eth.call({ to: baseToken, data: decimalFunction })
+                const decimals = await web3.eth.call({ to: baseToken, data: decimalFunction })
                 baseDecimal = await web3.utils.hexToNumber(decimals)
             }
         }
@@ -114,7 +114,7 @@ async function run () {
         takeFee = new BigNumber(takeFee)
         takeFee = takeFee.dividedBy(10 ** quoteDecimal)
 
-        let volume = amount.multipliedBy(price).toNumber()
+        const volume = amount.multipliedBy(price).toNumber()
 
         if (makerExchange === takerExchange) {
             await dbDex.HistoryStatistic.updateOne({
@@ -124,11 +124,13 @@ async function run () {
                 pairName: pairName,
                 date: new Date(tradeAt.getFullYear(), tradeAt.getMonth(), tradeAt.getDate())
             },
-            { $inc: {
-                volume24h: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.plus(takeFee).toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume24h: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.plus(takeFee).toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.Statistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -137,11 +139,13 @@ async function run () {
                 pairName: pairName,
                 date: await getSaveTime(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.plus(takeFee).toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.plus(takeFee).toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.WeeklyStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -151,11 +155,13 @@ async function run () {
                 year: tradeAt.getFullYear(),
                 week: getNumberOfWeek(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.plus(takeFee).toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.plus(takeFee).toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.MonthlyStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -165,11 +171,13 @@ async function run () {
                 year: (tradeAt).getFullYear(),
                 month: (tradeAt).getMonth()
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.plus(takeFee).toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.plus(takeFee).toNumber()
+                }
+            }, { upsert: true, new: true })
         } else {
             await dbDex.HistoryStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -193,11 +201,13 @@ async function run () {
                 pairName: pairName,
                 date: await getSaveTime(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.HistoryStatistic.updateOne({
                 exchangeAddress: takerExchange,
@@ -221,11 +231,13 @@ async function run () {
                 pairName: pairName,
                 date: await getSaveTime(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: takeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: takeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.WeeklyStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -235,11 +247,13 @@ async function run () {
                 year: tradeAt.getFullYear(),
                 week: getNumberOfWeek(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.MonthlyStatistic.updateOne({
                 exchangeAddress: makerExchange,
@@ -249,11 +263,13 @@ async function run () {
                 year: tradeAt.getFullYear(),
                 month: tradeAt.getMonth()
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: makeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: makeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.WeeklyStatistic.updateOne({
                 exchangeAddress: takerExchange,
@@ -263,11 +279,13 @@ async function run () {
                 year: tradeAt.getFullYear(),
                 week: getNumberOfWeek(tradeAt)
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: takeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: takeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
 
             await dbDex.MonthlyStatistic.updateOne({
                 exchangeAddress: takerExchange,
@@ -277,11 +295,13 @@ async function run () {
                 year: tradeAt.getFullYear(),
                 month: tradeAt.getMonth()
             },
-            { $inc: {
-                volume: volume,
-                tradeNumber: 1,
-                totalFee: takeFee.toNumber()
-            } }, { upsert: true, new: true })
+            {
+                $inc: {
+                    volume: volume,
+                    tradeNumber: 1,
+                    totalFee: takeFee.toNumber()
+                }
+            }, { upsert: true, new: true })
         }
     })
 }

@@ -11,7 +11,7 @@ const MixController = Router()
  * @returns address information
  */
 const getAccount = async (address) => {
-    let acc = await db.Account.findOne({ hash: address })
+    const acc = await db.Account.findOne({ hash: address })
     if (acc) {
         return {
             inTxCount: acc.inTxCount || 0,
@@ -37,7 +37,7 @@ const getAccount = async (address) => {
 }
 
 async function getTotalTokenHolders (hash, token) {
-    let params = {}
+    const params = {}
     if (hash) {
         params.query = { hash: hash }
     }
@@ -50,7 +50,7 @@ async function getTotalTokenHolders (hash, token) {
 }
 
 async function getTotalTokenTx (address, token) {
-    let tk = await db.Token.findOne({ hash: address || token })
+    const tk = await db.Token.findOne({ hash: address || token })
     if (tk) {
         return tk.txCount
     }
@@ -58,7 +58,7 @@ async function getTotalTokenTx (address, token) {
 }
 
 async function getTotalBlockSigners (blockNumber) {
-    let blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
+    const blockSigner = await db.BlockSigner.findOne({ blockNumber: blockNumber })
 
     let signers = []
     let checkInChain = false
@@ -73,9 +73,9 @@ async function getTotalBlockSigners (blockNumber) {
     }
 
     if (checkInChain) {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
 
-        let block = await web3.eth.getBlock(blockNumber)
+        const block = await web3.eth.getBlock(blockNumber)
         if (block.signers) {
             signers = block.signers
         }
@@ -84,7 +84,7 @@ async function getTotalBlockSigners (blockNumber) {
 }
 
 async function getTotalTransactions (address, block) {
-    let blockNumber = !isNaN(block) ? block : null
+    const blockNumber = !isNaN(block) ? block : null
     let total = 0
     if (blockNumber) {
         total = await db.Tx.count({ blockNumber: blockNumber })
@@ -96,7 +96,7 @@ async function getTotalTransactions (address, block) {
 
     // If exist blockNumber & not found txs on db (or less than) will get txs on chain
     if (blockNumber) {
-        let block = await db.Block.findOne({ number: blockNumber })
+        const block = await db.Block.findOne({ number: blockNumber })
 
         if (block && total < block.e_tx) {
             const web3 = await Web3Util.getWeb3()
@@ -136,7 +136,7 @@ MixController.get('/counting', async (req, res) => {
 
         for (let i = 0; i < list.length; i++) {
             switch (list[i]) {
-            case 'address':
+            case 'address': {
                 const acc = await getAccount(address)
                 result.minedBlocks = acc.minedBlocks
                 result.inTxes = acc.inTxCount
@@ -147,26 +147,30 @@ MixController.get('/counting', async (req, res) => {
                 result.events = acc.logCount
                 result.tokenHolders = await getTotalTokenHolders(address, hash)
                 break
-            case 'blocks':
-                let blockData = await Promise.all([
+            }
+            case 'blocks': {
+                const blockData = await Promise.all([
                     getTotalTransactions(address, block),
                     getTotalBlockSigners(block)
                 ])
                 result.totalTxes = blockData[0]
                 result.blockSigners = blockData[1]
                 break
-            case 'token':
-                let tokenData = await Promise.all([
+            }
+            case 'token': {
+                const tokenData = await Promise.all([
                     getTotalTokenHolders(address, token),
                     getTotalTokenTx(address, token)
                 ])
                 result.tokenHolders = tokenData[0]
                 result.tokenTxs = tokenData[1]
                 break
-            case 'txes':
+            }
+            case 'txes': {
                 const { logCount } = await getAccount(address)
                 result.events = logCount
                 break
+            }
             default:
                 break
             }

@@ -14,17 +14,17 @@ const utils = require('./utils')
 const twitter = require('./twitter')
 const elastic = require('./elastic')
 
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-let TransactionHelper = {
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+const TransactionHelper = {
     parseLog: async (log) => {
         const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
         // Topic of Constant-NetworkProxy contract
         const TopicExecuteTrade = '0x1849bd6a030a1bca28b83437fd3de96f3d27a5d172fa7e9c78e7b61468928a39'
         if (log.topics[0] === TOPIC_TRANSFER) {
-            let address = log.address.toLowerCase()
+            const address = log.address.toLowerCase()
             // Add account and token if not exist in db.
-            let token = await db.Token.findOne({ hash: address })
+            const token = await db.Token.findOne({ hash: address })
             const q = require('../queues')
             if (!token) {
                 q.create('AccountProcess', { listHash: JSON.stringify([address]) })
@@ -38,14 +38,14 @@ let TransactionHelper = {
                 .priority('normal').removeOnComplete(true)
                 .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
         } else if (log.topics[0] === TopicExecuteTrade) {
-            let data = log.data.replace('0x', '')
-            let params = []
+            const data = log.data.replace('0x', '')
+            const params = []
             for (let i = 0; i < data.length / 64; i++) {
                 params.push(data.substr(i * 64, 64))
             }
-            let web3 = await Web3Util.getWeb3()
+            const web3 = await Web3Util.getWeb3()
             if (params.length >= 4) {
-                let srcAddress = await utils.unformatAddress(params[0])
+                const srcAddress = await utils.unformatAddress(params[0])
                 let tomoRate
                 if (srcAddress === '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee') {
                     let tomoAmount = new BigNumber(web3.utils.hexToNumberString('0x' + params[2]))
@@ -63,7 +63,7 @@ let TransactionHelper = {
                     tomoRate = constantAmount.dividedBy(tomoAmount).toNumber()
                 }
 
-                let txExtraInfo = [
+                const txExtraInfo = [
                     {
                         transactionHash: log.transactionHash,
                         infoName: 'Swap rate',
@@ -85,21 +85,21 @@ let TransactionHelper = {
                 tx = await TransactionHelper.getTransaction(hash, true)
             } else {
                 tx = tx.toJSON()
-                delete tx['_id']
-                delete tx['id']
+                delete tx._id
+                delete tx.id
             }
             const q = require('../queues')
 
             if (!tx) {
                 return false
             }
-            let receipt = await TransactionHelper.getTransactionReceipt(hash)
+            const receipt = await TransactionHelper.getTransactionReceipt(hash)
 
             if (!receipt) {
                 return false
             }
 
-            let listHash = []
+            const listHash = []
             if (tx.from !== null) {
                 tx.from = tx.from.toLowerCase()
                 if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
@@ -108,7 +108,7 @@ let TransactionHelper = {
                     }
                 }
 
-                let fromModel = await db.Account.findOne({ hash: tx.from })
+                const fromModel = await db.Account.findOne({ hash: tx.from })
                 if (fromModel) {
                     tx.from_model = {
                         accountName: accountName[tx.from] ? accountName[tx.from] : '',
@@ -138,7 +138,7 @@ let TransactionHelper = {
                     other = 1
                 }
 
-                let toModel = await db.Account.findOne({ hash: tx.to })
+                const toModel = await db.Account.findOne({ hash: tx.to })
                 if (toModel) {
                     tx.to_model = {
                         accountName: accountName[tx.to] ? accountName[tx.to] : '',
@@ -148,14 +148,16 @@ let TransactionHelper = {
                 }
 
                 await db.SpecialAccount.updateOne(
-                    { hash: 'transaction' }, { $inc: {
-                        total: 1,
-                        sign: sign,
-                        other: other
-                    } }, { upsert: true, new: true })
+                    { hash: 'transaction' }, {
+                        $inc: {
+                            total: 1,
+                            sign: sign,
+                            other: other
+                        }
+                    }, { upsert: true, new: true })
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
-                    let contractAddress = receipt.contractAddress.toLowerCase()
+                    const contractAddress = receipt.contractAddress.toLowerCase()
                     tx.contractAddress = contractAddress
                     tx.to = contractAddress
                     if (!listHash.includes(contractAddress)) {
@@ -202,13 +204,13 @@ let TransactionHelper = {
             //     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
             // Parse log.
-            let logs = receipt.logs
+            const logs = receipt.logs
             if (logs.length) {
                 await db.TokenTx.deleteMany({ transactionHash: tx.hash })
                 await db.TokenTrc21Tx.deleteMany({ transactionHash: tx.hash })
                 await db.TokenNftTx.deleteMany({ transactionHash: tx.hash })
                 for (let i = 0; i < logs.length; i++) {
-                    let log = logs[i]
+                    const log = logs[i]
                     await TransactionHelper.parseLog(log)
                 }
                 await db.Log.deleteMany({ transactionHash: receipt.hash })
@@ -237,11 +239,11 @@ let TransactionHelper = {
             }
 
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
-                let internalTx = await TransactionHelper.getInternalTx(tx)
+                const internalTx = await TransactionHelper.getInternalTx(tx)
                 tx.i_tx = internalTx.length
                 for (let i = 0; i < internalTx.length; i++) {
-                    let item = internalTx[i]
-                    let idx = {
+                    const item = internalTx[i]
+                    const idx = {
                         hash: item.hash,
                         blockNumber: item.blockNumber,
                         from: item.from,
@@ -294,7 +296,7 @@ let TransactionHelper = {
             tx = { hash: hash }
         }
 
-        let _tx = await TransactionHelper.getTransaction(hash)
+        const _tx = await TransactionHelper.getTransaction(hash)
 
         if (!_tx) {
             return null
@@ -302,14 +304,14 @@ let TransactionHelper = {
 
         tx = Object.assign(tx, _tx)
 
-        let receipt = await TransactionHelper.getTransactionReceipt(hash)
+        const receipt = await TransactionHelper.getTransactionReceipt(hash)
 
         if (!receipt) {
             await db.Tx.updateOne({ hash: hash }, tx)
             return tx
         }
-        if (!tx.hasOwnProperty('timestamp')) {
-            let block = await BlockHelper.getBlockOnChain(_tx.blockNumber)
+        if (!Object.prototype.hasOwnProperty.call(tx, 'timestamp')) {
+            const block = await BlockHelper.getBlockOnChain(_tx.blockNumber)
             tx.timestamp = block.timestamp
         }
 
@@ -337,7 +339,7 @@ let TransactionHelper = {
             tx.to = tx.to.toLowerCase()
         } else {
             if (receipt && typeof receipt.contractAddress !== 'undefined') {
-                let contractAddress = receipt.contractAddress.toLowerCase()
+                const contractAddress = receipt.contractAddress.toLowerCase()
                 tx.contractAddress = contractAddress
 
                 await db.Account.updateOne(
@@ -353,18 +355,18 @@ let TransactionHelper = {
 
         // Internal transaction
         if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
-            let internalTx = await TransactionHelper.getInternalTx(tx)
+            const internalTx = await TransactionHelper.getInternalTx(tx)
             tx.i_tx = internalTx.length
         }
 
-        delete tx['_id']
+        delete tx._id
 
         return db.Tx.findOneAndUpdate({ hash: hash }, tx,
             { upsert: true, new: true })
     },
 
     getTransactionReceipt: async (hash, recall = false) => {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         if (recall) {
             return web3.eth.getTransactionReceipt(hash).catch(e => {
                 logger.warn('Cannot get tx receipt %s. Sleep 2 seconds and try more. Error %s', hash, e)
@@ -377,7 +379,7 @@ let TransactionHelper = {
     },
 
     getTransaction: async (hash, recall = false) => {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         if (recall) {
             return web3.eth.getTransaction(hash).catch(e => {
                 logger.warn('Cannot get tx %s. Sleep 2 seconds and try more. Error %s', hash, e)
@@ -389,20 +391,20 @@ let TransactionHelper = {
         return web3.eth.getTransaction(hash)
     },
     getInternalTx: async (transaction) => {
-        let itx = await db.InternalTx.find({ hash: transaction.hash })
+        const itx = await db.InternalTx.find({ hash: transaction.hash })
         if (transaction.i_tx === itx.length) {
             return itx
         }
 
         let internalTx = []
         try {
-            let result = await new Promise((resolve, reject) => {
+            const result = await new Promise((resolve, reject) => {
                 request.post(config.get('WEB3_URI'), {
                     json: {
-                        'jsonrpc': '2.0',
-                        'method': 'debug_traceTransaction',
-                        'params': [transaction.hash, { tracer: 'callTracer', timeout: '10s' }],
-                        'id': 88
+                        jsonrpc: '2.0',
+                        method: 'debug_traceTransaction',
+                        params: [transaction.hash, { tracer: 'callTracer', timeout: '10s' }],
+                        id: 88
                     },
                     timeout: 10000
                 }, (error, res, body) => {
@@ -414,9 +416,9 @@ let TransactionHelper = {
                 })
             })
             if (!result.error) {
-                let res = result.result
-                if (res.hasOwnProperty('calls')) {
-                    let calls = res.calls
+                const res = result.result
+                if (Object.prototype.hasOwnProperty.call(res, 'calls')) {
+                    const calls = res.calls
                     internalTx = await TransactionHelper.listInternal(
                         calls, transaction.hash, transaction.blockNumber, transaction.timestamp)
                 }
@@ -431,10 +433,10 @@ let TransactionHelper = {
         return internalTx
     },
     listInternal: async (resultCalls, txHash, blockNumber, timestamp) => {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         let internals = []
         for (let i = 0; i < resultCalls.length; i++) {
-            let call = resultCalls[i]
+            const call = resultCalls[i]
             if (call.value !== '0x0') {
                 internals.push({
                     hash: txHash,
@@ -446,7 +448,7 @@ let TransactionHelper = {
                 })
             }
             if (call.calls) {
-                let childInternal = await TransactionHelper.listInternal(call.calls, txHash, blockNumber, timestamp)
+                const childInternal = await TransactionHelper.listInternal(call.calls, txHash, blockNumber, timestamp)
                 internals = internals.concat(childInternal)
             }
         }

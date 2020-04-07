@@ -292,7 +292,7 @@ export default {
     },
     computed: {
         user () {
-            let user = this.$store.state.user
+            const user = this.$store.state.user
             return user ? user.data : null
         },
         isTxs () {
@@ -311,7 +311,7 @@ export default {
             return this.$route.fullPath.startsWith('/tokentxs')
         },
         isHomePage () {
-            let name = this.$route.name
+            const name = this.$route.name
             return name ? name.indexOf(['index']) >= 0 : false
         }
     },
@@ -323,7 +323,7 @@ export default {
         }
     },
     mounted () {
-        let self = this
+        const self = this
 
         self.$store.dispatch('user/getCachedUser')
 
@@ -340,7 +340,7 @@ export default {
     methods: {
 
         async onLogout () {
-            let self = this
+            const self = this
 
             await self.$store.dispatch('user/logout')
 
@@ -348,10 +348,10 @@ export default {
             self.$router.replace({ name: 'index' })
         },
         onGotoRoute () {
-            let search = this.search.trim()
-            let regexpTx = /[0-9a-zA-Z]{66}?/
-            let regexpAddr = /^(0x)?[0-9a-fA-F]{40}$/
-            let regexpBlock = /[0-9]+?/
+            const search = this.search.trim()
+            const regexpTx = /[0-9a-zA-Z]{66}?/
+            const regexpAddr = /^(0x)?[0-9a-fA-F]{40}$/
+            const regexpBlock = /[0-9]+?/
             let to = null
 
             if (regexpAddr.test(search)) {
@@ -369,12 +369,12 @@ export default {
             return this.$router.push(to)
         },
         async getStats () {
-            let self = this
-            let { data } = await self.$axios.get('/api/setting')
+            const self = this
+            const { data } = await self.$axios.get('/api/setting')
             self.stats = data.stats
         },
         toggleDarkMode (e) {
-            let darkMode = Cookie.get('tomoscan_theme') !== 'dark'
+            const darkMode = Cookie.get('tomoscan_theme') !== 'dark'
             this.darkMode = darkMode
 
             Cookie.set('tomoscan_theme', darkMode ? 'dark' : 'light', {

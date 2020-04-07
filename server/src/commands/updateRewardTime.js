@@ -4,7 +4,7 @@ const config = require('config')
 
 const RewardProcess = async () => {
     const web3 = await Web3Util.getWeb3()
-    let lastReward = await db.Reward.find().sort({ epoch: -1 }).limit(1)
+    const lastReward = await db.Reward.find().sort({ epoch: -1 }).limit(1)
     let lastEpoch = null
     if (lastReward) {
         lastEpoch = lastReward[0].epoch
@@ -13,12 +13,12 @@ const RewardProcess = async () => {
     console.info('Process at', new Date())
     if (lastEpoch !== null) {
         for (let epoch = 1; epoch <= lastEpoch; epoch++) {
-            let blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
+            const blockRewardCalculate = (epoch + 1) * config.get('BLOCK_PER_EPOCH')
 
-            let block = await db.Block.findOne({ number: blockRewardCalculate })
+            const block = await db.Block.findOne({ number: blockRewardCalculate })
             let timestamp = null
             if (!block) {
-                let _block = await web3.eth.getBlock(blockRewardCalculate)
+                const _block = await web3.eth.getBlock(blockRewardCalculate)
                 if (_block) {
                     timestamp = _block.timestamp * 1000
                 }

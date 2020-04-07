@@ -9,28 +9,28 @@ const tokenQuantity = async () => {
         return db.TokenHolder.find().limit(limit).skip((page - 1) * limit)
     }
     let page = 1
-    let limit = 20
+    const limit = 20
     let tokenHolders = await getTokenHolders(page, limit)
     console.log('%s. Process %s/4.8k token holder', page, limit * page)
     while (tokenHolders.length > 0) {
-        let map = tokenHolders.map(async function (th) {
+        const map = tokenHolders.map(async function (th) {
             console.log('   process token %s, holder %s', th.token, th.hash)
-            let contract = await db.Contract.findOne({ hash: th.token })
+            const contract = await db.Contract.findOne({ hash: th.token })
             if (contract) {
-                let abiObject = JSON.parse(contract.abiCode)
-                let web3 = await Web3Util.getWeb3()
-                let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+                const abiObject = JSON.parse(contract.abiCode)
+                const web3 = await Web3Util.getWeb3()
+                const web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
-                let rs = await web3Contract.methods.balanceOf(th.hash).call()
-                let quantity = new BigNumber(rs)
-                let token = await db.Token.findOne({ hash: th.token })
+                const rs = await web3Contract.methods.balanceOf(th.hash).call()
+                const quantity = new BigNumber(rs)
+                const token = await db.Token.findOne({ hash: th.token })
                 let decimals
                 if (token) {
                     decimals = token.decimals
                 } else {
-                    let web3 = await Web3Util.getWeb3()
-                    let tokenFuncs = await TokenHelper.getTokenFuncs()
-                    decimals = await web3.eth.call({ to: th.token, data: tokenFuncs['decimals'] })
+                    const web3 = await Web3Util.getWeb3()
+                    const tokenFuncs = await TokenHelper.getTokenFuncs()
+                    decimals = await web3.eth.call({ to: th.token, data: tokenFuncs.decimals })
                     decimals = await web3.utils.hexToNumberString(decimals)
                 }
                 th.quantity = quantity.toString(10)

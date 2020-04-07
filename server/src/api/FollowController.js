@@ -9,17 +9,17 @@ const FollowController = Router()
 FollowController.get('/follows', authService.authenticate(),
     async (req, res, next) => {
         try {
-            let user = req.user
+            const user = req.user
             if (!user) {
                 return res.sendStatus(401)
             }
 
-            let params = {}
+            const params = {}
             params.query = {
                 user: user.id
             }
-            let data = await paginate(req, 'Follow', params)
-            let items = data.items
+            const data = await paginate(req, 'Follow', params)
+            const items = data.items
             data.items = await FollowHelper.formatItems(items)
 
             return res.json(data)
@@ -33,14 +33,14 @@ FollowController.get('/follows', authService.authenticate(),
 FollowController.post('/follows', authService.authenticate(),
     async (req, res, next) => {
         try {
-            let user = req.user
+            const user = req.user
             if (!user) {
                 return res.sendStatus(401)
             }
 
-            let lastBlock = await db.Block.findOne().sort({ number: -1 })
-            let blockNumber = lastBlock ? lastBlock.number : 0
-            let follow = await FollowHelper.firstOrUpdate(req, user, blockNumber)
+            const lastBlock = await db.Block.findOne().sort({ number: -1 })
+            const blockNumber = lastBlock ? lastBlock.number : 0
+            const follow = await FollowHelper.firstOrUpdate(req, user, blockNumber)
 
             return res.json(follow)
         } catch (e) {
@@ -53,14 +53,14 @@ FollowController.post('/follows', authService.authenticate(),
 FollowController.post('/follows/:id', authService.authenticate(),
     async (req, res, next) => {
         try {
-            let user = req.user
+            const user = req.user
 
             if (!user) {
                 return res.sendStatus(401)
             }
 
-            let id = req.params.id
-            let follow = await db.Follow.findOne({ _id: id, user: user._id })
+            const id = req.params.id
+            const follow = await db.Follow.findOne({ _id: id, user: user._id })
             if (!follow) {
                 return res.sendStatus(404)
             }
@@ -81,14 +81,14 @@ FollowController.post('/follows/:id', authService.authenticate(),
 FollowController.delete('/follows/:id', authService.authenticate(),
     async (req, res, next) => {
         try {
-            let user = req.user
+            const user = req.user
 
             if (!user) {
                 return res.sendStatus(401)
             }
 
-            let id = req.params.id
-            let follow = await db.Follow.findOneAndRemove(
+            const id = req.params.id
+            const follow = await db.Follow.findOneAndRemove(
                 { _id: id, user: user._id })
 
             return res.json(follow)

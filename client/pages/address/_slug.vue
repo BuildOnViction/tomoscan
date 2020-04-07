@@ -331,14 +331,14 @@ export default {
         }
     },
     created () {
-        let hash = this.$route.params.slug
+        const hash = this.$route.params.slug
         if (hash) {
             this.hash = hash.toLowerCase()
         }
     },
     mounted () {
         try {
-            let self = this
+            const self = this
 
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', {
@@ -354,10 +354,10 @@ export default {
     },
     methods: {
         async getAccountFromApi () {
-            let self = this
+            const self = this
 
             self.loading = true
-            let params = {}
+            const params = {}
 
             if (self.hash) {
                 params.address = self.hash
@@ -365,9 +365,9 @@ export default {
 
             params.list = 'address'
 
-            let query = this.serializeQuery(params)
+            const query = this.serializeQuery(params)
 
-            let responses = await Promise.all([
+            const responses = await Promise.all([
                 this.$axios.get('/api/accounts/' + self.hash),
                 this.$axios.get('/api/counting' + '?' + query)
             ])
@@ -392,7 +392,7 @@ export default {
             self.loading = false
         },
         async getUSDPrice () {
-            let self = this
+            const self = this
 
             self.$store.dispatch('app/getUSDPrice')
         },

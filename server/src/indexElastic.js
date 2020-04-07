@@ -10,11 +10,11 @@ const Web3Util = require('./helpers/web3')
 events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
 const watch = async () => {
     try {
-        let step = 100
+        const step = 100
         let setting = await db.Setting.findOne({ meta_key: 'min_block_index' })
         if (!setting) {
             setting = await new db.Setting({
@@ -23,8 +23,8 @@ const watch = async () => {
             })
         }
         let minBlockCrawl = parseInt(setting.meta_value || '1')
-        let maxBlockNum = parseInt(config.get('MaxBlockIndex'))
-        let web3 = await Web3Util.getWeb3()
+        const maxBlockNum = parseInt(config.get('MaxBlockIndex'))
+        const web3 = await Web3Util.getWeb3()
 
         while (minBlockCrawl < maxBlockNum) {
             logger.debug('Min block index %s, Max block number %s', minBlockCrawl, maxBlockNum)
@@ -32,7 +32,7 @@ const watch = async () => {
             nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
             for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
                 let block = await db.Block.findOne({ number: i })
-                let txes = await db.Tx.find({ blockNumber: i })
+                const txes = await db.Tx.find({ blockNumber: i })
                 if (!block || block.e_tx > txes.length) {
                     await db.Tx.remove({ blockNumber: i })
                     await db.TokenTx.remove({ blockNumber: i })
@@ -47,9 +47,9 @@ const watch = async () => {
                         block = await web3.eth.getBlock(i)
                     }
                     logger.debug('Index block number %s', i)
-                    let b = block.toJSON()
-                    delete b['_id']
-                    delete b['id']
+                    const b = block.toJSON()
+                    delete b._id
+                    delete b.id
                     b.finality = block.finality > 100 ? 100 : block.finality
                     b.timestamp = new Date(b.timestamp).getTime()
                     await elastic.index(block.hash, 'blocks', b)
@@ -57,9 +57,9 @@ const watch = async () => {
                         logger.info('Index %s transactions of block %s', txes.length, i)
                     }
                     for (let j = 0; j < txes.length; j++) {
-                        let tx = txes[j].toJSON()
-                        delete tx['_id']
-                        delete tx['id']
+                        const tx = txes[j].toJSON()
+                        delete tx._id
+                        delete tx.id
                         if (tx.status === '1' || tx.status === 1 || tx.status === '0x1') {
                             tx.status = true
                         }
@@ -77,47 +77,47 @@ const watch = async () => {
                         tx.timestamp = new Date(tx.timestamp).getTime()
                         await elastic.index(tx.hash, 'transactions', tx)
                     }
-                    let tokenTx = await db.TokenTx.find({ blockNumber: i })
+                    const tokenTx = await db.TokenTx.find({ blockNumber: i })
                     if (tokenTx.length > 0) {
                         logger.info('Index %s trc20-tx of block %s', tokenTx.length, i)
                     }
                     for (let j = 0; j < tokenTx.length; j++) {
-                        let tx = tokenTx[j].toJSON()
+                        const tx = tokenTx[j].toJSON()
                         tx.valueNumber = String(tx.valueNumber)
-                        delete tx['_id']
-                        delete tx['id']
+                        delete tx._id
+                        delete tx.id
                         await elastic.indexWithoutId('trc20-tx', tx)
                     }
-                    let trc21Tx = await db.TokenTrc21Tx.find({ blockNumber: i })
+                    const trc21Tx = await db.TokenTrc21Tx.find({ blockNumber: i })
                     if (trc21Tx.length > 0) {
                         logger.info('Index %s trc21-tx of block %s', trc21Tx.length, i)
                     }
                     for (let j = 0; j < trc21Tx.length; j++) {
-                        let tx = trc21Tx[j].toJSON()
+                        const tx = trc21Tx[j].toJSON()
                         tx.valueNumber = String(tx.valueNumber)
-                        delete tx['_id']
-                        delete tx['id']
+                        delete tx._id
+                        delete tx.id
                         await elastic.indexWithoutId('trc21-tx', tx)
                     }
-                    let nftTx = await db.TokenNftTx.find({ blockNumber: i })
+                    const nftTx = await db.TokenNftTx.find({ blockNumber: i })
                     if (nftTx.length > 0) {
                         logger.info('Index %s nft-tx of block %s', nftTx.length, i)
                     }
                     for (let j = 0; j < nftTx.length; j++) {
-                        let tx = nftTx[j].toJSON()
-                        delete tx['_id']
-                        delete tx['id']
+                        const tx = nftTx[j].toJSON()
+                        delete tx._id
+                        delete tx.id
                         await elastic.indexWithoutId('nft-tx', tx)
                     }
-                    let internalTx = await db.InternalTx.find({ blockNumber: i })
+                    const internalTx = await db.InternalTx.find({ blockNumber: i })
                     if (internalTx.length > 0) {
                         logger.info('Index %s internal-tx of block %s', internalTx.length, i)
                     }
                     for (let j = 0; j < internalTx.length; j++) {
-                        let tx = internalTx[j].toJSON()
+                        const tx = internalTx[j].toJSON()
                         tx.timestamp = new Date(tx.timestamp).getTime()
-                        delete tx['_id']
-                        delete tx['id']
+                        delete tx._id
+                        delete tx.id
                         await elastic.indexWithoutId('internal-tx', tx)
                     }
                 }

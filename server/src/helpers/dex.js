@@ -5,13 +5,13 @@ const BigNumber = require('bignumber.js')
 const decimalFunction = '0x313ce567'
 const TomoToken = '0x0000000000000000000000000000000000000001'
 
-let DexHelper = {
+const DexHelper = {
     formatOrder: async (orders) => {
-        let web3 = await Web3Util.getWeb3()
-        let decimals = {}
+        const web3 = await Web3Util.getWeb3()
+        const decimals = {}
         for (let i = 0; i < orders.length; i++) {
-            let bt = orders[i].baseToken.toLowerCase()
-            if (!decimals.hasOwnProperty(bt)) {
+            const bt = orders[i].baseToken.toLowerCase()
+            if (!Object.prototype.hasOwnProperty.call(decimals, bt)) {
                 if (bt === TomoToken) {
                     decimals[bt] = 18
                 } else {
@@ -20,8 +20,8 @@ let DexHelper = {
                     decimals[bt] = baseDecimals
                 }
             }
-            let qt = orders[i].quoteToken.toLowerCase()
-            if (!decimals.hasOwnProperty(qt)) {
+            const qt = orders[i].quoteToken.toLowerCase()
+            if (!Object.prototype.hasOwnProperty.call(decimals, qt)) {
                 if (qt === TomoToken) {
                     decimals[qt] = 18
                 } else {
@@ -33,8 +33,8 @@ let DexHelper = {
         }
         for (let i = 0; i < orders.length; i++) {
             let quantity = new BigNumber(orders[i].quantity)
-            let bt = orders[i].baseToken.toLowerCase()
-            let qt = orders[i].quoteToken.toLowerCase()
+            const bt = orders[i].baseToken.toLowerCase()
+            const qt = orders[i].quoteToken.toLowerCase()
             quantity = quantity.dividedBy(10 ** decimals[bt]).toNumber()
 
             let fillAmount = new BigNumber(orders[i].filledAmount)
@@ -52,11 +52,11 @@ let DexHelper = {
         return orders
     },
     formatTrade: async (trades) => {
-        let web3 = await Web3Util.getWeb3()
-        let decimals = {}
+        const web3 = await Web3Util.getWeb3()
+        const decimals = {}
         for (let i = 0; i < trades.length; i++) {
-            let bt = trades[i].baseToken.toLowerCase()
-            if (!decimals.hasOwnProperty(bt)) {
+            const bt = trades[i].baseToken.toLowerCase()
+            if (!Object.prototype.hasOwnProperty.call(decimals, bt)) {
                 if (bt === TomoToken) {
                     decimals[bt] = 18
                 } else {
@@ -65,8 +65,8 @@ let DexHelper = {
                     decimals[bt] = baseDecimals
                 }
             }
-            let qt = trades[i].quoteToken.toLowerCase()
-            if (!decimals.hasOwnProperty(qt)) {
+            const qt = trades[i].quoteToken.toLowerCase()
+            if (!Object.prototype.hasOwnProperty.call(decimals, qt)) {
                 if (qt === TomoToken) {
                     decimals[qt] = 18
                 } else {
@@ -78,8 +78,8 @@ let DexHelper = {
         }
         for (let i = 0; i < trades.length; i++) {
             let quantity = new BigNumber(trades[i].quantity)
-            let bt = trades[i].baseToken.toLowerCase()
-            let qt = trades[i].quoteToken.toLowerCase()
+            const bt = trades[i].baseToken.toLowerCase()
+            const qt = trades[i].quoteToken.toLowerCase()
             quantity = quantity.dividedBy(10 ** decimals[bt]).toNumber()
 
             let amount = new BigNumber(trades[i].amount)

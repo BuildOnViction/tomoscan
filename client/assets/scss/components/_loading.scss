@@ -1,6 +1,6 @@
 .tomo-loading {
   &:before {
-    content: url('~/assets/img/loading.svg');
+    content: url('~assets/img/loading.svg');
     display: inline-block;
     vertical-align: middle;
   }
@@ -16,7 +16,7 @@
   height: calc(100vh - 80px - 104px);
 
   &:before {
-    content: url('~/assets/img/tomo-loading.svg');
+    content: url('~assets/img/tomo-loading.svg');
     opacity: .3;
     height: 40px;
     width: 40px;
@@ -40,7 +40,7 @@
   position: relative;
 
   &:before {
-    content: url('~/assets/img/tomo-loading.svg');
+    content: url('~assets/img/tomo-loading.svg');
     position: absolute;
     top: 50%;
     left: 50%;

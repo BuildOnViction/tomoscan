@@ -187,7 +187,7 @@ export default {
     },
     async mounted () {
         try {
-            let self = this
+            const self = this
 
             self.loading = true
 
@@ -197,7 +197,7 @@ export default {
                 to: { name: 'epochs-slug', params: { slug: self.epochNumber } }
             })
 
-            let responses = await Promise.all([
+            const responses = await Promise.all([
                 this.$axios.get('/api/epochs/' + self.epochNumber)
             ])
 

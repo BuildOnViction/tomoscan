@@ -381,7 +381,7 @@ export default {
     },
     async mounted () {
         try {
-            let self = this
+            const self = this
             self.loading = true
 
             // Init breadcrumbs data.
@@ -390,23 +390,23 @@ export default {
                 to: { name: 'txs-slug', params: { slug: self.hash } }
             })
 
-            let params = {}
+            const params = {}
 
             if (self.hash) {
                 params.address = self.hash
             }
             params.list = 'txs'
 
-            let query = this.serializeQuery(params)
+            const query = this.serializeQuery(params)
 
-            let responses = await Promise.all([
+            const responses = await Promise.all([
                 this.$axios.get('/api/txs/' + self.hash),
                 this.$axios.get('/api/counting' + '?' + query)
             ])
 
             self.tx = responses[0].data
             self.inputData = self.tx.inputData ? self.tx.inputData : self.tx.input
-            let moment = self.$moment(responses[0].data.timestamp)
+            const moment = self.$moment(responses[0].data.timestamp)
             self.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
             self.eventsCount = responses[1].data.events

@@ -7,46 +7,46 @@ const logger = require('./logger')
 const axios = require('axios')
 const config = require('config')
 const elastic = require('../helpers/elastic')
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
-let BlockHelper = {
+const BlockHelper = {
     crawlBlock:async (blockNumber) => {
-        let block = await db.Block.findOne({ number: blockNumber })
-        let countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
+        const block = await db.Block.findOne({ number: blockNumber })
+        const countTx = await db.Tx.countDocuments({ blockNumber: blockNumber })
         if (block && countTx === block.e_tx) {
             logger.info('Block already processed %s', blockNumber)
             return null
         }
 
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
 
-        let start = new Date()
-        let _block = await web3.eth.getBlock(blockNumber)
-        let end = new Date() - start
+        const start = new Date()
+        const _block = await web3.eth.getBlock(blockNumber)
+        const end = new Date() - start
         logger.info(`Execution time : %dms web3.eth.getBlock(${blockNumber})`, end)
 
         if (!_block) {
             return null
         }
-        let { m1, m2 } = await utils.getM1M2(_block)
+        const { m1, m2 } = await utils.getM1M2(_block)
         _block.m2 = m2
         _block.signer = m1
 
-        let timestamp = _block.timestamp * 1000
+        const timestamp = _block.timestamp * 1000
 
         // Update end tx count.
         _block.timestamp = timestamp
         _block.e_tx = _block.transactions.length
 
         try {
-            let data = {
-                'jsonrpc': '2.0',
-                'method': 'eth_getBlockFinalityByHash',
-                'params': [_block.hash],
-                'id': 88
+            const data = {
+                jsonrpc: '2.0',
+                method: 'eth_getBlockFinalityByHash',
+                params: [_block.hash],
+                id: 88
             }
             const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-            let result = response.data
+            const result = response.data
 
             let finalityNumber = parseInt(result.result)
             // blockNumber = 0 is genesis block
@@ -60,55 +60,55 @@ let BlockHelper = {
             logger.warn(e)
         }
 
-        let txs = _block.transactions
-        delete _block['transactions']
+        const txs = _block.transactions
+        delete _block.transactions
         _block.status = true
         _block.updateFinalityTime = 0
 
-        delete _block['_id']
-        delete _block['signers']
+        delete _block._id
+        delete _block.signers
 
         await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
         await elastic.index(_block.hash, 'blocks', _block)
 
         if (_block.number % config.get('BLOCK_PER_EPOCH') === 0) {
-            let slashedNode = []
-            let blk = await BlockHelper.getBlock(_block.number)
+            const slashedNode = []
+            const blk = await BlockHelper.getBlock(_block.number)
             if (blk.penalties && blk.penalties !== '0x') {
-                let sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
+                const sbuff = Buffer.from((blk.penalties || '').substring(2), 'hex')
                 if (sbuff.length > 0) {
                     for (let i = 1; i <= sbuff.length / 20; i++) {
-                        let address = sbuff.slice((i - 1) * 20, i * 20)
-                        let add = '0x' + address.toString('hex')
+                        const address = sbuff.slice((i - 1) * 20, i * 20)
+                        const add = '0x' + address.toString('hex')
                         slashedNode.push(add.toLowerCase())
                     }
                 }
             }
 
-            let buff = Buffer.from(blk.extraData.substring(2), 'hex')
-            let sbuff = buff.slice(32, buff.length - 65)
-            let signers = []
+            const buff = Buffer.from(blk.extraData.substring(2), 'hex')
+            const sbuff = buff.slice(32, buff.length - 65)
+            const signers = []
             if (sbuff.length > 0) {
                 for (let i = 1; i <= sbuff.length / 20; i++) {
-                    let address = sbuff.slice((i - 1) * 20, i * 20)
+                    const address = sbuff.slice((i - 1) * 20, i * 20)
                     signers.push('0x' + address.toString('hex'))
                 }
             }
-            let epoch = _block.number / config.get('BLOCK_PER_EPOCH')
+            const epoch = _block.number / config.get('BLOCK_PER_EPOCH')
 
             // TODO: update slash for next 5 epochs
             if (slashedNode.length > 0) {
                 for (let i = 0; i < 5; i++) {
-                    let nextEpoch = epoch + 1 + i
-                    let e = await db.Epoch.findOne({ epoch: nextEpoch })
+                    const nextEpoch = epoch + 1 + i
+                    const e = await db.Epoch.findOne({ epoch: nextEpoch })
                     if (e) {
-                        let sn = e.slashedNode
-                        let newArr = sn.concat(slashedNode)
+                        const sn = e.slashedNode
+                        const newArr = sn.concat(slashedNode)
                         e.slashedNode = Array.from(new Set(newArr))
                         await e.save()
                     } else {
-                        let ne = new db.Epoch({
+                        const ne = new db.Epoch({
                             epoch: nextEpoch,
                             startBlock: (nextEpoch - 1) * 900 + 1,
                             endBlock: nextEpoch * 900,
@@ -134,15 +134,15 @@ let BlockHelper = {
                 return block
             }
 
-            let web3 = await Web3Util.getWeb3()
+            const web3 = await Web3Util.getWeb3()
             console.log(hashOrNumber)
-            let _block = await web3.eth.getBlock(hashOrNumber)
+            const _block = await web3.eth.getBlock(hashOrNumber)
             console.log(hashOrNumber, _block)
             if (!_block) {
                 return null
             }
             try {
-                let { m1, m2 } = await utils.getM1M2(_block)
+                const { m1, m2 } = await utils.getM1M2(_block)
 
                 _block.m2 = m2
                 _block.signer = m1
@@ -156,14 +156,14 @@ let BlockHelper = {
             _block.e_tx = _block.transactions.length
 
             try {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockFinalityByHash',
-                    'params': [_block.hash],
-                    'id': 88
+                const data = {
+                    jsonrpc: '2.0',
+                    method: 'eth_getBlockFinalityByHash',
+                    params: [_block.hash],
+                    id: 88
                 }
                 const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                let result = response.data
+                const result = response.data
 
                 _block.finality = parseInt(result.result)
             } catch (e) {
@@ -173,15 +173,15 @@ let BlockHelper = {
 
             _block.status = true
             if (block) {
-                if (!block.hasOwnProperty('updateFinalityTime')) {
+                if (!Object.prototype.hasOwnProperty.call(block, 'updateFinalityTime')) {
                     _block.updateFinalityTime = 0
                 }
             } else {
                 _block.updateFinalityTime = 0
             }
 
-            delete _block['_id']
-            delete _block['signers']
+            delete _block._id
+            delete _block.signers
 
             block = await db.Block.findOneAndUpdate({ number: _block.number }, _block,
                 { upsert: true, new: true })
@@ -194,12 +194,12 @@ let BlockHelper = {
     },
     getBlockOnChain: async (number) => {
         try {
-            let _block = await BlockHelper.getBlock(number)
+            const _block = await BlockHelper.getBlock(number)
             if (!_block) {
                 return null
             }
             // Get signer.
-            let signer = await utils.toAddress(await utils.getSigner(_block), 100)
+            const signer = await utils.toAddress(await utils.getSigner(_block), 100)
             _block.signer = signer.toLowerCase()
 
             // Update end tx count.
@@ -207,14 +207,14 @@ let BlockHelper = {
             _block.e_tx = _block.transactions.length
 
             try {
-                let data = {
-                    'jsonrpc': '2.0',
-                    'method': 'eth_getBlockFinalityByHash',
-                    'params': [_block.hash],
-                    'id': 88
+                const data = {
+                    jsonrpc: '2.0',
+                    method: 'eth_getBlockFinalityByHash',
+                    params: [_block.hash],
+                    id: 88
                 }
                 const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
-                let result = response.data
+                const result = response.data
 
                 let finalityNumber = parseInt(result.result)
 
@@ -238,7 +238,7 @@ let BlockHelper = {
         }
     },
     getBlock: async (number) => {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         return web3.eth.getBlock(number).catch(e => {
             logger.warn('Cannot get block %s detail. Sleep 2 seconds and try more. Error %s', number, e)
             return sleep(2000).then(() => {
@@ -247,7 +247,7 @@ let BlockHelper = {
         })
     },
     getLastBlockNumber: async () => {
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         return web3.eth.getBlockNumber().catch(e => {
             logger.warn('Cannot get last block number. Sleep 2 seconds and try more. Error %s', e)
             return sleep(2000).then(() => {

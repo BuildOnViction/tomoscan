@@ -26,7 +26,7 @@ const User = new Schema({
 })
 
 User.pre('save', function (callback) {
-    let user = this
+    const user = this
 
     if (user.isModified('password')) {
         user.password = bcrypt.hashSync(user.password, config.get('APP_SECRET'))
@@ -36,8 +36,8 @@ User.pre('save', function (callback) {
 })
 
 User.methods.authenticate = async function (password) {
-    let user = this
-    let hash = bcrypt.hashSync(password, config.get('APP_SECRET'))
+    const user = this
+    const hash = bcrypt.hashSync(password, config.get('APP_SECRET'))
 
     return user.password === hash
 }
@@ -78,7 +78,7 @@ User.methods.generateToken = async function (user, action = '') {
 }
 
 User.methods.toJSON = function () {
-    let obj = this.toObject()
+    const obj = this.toObject()
 
     delete obj.password
 
