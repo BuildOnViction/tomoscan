@@ -11,12 +11,12 @@ const twitter = new Twitter({
     access_token_key: config.get('twitter.access_token_key'),
     access_token_secret: config.get('twitter.access_token_secret')
 })
-let TwitterHelper = {
+const TwitterHelper = {
     alertBigTransfer: async (txHash, from, to, amount) => {
         try {
             amount = new BigNumber(amount)
             amount = amount.dividedBy(10 ** 18).toNumber()
-            let msg = `${utils.formatNumber(amount)} $TOMO transferred from ${utils.hiddenString(from, 5)} ` +
+            const msg = `${utils.formatNumber(amount)} $TOMO transferred from ${utils.hiddenString(from, 5)} ` +
               `${accountName[from] ? '(' + accountName[from] + ')' : ''} to ${utils.hiddenString(to, 5)} ` +
               `${accountName[to] ? '(' + accountName[to] + ')' : ''} 
             

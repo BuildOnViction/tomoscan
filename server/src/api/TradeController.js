@@ -13,13 +13,13 @@ TradeController.get('/trades', [
     check('pairName').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let web3 = await Web3Util.getWeb3()
-        let query = {}
+        const web3 = await Web3Util.getWeb3()
+        const query = {}
         if (req.query.user) {
             if (req.query.user) {
                 if (web3.utils.isAddress(req.query.user)) {
@@ -28,8 +28,8 @@ TradeController.get('/trades', [
                     query.userAddress = req.query.user
                 }
             }
-            let user = web3.utils.toChecksumAddress(req.query.user)
-            query['$or'] = [{ taker: user }, { maker: user }]
+            const user = web3.utils.toChecksumAddress(req.query.user)
+            query.$or = [{ taker: user }, { maker: user }]
         }
         if (req.query.pair) {
             query.pairName = req.query.pair.toUpperCase()
@@ -37,13 +37,13 @@ TradeController.get('/trades', [
         if (req.query.type) {
             query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
         }
-        let total = await dexDb.Trade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
+        const total = await dexDb.Trade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -61,7 +61,7 @@ TradeController.get('/trades', [
 TradeController.get('/trades/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -82,22 +82,22 @@ TradeController.get('/trades/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { $or: [{ takerExchange: hash }, { makerExchange: hash }] }
-        let total = await dexDb.Trade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
+        const query = { $or: [{ takerExchange: hash }, { makerExchange: hash }] }
+        const total = await dexDb.Trade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -117,22 +117,22 @@ TradeController.get('/trades/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { $or: [{ maker: hash }, { taker: hash }] }
-        let total = await dexDb.Trade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query, {})
+        const query = { $or: [{ maker: hash }, { taker: hash }] }
+        const total = await dexDb.Trade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.Trade.find(query, {})
             .sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -154,26 +154,26 @@ TradeController.get('/trades/listByPair/:baseToken/:quoteToken', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
-    let quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
+    const web3 = await Web3Util.getWeb3()
+    const baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
+    const quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
     try {
-        let query = { baseToken: baseToken, quoteToken: quoteToken }
+        const query = { baseToken: baseToken, quoteToken: quoteToken }
         if (req.query.userAddress) {
-            let userAddress = web3.utils.toChecksumAddress(req.query.userAddress)
-            query['$or'] = [{ maker: userAddress }, { taker: userAddress }]
+            const userAddress = web3.utils.toChecksumAddress(req.query.userAddress)
+            query.$or = [{ maker: userAddress }, { taker: userAddress }]
         }
-        let total = await dexDb.Trade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
+        const total = await dexDb.Trade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.Trade.find(query, {}).sort({ _id: -1 })
             .limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -193,24 +193,24 @@ TradeController.get('/trades/stats/:exchangeAddress/:pairName', [
     check('pairName').exists().withMessage('pair is required.'),
     check('date').optional().withMessage('if does not have, will calculate current')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
-    let pairName = req.params.pairName.toUpperCase()
+    const web3 = await Web3Util.getWeb3()
+    const exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    const pairName = req.params.pairName.toUpperCase()
     if (req.query.date) {
-        let stat = await dexDb.HistoryStatistic.findOne({
+        const stat = await dexDb.HistoryStatistic.findOne({
             exchangeAddress: exchangeAddress,
             pairName: pairName,
             date: new Date(req.query.date)
         })
         return res.json(stat)
     } else {
-        let currentTime = new Date()
-        let oneDayAgo = new Date(new Date().setDate(new Date().getDate() - 1))
-        let stats = await dexDb.Statistic.find({
+        const currentTime = new Date()
+        const oneDayAgo = new Date(new Date().setDate(new Date().getDate() - 1))
+        const stats = await dexDb.Statistic.find({
             exchangeAddress: exchangeAddress,
             pairName: pairName,
             date: { $gte: oneDayAgo, $lte: currentTime }
@@ -233,16 +233,16 @@ TradeController.get('/trades/dailyStats/:exchangeAddress/:pairName', [
     check('fromDate').exists().withMessage('fromDate is required.'),
     check('toDate').exists().withMessage('toDate is required.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
-    let pairName = req.params.pairName.toUpperCase()
-    let fromDate = req.query.fromDate
-    let toDate = req.query.toDate
-    let stat = await dexDb.HistoryStatistic.find({
+    const web3 = await Web3Util.getWeb3()
+    const exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    const pairName = req.params.pairName.toUpperCase()
+    const fromDate = req.query.fromDate
+    const toDate = req.query.toDate
+    const stat = await dexDb.HistoryStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         date: { $gte: fromDate, $lte: toDate }
@@ -258,18 +258,18 @@ TradeController.get('/trades/weeklyStats/:exchangeAddress/:pairName', [
     check('toYear').exists().isNumeric().withMessage('fromDate is required.'),
     check('toWeek').exists().isNumeric({ min: 1, max: 53 }).withMessage('toDate is required.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
-    let pairName = req.params.pairName.toUpperCase()
-    let fromYear = req.query.fromYear
-    let toYear = req.query.toYear
-    let fromWeek = req.query.fromWeek
-    let toWeek = req.query.toWeek
-    let stat = await dexDb.WeeklyStatistic.find({
+    const web3 = await Web3Util.getWeb3()
+    const exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    const pairName = req.params.pairName.toUpperCase()
+    const fromYear = req.query.fromYear
+    const toYear = req.query.toYear
+    const fromWeek = req.query.fromWeek
+    const toWeek = req.query.toWeek
+    const stat = await dexDb.WeeklyStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         year: { $gte: fromYear, $lte: toYear },
@@ -286,18 +286,18 @@ TradeController.get('/trades/monthlyStats/:exchangeAddress/:pairName', [
     check('toYear').exists().isNumeric().withMessage('fromDate is required.'),
     check('toMonth').exists().isNumeric({ min: 1, max: 12 }).withMessage('toDate is required.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
-    let pairName = req.params.pairName.toUpperCase()
-    let fromYear = req.query.fromYear
-    let toYear = req.query.toYear
-    let fromMonth = req.query.fromMonth
-    let toMonth = req.query.toMonth
-    let stat = await dexDb.MonthlyStatistic.find({
+    const web3 = await Web3Util.getWeb3()
+    const exchangeAddress = web3.utils.toChecksumAddress(req.params.exchangeAddress)
+    const pairName = req.params.pairName.toUpperCase()
+    const fromYear = req.query.fromYear
+    const toYear = req.query.toYear
+    const fromMonth = req.query.fromMonth
+    const toMonth = req.query.toMonth
+    const stat = await dexDb.MonthlyStatistic.find({
         exchangeAddress: exchangeAddress,
         pairName: pairName,
         year: { $gte: fromYear, $lte: toYear },

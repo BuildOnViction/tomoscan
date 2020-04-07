@@ -96,7 +96,7 @@ export default {
             self.reCaptchaKey = process.env.RECAPTCHA_SITEKEY
         },
         async findPassword () {
-            let self = this
+            const self = this
 
             const email = self.formEmail
             const captchaToken = self.recaptchaToken

@@ -7,10 +7,10 @@ const consumer = {}
 consumer.name = 'TransactionProcess'
 consumer.processNumber = 8
 consumer.task = async function (job, done) {
-    let txs = JSON.parse(job.data.txs.toLowerCase())
-    let timestamp = job.data.timestamp
+    const txs = JSON.parse(job.data.txs.toLowerCase())
+    const timestamp = job.data.timestamp
 
-    let map = txs.map(async function (hash) {
+    const map = txs.map(async function (hash) {
         logger.info('Process Transaction: %s', hash)
         try {
             await TransactionHelper.crawlTransaction(hash, timestamp)

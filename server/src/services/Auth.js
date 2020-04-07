@@ -3,7 +3,7 @@ const passportJwt = require('passport-jwt')
 const User = require('../models/User')
 const config = require('config')
 
-let authService = {
+const authService = {
     initialize: () => passport.initialize(),
     authenticate: () => passport.authenticate('jwt',
         { session: false }),

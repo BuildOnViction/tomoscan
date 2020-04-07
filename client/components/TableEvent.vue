@@ -207,9 +207,9 @@ export default {
         pages: 1
     }),
     async mounted () {
-        let self = this
+        const self = this
         // Init from router.
-        let query = self.$route.query
+        const query = self.$route.query
 
         if (query.block) {
             self.block = query.block
@@ -219,11 +219,11 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
@@ -241,8 +241,8 @@ export default {
                 params.tx = self.tx
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await self.$axios.get('/api/logs?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await self.$axios.get('/api/logs?' + query)
             self.items = data.items
             self.total = data.total
             self.pages = data.pages

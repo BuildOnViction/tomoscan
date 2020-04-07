@@ -102,23 +102,23 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             self.loading = true
 
-            let { data } = await this.$axios.get('/api/contracts/' + self.contract + '/read')
+            const { data } = await this.$axios.get('/api/contracts/' + self.contract + '/read')
             self.data = data
 
             self.loading = false
         },
         async callFunction (functionName, signature, inputElement, outputElement) {
-            let params = {
+            const params = {
                 functionName: functionName,
                 signature: signature
             }
 
             let strParams = ''
-            let elements = document.querySelectorAll('.' + inputElement)
+            const elements = document.querySelectorAll('.' + inputElement)
 
             for (let i = 0; i < elements.length; i++) {
                 if (i === 0) {
@@ -136,8 +136,8 @@ export default {
 
             params.strParams = strParams
 
-            let query = this.serializeQuery(params)
-            let output = await this.$axios.get('/api/contracts/' + this.contract + '/call/?' + query)
+            const query = this.serializeQuery(params)
+            const output = await this.$axios.get('/api/contracts/' + this.contract + '/call/?' + query)
 
             document.getElementById(outputElement).innerHTML =
                 `<div class="tomo-contract-info__response">
@@ -176,8 +176,8 @@ export default {
         },
         resetInput (e) {
             e.preventDefault()
-            let inputs = document.querySelectorAll('.tomo-contract-info input')
-            let ouputs = document.querySelectorAll('.tomo-contract-info__func.with-input .tomo-contract-info__result')
+            const inputs = document.querySelectorAll('.tomo-contract-info input')
+            const ouputs = document.querySelectorAll('.tomo-contract-info__func.with-input .tomo-contract-info__result')
 
             for (let i = 0; i < inputs.length; i++) {
                 inputs[i].value = ''

@@ -6,13 +6,13 @@ const db = require('../models')
 const logger = require('./logger')
 const BigNumber = require('bignumber.js')
 
-let AccountHelper = {
+const AccountHelper = {
     getAccountDetail: async (hash) => {
         hash = hash.toLowerCase()
 
-        let web3 = await Web3Util.getWeb3()
+        const web3 = await Web3Util.getWeb3()
         let chainBalance = null
-        let b = web3.eth.getBalance(hash, function (err, balance) {
+        const b = web3.eth.getBalance(hash, function (err, balance) {
             if (err) {
                 logger.warn('get balance of account %s has error %s', hash, err)
             } else {
@@ -23,8 +23,8 @@ let AccountHelper = {
         let _account = await db.Account.findOne({ hash: hash })
         _account = _account || {}
 
-        if (!_account.hasOwnProperty('code')) {
-            let code = await web3.eth.getCode(hash)
+        if (!Object.prototype.hasOwnProperty.call(_account, 'code')) {
+            const code = await web3.eth.getCode(hash)
             if (code !== '0x') {
                 _account.isContract = true
             }
@@ -33,23 +33,23 @@ let AccountHelper = {
         }
         _account.status = true
 
-        delete _account['_id']
+        delete _account._id
         await b
         if (chainBalance !== null) {
             _account.balance = chainBalance
-            let bn = new BigNumber(chainBalance)
+            const bn = new BigNumber(chainBalance)
             _account.balanceNumber = bn.dividedBy(10 ** 18)
         }
-        let acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
+        const acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
         return acc
     },
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
         try {
-            let web3 = await Web3Util.getWeb3()
+            const web3 = await Web3Util.getWeb3()
 
             let chainBalance = null
-            let b = web3.eth.getBalance(hash, function (err, balance) {
+            const b = web3.eth.getBalance(hash, function (err, balance) {
                 if (err) {
                     logger.warn('get balance of account %s has error %s', hash, err)
                 } else {
@@ -61,15 +61,15 @@ let AccountHelper = {
                 _account = {}
             }
 
-            if (!_account.hasOwnProperty('code')) {
-                let code = await web3.eth.getCode(hash)
+            if (!Object.prototype.hasOwnProperty.call(_account, 'code')) {
+                const code = await web3.eth.getCode(hash)
                 const q = require('../queues')
                 if (code !== '0x') {
                     _account.isContract = true
                 }
                 _account.code = code
 
-                let isToken = await TokenHelper.checkIsToken(code)
+                const isToken = await TokenHelper.checkIsToken(code)
                 if (isToken) {
                     q.create('TokenProcess', { address: hash })
                         .priority('normal').removeOnComplete(true)
@@ -80,12 +80,12 @@ let AccountHelper = {
 
             _account.status = true
 
-            delete _account['_id']
+            delete _account._id
 
             await b
             if (chainBalance !== null) {
                 _account.balance = chainBalance
-                let bn = new BigNumber(chainBalance)
+                const bn = new BigNumber(chainBalance)
                 _account.balanceNumber = bn.dividedBy(10 ** 18)
             }
             await db.Account.updateOne({ hash: hash }, _account,
@@ -99,7 +99,7 @@ let AccountHelper = {
         let fromTxn = null
         account = account.toJSON()
         if (account.isContract) {
-            let tx = await db.Tx.findOne({
+            const tx = await db.Tx.findOne({
                 contractAddress: account.hash
             })
             if (tx) {
@@ -119,9 +119,9 @@ let AccountHelper = {
         account.contract = await db.Contract.findOne({ hash: account.hash })
 
         // Check has token holders.
-        let hasTrc20 = await db.TokenHolder.findOne({ hash: account.hash })
-        let hasTrc21 = await db.TokenTrc21Holder.findOne({ hash: account.hash })
-        let hasTrc721 = await db.TokenNftHolder.findOne({ holder: account.hash })
+        const hasTrc20 = await db.TokenHolder.findOne({ hash: account.hash })
+        const hasTrc21 = await db.TokenTrc21Holder.findOne({ hash: account.hash })
+        const hasTrc721 = await db.TokenNftHolder.findOne({ holder: account.hash })
         account.hasTrc20 = !!hasTrc20
         account.hasTrc21 = !!hasTrc21
         account.hasTrc721 = !!hasTrc721
@@ -133,9 +133,9 @@ let AccountHelper = {
             if (!hash) { return }
             hash = hash.toLowerCase()
             let code = ''
-            let account = await db.Account.findOne({ hash: hash })
+            const account = await db.Account.findOne({ hash: hash })
             if (!account) {
-                let web3 = await Web3Util.getWeb3()
+                const web3 = await Web3Util.getWeb3()
                 code = await web3.eth.getCode(hash)
             } else {
                 code = account.code

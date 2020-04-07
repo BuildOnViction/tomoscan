@@ -99,18 +99,18 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
 
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/tokens' + '?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/tokens' + '?' + query)
             self.items = data.items
             self.total = data.total
             self.pages = data.pages

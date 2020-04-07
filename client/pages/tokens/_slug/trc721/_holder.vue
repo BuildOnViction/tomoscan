@@ -196,7 +196,7 @@ export default {
         this.holder = this.$route.params.holder
     },
     async mounted () {
-        let self = this
+        const self = this
 
         self.loading = true
 
@@ -206,7 +206,7 @@ export default {
             to: { name: 'tokens-slug', params: { slug: self.hash } }
         })
 
-        let { data } = await self.$axios.get('/api/tokens/' + self.hash)
+        const { data } = await self.$axios.get('/api/tokens/' + self.hash)
         self.token = data
         self.tokenName = data.name
         self.symbol = data.symbol
@@ -218,9 +218,9 @@ export default {
     },
     methods: {
         async getAccountFromApi () {
-            let self = this
+            const self = this
 
-            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
+            const { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
         }

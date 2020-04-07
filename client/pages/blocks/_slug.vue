@@ -354,14 +354,14 @@ export default {
         }
     },
     created () {
-        let number = this.$route.params.slug
+        const number = this.$route.params.slug
         if (number) {
             this.number = number.toString()
         }
     },
     async mounted () {
         try {
-            let self = this
+            const self = this
 
             self.loading = true
 
@@ -371,22 +371,22 @@ export default {
                 to: { name: 'blocks-slug', params: { slug: self.number } }
             })
 
-            let params = {}
+            const params = {}
 
             if (self.number) {
                 params.block = self.number
             }
             params.list = 'blocks'
 
-            let query = this.serializeQuery(params)
+            const query = this.serializeQuery(params)
 
-            let responses = await Promise.all([
+            const responses = await Promise.all([
                 this.$axios.get('/api/blocks/' + this.$route.params.slug),
                 this.$axios.get('/api/counting' + '?' + query)
             ])
 
             this.block = responses[0].data
-            let moment = self.$moment(responses[0].data.timestamp)
+            const moment = self.$moment(responses[0].data.timestamp)
             this.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
 
             self.totalTxsCount = responses[1].data.totalTxes

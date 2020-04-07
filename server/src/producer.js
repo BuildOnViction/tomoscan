@@ -10,9 +10,9 @@ const logger = require('./helpers/logger')
 events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
-let sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 
-let countJobs = () => {
+const countJobs = () => {
     return new Promise((resolve, reject) => {
         q.inactiveCount((err, l) => {
             if (err) {
@@ -25,7 +25,7 @@ let countJobs = () => {
 
 const watch = async () => {
     try {
-        let step = 100
+        const step = 100
         let setting = await db.Setting.findOne({ meta_key: 'min_block_crawl' })
         let newJobSetting = await db.Setting.findOne({ meta_key: 'push_new_job' })
         if (!setting) {
@@ -44,8 +44,8 @@ const watch = async () => {
         let minBlockCrawl = parseInt(setting.meta_value || 0)
 
         while (true) {
-            let web3 = await Web3Util.getWeb3()
-            let l = await countJobs()
+            const web3 = await Web3Util.getWeb3()
+            const l = await countJobs()
             if (l > 500) {
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 await sleep(2000)
@@ -59,7 +59,7 @@ const watch = async () => {
             }
 
             if (String(newJobSetting.meta_value) === '1') {
-                let maxBlockNum = await web3.eth.getBlockNumber()
+                const maxBlockNum = await web3.eth.getBlockNumber()
                 logger.debug('Min block crawl %s, Max block number %s', minBlockCrawl, maxBlockNum)
                 if (minBlockCrawl < maxBlockNum) {
                     let nextCrawl = minBlockCrawl + step

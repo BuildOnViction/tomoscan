@@ -18,12 +18,12 @@ ContractController.get('/contracts', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let data = await paginate(req, 'Contract',
+        const data = await paginate(req, 'Contract',
             { query: {}, sort: { createdAt: -1 } })
 
         return res.json(data)
@@ -36,14 +36,14 @@ ContractController.get('/contracts', [
 ContractController.get('/contracts/:slug', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await db.Contract.findOne({ hash: hash })
+        const contract = await db.Contract.findOne({ hash: hash })
         if (!contract) {
             return res.status(404).json({ errors: { message: 'Contract was not found!' } })
         }
@@ -73,7 +73,7 @@ ContractController.post('/contracts', [
     check('contractAddress').exists().withMessage('Missing contract address params'),
     check('contractName').exists().withMessage('Missing contract name params')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -87,7 +87,7 @@ ContractController.post('/contracts', [
         contractName = contractName ? contractName.replace(' ', '') : ''
 
         // Check exists and return.
-        let exist = await db.Contract.findOne({ hash: contractAddress })
+        const exist = await db.Contract.findOne({ hash: contractAddress })
         if (exist) {
             return res.json({ errors: ['This contract was validated'] })
         }
@@ -119,7 +119,7 @@ ContractController.post('/contracts', [
                     return res.json({ errors: ['Contract Name invalid!'] })
                 }
 
-                let contracts = []
+                const contracts = []
 
                 Object.keys(output.contracts).forEach(contract => {
                     if (contract.startsWith(':')) {
@@ -129,7 +129,7 @@ ContractController.post('/contracts', [
                     }
                 })
 
-                let runtimeBytecode = '0x' + outputContract.runtimeBytecode
+                const runtimeBytecode = '0x' + outputContract.runtimeBytecode
 
                 // TODO: this hard-code to verify built-in smart contracts
                 // if (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100))) {
@@ -137,14 +137,16 @@ ContractController.post('/contracts', [
                     contractAddress !== '0x0000000000000000000000000000000000000089' ||
                     contractAddress !== '0x0000000000000000000000000000000000000090') &&
                     (md5(runtimeBytecode.slice(0, -100)) !== md5(originalCode.slice(0, -100)))) {
-                    return res.json({ errors: [
-                        `Contract names found: ${contracts.join(', ')}`,
-                        'Bytecode runtime invalid!',
-                        `Tips: Try to ${req.body.optimization ? 'disable' : 'enable'} the 'Optimization' option`
-                    ] })
+                    return res.json({
+                        errors: [
+                            `Contract names found: ${contracts.join(', ')}`,
+                            'Bytecode runtime invalid!',
+                            `Tips: Try to ${req.body.optimization ? 'disable' : 'enable'} the 'Optimization' option`
+                        ]
+                    })
                 }
 
-                let contract = await ContractHelper.insertOrUpdate(contractName,
+                const contract = await ContractHelper.insertOrUpdate(contractName,
                     contractAddress,
                     versionRelease, sourceCode, optimization, output)
 
@@ -159,25 +161,25 @@ ContractController.post('/contracts', [
 ContractController.get('/contracts/:slug/events', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
     try {
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await db.Contract.findOne({ hash: hash })
+        const contract = await db.Contract.findOne({ hash: hash })
         if (!contract) {
             return res.status(404).json({ errors: { message: 'Contract was not found' } })
         }
 
-        let abiObject = JSON.parse(contract.abiCode)
-        let contractEvents = abiObject.filter((item) => item.type === 'event')
+        const abiObject = JSON.parse(contract.abiCode)
+        const contractEvents = abiObject.filter((item) => item.type === 'event')
 
-        let web3 = await Web3Util.getWeb3()
-        let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+        const web3 = await Web3Util.getWeb3()
+        const web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
-        let pastEvents = await db.ContractEvent.find(
+        const pastEvents = await db.ContractEvent.find(
             { address: hash })
             .sort({ blockNumber: -1 }).lean()
         let fromBlock = 0
@@ -189,23 +191,23 @@ ContractController.get('/contracts/:slug/events', [
 
         if (contractEvents.length) {
             for (let i = 0; i < contractEvents.length; i++) {
-                let event = contractEvents[i]
-                let results = await web3Contract.getPastEvents(event.name, {
+                const event = contractEvents[i]
+                const results = await web3Contract.getPastEvents(event.name, {
                     fromBlock: fromBlock,
                     toBlock: 'latest'
                 })
                 if (results.length) {
                     for (let j = 0; j < results.length; j++) {
                         // Get tx relate.
-                        let tx = await TransactionHelper.getTransaction(
+                        const tx = await TransactionHelper.getTransaction(
                             results[j].transactionHash)
 
                         let functionHash = tx.input.substring(0, 10)
                         functionHash = functionHash.replace('0x', '')
-                        let functionName = _.findKey(contract.functionHashes,
+                        const functionName = _.findKey(contract.functionHashes,
                             (o) => o === functionHash)
 
-                        let contractEvent = await ContractHelper.addNew(hash,
+                        const contractEvent = await ContractHelper.addNew(hash,
                             functionHash, functionName,
                             results[j])
 
@@ -227,32 +229,32 @@ ContractController.get('/contracts/:slug/events', [
 ContractController.get('/contracts/:slug/read', [
     check('slug').exists().isLength({ min: 42, max: 42 }).withMessage('Contract address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
     try {
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await db.Contract.findOne({ hash: hash })
+        const contract = await db.Contract.findOne({ hash: hash })
 
         if (!contract) {
             return res.status(404).json({ errors: { message: 'Contract was not found' } })
         }
 
-        let abiObject = JSON.parse(contract.abiCode)
-        let contractFunctions = abiObject.filter((item) =>
+        const abiObject = JSON.parse(contract.abiCode)
+        const contractFunctions = abiObject.filter((item) =>
             (item.type === 'function') &&
             (item.stateMutability !== 'nonpayable') &&
             (item.stateMutability !== 'payable'))
 
-        let web3 = await Web3Util.getWeb3()
-        let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
-        let results = []
+        const web3 = await Web3Util.getWeb3()
+        const web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+        const results = []
 
         if (contractFunctions.length) {
             for (let i = 0; i < contractFunctions.length; i++) {
-                let func = contractFunctions[i]
+                const func = contractFunctions[i]
 
                 if (func.constant && !func.inputs.length) {
                     try {
@@ -274,35 +276,35 @@ ContractController.get('/contracts/:slug/read', [
 })
 
 ContractController.get('/contracts/:slug/call/', async (req, res) => {
-    let result = []
+    const result = []
     try {
-        let functionName = req.query.functionName
-        let signature = req.query.signature
-        let strParams = req.query.strParams
+        const functionName = req.query.functionName
+        const signature = req.query.signature
+        const strParams = req.query.strParams
         let hash = req.params.slug
         hash = hash ? hash.toLowerCase() : hash
-        let contract = await db.Contract.findOne({ hash: hash })
+        const contract = await db.Contract.findOne({ hash: hash })
 
         if (!contract) {
             return res.status(404).send()
         }
 
-        let abiObject = JSON.parse(contract.abiCode)
-        let web3 = await Web3Util.getWeb3()
-        let web3Contract = new web3.eth.Contract(abiObject, contract.hash)
+        const abiObject = JSON.parse(contract.abiCode)
+        const web3 = await Web3Util.getWeb3()
+        const web3Contract = new web3.eth.Contract(abiObject, contract.hash)
 
-        let contractFunctions = abiObject.filter((item) =>
+        const contractFunctions = abiObject.filter((item) =>
             (item.type === 'function') &&
       (item.stateMutability !== 'nonpayable') &&
       (item.stateMutability !== 'payable') &&
       (item.name === functionName) &&
       (item.signature) === signature)
 
-        let rs = await web3Contract.methods[functionName](...strParams.split(',')).call()
+        const rs = await web3Contract.methods[functionName](...strParams.split(',')).call()
 
         for (let i = 0; i < contractFunctions[0].outputs.length; i++) {
-            let output = contractFunctions[0].outputs[i]
-            let outputRs = output
+            const output = contractFunctions[0].outputs[i]
+            const outputRs = output
             let value = ''
 
             if (typeof rs === 'object') {
@@ -343,8 +345,7 @@ ContractController.get('/contractCreator/:slug', async (req, res) => {
     try {
         let hash = req.params.slug
         hash = hash.toLowerCase()
-        let account
-        account = await db.Account.findOne({ hash: hash })
+        const account = await db.Account.findOne({ hash: hash })
 
         return res.json(account)
     } catch (e) {

@@ -10,13 +10,13 @@ const utils = {
         req, modelName, params = {}, total = null, manualPaginate = false) => {
         let perPage = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
         perPage = Math.min(100, perPage)
-        let page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let start = new Date()
+        const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const start = new Date()
 
-        params.query = params.hasOwnProperty('query') ? params.query : {}
-        params.sort = params.hasOwnProperty('sort') ? params.sort : { _id: -1 }
-        params.total = params.hasOwnProperty('total') ? params.total : null
-        params.populate = params.hasOwnProperty('populate') ? params.populate : []
+        params.query = Object.prototype.hasOwnProperty.call(params, 'query') ? params.query : {}
+        params.sort = Object.prototype.hasOwnProperty.call(params, 'sort') ? params.sort : { _id: -1 }
+        params.total = Object.prototype.hasOwnProperty.call(params, 'total') ? params.total : null
+        params.populate = Object.prototype.hasOwnProperty.call(params, 'populate') ? params.populate : []
 
         if (total === null) {
             total = await mongoose.model(modelName).countDocuments(params.query)
@@ -27,19 +27,19 @@ const utils = {
         let builder = mongoose.model(modelName)
             .find(params.query)
             .sort(params.sort)
-        let offset = page > 1 ? (page - 1) * perPage : 0
+        const offset = page > 1 ? (page - 1) * perPage : 0
         if (!manualPaginate) {
             builder = builder.skip(offset)
             builder = builder.limit(perPage)
         }
         builder = builder.populate(params.populate)
-        let items = await builder.maxTimeMS(20000).lean().exec()
+        const items = await builder.maxTimeMS(20000).lean().exec()
 
         if (pages > 500) {
             pages = 500
         }
-        let end = new Date() - start
-        logger.info(`Paginate execution time : %dms model %s query %s sort %s skip %s limit %s`,
+        const end = new Date() - start
+        logger.info('Paginate execution time : %dms model %s query %s sort %s skip %s limit %s',
             end,
             modelName,
             JSON.stringify(params.query),
@@ -124,12 +124,12 @@ const utils = {
         return signer
     },
     getM1M2: async (block) => {
-        let dataBuff = ethUtils.toBuffer(block.extraData)
-        let sig = ethUtils.fromRpcSig(dataBuff.slice(dataBuff.length - 65, dataBuff.length))
+        const dataBuff = ethUtils.toBuffer(block.extraData)
+        const sig = ethUtils.fromRpcSig(dataBuff.slice(dataBuff.length - 65, dataBuff.length))
 
         block.extraData = '0x' + ethUtils.toBuffer(block.extraData).slice(0, dataBuff.length - 65).toString('hex')
 
-        let headerHash = new BlockHeader({
+        const headerHash = new BlockHeader({
             parentHash: ethUtils.toBuffer(block.parentHash),
             uncleHash: ethUtils.toBuffer(block.sha3Uncles),
             coinbase: ethUtils.toBuffer(block.miner),
@@ -147,15 +147,15 @@ const utils = {
             nonce: ethUtils.toBuffer(block.nonce)
         })
 
-        let pub = ethUtils.ecrecover(headerHash.hash(), sig.v, sig.r, sig.s)
+        const pub = ethUtils.ecrecover(headerHash.hash(), sig.v, sig.r, sig.s)
         let m1 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pub).toString('hex'))
         m1 = m1.toLowerCase()
 
         let m2
         try {
-            let dataBuffM2 = ethUtils.toBuffer(block.validator)
-            let sigM2 = ethUtils.fromRpcSig(dataBuffM2.slice(dataBuffM2.length - 65, dataBuffM2.length))
-            let pubM2 = ethUtils.ecrecover(headerHash.hash(), sigM2.v, sigM2.r, sigM2.s)
+            const dataBuffM2 = ethUtils.toBuffer(block.validator)
+            const sigM2 = ethUtils.fromRpcSig(dataBuffM2.slice(dataBuffM2.length - 65, dataBuffM2.length))
+            const pubM2 = ethUtils.ecrecover(headerHash.hash(), sigM2.v, sigM2.r, sigM2.s)
             m2 = ethUtils.addHexPrefix(ethUtils.pubToAddress(pubM2).toString('hex'))
             m2 = m2.toLowerCase()
         } catch (e) {
@@ -206,7 +206,7 @@ const utils = {
     },
     formatNumber: (number) => {
         number = new BigNumber(number.toString())
-        let seps = number.toString().split('.')
+        const seps = number.toString().split('.')
         seps[0] = seps[0].replace(/\B(?=(\d{3})+(?!\d))/g, ',')
         return seps.join('.')
     },
@@ -217,8 +217,8 @@ const utils = {
         if (string.length <= numberStringShowing * 2 + 3) {
             return string
         }
-        let stringBeforeDot = String(string).substr(0, numberStringShowing)
-        let stringAfterDot = String(string).substr(-numberStringShowing)
+        const stringBeforeDot = String(string).substr(0, numberStringShowing)
+        const stringAfterDot = String(string).substr(-numberStringShowing)
         return stringBeforeDot + '...' + stringAfterDot
     }
 

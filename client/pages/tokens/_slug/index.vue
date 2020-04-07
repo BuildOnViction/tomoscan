@@ -261,7 +261,7 @@ export default {
     },
     async mounted () {
         try {
-            let self = this
+            const self = this
 
             self.loading = true
 
@@ -271,16 +271,16 @@ export default {
                 to: { name: 'tokens-slug', params: { slug: self.hash } }
             })
 
-            let params = {}
+            const params = {}
 
             if (self.hash) {
                 params.token = self.hash
             }
 
             params.list = 'token'
-            let query = this.serializeQuery(params)
+            const query = this.serializeQuery(params)
 
-            let responses = await Promise.all([
+            const responses = await Promise.all([
                 self.$axios.get('/api/tokens/' + self.hash),
                 self.$axios.get('/api/counting' + '?' + query)
             ])
@@ -304,9 +304,9 @@ export default {
     },
     methods: {
         async getAccountFromApi () {
-            let self = this
+            const self = this
 
-            let { data } = await this.$axios.get('/api/accounts/' + self.hash)
+            const { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
         },
@@ -325,9 +325,9 @@ export default {
             }
         },
         checkAvatarExist: function (token) {
-            let url = 'https://raw.githubusercontent.com/tomochain/tokens/' + this.tokenBranch +
+            const url = 'https://raw.githubusercontent.com/tomochain/tokens/' + this.tokenBranch +
                 '/tokens/' + token.toLowerCase() + '.png'
-            let xhr = new XMLHttpRequest()
+            const xhr = new XMLHttpRequest()
             xhr.open('HEAD', url, false)
             xhr.send()
 

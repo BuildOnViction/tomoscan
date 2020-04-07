@@ -134,22 +134,22 @@ export default {
         blockNumber: null
     }),
     async mounted () {
-        let self = this
+        const self = this
         self.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
-            let params = {
+            const params = {
                 page: self.currentPage,
                 limit: self.perPage
             }
 
-            let query = this.serializeQuery(params)
-            let { data } = await this.$axios.get('/api/txs/internal/' + self.address + '?' + query)
+            const query = this.serializeQuery(params)
+            const { data } = await this.$axios.get('/api/txs/internal/' + self.address + '?' + query)
             self.total = data.total || (data.items || []).length
             self.pages = data.pages
 
@@ -175,9 +175,9 @@ export default {
             return data
         },
         formatData (items = [], blockTimestamp) {
-            let _items = []
+            const _items = []
             items.forEach((item) => {
-                let _item = item
+                const _item = item
 
                 // Format for timestamp.
                 if (blockTimestamp) {

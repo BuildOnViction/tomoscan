@@ -11,20 +11,20 @@ LogController.get('/logs', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
         let address = req.query.address
-        let params = {}
+        const params = {}
 
         let total = null
         if (address) {
             address = address.toLowerCase()
             params.query = { address: address }
 
-            let acc = await db.Account.findOne({ hash: address })
+            const acc = await db.Account.findOne({ hash: address })
             if (acc) {
                 total = acc.logCount || 0
             }
@@ -35,8 +35,8 @@ LogController.get('/logs', [
             params.query = { transactionHash: tx }
         }
         params.sort = { _id: -1 }
-        let data = await utils.paginate(req, 'Log', params, total)
-        let items = data.items
+        const data = await utils.paginate(req, 'Log', params, total)
+        const items = data.items
         for (let i = 0; i < items.length; i++) {
             data.items[i] = await LogHelper.formatLog(items[i])
         }

@@ -53,7 +53,7 @@ fs.readdirSync(__dirname)
         return (file.indexOf('.') !== 0) && (file !== 'index.js') && (file.indexOf('.map') < 0)
     })
     .forEach(function (file) {
-        let model = require(path.join(__dirname, file))
+        const model = require(path.join(__dirname, file))
         db[model.modelName] = model
     })
 

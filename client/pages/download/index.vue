@@ -122,7 +122,7 @@ export default {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'download', to: { name: 'download' } })
 
-        let address = this.$route.query.address
+        const address = this.$route.query.address
         if (address) {
             this.accountAddress = address
         }
@@ -153,8 +153,8 @@ export default {
                 this.error = false
             }
             if (!this.error) {
-                let token = await this.$recaptcha.execute('download')
-                let body = {
+                const token = await this.$recaptcha.execute('download')
+                const body = {
                     token: token,
                     fromBlock: this.fromBlock,
                     toBlock: this.toBlock,
@@ -162,7 +162,7 @@ export default {
                 }
 
                 self.loadingForm = true
-                let { data } = await this.$axios.post(`/api/accounts/${this.accountAddress}/download`, body)
+                const { data } = await this.$axios.post(`/api/accounts/${this.accountAddress}/download`, body)
                 if (data.errors) {
                     this.errors = data.errors
                 } else {

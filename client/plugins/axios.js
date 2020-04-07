@@ -5,9 +5,9 @@ export default function ({ $axios, redirect, app, store }) {
         if (process.client) {
             window.$nuxt.$loading.start()
 
-            let token = Cookie.get('token')
+            const token = Cookie.get('token')
             if (token) {
-                config.headers.common['Authorization'] = token
+                config.headers.common.Authorization = token
             }
             config.headers.common['Access-Control-Allow-Origin'] = '*'
         }

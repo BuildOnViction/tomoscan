@@ -117,7 +117,7 @@ export default {
             }
         },
         async register () {
-            let self = this
+            const self = this
 
             const email = self.formEmail
             const password = self.formPassword

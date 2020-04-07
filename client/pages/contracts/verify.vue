@@ -157,14 +157,14 @@ export default {
         }
     },
     mounted () {
-        let self = this
+        const self = this
 
         self.loading = true
 
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'contracts-verify', to: { name: 'contracts-verify' } })
 
-        let address = self.$route.query.address
+        const address = self.$route.query.address
         if (address) {
             self.contractAddress = address
         }
@@ -189,8 +189,8 @@ export default {
             }
         },
         async getVersions () {
-            let self = this
-            let { data } = await self.$axios.get('/api/soljsons')
+            const self = this
+            const { data } = await self.$axios.get('/api/soljsons')
 
             self.compilers = data.map((version, i) => ({
                 value: i,
@@ -200,9 +200,9 @@ export default {
         },
 
         async submitVerifyContract () {
-            let self = this
+            const self = this
 
-            let body = {
+            const body = {
                 contractAddress: self.contractAddress,
                 contractName: self.contractName,
                 sourceCode: self.solidityCode,
@@ -212,7 +212,7 @@ export default {
 
             self.errors = []
             self.loadingForm = true
-            let { data } = await self.$axios.post('/api/contracts', body)
+            const { data } = await self.$axios.post('/api/contracts', body)
             if (data.errors) {
                 self.errors = data.errors
             } else {

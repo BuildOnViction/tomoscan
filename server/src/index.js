@@ -60,7 +60,7 @@ mongoose.connect(config.get('MONGODB_URI'),
 
 if (config.get('DEBUG_QUERY') === true) {
     mongoose.set('debug', function (coll, method, query, doc, options) {
-        let set = {
+        const set = {
             coll: coll,
             method: method,
             query: query,

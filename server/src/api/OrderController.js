@@ -15,13 +15,13 @@ OrderController.get('/orders', [
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
-        let query = {}
+        const query = {}
         if (req.query.user) {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
@@ -38,15 +38,15 @@ OrderController.get('/orders', [
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
         }
-        let total = await dexDb.Order.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query, {
+        const total = await dexDb.Order.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.Order.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -64,7 +64,7 @@ OrderController.get('/orders', [
 OrderController.get('/orders/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -88,24 +88,24 @@ OrderController.get('/orders/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { exchangeAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
-        let total = await dexDb.Order.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query, {
+        const query = { exchangeAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
+        const total = await dexDb.Order.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.Order.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -125,24 +125,24 @@ OrderController.get('/orders/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { userAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
-        let total = await dexDb.Order.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query, {
+        const query = { userAddress: hash, $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }] }
+        const total = await dexDb.Order.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.Order.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -164,15 +164,15 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
-    let baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
-    let quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
+    const web3 = await Web3Util.getWeb3()
+    const baseToken = web3.utils.toChecksumAddress(req.params.baseToken)
+    const quoteToken = web3.utils.toChecksumAddress(req.params.quoteToken)
     try {
-        let query = {
+        const query = {
             baseToken: baseToken,
             quoteToken: quoteToken,
             $or: [{ status: 'OPEN' }, { status: 'PARTIAL_FILLED' }]
@@ -180,15 +180,15 @@ OrderController.get('/orders/listByPair/:baseToken/:quoteToken', [
         if (req.query.userAddress) {
             query.userAddress = web3.utils.toChecksumAddress(req.query.userAddress)
         }
-        let total = await dexDb.Order.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.Order.find(query, {
+        const total = await dexDb.Order.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.Order.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,

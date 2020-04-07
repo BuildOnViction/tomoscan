@@ -9,18 +9,18 @@ RelayerController.get('/relayers', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     try {
-        let total = await dexDb.Relayer.countDocuments()
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let relayers = await dexDb.Relayer.find({})
+        const total = await dexDb.Relayer.countDocuments()
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const relayers = await dexDb.Relayer.find({})
             .sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,

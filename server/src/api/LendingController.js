@@ -18,13 +18,13 @@ LendingController.get('/lending/orders', [
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
-        let query = {}
+        const query = {}
         if (req.query.user && req.query.user !== '') {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
@@ -59,15 +59,15 @@ LendingController.get('/lending/orders', [
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
         }
-        let total = await dexDb.LendingItem.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingItem.find(query, {
+        const total = await dexDb.LendingItem.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingItem.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -85,7 +85,7 @@ LendingController.get('/lending/orders', [
 LendingController.get('/lending/orders/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -109,24 +109,24 @@ LendingController.get('/lending/orders/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { relayer: hash }
-        let total = await dexDb.LendingItem.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingItem.find(query, {
+        const query = { relayer: hash }
+        const total = await dexDb.LendingItem.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingItem.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -146,24 +146,24 @@ LendingController.get('/lending/orders/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { userAddress: hash }
-        let total = await dexDb.LendingItem.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingItem.find(query, {
+        const query = { userAddress: hash }
+        const total = await dexDb.LendingItem.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingItem.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -189,21 +189,21 @@ LendingController.get('/lending/trades', [
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
-        let query = {}
+        const query = {}
         if (req.query.user) {
             if (web3.utils.isAddress(req.query.user)) {
-                let user = web3.utils.toChecksumAddress(req.query.user)
-                query['$or'] = [
+                const user = web3.utils.toChecksumAddress(req.query.user)
+                query.$or = [
                     { investor: user }, { borrower: user }
                 ]
             } else {
-                query['$or'] = [
+                query.$or = [
                     { investor: req.query.user }, { borrower: req.query.user }
                 ]
             }
@@ -225,15 +225,15 @@ LendingController.get('/lending/trades', [
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
         }
-        let total = await dexDb.LendingTrade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.LendingTrade.find(query, {
+        const total = await dexDb.LendingTrade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.LendingTrade.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -251,7 +251,7 @@ LendingController.get('/lending/trades', [
 LendingController.get('/lending/trades/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -275,24 +275,24 @@ LendingController.get('/lending/trades/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { $or: [ { borrowingRelayer: hash }, { investingRelayer: hash } ] }
-        let total = await dexDb.LendingTrade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.LendingTrade.find(query, {
+        const query = { $or: [{ borrowingRelayer: hash }, { investingRelayer: hash }] }
+        const total = await dexDb.LendingTrade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.LendingTrade.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -312,24 +312,24 @@ LendingController.get('/lending/trades/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { $or: [ { borrower: hash }, { investor: hash } ] }
-        let total = await dexDb.LendingTrade.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let trades = await dexDb.LendingTrade.find(query, {
+        const query = { $or: [{ borrower: hash }, { investor: hash }] }
+        const total = await dexDb.LendingTrade.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const trades = await dexDb.LendingTrade.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -355,13 +355,13 @@ LendingController.get('/lending/topup', [
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
-        let query = {}
+        const query = {}
         if (req.query.user) {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
@@ -396,15 +396,15 @@ LendingController.get('/lending/topup', [
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
         }
-        let total = await dexDb.LendingTopup.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        const total = await dexDb.LendingTopup.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingTopup.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -422,7 +422,7 @@ LendingController.get('/lending/topup', [
 LendingController.get('/lending/topup/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -446,24 +446,24 @@ LendingController.get('/lending/topup/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { relayer: hash }
-        let total = await dexDb.LendingTopup.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        const query = { relayer: hash }
+        const total = await dexDb.LendingTopup.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingTopup.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -483,24 +483,24 @@ LendingController.get('/lending/topup/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { userAddress: hash }
-        let total = await dexDb.LendingTopup.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingTopup.find(query, {
+        const query = { userAddress: hash }
+        const total = await dexDb.LendingTopup.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingTopup.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -526,13 +526,13 @@ LendingController.get('/lending/repay', [
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
-        let query = {}
+        const query = {}
         if (req.query.user) {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
@@ -567,15 +567,15 @@ LendingController.get('/lending/repay', [
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
         }
-        let total = await dexDb.LendingRepay.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingRepay.find(query, {
+        const total = await dexDb.LendingRepay.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -593,7 +593,7 @@ LendingController.get('/lending/repay', [
 LendingController.get('/lending/repay/:slug', [
     check('slug').exists().isLength({ min: 66, max: 66 }).withMessage('Lending order hash is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
@@ -617,24 +617,24 @@ LendingController.get('/lending/repay/listByDex/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     let hash = req.params.slug
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { relayer: hash }
-        let total = await dexDb.LendingRepay.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingRepay.find(query, {
+        const query = { relayer: hash }
+        const total = await dexDb.LendingRepay.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,
@@ -654,24 +654,24 @@ LendingController.get('/lending/repay/listByAccount/:slug', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
     let hash = req.params.slug
-    let web3 = await Web3Util.getWeb3()
+    const web3 = await Web3Util.getWeb3()
     try {
         hash = web3.utils.toChecksumAddress(hash)
-        let query = { userAddress: hash }
-        let total = await dexDb.LendingRepay.countDocuments(query)
-        let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
-        let currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-        let pages = Math.ceil(total / limit)
-        let orders = await dexDb.LendingRepay.find(query, {
+        const query = { userAddress: hash }
+        const total = await dexDb.LendingRepay.countDocuments(query)
+        const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
+        const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+        const pages = Math.ceil(total / limit)
+        const orders = await dexDb.LendingRepay.find(query, {
             signature: 0,
             key: 0
         }).sort({ _id: -1 }).limit(limit).skip((currentPage - 1) * limit).lean().exec()
-        let data = {
+        const data = {
             total: total,
             perPage: limit,
             currentPage: currentPage,

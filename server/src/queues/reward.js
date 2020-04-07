@@ -6,10 +6,10 @@ const consumer = {}
 consumer.name = 'RewardProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
-    let epoch = parseInt(job.data.epoch)
+    const epoch = parseInt(job.data.epoch)
     logger.info('Reward calculate for epoch %s attempts %s', epoch, job.toJSON().attempts.made)
     try {
-        let check = await RewardHelper.rewardOnChain(epoch)
+        const check = await RewardHelper.rewardOnChain(epoch)
         if (check) {
             return done()
         } else {

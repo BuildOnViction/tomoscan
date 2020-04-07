@@ -14,14 +14,14 @@ TokenHolderController.get('/token-holders', [
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('hash').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let address = (req.query.address || '').toLowerCase()
-    let hash = (req.query.hash || '').toLowerCase()
+    const address = (req.query.address || '').toLowerCase()
+    const hash = (req.query.hash || '').toLowerCase()
     try {
-        let params = {}
+        const params = {}
         if (address) {
             params.query = { token: address }
         }
@@ -30,37 +30,37 @@ TokenHolderController.get('/token-holders', [
         }
         params.sort = { quantityNumber: -1 }
         params.query = Object.assign(params.query, { quantityNumber: { $gt: 0 } })
-        let data = await paginate(req, 'TokenHolder', params)
+        const data = await paginate(req, 'TokenHolder', params)
 
-        let items = data.items
+        const items = data.items
         if (items.length) {
             // Get token totalSupply.
             let totalSupply = null
             let decimals
             if (address) {
-                let token = await db.Token.findOne({ hash: address })
+                const token = await db.Token.findOne({ hash: address })
                 if (token) {
                     totalSupply = token.totalSupply
                     decimals = token.decimals
                 }
             }
-            let length = items.length
-            let baseRank = (data.currentPage - 1) * data.perPage
+            const length = items.length
+            const baseRank = (data.currentPage - 1) * data.perPage
             for (let i = 0; i < length; i++) {
                 items[i] = await TokenHolderHelper.formatHolder(items[i], totalSupply, decimals)
-                items[i]['rank'] = baseRank + i + 1
+                items[i].rank = baseRank + i + 1
             }
 
             // Get tokens.
-            let tokenHashes = []
+            const tokenHashes = []
             for (let i = 0; i < length; i++) {
-                tokenHashes.push(items[i]['token'])
+                tokenHashes.push(items[i].token)
             }
-            let tokens = await db.Token.find({ hash: { $in: tokenHashes } })
+            const tokens = await db.Token.find({ hash: { $in: tokenHashes } })
             if (tokens.length) {
                 for (let i = 0; i < length; i++) {
                     for (let j = 0; j < tokens.length; j++) {
-                        if (items[i]['token'] === tokens[j]['hash']) {
+                        if (items[i].token === tokens[j].hash) {
                             tokens[j].name = tokens[j]
                                 .name
                                 .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
@@ -69,15 +69,15 @@ TokenHolderController.get('/token-holders', [
                                 .symbol
                                 .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
                                 .trim()
-                            items[i]['tokenObj'] = tokens[j]
+                            items[i].tokenObj = tokens[j]
                         }
                     }
                 }
             }
 
-            let map = items.map(async it => {
-                let d = (it['tokenObj'] || {}).decimals || decimals
-                let tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: d }, it.hash)
+            const map = items.map(async it => {
+                const d = (it.tokenObj || {}).decimals || decimals
+                const tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: d }, it.hash)
                 it.quantity = tk.quantity
                 it.quantityNumber = tk.quantityNumber
             })
@@ -99,14 +99,14 @@ TokenHolderController.get('/token-holders/trc21', [
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('hash').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let address = (req.query.address || '').toLowerCase()
-    let hash = (req.query.hash || '').toLowerCase()
+    const address = (req.query.address || '').toLowerCase()
+    const hash = (req.query.hash || '').toLowerCase()
     try {
-        let params = {}
+        const params = {}
         if (address) {
             params.query = { token: address }
         }
@@ -115,37 +115,37 @@ TokenHolderController.get('/token-holders/trc21', [
         }
         params.sort = { quantityNumber: -1 }
         params.query = Object.assign(params.query, { quantityNumber: { $gt: 0 } })
-        let data = await paginate(req, 'TokenTrc21Holder', params)
+        const data = await paginate(req, 'TokenTrc21Holder', params)
 
-        let items = data.items
+        const items = data.items
         if (items.length) {
             // Get token totalSupply.
             let totalSupply = null
             let decimals
             if (address) {
-                let token = await db.Token.findOne({ hash: address })
+                const token = await db.Token.findOne({ hash: address })
                 if (token) {
                     totalSupply = token.totalSupply
                     decimals = token.decimals
                 }
             }
-            let length = items.length
-            let baseRank = (data.currentPage - 1) * data.perPage
+            const length = items.length
+            const baseRank = (data.currentPage - 1) * data.perPage
             for (let i = 0; i < length; i++) {
                 items[i] = await TokenHolderHelper.formatHolder(items[i], totalSupply, decimals)
-                items[i]['rank'] = baseRank + i + 1
+                items[i].rank = baseRank + i + 1
             }
 
             // Get tokens.
-            let tokenHashes = []
+            const tokenHashes = []
             for (let i = 0; i < length; i++) {
-                tokenHashes.push(items[i]['token'])
+                tokenHashes.push(items[i].token)
             }
-            let tokens = await db.Token.find({ hash: { $in: tokenHashes } })
+            const tokens = await db.Token.find({ hash: { $in: tokenHashes } })
             if (tokens.length) {
                 for (let i = 0; i < length; i++) {
                     for (let j = 0; j < tokens.length; j++) {
-                        if (items[i]['token'] === tokens[j]['hash']) {
+                        if (items[i].token === tokens[j].hash) {
                             tokens[j].name = tokens[j]
                                 .name
                                 .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
@@ -154,14 +154,14 @@ TokenHolderController.get('/token-holders/trc21', [
                                 .symbol
                                 .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
                                 .trim()
-                            items[i]['tokenObj'] = tokens[j]
+                            items[i].tokenObj = tokens[j]
                         }
                     }
                 }
             }
-            let map = items.map(async it => {
-                let d = (it['tokenObj'] || {}).decimals || decimals
-                let tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: d }, it.hash)
+            const map = items.map(async it => {
+                const d = (it.tokenObj || {}).decimals || decimals
+                const tk = await TokenHelper.getTokenBalance({ hash: it.token, decimals: d }, it.hash)
                 it.quantity = tk.quantity
                 it.quantityNumber = tk.quantityNumber
             })
@@ -182,14 +182,14 @@ TokenHolderController.get('/token-holders/nft', [
     check('address').optional().isLength({ min: 42, max: 42 }).withMessage('Account address is incorrect.'),
     check('hash').optional().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.')
 ], async (req, res) => {
-    let errors = validationResult(req)
+    const errors = validationResult(req)
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() })
     }
-    let address = (req.query.address || '').toLowerCase()
-    let hash = (req.query.hash || '').toLowerCase()
+    const address = (req.query.address || '').toLowerCase()
+    const hash = (req.query.hash || '').toLowerCase()
     try {
-        let params = {}
+        const params = {}
         if (address) {
             params.query = { token: address }
         }
@@ -197,22 +197,22 @@ TokenHolderController.get('/token-holders/nft', [
             params.query = { hash: hash }
         }
         params.query = Object.assign(params.query)
-        let data = await paginate(req, 'TokenNftHolder', params)
+        const data = await paginate(req, 'TokenNftHolder', params)
 
-        let items = data.items
+        const items = data.items
         if (items.length) {
-            let length = items.length
+            const length = items.length
 
             // Get tokens.
-            let tokenHashes = []
+            const tokenHashes = []
             for (let i = 0; i < length; i++) {
-                tokenHashes.push(items[i]['token'])
+                tokenHashes.push(items[i].token)
             }
-            let tokens = await db.Token.find({ hash: { $in: tokenHashes } })
+            const tokens = await db.Token.find({ hash: { $in: tokenHashes } })
             if (tokens.length) {
                 for (let i = 0; i < length; i++) {
                     for (let j = 0; j < tokens.length; j++) {
-                        if (items[i]['token'] === tokens[j]['hash']) {
+                        if (items[i].token === tokens[j].hash) {
                             tokens[j].name = tokens[j]
                                 .name
                                 .replace(/\u0000/g, '') // eslint-disable-line no-control-regex
@@ -221,7 +221,7 @@ TokenHolderController.get('/token-holders/nft', [
                                 .symbol
                                 .replace(/\u0004/g, '') // eslint-disable-line no-control-regex
                                 .trim()
-                            items[i]['tokenObj'] = tokens[j]
+                            items[i].tokenObj = tokens[j]
                         }
                     }
                 }

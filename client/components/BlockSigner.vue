@@ -65,13 +65,13 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            let self = this
+            const self = this
 
             // Show loading.
             self.loading = true
 
-            let { data } = await this.$axios.get('/api/blocks/signers/' + self.block)
-            let signers = data.signers
+            const { data } = await this.$axios.get('/api/blocks/signers/' + self.block)
+            const signers = data.signers
             // let dataSigners = []
             let num = 1
             signers.forEach((item) => {
