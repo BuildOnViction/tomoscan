@@ -119,21 +119,16 @@
                     {{ hiddenString(props.item.investor.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="lendingToken"
-                slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
-            </template>
-            <template
                 slot="collateralToken"
                 slot-scope="props">
+                {{ formatNumber(props.item.collateralLockedAmount) }}
                 <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
-                    {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
+                    :to="{name: 'tokens-slug',
+                          params: {slug: props.item.collateralSymbol}}">
+                    {{ props.item.collateralSymbol }}</nuxt-link>
             </template>
             <template
-                slot="amount"
+                slot="lendingToken"
                 slot-scope="props">
                 {{ props.item.amount === null ? 0 : formatNumber(props.item.amount) }}
                 <nuxt-link
@@ -195,9 +190,8 @@ export default {
             hash: { label: 'Hash' },
             borrower: { label: 'Borrower' },
             investor: { label: 'Investor' },
-            lendingToken: { label: 'Lending Token' },
-            collateralToken: { label: 'Collateral Token' },
-            amount: { label: 'Amount' },
+            lendingToken: { label: 'Lending Amount' },
+            collateralToken: { label: 'Collateral Amount' },
             borrowingFee: { label: 'Fee' },
             status: { label: 'Status' },
             createdAt: { label: 'Age' }
