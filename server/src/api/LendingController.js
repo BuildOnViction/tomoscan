@@ -24,7 +24,7 @@ LendingController.get('/lending/orders', [
     }
     const web3 = await Web3Util.getWeb3()
     try {
-        const query = {}
+        let query = {}
         if (req.query.user && req.query.user !== '') {
             if (web3.utils.isAddress(req.query.user)) {
                 query.userAddress = web3.utils.toChecksumAddress(req.query.user)
@@ -60,7 +60,14 @@ LendingController.get('/lending/orders', [
             query.status = req.query.status.toUpperCase()
         }
         if (req.query.tradeHash) {
-            query.hash = req.query.tradeHash.toLowerCase()
+            const trade = await dexDb.LendingTrade.findOne({ hash: req.query.tradeHash.toLowerCase() })
+            if (trade) {
+                query = Object.assign({}, query, {
+                    $or: [{ hash: trade.borrowingOrderHash }, { hash: trade.investingOrderHash }]
+                })
+            } else {
+                query.hash = null
+            }
         }
         const total = await dexDb.LendingItem.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -227,9 +234,6 @@ LendingController.get('/lending/trades', [
         }
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
-        }
-        if (req.query.tradeHash) {
-            query.hash = req.query.tradeHash.toLowerCase()
         }
         const total = await dexDb.LendingTrade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
