@@ -59,6 +59,9 @@ LendingController.get('/lending/orders', [
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
         }
+        if (req.query.tradeHash) {
+            query.hash = req.query.tradeHash.toLowerCase()
+        }
         const total = await dexDb.LendingItem.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -224,6 +227,9 @@ LendingController.get('/lending/trades', [
         }
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
+        }
+        if (req.query.tradeHash) {
+            query.hash = req.query.tradeHash.toLowerCase()
         }
         const total = await dexDb.LendingTrade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -396,6 +402,9 @@ LendingController.get('/lending/topup', [
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
         }
+        if (req.query.tradeHash) {
+            query.hash = req.query.tradeHash.toLowerCase()
+        }
         const total = await dexDb.LendingTopup.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -566,6 +575,9 @@ LendingController.get('/lending/repay', [
         }
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
+        }
+        if (req.query.tradeHash) {
+            query.hash = req.query.tradeHash.toLowerCase()
         }
         const total = await dexDb.LendingRepay.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
