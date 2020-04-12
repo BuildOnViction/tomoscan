@@ -21,13 +21,6 @@ TradeController.get('/trades', [
         const web3 = await Web3Util.getWeb3()
         const query = {}
         if (req.query.user) {
-            if (req.query.user) {
-                if (web3.utils.isAddress(req.query.user)) {
-                    query.userAddress = web3.utils.toChecksumAddress(req.query.user)
-                } else {
-                    query.userAddress = req.query.user
-                }
-            }
             const user = web3.utils.toChecksumAddress(req.query.user)
             query.$or = [{ taker: user }, { maker: user }]
         }
@@ -37,6 +30,7 @@ TradeController.get('/trades', [
         if (req.query.type) {
             query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
         }
+        console.log('query', query)
         const total = await dexDb.Trade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1

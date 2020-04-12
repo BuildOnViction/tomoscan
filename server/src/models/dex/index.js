@@ -5,6 +5,8 @@ const db = {}
 
 const conn = mongoose.createConnection(config.get('MONGODB_DEX_URI'))
 const Order = conn.model('Order', new Schema({
+    hash: { type: String, index: true },
+    txHash: { type: String, index: true },
     exchangeAddress: { type: String, index: true },
     baseToken: { type: String, index: true },
     quoteToken: { type: String, index: true },
@@ -17,13 +19,12 @@ const Order = conn.model('Order', new Schema({
     quantity: String,
     price: String,
     filledAmount: String,
-    makeFee: String,
-    takeFee: String,
     pairName: String
 }))
 db.Order = Order
 
 const Trade = conn.model('Trade', new Schema({
+    hash: { type: String, index: true },
     taker: { type: String, index: true },
     maker: { type: String, index: true },
     baseToken: { type: String, index: true },
@@ -35,6 +36,8 @@ const Trade = conn.model('Trade', new Schema({
     makerOrderHash: { type: String, index: true },
     pairName: String,
     amount: String,
+    makeFee: String,
+    takeFee: String,
     pricepoint: String,
     status: { type: String, index: true }
 }))
