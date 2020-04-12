@@ -11,6 +11,7 @@ LendingController.get('/lending/orders', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
     check('lendingToken').optional().isLength({ min: 42, max: 42 }).withMessage('lendingToken address is incorrect.'),
+    check('tradeHash').optional().isLength({ min: 66, max: 66 }).withMessage('lending trade hash is incorrect.'),
     check('collateralToken').optional().isLength({ min: 42, max: 42 })
         .withMessage('collateralToken address is incorrect.'),
     check('relayer').optional().isLength({ min: 42, max: 42 }).withMessage('relayer address is incorrect.'),
@@ -192,6 +193,7 @@ LendingController.get('/lending/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
     check('lendingToken').optional().isLength({ min: 42, max: 42 }).withMessage('lendingToken address is incorrect.'),
+    check('orderHash').optional().isLength({ min: 66, max: 66 }).withMessage('lending order hash is incorrect.'),
     check('collateralToken').optional().isLength({ min: 42, max: 42 })
         .withMessage('collateralToken address is incorrect.'),
     check('relayer').optional().isLength({ min: 42, max: 42 }).withMessage('relayer address is incorrect.'),
@@ -205,7 +207,7 @@ LendingController.get('/lending/trades', [
     }
     const web3 = await Web3Util.getWeb3()
     try {
-        const query = {}
+        let query = {}
         if (req.query.user) {
             if (web3.utils.isAddress(req.query.user)) {
                 const user = web3.utils.toChecksumAddress(req.query.user)
@@ -234,6 +236,12 @@ LendingController.get('/lending/trades', [
         }
         if (req.query.status) {
             query.status = req.query.status.toUpperCase()
+        }
+        if (req.query.orderHash) {
+            const orderHash = req.query.orderHash
+            query = Object.assign({}, query, {
+                $or: [{ borrowingOrderHash: orderHash }, { investingOrderHash: orderHash }]
+            })
         }
         const total = await dexDb.LendingTrade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -358,6 +366,7 @@ LendingController.get('/lending/topup', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
     check('lendingToken').optional().isLength({ min: 42, max: 42 }).withMessage('lendingToken address is incorrect.'),
+    check('tradeHash').optional().isLength({ min: 66, max: 66 }).withMessage('lending trade hash is incorrect.'),
     check('collateralToken').optional().isLength({ min: 42, max: 42 })
         .withMessage('collateralToken address is incorrect.'),
     check('relayer').optional().isLength({ min: 42, max: 42 }).withMessage('relayer address is incorrect.'),
@@ -532,6 +541,7 @@ LendingController.get('/lending/repay', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
     check('lendingToken').optional().isLength({ min: 42, max: 42 }).withMessage('lendingToken address is incorrect.'),
+    check('tradeHash').optional().isLength({ min: 66, max: 66 }).withMessage('lending trade hash is incorrect.'),
     check('collateralToken').optional().isLength({ min: 42, max: 42 })
         .withMessage('collateralToken address is incorrect.'),
     check('relayer').optional().isLength({ min: 42, max: 42 }).withMessage('relayer address is incorrect.'),

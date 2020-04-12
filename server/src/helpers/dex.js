@@ -199,7 +199,6 @@ const DexHelper = {
             quantity = quantity.dividedBy(10 ** decimals[ct].decimals).toNumber()
 
             let amount = new BigNumber(trades[i].amount)
-            console.log('amount', trades[i].amount)
             amount = amount.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let borrowingFee = new BigNumber(trades[i].borrowingFee)
