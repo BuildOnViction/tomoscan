@@ -3,9 +3,10 @@
         v-if="loading"
         :class="(loading ? 'tomo-loading tomo-loading--full' : '')"/>
     <section v-else>
+
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('lending repay', 'lending repays', total) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('trade history', 'trades history', total) }}</p>
         <form
             v-if="showFilter"
             class="form-inline mb-30 filter-box"
@@ -21,41 +22,12 @@
             </div>
             <div class="form-group mr-2 mb-2">
                 <input
-                    id="lendingToken"
-                    v-model="lendingToken"
-                    name="lendingToken"
+                    id="inputPairName"
+                    v-model="pair"
+                    name="pair"
                     type="text"
                     class="form-control"
-                    placeholder="Lending Token">
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <input
-                    id="collateralToken"
-                    v-model="collateralToken"
-                    name="collateralToken"
-                    type="text"
-                    class="form-control"
-                    placeholder="Collateral Token">
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <select
-                    id="inputStatus"
-                    v-model="status"
-                    name="status"
-                    class="form-control mx-sm-1">
-                    <option
-                        :selected="status === '' ? 'selected' : ''"
-                        value=""
-                        hidden
-                        disabled>Select status</option>
-                    <option value="">No filter</option>
-                    <option
-                        :selected="status === 'REPAY' ? 'selected' : ''"
-                        value="REPAY">REPAY</option>
-                    <option
-                        :selected="status === 'REJECTED' ? 'selected' : ''"
-                        value="REJECTED">REJECTED</option>
-                </select>
+                    placeholder="Pair name">
             </div>
             <div class="form-group mr-2 mb-2">
                 <button
@@ -71,61 +43,65 @@
         </form>
 
         <div
-            v-if="total === 0"
+            v-if="total == 0"
             class="tomo-empty">
             <i class="fa fa-exchange tomo-empty__icon"/>
-            <p class="tomo-empty__description">No repay found</p>
+            <p class="tomo-empty__description">No order found</p>
         </div>
+
         <table-base
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--lending-repay">
+            class="tomo-table--trades">
             <template
                 slot="hash"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'lending-repay-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    :to="{name: 'trades-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    <i
+                        v-if="props.item.status === 'ERROR'"
+                        class="fa fa-exclamation mr-1 text-danger tx-failed"/>
                     {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="userAddress"
+                slot="taker"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'address-slug', params: {slug: props.item.userAddress.toLowerCase()}}">
-                    {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.taker.toLowerCase()}}">
+                    {{ hiddenString(props.item.taker.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="lendingToken"
+                slot="maker"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
+                    :to="{name: 'address-slug', params: {slug: props.item.maker.toLowerCase()}}">
+                    {{ hiddenString(props.item.maker.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="collateralToken"
+                slot="pairName"
                 slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
-                    {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
+                <span>
+                    <nuxt-link
+                        v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
+                        :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
+                        {{ props.item.pairName.split('/')[0] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[0] }}</span>/<nuxt-link
+                        v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
+                        :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
+                    >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
+                </span>
             </template>
             <template
-                slot="quantity"
+                slot="pricepoint"
                 slot-scope="props">
-                {{ formatNumber(props.item.quantity) }}
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                {{ formatNumber(props.item.pricepoint) + ' ' + props.item.pairName.split('/')[1] }}
             </template>
             <template
-                slot="interest"
+                slot="amount"
                 slot-scope="props">
-                {{ formatNumber(props.item.interest) }} %
-            </template>
-            <template
-                slot="status"
-                slot-scope="props">
-                {{ props.item.status }}
+                {{ formatNumber(props.item.amount) + ' ' + props.item.pairName.split('/')[0] }}
             </template>
             <template
                 slot="createdAt"
@@ -164,10 +140,6 @@ export default {
             type: Boolean,
             default: false
         },
-        tradeHash: {
-            type: String,
-            default: ''
-        },
         userAddress: {
             type: String,
             default: ''
@@ -175,13 +147,12 @@ export default {
     },
     data: () => ({
         fields: {
-            hash: { label: 'Hash' },
-            userAddress: { label: 'User' },
-            lendingToken: { label: 'Lending Token' },
-            collateralToken: { label: 'Collateral Token' },
-            quantity: { label: 'Quantity' },
-            interest: { label: 'Interest' },
-            status: { label: 'Status' },
+            hash: { label: 'Trade hash' },
+            taker: { label: 'Taker' },
+            maker: { label: 'Maker' },
+            pairName: { label: 'Pair Name' },
+            pricepoint: { label: 'Price' },
+            amount: { label: 'Amount' },
             createdAt: { label: 'Age' }
         },
         loading: true,
@@ -192,27 +163,19 @@ export default {
         pages: 1,
         blockNumber: null,
         user: '',
-        lendingToken: '',
-        collateralToken: '',
-        status: '',
-        side: ''
+        pair: ''
     }),
     async created () {
         if (this.$route.query.user) {
             this.user = this.$route.query.user
         }
-        if (this.$route.query.lendingToken) {
-            this.lendingToken = this.$route.query.lendingToken
+        if (this.$route.query.pair) {
+            this.pair = this.$route.query.pair
         }
-        if (this.$route.query.collateralToken) {
-            this.collateralToken = this.$route.query.collateralToken
-        }
-        if (this.$route.query.side) {
-            this.side = this.$route.query.side
-        }
-        if (this.$route.query.status) {
-            this.status = this.$route.query.status
-        }
+        this.$store.commit('breadcrumb/setItems', {
+            name: 'trades',
+            to: { name: 'trades' }
+        })
         this.getDataFromApi()
     },
     methods: {
@@ -224,29 +187,18 @@ export default {
                 page: self.currentPage,
                 limit: self.perPage
             }
-            // tab on address detail
             if (this.userAddress !== '') {
                 params.user = this.userAddress
-
-            // tab on lending trade
-            } else if (this.tradeHash !== '') {
-                params.tradeHash = this.tradeHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()
                 }
-                if (this.lendingToken !== '') {
-                    params.lendingToken = this.lendingToken
-                }
-                if (this.collateralToken !== '') {
-                    params.collateralToken = this.collateralToken
-                }
-                if (this.status !== '') {
-                    params.status = this.status
+                if (this.pair !== '') {
+                    params.pair = this.pair.trim()
                 }
             }
             const query = this.serializeQuery(params)
-            const { data } = await this.$axios.get('/api/lending/repay?' + query)
+            const { data } = await this.$axios.get('/api/trades?' + query)
             self.total = data.total
             self.pages = data.pages
 
@@ -257,10 +209,9 @@ export default {
                 self.page.txsCount = self.total
             }
 
-            data.items.forEach(async (item, index, array) => {
+            data.items.forEach((item, index, array) => {
                 if (index === array.length - 1) {
                     self.items = self.formatData(array)
-
                     // Hide loading.
                     self.loading = false
                 }
@@ -273,9 +224,8 @@ export default {
         },
         async reset () {
             this.user = ''
-            this.status = ''
-            this.lendingToken = ''
-            this.collateralToken = ''
+            this.pair = ''
+            this.type = ''
             await this.getDataFromApi()
         },
         formatData (items = []) {

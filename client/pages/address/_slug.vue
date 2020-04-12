@@ -50,7 +50,7 @@
                         <tr>
                             <td>Transactions</td>
                             <td>
-                                <span>{{ formatNumber(totalTxsCount) }}</span> txns
+                                <span>{{ formatNumber(totalInTx + totalOutTx) }}</span> txns
                             </td>
                         </tr>
                         <tr v-if="address && !address.isContract">
@@ -139,30 +139,16 @@
             v-model="tabIndex"
             class="tomo-tabs"
             @input="onSwitchTab">
-            <!--:title="'In Transactions (' + formatNumber(inTxsCount) + ')'"-->
             <b-tab
-                id="inTransactions"
-                title="In Transactions"
-                href="#inTransactions">
+                id="transactions"
+                title="Transactions"
+                href="#transactions">
                 <table-tx-by-account
                     :address="hash"
-                    :type="'in'"
+                    :type="'all'"
                     :parent="'#inTransactions'"
                     :page="this"/>
             </b-tab>
-            <!--:title="'Out Transactions (' + formatNumber(outTxsCount) + ')'"-->
-            <b-tab
-                v-if="!address.isContract"
-                id="outTransactions"
-                title="Out Transactions"
-                href="#outTransactions">
-                <table-tx-by-account
-                    :address="hash"
-                    :type="'out'"
-                    :parent="'#outTransactions'"
-                    :page="this"/>
-            </b-tab>
-            <!--:title="'Internal Transactions (' + formatNumber(internalTxsCount) + ')'"-->
             <b-tab
                 id="internalTransactions"
                 title="Internal Transactions"
@@ -172,18 +158,6 @@
                     :parent="'#internalTransactions'"
                     :page="this"/>
             </b-tab>
-            <!--:title="'Created Blocks (' + formatNumber(blocksCount) + ')'"-->
-            <b-tab
-                v-if="!address.isContract"
-                id="minedBlocks"
-                title="Created Blocks"
-                href="#minedBlocks">
-                <table-block-by-account
-                    :address="hash"
-                    :page="this"
-                    :parent="'minedBlocks'"/>
-            </b-tab>
-            <!--:title="'Token Holding (' + formatNumber(tokensCount) + ')'"-->
             <b-tab
                 v-if="address && address.hasTrc20"
                 id="trc20Holding"
@@ -237,20 +211,8 @@
                 <read-contract
                     :contract="hash"/>
             </b-tab>
-            <!--:title="'Events (' + formatNumber(eventsCount) + ')'"-->
             <b-tab
                 v-if="!address.isContract"
-                id="events"
-                title="Events"
-                href="#events">
-                <table-event
-                    :address="hash"
-                    :parent="'events'"
-                    :page="this"/>
-            </b-tab>
-            <!--:title="'Rewards (' + formatNumber(rewardTime) + ')'"-->
-            <b-tab
-                v-if="hasReward && !address.isContract"
                 id="rewards"
                 title="Rewards"
                 href="#rewards">
@@ -258,6 +220,34 @@
                     :address="hash"
                     :parent="'rewards'"
                     :page="this"/>
+            </b-tab>
+            <b-tab
+                id="tradeHistories"
+                title="Trade History"
+                href="#tradeHistories">
+                <table-trade-history
+                    :user-address="hash"/>
+            </b-tab>
+            <b-tab
+                id="lendingTrades"
+                title="Lending Trade"
+                href="#lendingTrades">
+                <table-lending-trade
+                    :user-address="hash"/>
+            </b-tab>
+            <b-tab
+                id="lendingTopup"
+                title="Lending Topup"
+                href="#lendingTopup">
+                <table-lending-topup
+                    :user-address="hash"/>
+            </b-tab>
+            <b-tab
+                id="lendingRepay"
+                title="Lending Repay"
+                href="#lendingRepay">
+                <table-lending-repay
+                    :user-address="hash"/>
             </b-tab>
         </b-tabs>
     </section>
@@ -269,8 +259,10 @@ import TableTxByAccount from '~/components/TableTxByAccount'
 import TableInternalTx from '~/components/TableInternalTx'
 import TableTokenTx from '~/components/TableTokenTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
-import TableBlockByAccount from '~/components/TableBlockByAccount'
-import TableEvent from '~/components/TableEvent'
+import TableTradeHistory from '~/components/TableTradeHistory'
+import TableLendingTrade from '~/components/TableLendingTrade'
+import TableLendingTopup from '~/components/TableLendingTopup'
+import TableLendingRepay from '~/components/TableLendingRepay'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
 import ReadContract from '~/components/ReadContract'
@@ -285,12 +277,14 @@ export default {
         TableInternalTx,
         TableTokenTx,
         TableTokensByAccount,
-        TableBlockByAccount,
-        TableEvent,
         ReadMore,
         VueQrcode,
         ReadContract,
-        TableReward
+        TableReward,
+        TableTradeHistory,
+        TableLendingTrade,
+        TableLendingTopup,
+        TableLendingRepay
     },
     mixins: [mixin],
     head () {
@@ -302,17 +296,9 @@ export default {
         hash: null,
         address: null,
         smartContract: null,
-        inTxsCount: 0,
-        outTxsCount: 0,
-        tokenTxsCount: 0,
-        internalTxsCount: 0,
-        contractTxsCount: 0,
-        blocksCount: 0,
-        eventsCount: 0,
-        tokensCount: 0,
         loading: true,
-        hasReward: true,
-        rewardTime: 0,
+        totalInTx: 0,
+        totalOutTx: 0,
         tabIndex: 0
     }),
     computed: {
@@ -338,63 +324,33 @@ export default {
     },
     mounted () {
         try {
-            const self = this
-
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', {
                 name: 'address-slug',
-                to: { name: 'address-slug', params: { slug: self.hash } }
+                to: { name: 'address-slug', params: { slug: this.hash } }
             })
 
-            self.getAccountFromApi()
-            self.getUSDPrice()
+            this.getAccountFromApi()
+            this.getUSDPrice()
         } catch (error) {
             console.log(error)
         }
     },
     methods: {
         async getAccountFromApi () {
-            const self = this
-
-            self.loading = true
-            const params = {}
-
-            if (self.hash) {
-                params.address = self.hash
-            }
-
-            params.list = 'address'
-
-            const query = this.serializeQuery(params)
+            this.loading = true
 
             const responses = await Promise.all([
-                this.$axios.get('/api/accounts/' + self.hash),
-                this.$axios.get('/api/counting' + '?' + query)
+                this.$axios.get('/api/accounts/' + this.hash)
             ])
 
-            self.address = responses[0].data
-            self.smartContract = responses[0].data.contract
+            this.address = responses[0].data
+            this.smartContract = responses[0].data.contract
 
-            self.blocksCount = responses[1].data.minedBlocks
-
-            self.eventsCount = responses[1].data.events
-
-            self.inTxsCount = responses[1].data.inTxes
-            self.outTxsCount = responses[1].data.outTxes
-            self.internalTxsCount = responses[1].data.internalTxes
-            self.contractTxsCount = responses[1].data.contractTxes
-            self.totalTxsCount = responses[1].data.totalTxes
-
-            self.rewardTime = responses[1].data.rewards
-
-            self.tokensCount = responses[1].data.tokenHolders
-
-            self.loading = false
+            this.loading = false
         },
         async getUSDPrice () {
-            const self = this
-
-            self.$store.dispatch('app/getUSDPrice')
+            this.$store.dispatch('app/getUSDPrice')
         },
         onSwitchTab: function () {
             const allTabs = this.$refs.allTabs

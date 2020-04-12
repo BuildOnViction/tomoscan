@@ -5,7 +5,7 @@
     <section v-else>
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('order', 'orders', total) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('lending trade', 'lending trades', total) }}</p>
         <form
             v-if="showFilter"
             class="form-inline mb-30 filter-box"
@@ -189,6 +189,10 @@ export default {
         orderHash: {
             type: String,
             default: ''
+        },
+        userAddress: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -242,21 +246,28 @@ export default {
                 page: self.currentPage,
                 limit: self.perPage
             }
-            if (this.user !== '') {
-                params.user = this.user.trim()
-            }
-            if (this.lendingToken !== '') {
-                params.lendingToken = this.lendingToken
-            }
-            if (this.collateralToken !== '') {
-                params.collateralToken = this.collateralToken
-            }
-            if (this.status !== '') {
-                params.status = this.status
-            }
-            if (this.orderHash !== '') {
+            // tab on address detail
+            if (this.userAddress !== '') {
+                params.user = this.userAddress
+
+            // tab on lending order
+            } else if (this.orderHash !== '') {
                 params.orderHash = this.orderHash
+            } else {
+                if (this.user !== '') {
+                    params.user = this.user.trim()
+                }
+                if (this.lendingToken !== '') {
+                    params.lendingToken = this.lendingToken
+                }
+                if (this.collateralToken !== '') {
+                    params.collateralToken = this.collateralToken
+                }
+                if (this.status !== '') {
+                    params.status = this.status
+                }
             }
+
             const query = this.serializeQuery(params)
             const { data } = await this.$axios.get('/api/lending/trades?' + query)
             self.total = data.total

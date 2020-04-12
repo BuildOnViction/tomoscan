@@ -5,7 +5,7 @@
     <section v-else>
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('order', 'orders', total) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('lending topup', 'lending topups', total) }}</p>
         <form
             v-if="showFilter"
             class="form-inline mb-30 filter-box"
@@ -175,6 +175,10 @@ export default {
         tradeHash: {
             type: String,
             default: ''
+        },
+        userAddress: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -216,46 +220,50 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            const self = this
-
-            self.loading = true
+            this.loading = true
             const params = {
-                page: self.currentPage,
-                limit: self.perPage
+                page: this.currentPage,
+                limit: this.perPage
             }
-            if (this.user !== '') {
-                params.user = this.user.trim()
-            }
-            if (this.lendingToken !== '') {
-                params.lendingToken = this.lendingToken
-            }
-            if (this.collateralToken !== '') {
-                params.collateralToken = this.collateralToken
-            }
-            if (this.status !== '') {
-                params.status = this.status
-            }
-            if (this.tradeHash !== '') {
+            // tab on address detail
+            if (this.userAddress !== '') {
+                params.user = this.userAddress
+
+            // tab on lending trade
+            } else if (this.tradeHash !== '') {
                 params.tradeHash = this.tradeHash
+            } else {
+                if (this.user !== '') {
+                    params.user = this.user.trim()
+                }
+                if (this.lendingToken !== '') {
+                    params.lendingToken = this.lendingToken
+                }
+                if (this.collateralToken !== '') {
+                    params.collateralToken = this.collateralToken
+                }
+                if (this.status !== '') {
+                    params.status = this.status
+                }
             }
             const query = this.serializeQuery(params)
             const { data } = await this.$axios.get('/api/lending/topup?' + query)
-            self.total = data.total
-            self.pages = data.pages
+            this.total = data.total
+            this.pages = data.pages
 
             if (data.items.length === 0) {
-                self.loading = false
+                this.loading = false
             }
-            if (self.page) {
-                self.page.txsCount = self.total
+            if (this.page) {
+                this.page.txsCount = this.total
             }
 
             data.items.forEach(async (item, index, array) => {
                 if (index === array.length - 1) {
-                    self.items = self.formatData(array)
+                    this.items = this.formatData(array)
 
                     // Hide loading.
-                    self.loading = false
+                    this.loading = false
                 }
             })
 

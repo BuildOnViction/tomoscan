@@ -196,41 +196,46 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            const self = this
-
             // Show loading.
-            self.loading = true
+            this.loading = true
             const params = {
-                page: self.currentPage,
-                limit: self.perPage
+                page: this.currentPage,
+                limit: this.perPage
             }
 
-            params.tx_type = self.type
+            params.tx_type = this.type
             const query = this.serializeQuery(params)
-            const { data } = await this.$axios.get('/api/txs/listByAccount/' + self.address + '?' + query)
-            self.total = data.total || self.tx_total || (data.items || []).length
-            self.pages = data.pages || (self.total % self.perPage)
+            const { data } = await this.$axios.get('/api/txs/listByAccount/' + this.address + '?' + query)
+            this.total = data.total || this.tx_total || (data.items || []).length
+            this.pages = data.pages || (this.total % this.perPage)
 
             if (data.items.length === 0) {
-                self.loading = false
+                this.loading = false
             }
-            if (self.page) {
-                self.page.txsCount = self.total
+            if (this.page) {
+                if (this.type === 'in') {
+                    this.page.totalInTx = this.total
+                } else if (this.type === 'out') {
+                    this.page.totalOutTx = this.total
+                } else {
+                    this.page.totalInTx = this.total
+                    this.page.totalOutTx = 0
+                }
             }
 
             data.items.forEach(async (item, index, array) => {
                 if (index === array.length - 1) {
-                    self.items = array
+                    this.items = array
 
                     // Format data.
-                    if (self.blockNumber) {
-                        self.items = self.formatData(self.items, self.block_timestamp)
+                    if (this.blockNumber) {
+                        this.items = this.formatData(this.items, this.block_timestamp)
                     } else {
-                        self.items = self.formatData(self.items, null)
+                        this.items = this.formatData(this.items, null)
                     }
 
                     // Hide loading.
-                    self.loading = false
+                    this.loading = false
                 }
             })
 
