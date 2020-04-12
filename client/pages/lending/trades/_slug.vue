@@ -5,11 +5,8 @@
     <section v-else>
         <div class="card tomo-card">
             <div class="tomo-card__header">
-                <h3
-                    :class="`tomo-card__headline
-                    ${(address && address.isContract ? ' tomo-card__headline--is-contract' : '')}`">
+                <h3 class="tomo-card__headline">
                     Hash:
-                    <span v-if="address && address.isContract">Contract: </span>
                     <read-more
                         :text="hash"
                         class="d-sm-none" />
@@ -158,9 +155,7 @@
 
         <b-tabs
             ref="allTabs"
-            v-model="tabIndex"
-            class="tomo-tabs"
-            @input="onSwitchTab">
+            class="tomo-tabs">
             <b-tab
                 id="lendingOrders"
                 title="Lending Orders"
