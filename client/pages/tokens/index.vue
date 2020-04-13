@@ -71,6 +71,9 @@ export default {
     components: {
         TableBase
     },
+    head: () => ({
+        title: 'Tokens'
+    }),
     mixins: [mixin],
     data: () => ({
         fields: {

@@ -129,11 +129,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Block ' + this.$route.params.slug + ' Info'
-        }
-    },
     props: {
         block: {
             type: Number,

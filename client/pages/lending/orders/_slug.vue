@@ -173,7 +173,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Order ' + this.$route.params.slug + ' detail'
+            title: 'Lending Order ' + this.$route.params.slug + ' detail'
         }
     },
     data () {

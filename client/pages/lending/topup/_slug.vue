@@ -134,7 +134,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Order ' + this.$route.params.slug + ' detail'
+            title: 'Lending Topup ' + this.$route.params.slug + ' detail'
         }
     },
     data () {

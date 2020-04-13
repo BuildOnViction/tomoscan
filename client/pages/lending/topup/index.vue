@@ -14,7 +14,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Lending Orders'
+            title: 'Lending Topup'
         }
     },
     async created () {

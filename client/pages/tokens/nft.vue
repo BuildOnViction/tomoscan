@@ -69,6 +69,9 @@ export default {
         TableBase
     },
     mixins: [mixin],
+    head: () => ({
+        title: 'TRC721 Tokens'
+    }),
     data: () => ({
         fields: {
             hash: { label: 'Hash' },

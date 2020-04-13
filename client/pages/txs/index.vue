@@ -9,6 +9,9 @@ export default {
     components: {
         TableTx
     },
+    head: () => ({
+        title: 'Transactions'
+    }),
     mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', { name: 'txs', to: { name: 'txs' } })

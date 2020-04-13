@@ -73,7 +73,7 @@ export default {
     },
     mixins: [mixin],
     head: () => ({
-        title: 'Epoch'
+        title: 'Epochs'
     }),
     data: () => ({
         fields: {

@@ -83,7 +83,7 @@ export default {
     },
     mixins: [mixin],
     head: () => ({
-        title: 'Accounts'
+        title: 'Relayers'
     }),
     data: () => ({
         fields: {

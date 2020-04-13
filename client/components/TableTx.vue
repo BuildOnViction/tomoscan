@@ -129,11 +129,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Transactions'
-        }
-    },
     props: {
         type: {
             type: String,

@@ -67,6 +67,9 @@ export default {
         TableBase
     },
     mixins: [mixin],
+    head: () => ({
+        title: 'Verified Contracts'
+    }),
     data () {
         return {
             fields: {

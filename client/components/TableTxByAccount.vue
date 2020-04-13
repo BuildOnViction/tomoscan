@@ -141,17 +141,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head () {
-        if (this.block) {
-            return {
-                title: 'Block ' + this.$route.params.slug + ' Info'
-            }
-        } else {
-            return {
-                title: this.isPending() ? 'Transactions Pending' : 'Transactions'
-            }
-        }
-    },
     props: {
         address: {
             type: String,

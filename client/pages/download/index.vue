@@ -102,6 +102,9 @@ const FileDownload = require('js-file-download')
 export default {
     components: {},
     mixins: [validationMixin],
+    head: () => ({
+        title: 'Download Data'
+    }),
     data () {
         return {
             accountAddress: '',

@@ -126,6 +126,9 @@ import { required } from 'vuelidate/lib/validators'
 
 export default {
     mixins: [validationMixin],
+    head: () => ({
+        title: 'Verifying Contract'
+    }),
     data () {
         return {
             compilers: [],

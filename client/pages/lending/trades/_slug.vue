@@ -62,7 +62,7 @@
                                     class="text-danger">Rejected</span>
                                 <span
                                     v-else
-                                    class="text-purple">Partial Filled</span>
+                                    class="text-purple">{{ lendingTrade.status }}</span>
                             </td>
                         </tr>
                         <tr>
@@ -194,7 +194,7 @@ export default {
     mixins: [mixin],
     head () {
         return {
-            title: 'Order ' + this.$route.params.slug + ' detail'
+            title: 'Lending Trade ' + this.$route.params.slug + ' detail'
         }
     },
     data () {
