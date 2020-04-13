@@ -145,6 +145,26 @@ const LendingTopup = conn.model('lending_topup', new Schema({
 }))
 db.LendingTopup = LendingTopup
 
+const LendingRecall = conn.model('lending_recall', new Schema({
+    quantity: String,
+    interest: String,
+    type: String,
+    lendingToken: { type: String, index: true },
+    collateralToken: { type: String, index: true },
+    autoTopUp: { type: Boolean, index: true },
+    filledAmount: String,
+    status: { type: String, index: true },
+    relayer: { type: String, index: true },
+    term: String,
+    userAddress: { type: String, index: true },
+    hash: { type: String, index: true },
+    txHash: { type: String, index: true },
+    lendingId: { type: String, index: true },
+    tradeId: { type: String, index: true },
+    extraData: String
+}))
+db.LendingRecall = LendingRecall
+
 const LendingItem = conn.model('lending_items', new Schema({
     quantity: String,
     interest: String,
