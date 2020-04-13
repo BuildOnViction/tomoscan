@@ -249,6 +249,13 @@
                 <table-lending-repay
                     :user-address="hash"/>
             </b-tab>
+            <b-tab
+                id="lendingRecall"
+                title="Lending Recalls"
+                href="#lendingRecall">
+                <table-lending-recall
+                    :user-address="hash"/>
+            </b-tab>
         </b-tabs>
     </section>
 </template>
@@ -263,6 +270,7 @@ import TableTradeHistory from '~/components/TableTradeHistory'
 import TableLendingTrade from '~/components/TableLendingTrade'
 import TableLendingTopup from '~/components/TableLendingTopup'
 import TableLendingRepay from '~/components/TableLendingRepay'
+import TableLendingRecall from '~/components/TableLendingRecall'
 import ReadMore from '~/components/ReadMore'
 import VueQrcode from '@xkeshi/vue-qrcode'
 import ReadContract from '~/components/ReadContract'
@@ -271,6 +279,7 @@ import ReadSourceCode from '~/components/ReadSourceCode'
 
 export default {
     components: {
+        TableLendingRecall,
         ReadSourceCode,
         TableTx,
         TableTxByAccount,

@@ -207,6 +207,14 @@ br.register('lending-orders-slug', (brs) => {
     brs.parent('lending-orders')
     brs.push('Lending Order Detail', { name: 'lending-orders-slug' })
 })
+br.register('lending-recalls', (brs) => {
+    brs.parent('index')
+    brs.push('Lending Recalls', { name: 'lending-recalls' })
+})
+br.register('lending-recalls-slug', (brs) => {
+    brs.parent('lending-recalls')
+    brs.push('Lending Recall Detail', { name: 'lending-recalls-slug' })
+})
 br.register('lending-trades', (brs) => {
     brs.parent('index')
     brs.push('Lending Trades', { name: 'lending-trades' })

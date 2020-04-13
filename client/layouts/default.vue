@@ -79,6 +79,7 @@
                             <b-dropdown-item :to="{name: 'lending-trades'}">Lending Trade</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-topup'}">Lending TopUp</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'lending-repay'}">Lending Repay</b-dropdown-item>
+                            <b-dropdown-item :to="{name: 'lending-recalls'}">Lending Recall</b-dropdown-item>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">

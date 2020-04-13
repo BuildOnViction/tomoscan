@@ -806,6 +806,12 @@
     grid-template-columns: 20% 25% 20% 15% 7% 7% 6%;
   }
 }
+.tomo-table--lending-topup, .tomo-table--lending-recalls {
+  thead tr,
+  tbody tr {
+    grid-template-columns: 16% 16% 16% 16% 16% 10% 10%;
+  }
+}
 .grecaptcha-badge {
   display: none !important;
 }

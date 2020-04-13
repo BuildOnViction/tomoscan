@@ -189,6 +189,12 @@
                 href="#lendingTopup">
                 <table-lending-topup :trade-hash="hash"/>
             </b-tab>
+            <b-tab
+                id="lendingRecall"
+                title="Lending Recalls"
+                href="#lendingRecall">
+                <table-lending-recall :trade-hash="hash"/>
+            </b-tab>
         </b-tabs>
     </section>
 </template>
@@ -198,12 +204,14 @@ import ReadMore from '~/components/ReadMore'
 import TableLendingOrder from '~/components/TableLendingOrder'
 import TableLendingRepay from '~/components/TableLendingRepay'
 import TableLendingTopup from '~/components/TableLendingTopup'
+import TableLendingRecall from '~/components/TableLendingRecall'
 
 export default {
     components: {
         TableLendingOrder,
         TableLendingRepay,
         TableLendingTopup,
+        TableLendingRecall,
         ReadMore
     },
     mixins: [mixin],
