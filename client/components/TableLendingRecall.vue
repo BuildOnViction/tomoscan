@@ -5,7 +5,7 @@
     <section v-else>
         <p
             v-if="total > 0"
-            class="tomo-total-items">{{ _nFormatNumber('lending topup', 'lending topups', total) }}</p>
+            class="tomo-total-items">{{ _nFormatNumber('lending recall', 'lending recalls', total) }}</p>
         <form
             v-if="showFilter"
             class="form-inline mb-30 filter-box"
@@ -74,7 +74,7 @@
             v-if="total === 0"
             class="tomo-empty">
             <i class="fa fa-exchange tomo-empty__icon"/>
-            <p class="tomo-empty__description">No topup found</p>
+            <p class="tomo-empty__description">No recall found</p>
         </div>
         <table-base
             v-if="total > 0"
@@ -93,7 +93,7 @@
                     class="fa fa-ban text-danger ml-15"
                     aria-hidden="true"/>
                 <nuxt-link
-                    :to="{name: 'lending-topup-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    :to="{name: 'lending-recalls-slug', params: {slug: props.item.hash.toLowerCase()}}">
                     {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
