@@ -431,7 +431,7 @@ LendingController.get('/lending/topup', [
             perPage: limit,
             currentPage: currentPage,
             pages: pages,
-            items: await DexHelper.formatLendingOrder(orders)
+            items: await DexHelper.formatLendingTopup(orders)
         }
 
         return res.json(data)
@@ -455,7 +455,7 @@ LendingController.get('/lending/topup/:slug', [
             signature: 0,
             key: 0
         }).lean().exec()
-        order = await DexHelper.formatLendingOrder([order])
+        order = await DexHelper.formatLendingTopup([order])
         return res.json(order[0])
     } catch (e) {
         logger.warn('Get order %s detail has error %s', hash, e)

@@ -122,18 +122,13 @@
                 slot-scope="props">
                 {{ formatNumber(props.item.quantity) }}
                 <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                    :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
+                    {{ props.item.collateralSymbol.toUpperCase() }}</nuxt-link>
             </template>
             <template
                 slot="status"
                 slot-scope="props">
                 {{ props.item.status }}
-            </template>
-            <template
-                slot="type"
-                slot-scope="props">
-                {{ props.item.type === 'LO' ? 'Limit' : 'Market' }}
             </template>
             <template
                 slot="createdAt"

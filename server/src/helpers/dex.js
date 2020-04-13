@@ -98,6 +98,49 @@ const DexHelper = {
         return orders
     },
 
+    formatLendingTopup: async (orders) => {
+        const web3 = await Web3Util.getWeb3()
+        const decimals = {}
+        for (let i = 0; i < orders.length; i++) {
+            const ct = orders[i].collateralToken.toLowerCase()
+            if (!Object.prototype.hasOwnProperty.call(decimals, ct)) {
+                if (ct === TomoToken) {
+                    decimals[ct] = { decimals: 18, symbol: 'TOMO' }
+                } else {
+                    const token = await db.Token.findOne({ hash: ct })
+                    if (token) {
+                        decimals[ct] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let dcm = await web3.eth.call({ to: ct, data: decimalFunction })
+                        dcm = await web3.utils.hexToNumber(dcm)
+
+                        let symbol = await web3.eth.call({ to: ct, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[ct] = { decimals: dcm, symbol: symbol }
+                    }
+                }
+            }
+        }
+        for (let i = 0; i < orders.length; i++) {
+            let quantity = new BigNumber(orders[i].quantity)
+            const ct = orders[i].collateralToken.toLowerCase()
+            quantity = quantity.dividedBy(10 ** decimals[ct].decimals).toNumber()
+
+            let fillAmount = new BigNumber(orders[i].filledAmount)
+            fillAmount = fillAmount.dividedBy(10 ** decimals[ct].decimals).toNumber()
+
+            let interest = new BigNumber(orders[i].interest)
+            interest = interest.dividedBy(10 ** 8).toNumber()
+
+            orders[i].collateralDecimals = decimals[ct].decimals
+            orders[i].collateralSymbol = decimals[ct].symbol
+            orders[i].interest = interest
+            orders[i].filledAmount = fillAmount
+            orders[i].quantity = quantity
+        }
+        return orders
+    },
+
     formatTrade: async (trades) => {
         const web3 = await Web3Util.getWeb3()
         const decimals = {}
