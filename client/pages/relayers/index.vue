@@ -47,15 +47,15 @@
             </template>
             <template
                 slot="makeFee"
-                slot-scope="props">{{ props.item.makeFee / 1000 }} %
+                slot-scope="props">{{ props.item.makeFee / 100 }} %
             </template>
             <template
                 slot="takeFee"
-                slot-scope="props">{{ props.item.takeFee / 1000 }} %
+                slot-scope="props">{{ props.item.takeFee / 100 }} %
             </template>
             <template
                 slot="lendingFee"
-                slot-scope="props">{{ props.item.lendingFee / 1000 }} %
+                slot-scope="props">{{ props.item.lendingFee / 100 }} %
             </template>
         </table-base>
 
