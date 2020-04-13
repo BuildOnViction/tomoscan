@@ -133,11 +133,26 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
                                     {{ lendingTrade.collateralSymbol }}</nuxt-link>
+                                (Price: {{ lendingTrade.collateralPrice }}
+                                <nuxt-link
+                                    :to="{name: 'tokens-slug',
+                                          params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
+                                {{ lendingTrade.lendingSymbol }}</nuxt-link>)
                             </td>
                         </tr>
                         <tr>
                             <td>Auto topup</td>
                             <td>{{ lendingTrade.autoTopUp }}</td>
+                        </tr>
+                        <tr>
+                            <td>Liquidation time
+                            </td>
+                            <td>{{ new Date(lendingTrade.liquidationTime * 1000) }}</td>
+                        </tr>
+                        <tr>
+                            <td>Term
+                            </td>
+                            <td>{{ lendingTrade.term }} seconds</td>
                         </tr>
                         <tr>
                             <td>Age</td>
