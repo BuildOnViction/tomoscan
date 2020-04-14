@@ -176,10 +176,6 @@ export default {
         if (this.$route.query.pair) {
             this.pair = this.$route.query.pair
         }
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'trades',
-            to: { name: 'trades' }
-        })
         this.getDataFromApi()
     },
     methods: {

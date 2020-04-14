@@ -137,8 +137,7 @@
         <b-tabs
             ref="allTabs"
             v-model="tabIndex"
-            class="tomo-tabs"
-            @input="onSwitchTab">
+            class="tomo-tabs">
             <b-tab
                 id="transactions"
                 title="Transactions"
@@ -360,20 +359,6 @@ export default {
         },
         async getUSDPrice () {
             this.$store.dispatch('app/getUSDPrice')
-        },
-        onSwitchTab: function () {
-            const allTabs = this.$refs.allTabs
-            const location = window.location
-            const value = this.tabIndex
-            if (allTabs) {
-                // if (location.hash !== allTabs.tabs[value].href) {
-                //     this.$router.replace({
-                //         hash: allTabs.tabs[value].href
-                //     })
-                // } else {
-                location.hash = allTabs.tabs[value].href
-                // }
-            }
         },
         copyAddress () {
             this.$toast.show('Copied')

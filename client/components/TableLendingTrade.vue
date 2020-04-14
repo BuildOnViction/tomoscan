@@ -235,10 +235,6 @@ export default {
         if (this.$route.query.status) {
             this.status = this.$route.query.status
         }
-        this.$store.commit('breadcrumb/setItems', {
-            name: 'lending-trades',
-            to: { name: 'lending-trades' }
-        })
         this.getDataFromApi()
     },
     methods: {
