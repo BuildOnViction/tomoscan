@@ -28,8 +28,7 @@
                 <b-tabs
                     ref="allTabs"
                     v-model="tabIndex"
-                    class="tomo-tabs"
-                    @input="onSwitchTab">
+                    class="tomo-tabs">
                     <b-tab
                         title="Overview"
                         href="#overview">
@@ -340,6 +339,65 @@
                             :tx="hash"
                             :page="this"/>
                     </b-tab>
+                    <b-tab
+                        v-if="
+                            ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
+                        .includes(tx.to)"
+                        id="lendingOrders"
+                        title="Lending Orders"
+                        href="#lendingOrders">
+                        <table-lending-order :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="
+                            ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
+                        .includes(tx.to)"
+                        id="lendingTrades"
+                        title="Lending Trades"
+                        href="#lendingTrades">
+                        <table-lending-trade :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="
+                            ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
+                        .includes(tx.to)"
+                        id="lendingRepay"
+                        title="Lending Repay"
+                        href="#lendingRepay">
+                        <table-lending-repay :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="
+                            ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
+                        .includes(tx.to)"
+                        id="lendingTopup"
+                        title="Lending Topup"
+                        href="#lendingTopup">
+                        <table-lending-topup :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="
+                            ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
+                        .includes(tx.to)"
+                        id="lendingRecall"
+                        title="Lending Recalls"
+                        href="#lendingRecall">
+                        <table-lending-recall :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="tx.to === '0x0000000000000000000000000000000000000091'"
+                        id="openOrders"
+                        title="Open Orders"
+                        href="#openOrders">
+                        <table-order :tx-hash="hash"/>
+                    </b-tab>
+                    <b-tab
+                        v-if="tx.to === '0x0000000000000000000000000000000000000091'"
+                        id="tradeHistories"
+                        title="Trade Histories"
+                        href="#tradeHistories">
+                        <table-trade-history :tx-hash="hash"/>
+                    </b-tab>
                 </b-tabs>
             </b-col>
         </b-row>
@@ -349,10 +407,24 @@
 import mixin from '~/plugins/mixin'
 import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
+import TableLendingTrade from '~/components/TableLendingTrade'
+import TableLendingOrder from '~/components/TableLendingOrder'
+import TableLendingRepay from '~/components/TableLendingRepay'
+import TableLendingTopup from '~/components/TableLendingTopup'
+import TableLendingRecall from '~/components/TableLendingRecall'
+import TableTradeHistory from '~/components/TableTradeHistory'
+import TableOrder from '~/components/TableOrder'
 
 export default {
     components: {
         TableEvent,
+        TableLendingTrade,
+        TableLendingOrder,
+        TableLendingRepay,
+        TableLendingTopup,
+        TableLendingRecall,
+        TableTradeHistory,
+        TableOrder,
         ReadMore
     },
     mixins: [mixin],
@@ -439,14 +511,6 @@ export default {
                     }
                     return true
                 })
-            }
-        },
-        onSwitchTab () {
-            const allTabs = this.$refs.allTabs
-            if (allTabs) {
-                const value = this.tabIndex
-                const location = window.location
-                location.hash = allTabs.tabs[value].href
             }
         }
     }

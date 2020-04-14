@@ -37,27 +37,15 @@
                                 <table class="tomo-card__table">
                                     <tbody>
                                         <tr>
-                                            <td>Order ID</td>
-                                            <td>
-                                                <span v-if="order.orderID">{{ order.orderID }}</span>
-                                                <span v-else>N/A</span>
-                                            </td>
+                                            <td>Order Hash</td>
+                                            <td>{{ order.hash }}</td>
                                         </tr>
                                         <tr>
-                                            <td>Order Hash</td>
+                                            <td>Tx Hash</td>
                                             <td>
-                                                <read-more
-                                                    :text="order.hash"
-                                                    class="d-sm-none" />
-                                                <read-more
-                                                    :text="order.hash"
-                                                    :max-chars="20"
-                                                    class="d-none d-sm-block d-md-none"/>
-                                                <read-more
-                                                    :text="order.hash"
-                                                    :max-chars="40"
-                                                    class="d-none d-md-block d-lg-none"/>
-                                                <span class="d-none d-lg-block">{{ order.hash }}</span>
+                                                <nuxt-link
+                                                    :to="{name: 'txs-slug', params: {slug:order.txHash}}">
+                                                    {{ order.txHash }}</nuxt-link>
                                             </td>
                                         </tr>
                                         <tr>

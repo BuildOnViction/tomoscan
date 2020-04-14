@@ -143,6 +143,10 @@ export default {
         userAddress: {
             type: String,
             default: ''
+        },
+        txHash: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -187,8 +191,13 @@ export default {
                 page: self.currentPage,
                 limit: self.perPage
             }
+            // show on address detail tab
             if (this.userAddress !== '') {
                 params.user = this.userAddress
+
+            // show on tx detail tab
+            } else if (this.txHash !== '') {
+                params.txHash = this.txHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()

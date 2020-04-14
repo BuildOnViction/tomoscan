@@ -171,6 +171,10 @@ export default {
         userAddress: {
             type: String,
             default: ''
+        },
+        txHash: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -231,6 +235,10 @@ export default {
             // tab on lending trade
             } else if (this.tradeHash !== '') {
                 params.tradeHash = this.tradeHash
+
+            // tab on tx detail
+            } else if (this.txHash !== '') {
+                params.txHash = this.txHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()

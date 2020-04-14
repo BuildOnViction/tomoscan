@@ -10,7 +10,10 @@
             v-if="showFilter"
             class="form-inline mb-30 filter-box"
             method="get">
-            <div class="form-group mr-2 mb-2">
+            <div class="form-group">
+                <label
+                    for="inputUserAddress"
+                    class="mr-sm-3">Address</label>
                 <input
                     id="inputUserAddress"
                     v-model="user"
@@ -19,25 +22,22 @@
                     class="form-control"
                     placeholder="User address">
             </div>
-            <div class="form-group mr-2 mb-2">
+            <div class="form-group mx-sm-3">
+                <label
+                    for="inputPairName"
+                    class="mr-sm-3">Pair</label>
                 <input
-                    id="lendingToken"
-                    v-model="lendingToken"
-                    name="lendingToken"
+                    id="inputPairName"
+                    v-model="pair"
+                    name="pair"
                     type="text"
                     class="form-control"
-                    placeholder="Lending Token">
+                    placeholder="Pair name">
             </div>
-            <div class="form-group mr-2 mb-2">
-                <input
-                    id="collateralToken"
-                    v-model="collateralToken"
-                    name="collateralToken"
-                    type="text"
-                    class="form-control"
-                    placeholder="Collateral Token">
-            </div>
-            <div class="form-group mr-2 mb-2">
+            <div class="form-group mr-sm-3">
+                <label
+                    for="inputSide"
+                    class="mr-sm-3">Side</label>
                 <select
                     id="inputSide"
                     v-model="side"
@@ -49,50 +49,17 @@
                         hidden
                         disabled>Select side</option>
                     <option value="">No filter</option>
-                    <option value="INVEST">INVEST</option>
-                    <option value="BORROW">BORROW</option>
+                    <option value="BUY">BUY</option>
+                    <option value="SELL">SELL</option>
                 </select>
             </div>
-            <div class="form-group mr-2 mb-2">
-                <select
-                    id="inputStatus"
-                    v-model="status"
-                    name="status"
-                    class="form-control mx-sm-1">
-                    <option
-                        :selected="status === '' ? 'selected' : ''"
-                        value=""
-                        hidden
-                        disabled>Select status</option>
-                    <option value="">No filter</option>
-                    <option
-                        :selected="status === 'OPEN' ? 'selected' : ''"
-                        value="OPEN">OPEN</option>
-                    <option
-                        :selected="status === 'FILLED' ? 'selected' : ''"
-                        value="FILLED">FILLED</option>
-                    <option
-                        :selected="status === 'PARTIAL_FILLED' ? 'selected' : ''"
-                        value="PARTIAL_FILLED">PARTIAL_FILLED</option>
-                    <option
-                        :selected="status === 'CANCELLED' ? 'selected' : ''"
-                        value="CANCELLED">CANCELLED</option>
-                    <option
-                        :selected="status === 'REJECTED' ? 'selected' : ''"
-                        value="REJECTED">REJECTED</option>
-                </select>
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <button
-                    type="submit"
-                    class="btn btn-primary mr-sm-3">Filter</button>
-            </div>
-            <div class="form-group mr-2 mb-2">
-                <button
-                    type="button"
-                    class="btn btn-secondary"
-                    @click="reset">Reset</button>
-            </div>
+            <button
+                type="submit"
+                class="btn btn-primary mr-sm-3">Filter</button>
+            <button
+                type="button"
+                class="btn btn-secondary"
+                @click="reset">Reset</button>
         </form>
 
         <div
@@ -105,7 +72,7 @@
             v-if="total > 0"
             :fields="fields"
             :items="items"
-            class="tomo-table--lending-orders">
+            class="tomo-table--orders">
             <template
                 slot="hash"
                 slot-scope="props">
@@ -118,7 +85,7 @@
                     class="fa fa-ban text-danger ml-15"
                     aria-hidden="true"/>
                 <nuxt-link
-                    :to="{name: 'lending-orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
+                    :to="{name: 'orders-slug', params: {slug: props.item.hash.toLowerCase()}}">
                     {{ hiddenString(props.item.hash.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
@@ -129,36 +96,39 @@
                     {{ hiddenString(props.item.userAddress.toLowerCase(), 8) }}</nuxt-link>
             </template>
             <template
-                slot="lendingToken"
+                slot="pairName"
                 slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
-            </template>
-            <template
-                slot="collateralToken"
-                slot-scope="props">
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
-                    {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
+                <span>
+                    <nuxt-link
+                        v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
+                        :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
+                        {{ props.item.pairName.split('/')[0] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[0] }}</span>/<nuxt-link
+                        v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
+                        :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
+                    >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
+                    <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
+                </span>
             </template>
             <template
                 slot="quantity"
                 slot-scope="props">
-                {{ formatNumber(props.item.quantity) }}
-                <nuxt-link
-                    :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
-                    {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                {{ formatNumber(props.item.quantity) + ' ' + props.item.pairName.split('/')[0] }}
             </template>
             <template
-                slot="interest"
+                slot="price"
                 slot-scope="props">
-                {{ formatNumber(props.item.interest) }} %
+                {{ formatNumber(props.item.price) + ' ' + props.item.pairName.split('/')[1] }}
             </template>
             <template
-                slot="status"
+                slot="filledAmount"
                 slot-scope="props">
-                {{ props.item.status }}
+                {{ formatNumber(props.item.filledAmount) + ' ' + props.item.pairName.split('/')[0] }}
+            </template>
+            <template
+                slot="type"
+                slot-scope="props">
+                {{ props.item.type === 'LO' ? 'Limit' : 'Market' }}
             </template>
             <template
                 slot="createdAt"
@@ -182,6 +152,7 @@
         />
     </section>
 </template>
+
 <script>
 import mixin from '~/plugins/mixin'
 import TableBase from '~/components/TableBase'
@@ -196,10 +167,6 @@ export default {
             type: Boolean,
             default: false
         },
-        tradeHash: {
-            type: String,
-            default: ''
-        },
         txHash: {
             type: String,
             default: ''
@@ -209,12 +176,11 @@ export default {
         fields: {
             hash: { label: 'Hash' },
             userAddress: { label: 'User' },
-            lendingToken: { label: 'Lending Token' },
-            collateralToken: { label: 'Collateral Token' },
-            quantity: { label: 'Quantity' },
-            interest: { label: 'Interest' },
+            pairName: { label: 'Pair Name' },
             side: { label: 'Side' },
-            status: { label: 'Status' },
+            quantity: { label: 'Quantity' },
+            price: { label: 'Price' },
+            filledAmount: { label: 'Filled Amount' },
             createdAt: { label: 'Age' }
         },
         loading: true,
@@ -225,26 +191,18 @@ export default {
         pages: 1,
         blockNumber: null,
         user: '',
-        lendingToken: '',
-        collateralToken: '',
-        status: '',
+        pair: '',
         side: ''
     }),
     async created () {
         if (this.$route.query.user) {
             this.user = this.$route.query.user
         }
-        if (this.$route.query.lendingToken) {
-            this.lendingToken = this.$route.query.lendingToken
-        }
-        if (this.$route.query.collateralToken) {
-            this.collateralToken = this.$route.query.collateralToken
+        if (this.$route.query.pair) {
+            this.pair = this.$route.query.pair
         }
         if (this.$route.query.side) {
             this.side = this.$route.query.side
-        }
-        if (this.$route.query.status) {
-            this.status = this.$route.query.status
         }
         this.getDataFromApi()
     },
@@ -257,33 +215,23 @@ export default {
                 page: self.currentPage,
                 limit: self.perPage
             }
-            // in lending trade
-            if (this.tradeHash !== '') {
-                params.tradeHash = this.tradeHash
-
-            // in transaction detail
-            } else if (this.txHash !== '') {
+            // on tx detail tab
+            if (this.txHash !== '') {
                 params.txHash = this.txHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()
                 }
+                if (this.pair !== '') {
+                    params.pair = this.pair.trim()
+                }
                 if (this.side !== '') {
                     params.side = this.side
-                }
-                if (this.lendingToken !== '') {
-                    params.lendingToken = this.lendingToken
-                }
-                if (this.collateralToken !== '') {
-                    params.collateralToken = this.collateralToken
-                }
-                if (this.status !== '') {
-                    params.status = this.status
                 }
             }
 
             const query = this.serializeQuery(params)
-            const { data } = await this.$axios.get('/api/lending/orders?' + query)
+            const { data } = await this.$axios.get('/api/orders?' + query)
             self.total = data.total
             self.pages = data.pages
 
@@ -310,10 +258,8 @@ export default {
         },
         async reset () {
             this.user = ''
-            this.status = ''
+            this.pair = ''
             this.side = ''
-            this.lendingToken = ''
-            this.collateralToken = ''
             await this.getDataFromApi()
         },
         formatData (items = []) {
