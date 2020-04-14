@@ -70,6 +70,9 @@ LendingController.get('/lending/orders', [
                 query.hash = null
             }
         }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
+        }
         const total = await dexDb.LendingItem.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -242,6 +245,9 @@ LendingController.get('/lending/trades', [
             query = Object.assign({}, query, {
                 $or: [{ borrowingOrderHash: orderHash }, { investingOrderHash: orderHash }]
             })
+        }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
         }
         const total = await dexDb.LendingTrade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
@@ -418,6 +424,9 @@ LendingController.get('/lending/topup', [
         if (req.query.tradeHash) {
             query.hash = req.query.tradeHash.toLowerCase()
         }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
+        }
         const total = await dexDb.LendingTopup.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -593,6 +602,9 @@ LendingController.get('/lending/repay', [
         if (req.query.tradeHash) {
             query.hash = req.query.tradeHash.toLowerCase()
         }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
+        }
         const total = await dexDb.LendingRepay.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
@@ -767,6 +779,9 @@ LendingController.get('/lending/recalls', [
         }
         if (req.query.tradeHash) {
             query.hash = req.query.tradeHash.toLowerCase()
+        }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
         }
         const total = await dexDb.LendingRecall.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20

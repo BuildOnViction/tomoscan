@@ -10,6 +10,7 @@ const OrderController = Router()
 OrderController.get('/orders', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
     check('pairName').optional(),
     check('side').optional(),
     check('status').optional(),
@@ -37,6 +38,9 @@ OrderController.get('/orders', [
         }
         if (req.query.status) {
             query.type = req.query.status.toUpperCase()
+        }
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
         }
         const total = await dexDb.Order.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20

@@ -10,6 +10,7 @@ const TradeController = Router()
 TradeController.get('/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
     check('pairName').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
@@ -30,7 +31,9 @@ TradeController.get('/trades', [
         if (req.query.type) {
             query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
         }
-        console.log('query', query)
+        if (req.query.txHash) {
+            query.txHash = req.query.txHash
+        }
         const total = await dexDb.Trade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
