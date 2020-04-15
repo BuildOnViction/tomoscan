@@ -141,7 +141,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Auto topup</td>
+                            <td>Auto</td>
                             <td>{{ lendingTrade.autoTopUp }}</td>
                         </tr>
                         <tr>

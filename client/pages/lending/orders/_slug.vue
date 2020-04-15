@@ -129,7 +129,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>Auto topup</td>
+                            <td>Auto</td>
                             <td>{{ lendingOrder.autoTopUp }}</td>
                         </tr>
                         <tr>
