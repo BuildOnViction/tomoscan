@@ -49,6 +49,18 @@ const ElasticHelper = {
             })
             return body
         }
+    },
+    count: async (index, query) => {
+        if (Object.keys(query).length > 0) {
+            const { body } = await client.count({
+                index: index,
+                body: { query: query }
+            })
+            return body
+        } else {
+            const { body } = await client.count({ index: index })
+            return body
+        }
     }
 }
 

@@ -273,9 +273,9 @@ TxController.get('/txs/listByType/:type', [
     limit = Math.min(100, limit)
     const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
 
+    let total = null
     let data = []
     if (!config.get('GetDataFromElasticSearch')) {
-        let total = null
         const params = { sort: { blockNumber: -1 } }
         const specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
         if (type === 'signTxs') {
@@ -323,9 +323,11 @@ TxController.get('/txs/listByType/:type', [
             query = {}
         }
         const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        const count = await elastic.count('transactions', query)
+        total = count.count
         if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {
             const hits = eData.hits
-            data.total = hits.total.value
+            data.total = total
             data.pages = Math.ceil(data.total / limit)
             const items = []
             for (let i = 0; i < hits.hits.length; i++) {
@@ -371,10 +373,10 @@ TxController.get('/txs/listByAccount/:address', [
     limit = Math.min(100, limit)
     const txType = req.query.tx_type
 
+    let total = null
     let data = []
     if (!config.get('GetDataFromElasticSearch')) {
         const account = await db.Account.findOne({ hash: address })
-        let total = null
 
         if (page === 1 && account.hasManyTx) {
             const cache = await redisHelper.get(`txs-${txType}-${address}`)
@@ -442,9 +444,11 @@ TxController.get('/txs/listByAccount/:address', [
             }
         }
         const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        const count = await elastic.count('transactions', query)
+        total = count.count
         if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {
             const hits = eData.hits
-            data.total = hits.total.value
+            data.total = total
             data.pages = Math.ceil(data.total / limit)
             const items = []
             for (let i = 0; i < hits.hits.length; i++) {
@@ -745,6 +749,7 @@ TxController.get('/txs/internal/:address', [
             let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
             limit = Math.min(100, limit)
             const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+            let total
             const data = {
                 total: 0,
                 perPage: limit,
@@ -762,9 +767,11 @@ TxController.get('/txs/internal/:address', [
             }
             try {
                 const eData = await elastic.search('internal-tx', query, { blockNumber: 'desc' }, limit, page)
+                const count = await elastic.count('internal-tx', query)
+                total = count.count
                 if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {
                     const hits = eData.hits
-                    data.total = hits.total.value
+                    data.total = total
                     data.pages = Math.ceil(data.total / limit)
                     const items = []
                     for (let i = 0; i < hits.hits.length; i++) {

@@ -27,12 +27,12 @@ TokenTxController.get('/token-txs/:tokenType', [
     let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
     limit = Math.min(100, limit)
     const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
+    let total = 0
     try {
         let data
         if (!config.get('GetDataFromElasticSearch')) {
             const params = {}
             params.query = {}
-            let total = null
             if (token) {
                 params.query = { address: token.toLowerCase() }
 
@@ -85,16 +85,23 @@ TokenTxController.get('/token-txs/:tokenType', [
             }
             if (tokenType === 'trc20') {
                 eData = await elastic.search('trc20-tx', query, { blockNumber: 'desc' }, limit, page)
+                const count = await elastic.count('trc20-tx', query)
+                total = count.count
             } else if (tokenType === 'trc21') {
                 eData = await elastic.search('trc21-tx', query, { blockNumber: 'desc' }, limit, page)
+                const count = await elastic.count('trc21-tx', query)
+                total = count.count
             } else if (tokenType === 'trc721') {
                 eData = await elastic.search('trc721-tx', query, { blockNumber: 'desc' }, limit, page)
+                const count = await elastic.count('trc721-tx', query)
+                total = count.count
             } else {
                 eData = {}
+                total = 0
             }
             if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {
                 const hits = eData.hits
-                data.total = hits.total.value
+                data.total = total
                 data.pages = Math.ceil(data.total / limit)
                 const items = []
                 for (let i = 0; i < hits.hits.length; i++) {
