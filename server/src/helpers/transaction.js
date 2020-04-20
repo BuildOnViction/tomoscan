@@ -13,6 +13,7 @@ const monitorAddress = require('../contracts/monitorAddress')
 const utils = require('./utils')
 const twitter = require('./twitter')
 const elastic = require('./elastic')
+const TokenHelper = require('./token')
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 const TransactionHelper = {
@@ -130,13 +131,6 @@ const TransactionHelper = {
                         listHash.push(tx.to)
                     }
                 }
-                let sign = 0
-                let other = 0
-                if (tx.to === contractAddress.BlockSigner) {
-                    sign = 1
-                } else {
-                    other = 1
-                }
 
                 const toModel = await db.Account.findOne({ hash: tx.to })
                 if (toModel) {
@@ -146,15 +140,6 @@ const TransactionHelper = {
                         contractCreation: toModel.contractCreation
                     }
                 }
-
-                await db.SpecialAccount.updateOne(
-                    { hash: 'transaction' }, {
-                        $inc: {
-                            total: 1,
-                            sign: sign,
-                            other: other
-                        }
-                    }, { upsert: true, new: true })
             } else {
                 if (receipt && typeof receipt.contractAddress !== 'undefined') {
                     const contractAddress = receipt.contractAddress.toLowerCase()

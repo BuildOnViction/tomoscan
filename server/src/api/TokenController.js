@@ -1,6 +1,7 @@
 const { Router } = require('express')
 const utils = require('../helpers/utils')
 const db = require('../models')
+const dexDb = require('../models/dex')
 const TokenHelper = require('../helpers/token')
 const logger = require('../helpers/logger')
 const axios = require('axios')
@@ -133,6 +134,32 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
         if (tokenType === 'trc20') {
             data = await utils.paginate(req, 'TokenHolder', { query: { hash: holder } })
         } else if (tokenType === 'trc21') {
+            const tomoxToken = await dexDb.Token.find({}, { contractAddress: 1, decimals: 1 })
+            const listToken = []
+            for (let i = 0; i < tomoxToken.length; i++) {
+                listToken.push(tomoxToken[i].contractAddress.toLowerCase())
+            }
+            const holderExist = await db.TokenTrc21Holder.find({ hash: holder, token: { $in: listToken } },
+                { token: 1 })
+            const exist = []
+            for (let i = 0; i < holderExist.length; i++) {
+                exist.push(holderExist.token)
+            }
+            const notExist = []
+            for (let i = 0; i < tomoxToken.length; i++) {
+                if (exist.includes(tomoxToken[i].contractAddress.toLowerCase())) {
+                    notExist.push({
+                        hash: holder,
+                        token: listToken[i],
+                        tokenDecimals: tomoxToken[i].decimals,
+                        quantity: '0',
+                        quantityNumber: 0
+                    })
+                }
+            }
+            if (notExist.length > 0) {
+                await db.TokenTrc21Holder.insertMany(notExist)
+            }
             data = await utils.paginate(req, 'TokenTrc21Holder', { query: { hash: holder } })
         } else if (tokenType === 'trc721') {
             data = await utils.paginate(req, 'TokenNftHolder', { query: { holder: holder } })
