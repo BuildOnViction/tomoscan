@@ -13,7 +13,6 @@ const monitorAddress = require('../contracts/monitorAddress')
 const utils = require('./utils')
 const twitter = require('./twitter')
 const elastic = require('./elastic')
-const TokenHelper = require('./token')
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 const TransactionHelper = {
