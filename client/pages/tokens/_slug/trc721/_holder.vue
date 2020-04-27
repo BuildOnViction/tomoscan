@@ -5,7 +5,12 @@
     <section v-else>
         <div class="card tomo-card tomo-card--token">
             <div class="tomo-card__header">
-                <h2 class="tomo-card__headline">{{ tokenName }}&nbsp;</h2>
+                <h2 class="tomo-card__headline">
+                    <img
+                        v-if="checkAvatarExist(tokenBranch, hash)"
+                        :src="`https://raw.githubusercontent.com/tomochain/tokens/${tokenBranch}/tokens/${hash}.png`"
+                        width="35px">
+                    {{ tokenName }}&nbsp;</h2>
                 <i
                     v-if="moreInfo"
                     class="fa fa-check-circle token-status"
@@ -188,7 +193,8 @@ export default {
             holder: null,
             addressFilter: null,
             address: null,
-            smartContract: null
+            smartContract: null,
+            tokenBranch: process.env.TOKEN_BRANCH
         }
     },
     created () {

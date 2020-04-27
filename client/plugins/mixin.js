@@ -216,6 +216,20 @@ const mixin = {
             const stringBeforeDot = String(string).substr(0, numberStringShowing)
             const stringAfterDot = String(string).substr(-numberStringShowing)
             return stringBeforeDot + '...' + stringAfterDot
+        },
+
+        checkAvatarExist: function (branch, token) {
+            const url = 'https://raw.githubusercontent.com/tomochain/tokens/' + branch +
+                '/tokens/' + token.toLowerCase() + '.png'
+            const xhr = new XMLHttpRequest()
+            xhr.open('HEAD', url, false)
+            xhr.send()
+
+            if (xhr.status === 404) {
+                return false
+            } else {
+                return true
+            }
         }
     }
 }
