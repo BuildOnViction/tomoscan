@@ -5,6 +5,7 @@ const dexDb = require('../models/dex')
 const TokenHelper = require('../helpers/token')
 const logger = require('../helpers/logger')
 const axios = require('axios')
+const Web3Util = require('../helpers/web3')
 const { check, validationResult, query } = require('express-validator/check')
 
 const TokenController = Router()
@@ -207,6 +208,81 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
         return res.json(data)
     } catch (e) {
         logger.warn('Get list token holding: holder %s token type %s. Error %s', holder, tokenType, e)
+        return res.status(500).json({ errors: { message: 'Something error!' } })
+    }
+})
+
+TokenController.get('/tokens/:token/holder/:holder', [
+    check('token').exists().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.'),
+    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Holder address is incorrect.')
+], async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        const token = req.params.token.toLowerCase().trim()
+        const holder = req.params.holder.toLowerCase().trim()
+
+        const t = await db.Token.findOne({ hash: token }).lean()
+        if (!t) {
+            return res.status(404).json({ errors: { message: 'Token was not found' } })
+        }
+
+        let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
+        let exist = true
+        if (!tokenHolder) {
+            tokenHolder = {
+                hash: holder,
+                token: token,
+                quantity: '0',
+                quantityNumber: 0
+            }
+            exist = false
+        }
+
+        // Get token balance by read smart contract
+        let tk = await db.Token.findOne({ hash: token })
+        if (!tk) {
+            const web3 = await Web3Util.getWeb3()
+            const tokenFuncs = await TokenHelper.getTokenFuncs()
+            let decimals = await web3.eth.call({ to: token, data: tokenFuncs.decimals })
+            decimals = await web3.utils.hexToNumberString(decimals)
+            tk = { hash: token, decimals: decimals }
+        }
+        const balance = await TokenHelper.getTokenBalance(tk, holder)
+
+        tokenHolder.quantity = balance.quantity
+        tokenHolder.quantityNumber = balance.quantityNumber
+        if (exist) {
+            await tokenHolder.save()
+        }
+
+        res.json(tokenHolder)
+    } catch (e) {
+        logger.warn('Get token holder error %s', e)
+        return res.status(400).json({ errors: { message: 'Something error!' } })
+    }
+})
+
+TokenController.get('/tokens/:token/nftHolder/:holder', [
+    check('token').exists().isLength({ min: 42, max: 42 }).withMessage('Token address is incorrect.'),
+    check('holder').exists().isLength({ min: 42, max: 42 }).withMessage('Holder address is incorrect.'),
+    check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
+    check('page').optional().isInt().withMessage('Require page is number')
+], async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    try {
+        const token = req.params.token.toLowerCase()
+        const holder = req.params.holder.toLowerCase()
+        const data = await utils.paginate(req, 'TokenNftHolder', { query: { holder: holder, token: token } })
+
+        res.json(data)
+    } catch (e) {
+        logger.warn('Get nft token holder error %s', e)
         return res.status(500).json({ errors: { message: 'Something error!' } })
     }
 })
