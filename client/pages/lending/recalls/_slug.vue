@@ -49,8 +49,8 @@
                             <td>Lending Order Status</td>
                             <td>
                                 <span
-                                    v-if="lendingOrder.status === 'TOPUP'"
-                                    class="text-success">Topup</span>
+                                    v-if="lendingOrder.status === 'RECALL'"
+                                    class="text-success">RECALL</span>
                                 <span
                                     v-else-if="lendingOrder.status === 'REJECTED'"
                                     class="text-danger">Rejected</span>
