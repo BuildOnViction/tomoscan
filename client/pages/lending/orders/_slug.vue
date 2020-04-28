@@ -97,8 +97,8 @@
                             <td>
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
-                                          params: {slug: lendingOrder.lendingToken}}">
-                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                          params: {slug: lendingOrder.lendingToken.toLowerCase()}}">
+                                    {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
@@ -106,8 +106,8 @@
                             <td>
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
-                                          params: {slug: lendingOrder.collateralToken}}">
-                                    {{ lendingOrder.lendingToken }}</nuxt-link>
+                                          params: {slug: lendingOrder.collateralToken.toLowerCase()}}">
+                                    {{ lendingOrder.collateralToken.toLowerCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
