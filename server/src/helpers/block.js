@@ -129,15 +129,12 @@ const BlockHelper = {
             if (!block) {
                 block = await db.Block.findOne({ hash: String(hashOrNumber).toLowerCase() })
             }
-            console.log(hashOrNumber, block)
             if (block && block.finality === 100) {
                 return block
             }
 
             const web3 = await Web3Util.getWeb3()
-            console.log(hashOrNumber)
             const _block = await web3.eth.getBlock(hashOrNumber)
-            console.log(hashOrNumber, _block)
             if (!_block) {
                 return null
             }
