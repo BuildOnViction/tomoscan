@@ -16,21 +16,37 @@ const DexHelper = {
             const bt = orders[i].baseToken.toLowerCase()
             if (!Object.prototype.hasOwnProperty.call(decimals, bt)) {
                 if (bt === TomoToken) {
-                    decimals[bt] = 18
+                    decimals[bt] = { decimals: 18, symbol: 'TOMO' }
                 } else {
-                    let baseDecimals = await web3.eth.call({ to: bt, data: decimalFunction })
-                    baseDecimals = await web3.utils.hexToNumber(baseDecimals)
-                    decimals[bt] = baseDecimals
+                    const token = await db.Token.findOne({ hash: bt })
+                    if (token) {
+                        decimals[bt] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let baseDecimals = await web3.eth.call({ to: bt, data: decimalFunction })
+                        baseDecimals = await web3.utils.hexToNumber(baseDecimals)
+
+                        let symbol = await web3.eth.call({ to: bt, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[bt] = { decimals: baseDecimals, symbol: symbol }
+                    }
                 }
             }
             const qt = orders[i].quoteToken.toLowerCase()
             if (!Object.prototype.hasOwnProperty.call(decimals, qt)) {
                 if (qt === TomoToken) {
-                    decimals[qt] = 18
+                    decimals[qt] = { decimals: 18, symbol: 'TOMO' }
                 } else {
-                    let quoteDecimals = await web3.eth.call({ to: qt, data: decimalFunction })
-                    quoteDecimals = await web3.utils.hexToNumber(quoteDecimals)
-                    decimals[qt] = quoteDecimals
+                    const token = await db.Token.findOne({ hash: qt })
+                    if (token) {
+                        decimals[qt] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let quoteDecimals = await web3.eth.call({ to: qt, data: decimalFunction })
+                        quoteDecimals = await web3.utils.hexToNumber(quoteDecimals)
+
+                        let symbol = await web3.eth.call({ to: qt, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[qt] = { decimals: quoteDecimals, symbol: symbol }
+                    }
                 }
             }
         }
@@ -38,16 +54,18 @@ const DexHelper = {
             let quantity = new BigNumber(orders[i].quantity)
             const bt = orders[i].baseToken.toLowerCase()
             const qt = orders[i].quoteToken.toLowerCase()
-            quantity = quantity.dividedBy(10 ** decimals[bt]).toNumber()
+            quantity = quantity.dividedBy(10 ** decimals[bt].decimals).toNumber()
 
             let fillAmount = new BigNumber(orders[i].filledAmount)
-            fillAmount = fillAmount.dividedBy(10 ** decimals[bt]).toNumber()
+            fillAmount = fillAmount.dividedBy(10 ** decimals[bt].decimals).toNumber()
 
             let price = new BigNumber(orders[i].price)
-            price = price.dividedBy(10 ** decimals[qt]).toNumber()
+            price = price.dividedBy(10 ** decimals[qt].decimals).toNumber()
 
-            orders[i].baseDecimals = decimals[bt]
-            orders[i].quoteDecimals = decimals[qt]
+            orders[i].baseDecimals = decimals[bt].decimals
+            orders[i].baseSymbol = decimals[bt].symbol.toUpperCase()
+            orders[i].quoteDecimals = decimals[qt].decimals
+            orders[i].quoteSymbol = decimals[qt].symbol.toUpperCase()
             orders[i].price = price
             orders[i].filledAmount = fillAmount
             orders[i].quantity = quantity

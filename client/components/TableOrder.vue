@@ -24,15 +24,27 @@
             </div>
             <div class="form-group mx-sm-3">
                 <label
-                    for="inputPairName"
-                    class="mr-sm-3">Pair</label>
+                    for="baseToken"
+                    class="mr-sm-3">Base Token</label>
                 <input
-                    id="inputPairName"
-                    v-model="pair"
-                    name="pair"
+                    id="baseToken"
+                    v-model="baseToken"
+                    name="baseToken"
                     type="text"
                     class="form-control"
-                    placeholder="Pair name">
+                    placeholder="Base token">
+            </div>
+            <div class="form-group mx-sm-3">
+                <label
+                    for="quoteToken"
+                    class="mr-sm-3">Quote Token</label>
+                <input
+                    id="quoteToken"
+                    v-model="quoteToken"
+                    name="quoteToken"
+                    type="text"
+                    class="form-control"
+                    placeholder="Quote token">
             </div>
             <div class="form-group mr-sm-3">
                 <label
@@ -102,28 +114,28 @@
                     <nuxt-link
                         v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
-                        {{ props.item.pairName.split('/')[0] }}</nuxt-link>
-                    <span v-else>{{ props.item.pairName.split('/')[0] }}</span>/<nuxt-link
+                        {{ props.item.baseSymbol }}</nuxt-link>
+                    <span v-else>{{ props.item.baseSymbol }}</span>/<nuxt-link
                         v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
-                    >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
-                    <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
+                    >{{ props.item.quoteSymbol }}</nuxt-link>
+                    <span v-else>{{ props.item.quoteSymbol }}</span>
                 </span>
             </template>
             <template
                 slot="quantity"
                 slot-scope="props">
-                {{ formatNumber(props.item.quantity) + ' ' + props.item.pairName.split('/')[0] }}
+                {{ formatNumber(props.item.quantity) + ' ' + props.item.baseSymbol }}
             </template>
             <template
                 slot="price"
                 slot-scope="props">
-                {{ formatNumber(props.item.price) + ' ' + props.item.pairName.split('/')[1] }}
+                {{ formatNumber(props.item.price) + ' ' + props.item.quoteSymbol }}
             </template>
             <template
                 slot="filledAmount"
                 slot-scope="props">
-                {{ formatNumber(props.item.filledAmount) + ' ' + props.item.pairName.split('/')[0] }}
+                {{ formatNumber(props.item.filledAmount) + ' ' + props.item.baseSymbol }}
             </template>
             <template
                 slot="type"
@@ -191,15 +203,19 @@ export default {
         pages: 1,
         blockNumber: null,
         user: '',
-        pair: '',
+        baseToken: '',
+        quoteToken: '',
         side: ''
     }),
     async created () {
         if (this.$route.query.user) {
             this.user = this.$route.query.user
         }
-        if (this.$route.query.pair) {
-            this.pair = this.$route.query.pair
+        if (this.$route.query.baseToken) {
+            this.baseToken = this.$route.query.baseToken
+        }
+        if (this.$route.query.quoteToken) {
+            this.quoteToken = this.$route.query.quoteToken
         }
         if (this.$route.query.side) {
             this.side = this.$route.query.side
@@ -222,8 +238,11 @@ export default {
                 if (this.user !== '') {
                     params.user = this.user.trim()
                 }
-                if (this.pair !== '') {
-                    params.pair = this.pair.trim()
+                if (this.baseToken !== '') {
+                    params.baseToken = this.baseToken.trim()
+                }
+                if (this.quoteToken !== '') {
+                    params.quoteToken = this.quoteToken.trim()
                 }
                 if (this.side !== '') {
                     params.side = this.side
@@ -258,7 +277,8 @@ export default {
         },
         async reset () {
             this.user = ''
-            this.pair = ''
+            this.baseToken = ''
+            this.quoteToken = ''
             this.side = ''
             await this.getDataFromApi()
         },
