@@ -25,34 +25,34 @@
                 <table class="tomo-card__table">
                     <tbody>
                         <tr>
-                            <td>Transaction Hash</td>
+                            <td>Lending trade</td>
                             <td>
                                 <nuxt-link
-                                    :to="{name: 'txs-slug', params: {slug: lendingOrder.txHash}}">
+                                    :to="{name: 'lending-trades-slug', params: {slug: lendingRecall.hash}}">
                                     <read-more
-                                        :text="lendingOrder.txHash"
+                                        :text="lendingRecall.hash"
                                         class="d-sm-none" />
                                     <read-more
-                                        :text="lendingOrder.txHash"
+                                        :text="lendingRecall.hash"
                                         :max-chars="20"
                                         class="d-none d-sm-block d-md-none"/>
                                     <read-more
-                                        :text="lendingOrder.txHash"
+                                        :text="lendingRecall.hash"
                                         :max-chars="40"
                                         class="d-none d-md-block d-lg-none"/>
-                                    <span class="d-none d-lg-block">{{ lendingOrder.txHash }}</span>
+                                    <span class="d-none d-lg-block">{{ lendingRecall.hash }}</span>
 
                                 </nuxt-link>
                             </td>
                         </tr>
                         <tr>
-                            <td>Lending Order Status</td>
+                            <td>Lending Recall Status</td>
                             <td>
                                 <span
-                                    v-if="lendingOrder.status === 'TOPUP'"
-                                    class="text-success">Topup</span>
+                                    v-if="lendingRecall.status === 'RECALL'"
+                                    class="text-success">RECALL</span>
                                 <span
-                                    v-else-if="lendingOrder.status === 'REJECTED'"
+                                    v-else-if="lendingRecall.status === 'REJECTED'"
                                     class="text-danger">Rejected</span>
                             </td>
                         </tr>
@@ -60,8 +60,8 @@
                             <td>Dex address</td>
                             <td>
                                 <nuxt-link
-                                    :to="{name: 'address-slug', params: {slug:lendingOrder.relayer.toLowerCase()}}"
-                                    class="mr-1">{{ lendingOrder.relayer.toLowerCase() }}</nuxt-link>
+                                    :to="{name: 'address-slug', params: {slug:lendingRecall.relayer.toLowerCase()}}"
+                                    class="mr-1">{{ lendingRecall.relayer.toLowerCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
@@ -69,8 +69,8 @@
                             <td>
                                 <nuxt-link
                                     :to="{name: 'address-slug',
-                                          params: {slug:lendingOrder.userAddress.toLowerCase()}}"
-                                    class="mr-1">{{ lendingOrder.userAddress.toLowerCase() }}
+                                          params: {slug:lendingRecall.userAddress.toLowerCase()}}"
+                                    class="mr-1">{{ lendingRecall.userAddress.toLowerCase() }}
                                 </nuxt-link>
                             </td>
                         </tr>
@@ -79,8 +79,8 @@
                             <td>
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
-                                          params: {slug: lendingOrder.lendingToken.toLowerCase()}}">
-                                    {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
+                                          params: {slug: lendingRecall.lendingToken.toLowerCase()}}">
+                                    {{ lendingRecall.lendingToken.toLowerCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
@@ -88,31 +88,31 @@
                             <td>
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
-                                          params: {slug: lendingOrder.collateralToken.toLowerCase()}}">
-                                    {{ lendingOrder.collateralToken.toLowerCase() }}</nuxt-link>
+                                          params: {slug: lendingRecall.collateralToken.toLowerCase()}}">
+                                    {{ lendingRecall.collateralToken.toLowerCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
                             <td>Quantity</td>
                             <td>
-                                {{ formatNumber(lendingOrder.quantity) }}
+                                {{ formatNumber(lendingRecall.quantity) }}
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
-                                          params: {slug: lendingOrder.collateralToken}}">
-                                    {{ lendingOrder.collateralSymbol.toUpperCase() }}</nuxt-link>
+                                          params: {slug: lendingRecall.collateralToken}}">
+                                    {{ lendingRecall.collateralSymbol.toUpperCase() }}</nuxt-link>
                             </td>
                         </tr>
                         <tr>
                             <td>Auto</td>
-                            <td>{{ lendingOrder.autoTopUp }}</td>
+                            <td>{{ lendingRecall.autoTopUp }}</td>
                         </tr>
                         <tr>
                             <td>Age</td>
                             <td>
                                 <span
                                     v-b-tooltip.hover
-                                    :title="$moment(lendingOrder.createdAt).format('lll')">
-                                    {{ $moment(lendingOrder.createdAt).fromNow() }}</span>
+                                    :title="$moment(lendingRecall.createdAt).format('lll')">
+                                    {{ $moment(lendingRecall.createdAt).fromNow() }}</span>
                             </td>
                         </tr>
                     </tbody>
@@ -140,7 +140,7 @@ export default {
     data () {
         return {
             hash: null,
-            lendingOrder: {},
+            lendingRecall: {},
             loading: true
         }
     },
@@ -159,7 +159,7 @@ export default {
 
             const { data } = await this.$axios.get('/api/lending/recalls/' + this.hash)
 
-            this.lendingOrder = data
+            this.lendingRecall = data
 
             this.loading = false
         } catch (error) {
