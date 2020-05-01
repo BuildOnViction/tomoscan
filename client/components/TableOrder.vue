@@ -11,11 +11,7 @@
             class="form-inline mb-30 filter-box"
             method="get">
             <div class="form-group">
-                <label
-                    for="inputUserAddress"
-                    class="mr-sm-3">Address</label>
                 <input
-                    id="inputUserAddress"
                     v-model="user"
                     name="user"
                     type="text"
@@ -23,11 +19,7 @@
                     placeholder="User address">
             </div>
             <div class="form-group mx-sm-3">
-                <label
-                    for="baseToken"
-                    class="mr-sm-3">Base Token</label>
                 <input
-                    id="baseToken"
                     v-model="baseToken"
                     name="baseToken"
                     type="text"
@@ -35,11 +27,7 @@
                     placeholder="Base token">
             </div>
             <div class="form-group mx-sm-3">
-                <label
-                    for="quoteToken"
-                    class="mr-sm-3">Quote Token</label>
                 <input
-                    id="quoteToken"
                     v-model="quoteToken"
                     name="quoteToken"
                     type="text"
@@ -47,11 +35,7 @@
                     placeholder="Quote token">
             </div>
             <div class="form-group mr-sm-3">
-                <label
-                    for="inputSide"
-                    class="mr-sm-3">Side</label>
                 <select
-                    id="inputSide"
                     v-model="side"
                     name="side"
                     class="form-control mx-sm-1">
