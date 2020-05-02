@@ -11,6 +11,8 @@ tags:
     description: Accounts API
   - name: Blocks
     description: Blocks API
+  - name: Contracts
+    description: Contract API
   - name: Transactions
     description: Transactions API
   - name: Tokens
@@ -30,7 +32,7 @@ paths:
         - name: page
           in: query
           required: false
-          description: default = 1
+          description: default = 1, maximum = 500
           type: number
         - name: limit
           in: query
@@ -101,7 +103,7 @@ paths:
         - name: page
           in: query
           required: false
-          description: default = 1
+          description: default = 1, maximum = 500
           type: number
         - name: limit
           in: query
@@ -178,168 +180,29 @@ paths:
           description: Bad Request
         500:
           description: Server Internal Error
-
-  /api/txs:
+  /api/blocks/finality/latestIrreversibleBlock:
     get:
       tags:
-        - Transactions
-      summary: Get list blocks. Params limit & page & ((address & tx_account) | block | type)
-      parameters:
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 50
-          type: number
-        - name: address
-          in: query
-          required: false
-          description: list tx of address, group with tx_account
-          type: string
-        - name: tx_account
-          in: query
-          required: false
-          description: in|out, default = all, group with address
-          type: string
-        - name: block
-          in: query
-          required: false
-          description: list tx of a block
-          type: number
-        - name: type
-          in: query
-          required: false
-          description: signTxs|otherTxs|pending|all
-          type: string
+        - Blocks
+      summary: Get latest irreversible block
       responses:
         200:
           description: OK
         400:
           description: Bad Request
-        500:
-          description: Server Internal Error
-  /api/txs/listByType/{type}:
-    get:
-      tags:
-        - Transactions
-      summary: Get list txs by type.
-      parameters:
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 100
-          type: number
-        - name: type
-          in: path
-          required: true
-          description: signTxs|otherTxs|pending|all
-          type: string
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        500:
-          description: Server Internal Error
-  /api/txs/listByBlock/{blockNumber}:
-    get:
-      tags:
-        - Transactions
-      summary: Get list txs by block number.
-      parameters:
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 100
-          type: number
-        - name: blockNumber
-          in: path
-          required: true
-          description: block number
-          type: string
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        500:
-          description: Server Internal Error
-  /api/txs/listByAccount/{address}:
-    get:
-      tags:
-        - Transactions
-      summary: Get list txs by account address.
-      parameters:
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 100
-          type: number
-        - name: address
-          in: path
-          required: true
-          description: account address
-          type: string
-        - name: filterAddress
-          in: query
-          required: false
-          description: optional
-          type: string
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        500:
-          description: Server Internal Error
-  /api/txs/{hash}:
-    get:
-      tags:
-        - Transactions
-      summary: Get transaction detail
-      parameters:
-        - name: hash
-          in: path
-          required: true
-          description: transaction hash
-          type: string
-      responses:
-        200:
-          description: OK
-        404:
-          description: Not Found
         500:
           description: Server Internal Error
 
-  /api/tokens:
+  /api/contracts:
     get:
       tags:
-        - Token
-      summary: Get list tokens
+        - Contracts
+      summary: Get list verified contract
       parameters:
         - name: page
           in: query
           required: false
-          description: default = 1
+          description: default = 1, maximum = 500
           type: number
         - name: limit
           in: query
@@ -353,16 +216,16 @@ paths:
           description: Bad Request
         500:
           description: Server Internal Error
-  /api/tokens/{hash}:
+  /api/contracts/{contractAddress}:
     get:
       tags:
-        - Tokens
-      summary: Get token detail
+        - Contracts
+      summary: Get contract detail
       parameters:
-        - name: hash
+        - name: contractAddress
           in: path
-          required: true
-          description: token address
+          required: false
+          description: contract address
           type: string
       responses:
         200:
@@ -373,21 +236,17 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
-  /api/tokens/{token}/holder/{holder}:
+
+  /api/contracts/{contractAddress}/read:
     get:
       tags:
-        - Tokens
-      summary: Get token holder detail
+        - Contracts
+      summary: Read all function on contract
       parameters:
-        - name: token
+        - name: contractAddress
           in: path
-          required: true
-          description: token address
-          type: string
-        - name: holder
-          in: path
-          required: true
-          description: holder address
+          required: false
+          description: contract address
           type: string
       responses:
         200:
@@ -398,73 +257,52 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
-  /api/token-txs:
-    get:
-      tags:
-        - Accounts
-      summary: Get list token transactions. Require 1 of 2 conditions - address | token
-      parameters:
-        - name: address
-          in: query
-          required: false
-          description: account address
-          type: string
-        - name: token
-          in: path
-          required: false
-          description: token address
-          type: string
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 50
-          type: number
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        500:
-          description: Server Internal Error
-  /api/token-holders:
-    get:
-      tags:
-        - Accounts
-      summary: Get list token holder. Require 1 of 2 conditions - address | hassh
-      parameters:
-        - name: address
-          in: query
-          required: false
-          description: token address
-          type: string
-        - name: hash
-          in: query
-          required: false
-          description: account address
-          type: string
-        - name: page
-          in: query
-          required: false
-          description: default = 1
-          type: number
-        - name: limit
-          in: query
-          required: false
-          description: default 20, maximum = 50
-          type: number
-      responses:
-        200:
-          description: OK
-        400:
-          description: Bad Request
-        500:
-          description: Server Internal Error
 
+  /api/epochs:
+    get:
+      tags:
+        - Epoch
+      summary: Get list epoch
+      parameters:
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/epochs/{epochNumber}:
+    get:
+      tags:
+        - Epoch
+      summary: Get epoch detail
+      parameters:
+        - name: epochNumber
+          in: path
+          required: true
+          description: epoch number
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
 
   /api/rewards/{voter}:
     get:
@@ -519,12 +357,48 @@ paths:
           description: Not Found
         500:
           description: Server Internal Error
-  /api/epochs:
+  /api/rewards/total/{address}/{fromEpoch}/{toEpoch}:
     get:
       tags:
-        - Epoch
-      summary: Get list epoch
+        - Rewards
+      summary: Get total rewards of an address
       parameters:
+        - name: address
+          in: path
+          required: true
+          description: account address
+          type: string
+        - name: fromEpoch
+          in: path
+          required: true
+          description: from epoch
+          type: number
+        - name: toEpoch
+          in: path
+          required: true
+          description: to epoch
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/tokens:
+    get:
+      tags:
+        - Token
+      summary: Get list tokens
+      parameters:
+        - name: type
+          in: query
+          required: false
+          description: trc20|trc21|trc721, default = trc20
+          type: string
         - name: page
           in: query
           required: false
@@ -540,26 +414,291 @@ paths:
           description: OK
         400:
           description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/tokens/{hash}:
+    get:
+      tags:
+        - Tokens
+      summary: Get token detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: token address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
         404:
           description: Not Found
         500:
           description: Server Internal Error
-  /api/epochs/{epochNumber}:
+  /api/tokens/holding/{tokenType}/{holder}:
     get:
       tags:
-        - Epoch
-      summary: Get epoch detail
+        - Tokens
+      summary: Get list token holding of a holder
       parameters:
-        - name: epochNumber
+        - name: tokenType
           in: path
           required: true
-          description: epoch number
+          description: trc20|trc21|trc721
+          type: string
+        - name: holder
+          in: path
+          required: true
+          description: holder address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+
+  /api/token-holders:
+    get:
+      tags:
+        - Token
+      summary: Get list trc20 token holder. Require 1 of 2 conditions - address | hash
+      parameters:
+        - name: address
+          in: query
+          required: false
+          description: token address
+          type: string
+        - name: hash
+          in: query
+          required: false
+          description: account address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
           type: number
       responses:
         200:
           description: OK
         400:
           description: Bad Request
+        500:
+          description: Server Internal Error
+
+  /api/token-txs/{tokenType}:
+    get:
+      tags:
+        - Token
+      summary: Get list token transactions.
+      parameters:
+        - name: tokenType
+          in: path
+          required: true
+          description: trc20|trc21|trc721
+          type: string
+        - name: holder
+          in: query
+          required: false
+          description: holder address
+          type: string
+        - name: token
+          in: query
+          required: false
+          description: token address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/token-txs/{tokenType}/{txHash}:
+    get:
+      tags:
+        - Token
+      summary: Get list token transactions by transaction hash.
+      parameters:
+        - name: tokenType
+          in: path
+          required: true
+          description: trc20|trc21|trc721
+          type: string
+        - name: txHash
+          in: path
+          required: false
+          description: token address
+          type: string
+        - name: holder
+          in: query
+          required: false
+          description: holder address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+
+  /api/txs/listByType/:txType:
+    get:
+      tags:
+        - Transactions
+      summary: Get list transaction by type
+      parameters:
+        - name: txType
+          in: path
+          required: true
+          description: signTxs|normalTxs
+          type: number
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 50
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/listByBlock/{blockNumber}:
+    get:
+      tags:
+        - Transactions
+      summary: Get list txs by block number.
+      parameters:
+        - name: blockNumber
+          in: path
+          required: true
+          description: block number
+          type: number
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 100
+          type: number
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/listByAccount/{address}:
+    get:
+      tags:
+        - Transactions
+      summary: Get list txs by account address.
+      parameters:
+        - name: address
+          in: path
+          required: true
+          description: account address
+          type: string
+        - name: page
+          in: query
+          required: false
+          description: default = 1
+          type: number
+        - name: limit
+          in: query
+          required: false
+          description: default 20, maximum = 100
+          type: number
+        - name: tx_type
+          in: query
+          required: false
+          description: in|out|all
+          type: string
+        - name: filterAddress
+          in: query
+          required: false
+          description: transaction send to/from address
+          type: string
+      responses:
+        200:
+          description: OK
+        400:
+          description: Bad Request
+        500:
+          description: Server Internal Error
+  /api/txs/{hash}:
+    get:
+      tags:
+        - Transactions
+      summary: Get transaction detail
+      parameters:
+        - name: hash
+          in: path
+          required: true
+          description: transaction hash
+          type: string
+      responses:
+        200:
+          description: OK
+        404:
+          description: Not Found
+        500:
+          description: Server Internal Error
+  /api/txs/internal/{address}:
+    get:
+      tags:
+        - Transactions
+      summary: Get internal transaction of an address
+      parameters:
+        - name: address
+          in: path
+          required: true
+          description: account address
+          type: string
+      responses:
+        200:
+          description: OK
         404:
           description: Not Found
         500:
