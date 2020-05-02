@@ -71,10 +71,10 @@ jobs:
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'cd tomoscan && git pull origin devnet' > /dev/null
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'cd tomoscan/client && npm run build' > /dev/null
         - ssh -i ./travis.pem -l $DEVNET_USER_SSH $DEVNET_IP 'pm2 restart tomoscan-client tomoscan-crawler tomoscan-producer tomoscan-server tomoscan-trade-process' > /dev/null
-      after_success:
-        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
-      after_failure:
-        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+#      after_success:
+#        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+#      after_failure:
+#        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[devnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[devnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
 
     - stage: Deploy in testnet
       install: skip
@@ -87,10 +87,10 @@ jobs:
       script:
         - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'cd scan && git pull origin tomodex' > /dev/null
         - ssh -i ./travis.pem -l $TESTNET_USER_SSH $TESTNET_IP 'cd scan/ && bash deploy.sh' > /dev/null
-      after_success:
-        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
-      after_failure:
-        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+#      after_success:
+#        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment succeeded\",\"pretext\":\"\",\"color\":\"good\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment succeeded.\",\"short\":true}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
+#      after_failure:
+#        -  'curl -X POST --data-urlencode "payload={\"channel\": \"#deployments\", \"username\": \"Travis\", \"attachments\":[{\"fallback\":\"[testnet] Deployment failed\",\"pretext\":\"\",\"color\":\"danger\",\"fields\":[{\"title\":\"[testnet] TomoScan\",\"value\":\"Deployment failed.\",\"short\":false}]}], \"icon_emoji\": \":male-construction-worker:\"}" $SLACK_DEPLOY_URL'
 
 stages:
   - name: Lint
@@ -105,3 +105,6 @@ stages:
   - name: Deploy in testnet
     if: type != pull_request AND branch = tomodex AND repo = tomochain/tomoscan
 #    if: type != pull_request AND branch =~ ^v AND tag IS present AND repo = tomochain/tomoscan
+notifications:
+  slack:
+    secure: Ua//LHxi433R7KzDMC0CDmDEOrDsiy9KPS1IZCyzMZ03CpLd1oM9iOVBaxxzb3jMSOPoPDpspXPRkYh+NwPyk03uHrg3AWcJds8SD+/ozFbYTfrVaBS+SbnjVaXq1J97Mgr8zOOS4XuCRMIpjsXTIBQ9urG7eWvS+7b3yV9Zvb002kmkpMvtH9xlEK9xHMUJ9XJJr6CyLHBI8OGm6JxsEPaRuXkOWJPr6nmH1FVlMZ1Ku9eKaMqzpIEVFXpjZvGg2LtnD7gV8j5DhA4N4fok5CwlNihd2GfGriJoyyfyMHMsnjmMSyINwSEOUa+4iMZzyY36ug2yxGvA3qvnVdH0PHdf9MLL3ZrlHtgBSRTQjafVjT7knNXObIiPHMU6FRU8dPFc4eChV8ezTW+QrpVy9wSqpEZvN1qnYQPN0N9pUTAAPWc/UlkTPyJEyuZx81UG01mUUvG2cyFsPljIhT3av0TEsirT5MSR8Dgyp3y/8L8SbjVulpxNSU1R4koNvhO8NTMxzGEMJ0m05RwfUkzv4kHtciARv2bJRvwvWdK9qtTadbZHtA6zQA9gNsdKl1/hiHQdneW1Kbg9NdJywPNG15tG3I1WMIrJYf/Fy/O1ynSX7Y1cWzODd2Kr5+gBHBhn35o/GgEfrYVt4LFJ4/rG7U4BF/jqVtjtrTDHhu9DqrE=
