@@ -210,7 +210,7 @@ const DexHelper = {
             amount = amount.dividedBy(10 ** decimals[bt].decimals).toNumber()
 
             let pricepoint = new BigNumber(trades[i].pricepoint)
-            pricepoint = pricepoint.dividedBy(10 ** decimals[qt]).toNumber()
+            pricepoint = pricepoint.dividedBy(10 ** decimals[qt].decimals).toNumber()
 
             let makeFee = new BigNumber(trades[i].makeFee)
             makeFee = makeFee.dividedBy(10 ** decimals[qt].decimals).toNumber()
