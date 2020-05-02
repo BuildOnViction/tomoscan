@@ -111,37 +111,37 @@
                                                         !== '0x0000000000000000000000000000000000000001'"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: trade.baseToken}}">
-                                                        {{ trade.pairName.split('/')[0] }}</nuxt-link>
+                                                        {{ trade.baseSymbol }}</nuxt-link>
                                                     <span v-else>
-                                                    {{ trade.pairName.split('/')[0] }}</span>/<nuxt-link
+                                                    {{ trade.baseSymbol }}</span>/<nuxt-link
                                                         v-if="trade.quoteToken
                                                         !== '0x0000000000000000000000000000000000000001'"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: trade.quoteToken}}"
-                                                    >{{ trade.pairName.split('/')[1] }}</nuxt-link>
-                                                    <span v-else>{{ trade.pairName.split('/')[1] }}</span>
+                                                    >{{ trade.quoteSymbol }}</nuxt-link>
+                                                    <span v-else>{{ trade.quoteSymbol }}</span>
                                                 </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Price</td>
                                             <td>{{ formatNumber(trade.pricepoint) }}
-                                                {{ trade.pairName.split('/')[1] }}</td>
+                                                {{ trade.quoteSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Amount</td>
                                             <td>{{ formatNumber(trade.amount) }}
-                                                {{ trade.pairName.split('/')[0] }}</td>
+                                                {{ trade.baseSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Taker Fee</td>
                                             <td>{{ formatNumber(trade.takeFee) }}
-                                                {{ trade.pairName.split('/')[1] }}</td>
+                                                {{ trade.quoteSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Maker Fee</td>
                                             <td>{{ formatNumber(trade.makeFee) }}
-                                                {{ trade.pairName.split('/')[1] }}</td>
+                                                {{ trade.quoteSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Age</td>

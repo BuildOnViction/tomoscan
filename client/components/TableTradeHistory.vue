@@ -102,7 +102,8 @@
             <template
                 slot="pricepoint"
                 slot-scope="props">
-                {{ formatNumber(props.item.pricepoint) + ' ' + props.item.quoteSymbol }}
+                {{ props.item.pricepoint === null ? 0 : formatNumber(props.item.pricepoint) }}
+                {{ props.item.quoteSymbol }}
             </template>
             <template
                 slot="amount"
