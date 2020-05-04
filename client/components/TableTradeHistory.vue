@@ -13,7 +13,6 @@
             method="get">
             <div class="form-group mr-2 mb-2">
                 <input
-                    id="inputUserAddress"
                     v-model="user"
                     name="user"
                     type="text"
@@ -22,12 +21,19 @@
             </div>
             <div class="form-group mr-2 mb-2">
                 <input
-                    id="inputPairName"
-                    v-model="pair"
-                    name="pair"
+                    v-model="baseToken"
+                    name="baseToken"
                     type="text"
                     class="form-control"
-                    placeholder="Pair name">
+                    placeholder="Base Token">
+            </div>
+            <div class="form-group mr-2 mb-2">
+                <input
+                    v-model="quoteToken"
+                    name="quoteToken"
+                    type="text"
+                    class="form-control"
+                    placeholder="Quote Token">
             </div>
             <div class="form-group mr-2 mb-2">
                 <button
@@ -43,7 +49,7 @@
         </form>
 
         <div
-            v-if="total == 0"
+            v-if="total === 0"
             class="tomo-empty">
             <i class="fa fa-exchange tomo-empty__icon"/>
             <p class="tomo-empty__description">No order found</p>
@@ -85,23 +91,24 @@
                     <nuxt-link
                         v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
-                        {{ props.item.pairName.split('/')[0] }}</nuxt-link>
-                    <span v-else>{{ props.item.pairName.split('/')[0] }}</span>/<nuxt-link
+                        {{ props.item.baseSymbol }}</nuxt-link>
+                    <span v-else>{{ props.item.baseSymbol }}</span>/<nuxt-link
                         v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
                         :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
-                    >{{ props.item.pairName.split('/')[1] }}</nuxt-link>
-                    <span v-else>{{ props.item.pairName.split('/')[1] }}</span>
+                    >{{ props.item.quoteSymbol }}</nuxt-link>
+                    <span v-else>{{ props.item.quoteSymbol }}</span>
                 </span>
             </template>
             <template
                 slot="pricepoint"
                 slot-scope="props">
-                {{ formatNumber(props.item.pricepoint) + ' ' + props.item.pairName.split('/')[1] }}
+                {{ props.item.pricepoint === null ? 0 : formatNumber(props.item.pricepoint) }}
+                {{ props.item.quoteSymbol }}
             </template>
             <template
                 slot="amount"
                 slot-scope="props">
-                {{ formatNumber(props.item.amount) + ' ' + props.item.pairName.split('/')[0] }}
+                {{ formatNumber(props.item.amount) + ' ' + props.item.baseSymbol }}
             </template>
             <template
                 slot="createdAt"
@@ -167,16 +174,20 @@ export default {
         pages: 1,
         blockNumber: null,
         user: '',
-        pair: ''
+        baseToken: '',
+        quoteToken: ''
     }),
     async created () {
         if (this.$route.query.user) {
             this.user = this.$route.query.user
         }
-        if (this.$route.query.pair) {
-            this.pair = this.$route.query.pair
+        if (this.$route.query.baseToken) {
+            this.baseToken = this.$route.query.baseToken
         }
-        this.getDataFromApi()
+        if (this.$route.query.quoteToken) {
+            this.quoteToken = this.$route.query.quoteToken
+        }
+        await this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
@@ -198,8 +209,11 @@ export default {
                 if (this.user !== '') {
                     params.user = this.user.trim()
                 }
-                if (this.pair !== '') {
-                    params.pair = this.pair.trim()
+                if (this.baseToken !== '') {
+                    params.baseToken = this.baseToken.trim()
+                }
+                if (this.quoteToken !== '') {
+                    params.quoteToken = this.quoteToken.trim()
                 }
             }
             const query = this.serializeQuery(params)
@@ -229,7 +243,8 @@ export default {
         },
         async reset () {
             this.user = ''
-            this.pair = ''
+            this.baseToken = ''
+            this.quoteToken = ''
             this.type = ''
             await this.getDataFromApi()
         },
