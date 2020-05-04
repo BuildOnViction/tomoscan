@@ -129,7 +129,7 @@
                                         </tr>
                                         <tr v-if="order.cancelFee">
                                             <td>Cancel Fee</td>
-                                            <td>{{ order.cancelFee }} </td>
+                                            <td>{{ order.cancelFee }} {{ order.baseSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Age</td>
