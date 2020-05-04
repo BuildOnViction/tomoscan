@@ -73,7 +73,11 @@ const DexHelper = {
                 const extraData = JSON.parse(orders[i].extraData)
                 if (Object.prototype.hasOwnProperty.call(extraData, 'CancelFee')) {
                     let cancelFee = new BigNumber(extraData.CancelFee)
-                    cancelFee = cancelFee.dividedBy(10 ** decimals[bt].decimals).toNumber()
+                    if (orders[i].side === 'BUY') {
+                        cancelFee = cancelFee.dividedBy(10 ** decimals[qt].decimals).toNumber()
+                    } else {
+                        cancelFee = cancelFee.dividedBy(10 ** decimals[bt].decimals).toNumber()
+                    }
                     orders[i].cancelFee = cancelFee
                 }
             }

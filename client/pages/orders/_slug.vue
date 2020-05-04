@@ -129,7 +129,8 @@
                                         </tr>
                                         <tr v-if="order.cancelFee">
                                             <td>Cancel Fee</td>
-                                            <td>{{ order.cancelFee }} {{ order.baseSymbol }}</td>
+                                            <td>{{ order.cancelFee }}
+                                                {{ order.side === 'BUY' ? order.quoteSymbol : order.baseSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Age</td>
