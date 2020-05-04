@@ -78,18 +78,22 @@
                             <td>Lending token</td>
                             <td>
                                 <nuxt-link
+                                    v-if="lendingRecall.lendingToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingRecall.lendingToken.toLowerCase()}}">
                                     {{ lendingRecall.lendingToken.toLowerCase() }}</nuxt-link>
+                                <span v-else>TOMO</span>
                             </td>
                         </tr>
                         <tr>
                             <td>Collateral token</td>
                             <td>
                                 <nuxt-link
+                                    v-if="lendingRecall.collateralToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingRecall.collateralToken.toLowerCase()}}">
                                     {{ lendingRecall.collateralToken.toLowerCase() }}</nuxt-link>
+                                <span v-else>TOMO</span>
                             </td>
                         </tr>
                         <tr>
@@ -97,9 +101,11 @@
                             <td>
                                 {{ formatNumber(lendingRecall.quantity) }}
                                 <nuxt-link
+                                    v-if="lendingRecall.collateralToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingRecall.collateralToken}}">
                                     {{ lendingRecall.collateralSymbol.toUpperCase() }}</nuxt-link>
+                                <span v-else>TOMO</span>
                             </td>
                         </tr>
                         <tr>
@@ -141,7 +147,8 @@ export default {
         return {
             hash: null,
             lendingRecall: {},
-            loading: true
+            loading: true,
+            tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
         }
     },
     created () {

@@ -99,15 +99,13 @@
                                             <td>
                                                 <span>
                                                     <nuxt-link
-                                                        v-if="order.baseToken
-                                                        !== '0x0000000000000000000000000000000000000001'"
+                                                        v-if="order.baseToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: order.baseToken}}">
                                                         {{ order.baseSymbol }}</nuxt-link>
                                                     <span v-else>
                                                     {{ order.baseSymbol }}</span>/<nuxt-link
-                                                        v-if="order.quoteToken
-                                                        !== '0x0000000000000000000000000000000000000001'"
+                                                        v-if="order.quoteToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: order.quoteToken}}"
                                                     >{{ order.quoteSymbol }}</nuxt-link>
@@ -171,7 +169,8 @@ export default {
         return {
             hash: null,
             order: {},
-            loading: true
+            loading: true,
+            tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
         }
     },
     created () {

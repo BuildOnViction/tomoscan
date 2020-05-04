@@ -96,11 +96,11 @@
                 slot-scope="props">
                 <span>
                     <nuxt-link
-                        v-if="props.item.baseToken !== '0x0000000000000000000000000000000000000001'"
+                        v-if="props.item.baseToken !== tomoNativeToken"
                         :to="{name: 'tokens-slug', params: {slug: props.item.baseToken}}">
                         {{ props.item.baseSymbol }}</nuxt-link>
                     <span v-else>{{ props.item.baseSymbol }}</span>/<nuxt-link
-                        v-if="props.item.quoteToken !== '0x0000000000000000000000000000000000000001'"
+                        v-if="props.item.quoteToken !== tomoNativeToken"
                         :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
                     >{{ props.item.quoteSymbol }}</nuxt-link>
                     <span v-else>{{ props.item.quoteSymbol }}</span>
@@ -189,7 +189,8 @@ export default {
         user: '',
         baseToken: '',
         quoteToken: '',
-        side: ''
+        side: '',
+        tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
         if (this.$route.query.user) {

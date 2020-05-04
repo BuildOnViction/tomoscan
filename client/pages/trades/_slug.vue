@@ -107,15 +107,13 @@
                                             <td>
                                                 <span>
                                                     <nuxt-link
-                                                        v-if="trade.baseToken
-                                                        !== '0x0000000000000000000000000000000000000001'"
+                                                        v-if="trade.baseToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: trade.baseToken}}">
                                                         {{ trade.baseSymbol }}</nuxt-link>
                                                     <span v-else>
                                                     {{ trade.baseSymbol }}</span>/<nuxt-link
-                                                        v-if="trade.quoteToken
-                                                        !== '0x0000000000000000000000000000000000000001'"
+                                                        v-if="trade.quoteToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: trade.quoteToken}}"
                                                     >{{ trade.quoteSymbol }}</nuxt-link>
@@ -182,7 +180,8 @@ export default {
         return {
             hash: null,
             trade: {},
-            loading: true
+            loading: true,
+            tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
         }
     },
     created () {

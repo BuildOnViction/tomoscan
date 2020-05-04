@@ -132,15 +132,19 @@
                 slot="lendingToken"
                 slot-scope="props">
                 <nuxt-link
+                    v-if="props.item.lendingToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="collateralToken"
                 slot-scope="props">
                 <nuxt-link
+                    v-if="props.item.collateralToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
                     {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="quantity"
@@ -228,7 +232,8 @@ export default {
         lendingToken: '',
         collateralToken: '',
         status: '',
-        side: ''
+        side: '',
+        tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
         if (this.$route.query.user) {

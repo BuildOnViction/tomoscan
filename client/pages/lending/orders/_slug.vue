@@ -96,25 +96,30 @@
                             <td>Lending token</td>
                             <td>
                                 <nuxt-link
+                                    v-if="lendingOrder.lendingToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingOrder.lendingToken.toLowerCase()}}">
                                     {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
+                                <span v-else>TOMO</span>
                             </td>
                         </tr>
                         <tr>
                             <td>Collateral token</td>
                             <td>
                                 <nuxt-link
+                                    v-if="lendingOrder.collateralToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingOrder.collateralToken.toLowerCase()}}">
                                     {{ lendingOrder.collateralToken.toLowerCase() }}</nuxt-link>
+                                <span v-else>TOMO</span>
                             </td>
                         </tr>
                         <tr>
                             <td>Quantity</td>
                             <td>
                                 {{ formatNumber(lendingOrder.quantity) }}
-                                {{ lendingOrder.lendingSymbol }}
+                                {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
+                                lendingOrder.lendingSymbol : 'TOMO' }}
                             </td>
                         </tr>
                         <tr>
@@ -125,7 +130,8 @@
                             <td>Filled Amount</td>
                             <td>
                                 {{ formatNumber(lendingOrder.filledAmount) }}
-                                {{ lendingOrder.lendingSymbol }}
+                                {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
+                                lendingOrder.lendingSymbol : 'TOMO' }}
                             </td>
                         </tr>
                         <tr v-if="lendingOrder.status === 'CANCELLED'">
@@ -188,7 +194,8 @@ export default {
         return {
             hash: null,
             lendingOrder: {},
-            loading: true
+            loading: true,
+            tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
         }
     },
     created () {

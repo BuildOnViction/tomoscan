@@ -124,25 +124,31 @@
                 slot-scope="props">
                 {{ formatNumber(props.item.collateralLockedAmount) }}
                 <nuxt-link
+                    v-if="props.item.collateralSymbol !== tomoNativeToken"
                     :to="{name: 'tokens-slug',
                           params: {slug: props.item.collateralSymbol}}">
                     {{ props.item.collateralSymbol }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="lendingToken"
                 slot-scope="props">
                 {{ props.item.amount === null ? 0 : formatNumber(props.item.amount) }}
                 <nuxt-link
+                    v-if="props.item.lendingToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="borrowingFee"
                 slot-scope="props">
                 {{ props.item.borrowingFee === null ? 0 : formatNumber(props.item.borrowingFee) }}
                 <nuxt-link
+                    v-if="props.item.lendingToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="status"
@@ -220,7 +226,8 @@ export default {
         user: '',
         lendingToken: '',
         collateralToken: '',
-        status: ''
+        status: '',
+        tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
         if (this.$route.query.user) {
