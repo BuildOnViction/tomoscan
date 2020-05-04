@@ -128,6 +128,14 @@
                                 {{ lendingOrder.lendingSymbol }}
                             </td>
                         </tr>
+                        <tr v-if="lendingOrder.status === 'CANCELLED'">
+                            <td>Cancel fee</td>
+                            <td>
+                                {{ formatNumber(lendingOrder.cancelFee) }}
+                                {{ lendingOrder.status === 'BORROW' ?
+                                lendingOrder.collateralSymbol : lendingOrder.lendingSymbol }}
+                            </td>
+                        </tr>
                         <tr>
                             <td>Auto</td>
                             <td>{{ lendingOrder.autoTopUp }}</td>

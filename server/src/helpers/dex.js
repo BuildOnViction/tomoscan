@@ -90,6 +90,7 @@ const DexHelper = {
         const decimals = {}
         for (let i = 0; i < orders.length; i++) {
             const lt = orders[i].lendingToken.toLowerCase()
+            const ct = orders[i].collateralToken.toLowerCase()
             if (!Object.prototype.hasOwnProperty.call(decimals, lt)) {
                 if (lt === TomoToken) {
                     decimals[lt] = { decimals: 18, symbol: 'TOMO' }
@@ -107,10 +108,28 @@ const DexHelper = {
                     }
                 }
             }
+            if (!Object.prototype.hasOwnProperty.call(decimals, ct)) {
+                if (ct === TomoToken) {
+                    decimals[ct] = { decimals: 18, symbol: 'TOMO' }
+                } else {
+                    const token = await db.Token.findOne({ hash: ct })
+                    if (token) {
+                        decimals[ct] = { decimals: token.decimals, symbol: token.symbol }
+                    } else {
+                        let dcm = await web3.eth.call({ to: ct, data: decimalFunction })
+                        dcm = await web3.utils.hexToNumber(dcm)
+
+                        let symbol = await web3.eth.call({ to: ct, data: symbolFunction })
+                        symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+                        decimals[ct] = { decimals: dcm, symbol: symbol }
+                    }
+                }
+            }
         }
         for (let i = 0; i < orders.length; i++) {
             let quantity = new BigNumber(orders[i].quantity)
             const lt = orders[i].lendingToken.toLowerCase()
+            const ct = orders[i].collateralToken.toLowerCase()
             quantity = quantity.dividedBy(10 ** decimals[lt].decimals).toNumber()
 
             let fillAmount = new BigNumber(orders[i].filledAmount)
@@ -121,9 +140,23 @@ const DexHelper = {
 
             orders[i].lendingDecimals = decimals[lt].decimals
             orders[i].lendingSymbol = decimals[lt].symbol
+            orders[i].collateralDecimals = decimals[ct].decimals
+            orders[i].collateralSymbol = decimals[ct].symbol
             orders[i].interest = interest
             orders[i].filledAmount = fillAmount
             orders[i].quantity = quantity
+            if (orders[i].status === 'CANCELLED') {
+                const extraData = JSON.parse(orders[i].extraData)
+                if (Object.prototype.hasOwnProperty.call(extraData, 'CancelFee')) {
+                    let cancelFee = new BigNumber(extraData.CancelFee)
+                    if (orders[i].side === 'BORROW') {
+                        cancelFee = cancelFee.dividedBy(10 ** decimals[ct].decimals).toNumber()
+                    } else {
+                        cancelFee = cancelFee.dividedBy(10 ** decimals[lt].decimals).toNumber()
+                    }
+                    orders[i].cancelFee = cancelFee
+                }
+            }
         }
         return orders
     },
