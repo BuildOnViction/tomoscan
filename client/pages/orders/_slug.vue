@@ -103,29 +103,33 @@
                                                         !== '0x0000000000000000000000000000000000000001'"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: order.baseToken}}">
-                                                        {{ order.pairName.split('/')[0] }}</nuxt-link>
+                                                        {{ order.baseSymbol }}</nuxt-link>
                                                     <span v-else>
-                                                    {{ order.pairName.split('/')[0] }}</span>/<nuxt-link
+                                                    {{ order.baseSymbol }}</span>/<nuxt-link
                                                         v-if="order.quoteToken
                                                         !== '0x0000000000000000000000000000000000000001'"
                                                         :to="{name: 'tokens-slug',
                                                               params: {slug: order.quoteToken}}"
-                                                    >{{ order.pairName.split('/')[1] }}</nuxt-link>
-                                                    <span v-else>{{ order.pairName.split('/')[1] }}</span>
+                                                    >{{ order.quoteSymbol }}</nuxt-link>
+                                                    <span v-else>{{ order.quoteSymbol }}</span>
                                                 </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>Price</td>
-                                            <td>{{ order.price }} {{ order.pairName.split('/')[1] }}</td>
+                                            <td>{{ order.price }} {{ order.quoteSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Order Amount</td>
-                                            <td>{{ order.quantity }} {{ order.pairName.split('/')[0] }}</td>
+                                            <td>{{ order.quantity }} {{ order.baseSymbol }}</td>
                                         </tr>
                                         <tr>
                                             <td>Filled Amount</td>
-                                            <td>{{ order.filledAmount }} {{ order.pairName.split('/')[0] }}</td>
+                                            <td>{{ order.filledAmount }} {{ order.baseSymbol }}</td>
+                                        </tr>
+                                        <tr v-if="order.cancelFee">
+                                            <td>Cancel Fee</td>
+                                            <td>{{ order.cancelFee }} </td>
                                         </tr>
                                         <tr>
                                             <td>Age</td>
