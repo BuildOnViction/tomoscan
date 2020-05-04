@@ -124,7 +124,7 @@
                 slot-scope="props">
                 {{ formatNumber(props.item.collateralLockedAmount) }}
                 <nuxt-link
-                    v-if="props.item.collateralSymbol !== tomoNativeToken"
+                    v-if="props.item.collateralToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug',
                           params: {slug: props.item.collateralSymbol}}">
                     {{ props.item.collateralSymbol }}</nuxt-link>

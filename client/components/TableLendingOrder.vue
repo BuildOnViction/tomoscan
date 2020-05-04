@@ -151,8 +151,10 @@
                 slot-scope="props">
                 {{ formatNumber(props.item.quantity) }}
                 <nuxt-link
+                    v-if="props.item.lendingSymbol !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ props.item.lendingSymbol.toUpperCase() }}</nuxt-link>
+                <span v-else>TOMO</span>
             </template>
             <template
                 slot="interest"
