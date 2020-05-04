@@ -75,11 +75,24 @@
                             <b-dropdown-item :to="{name: 'relayers'}">Relayers</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'orders'}">Orders</b-dropdown-item>
                             <b-dropdown-item :to="{name: 'trades'}">Trade History</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'lending-orders'}">Lending Order</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'lending-trades'}">Lending Trade</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'lending-topup'}">Lending TopUp</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'lending-repay'}">Lending Repay</b-dropdown-item>
-                            <b-dropdown-item :to="{name: 'lending-recalls'}">Lending Recall</b-dropdown-item>
+                            <li
+                                id="lending-nav-id"
+                                class="nav-item lending-nav"
+                                @click="addClass()">
+                                <div class="nav-link-custom"><span>Lending</span></div>
+                                <ul class="dropdown-menu">
+                                    <b-dropdown-item :to="{name: 'lending-orders'}">
+                                        Lending Order</b-dropdown-item>
+                                    <b-dropdown-item :to="{name: 'lending-trades'}">
+                                        Lending Trade</b-dropdown-item>
+                                    <b-dropdown-item :to="{name: 'lending-topup'}">
+                                        Lending TopUp</b-dropdown-item>
+                                    <b-dropdown-item :to="{name: 'lending-repay'}">
+                                        Lending Repay</b-dropdown-item>
+                                    <b-dropdown-item :to="{name: 'lending-recalls'}">
+                                        Lending Recall</b-dropdown-item>
+                                </ul>
+                            </li>
                         </b-nav-item-dropdown>
                     </b-navbar-nav>
                     <b-navbar-nav class="tomo-nav__login">
@@ -394,6 +407,10 @@ export default {
             } else {
                 document.body.classList.remove('dark-mode')
             }
+        },
+        addClass () {
+            const item = document.getElementById('lending-nav-id')
+            item.classList.toggle('active')
         }
     }
 }

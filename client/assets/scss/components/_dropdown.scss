@@ -64,3 +64,62 @@
 :focus {
   outline: none!important;
 }
+.lending-nav {
+  padding: 0!important;
+  position: relative;
+  .nav-link-custom {
+    cursor: pointer;
+    font-size: 14px;
+    color: #868f9b;
+    transition: all .3s;
+    &:before {
+      display: none;
+    }
+    &:hover {
+      color: #34a1ff;
+    }
+    > span:after {
+      content: '\f105';
+      border: none;
+      display: inline-block;
+      vertical-align: 0;
+      font-family: FontAwesome;
+      height: 40px;
+      width: 40px;
+      line-height: 40px;
+      text-align: center;
+      margin-top: -10px;
+      float: right;
+      transition: all .5s ease;
+    }
+  }
+  @include media-breakpoint-up(lg) {
+    >.nav-link-custom {
+      margin: 0 !important;
+      padding-left: 0 !important;
+      padding-right: 0 !important;
+      padding: 15px 0;
+    }
+    ul {
+      top: 0;
+      left: 100%;
+      display: none;
+    }
+    &:hover {
+      > ul {
+        display: block;
+      }
+    }
+  }
+  @include media-breakpoint-down(md) {
+    padding: 8px 0 8px 20px!important;
+    ul {
+      display: none;
+    }
+    &.active {
+      > ul {
+        display: block;
+      }
+    }
+  }
+}
