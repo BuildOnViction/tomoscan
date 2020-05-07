@@ -261,7 +261,6 @@
 <script>
 import Cookie from 'js-cookie'
 import mixin from '~/plugins/mixin'
-import MyFooter from '~/components/Footer.vue'
 import Breadcrumb from '~/components/Breadcrumb.vue'
 import Register from '~/components/Register.vue'
 import Login from '~/components/Login.vue'
@@ -270,7 +269,6 @@ import pkg from '../package.json'
 
 export default {
     components: {
-        MyFooter,
         Breadcrumb,
         Register,
         Login,

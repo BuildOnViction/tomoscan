@@ -1,6 +1,6 @@
 <template>
     <b-row>
-        <b-col />
+        <b-col/>
         <b-col>
             <div
                 v-show="errorMessage"
@@ -57,7 +57,7 @@
                 </div>
             </form>
         </b-col>
-        <b-col />
+        <b-col/>
     </b-row>
 </template>
 
@@ -85,11 +85,6 @@ export default {
         formPasswordConfirmation: {
             required,
             sameAsPassword: sameAs('formPassword')
-        }
-    },
-    head () {
-        return {
-            title: 'Reset Password'
         }
     },
     async mounted () {
@@ -146,6 +141,11 @@ export default {
             } catch (error) {
                 console.log(error)
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Reset Password'
         }
     }
 }

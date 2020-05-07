@@ -1,7 +1,7 @@
 <template>
     <b-modal
-        ref="modalRegister"
         :id="modalId"
+        ref="modalRegister"
         class="tomo-modal"
         title="Register"
         @ok="validate"

@@ -24,17 +24,17 @@
                 slot="hash"
                 slot-scope="props">
                 <nuxt-link
-                    v-if="token_type === 'trc20'"
+                    v-if="tokenType === 'trc20'"
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
                     :to="{name: 'tokens-slug-trc20-holder', params: {slug: props.item.token, holder: holder}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
                 <nuxt-link
-                    v-if="token_type === 'trc21'"
+                    v-if="tokenType === 'trc21'"
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
                     :to="{name: 'tokens-slug-trc21-holder', params: {slug: props.item.token, holder: holder}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
                 <nuxt-link
-                    v-if="token_type === 'trc721'"
+                    v-if="tokenType === 'trc721'"
                     :class="props.item.tokenObj ? '' : 'text-truncate'"
                     :to="{name: 'tokens-slug-trc721-holder', params: {slug: props.item.token, holder: holder}}">
                     {{ props.item.tokenObj ? props.item.tokenObj.name : props.item.token }}</nuxt-link>
@@ -44,11 +44,11 @@
                 slot="quantity"
                 slot-scope="props">
                 <span
-                    v-if="token_type === 'trc20' || token_type === 'trc21'">
+                    v-if="tokenType === 'trc20' || tokenType === 'trc21'">
                     {{ formatUnit(toTokenQuantity(props.item.quantity, props.item.tokenObj.decimals),
                                   props.item.tokenObj.symbol) }}</span>
                 <span
-                    v-if="token_type === 'trc721'">
+                    v-if="tokenType === 'trc721'">
                     {{ props.item.tokenId }}</span>
             </template>
 
@@ -63,8 +63,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 <script>
@@ -81,7 +80,7 @@ export default {
             type: String,
             default: ''
         },
-        token_type: {
+        tokenType: {
             type: String,
             default: ''
         },
@@ -99,7 +98,7 @@ export default {
     data: () => ({
         fields: {
             hash: { label: 'Token' },
-            quantity: { label: self.token_type === 'trc721' ? 'Token ID' : 'Quantity' }
+            quantity: { label: this.tokenType === 'trc721' ? 'Token ID' : 'Quantity' }
         },
         loading: true,
         total: 0,
@@ -125,7 +124,7 @@ export default {
             }
 
             const query = this.serializeQuery(params)
-            const url = `/api/tokens/holding/${self.token_type}/${self.holder}` + '?' + query
+            const url = `/api/tokens/holding/${self.tokenType}/${self.holder}` + '?' + query
             const { data } = await this.$axios.get(url)
             self.items = data.items
             self.total = data.total

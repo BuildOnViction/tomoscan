@@ -12,7 +12,7 @@
                     try looking in your spam folder.</p>
             </div>
         </b-col>
-        <b-col />
+        <b-col/>
     </b-row>
 </template>
 

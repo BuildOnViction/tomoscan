@@ -30,7 +30,7 @@
                 <div>
                     <i
                         v-if="props.item.isContract"
-                        class="tm tm-icon-contract mr-1 mr-lg-2" />
+                        class="tm tm-icon-contract mr-1 mr-lg-2"/>
                     <nuxt-link
                         :to="{name: 'address-slug', params: {slug: props.item.hash}}"
                         class="text-truncate">{{ props.item.hash }}</nuxt-link>
@@ -54,8 +54,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 
@@ -68,9 +67,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head: () => ({
-        title: 'Accounts'
-    }),
     data: () => ({
         fields: {
             rank: { label: 'Rank' },
@@ -124,7 +120,10 @@ export default {
             this.currentPage = page
             this.getDataFromApi()
         }
-    }
+    },
+    head: () => ({
+        title: 'Accounts'
+    })
 }
 </script>
 

@@ -7,7 +7,7 @@
             <div class="tomo-card__header">
                 <h3 class="tomo-card__headline">Download Data</h3>
                 <p>The information you requested can be downloaded from this page.
-                Export the earliest 1000 records.</p>
+                    Export the earliest 1000 records.</p>
             </div>
             <div class="tomo-card__body">
                 <form

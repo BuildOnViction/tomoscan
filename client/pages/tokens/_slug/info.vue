@@ -150,11 +150,6 @@ export default {
         SignMessageStep
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Token ' + this.$route.params.slug + ' Info'
-        }
-    },
     data: () => ({
         hash: null,
         token: null,
@@ -266,6 +261,11 @@ export default {
             } else {
                 return this.$router.push({ name: 'tokens-slug', params: { slug: this.hash } })
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Token ' + this.$route.params.slug + ' Info'
         }
     }
 }

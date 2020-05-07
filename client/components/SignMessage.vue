@@ -22,7 +22,7 @@
                 v-if="error">
                 <div style="float:left"><b>Result</b>:&nbsp;</div>
                 <div><span style="color:red;">Sorry! The
-                Message Signature Verification Failed.<br></span></div>
+                    Message Signature Verification Failed.<br></span></div>
             </div>
             <div
                 style="margin-left: 15px">
@@ -49,7 +49,7 @@
                                 type="button"
                                 class="btn btn-sm mr-2 code-actions__copy"
                                 @success="onSuccess">
-                            <i class="fa fa-clipboard" /> Copy</button>
+                                <i class="fa fa-clipboard"/> Copy</button>
                         </div>
                         <label style="margin-top: 5px">
                             <textarea

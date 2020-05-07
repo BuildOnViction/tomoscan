@@ -11,14 +11,14 @@ export default {
     components: {
         TableTokenTxNft
     },
+    async mounted () {
+        // Init breadcrumbs data.
+        this.$store.commit('breadcrumb/setItems', { name: 'tokentxs-nft', to: { name: 'tokentxs-nft' } })
+    },
     head () {
         return {
             title: 'Token TRC721 Transfers'
         }
-    },
-    async mounted () {
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'tokentxs-nft', to: { name: 'tokentxs-nft' } })
     }
 }
 </script>

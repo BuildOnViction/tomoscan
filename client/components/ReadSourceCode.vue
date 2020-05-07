@@ -25,7 +25,7 @@
                         },
                     ]"
                     class="tomo-table tomo-table--verified-contract"
-                    thead-class="d-none" />
+                    thead-class="d-none"/>
             </b-col>
         </b-row>
 
@@ -37,12 +37,12 @@
                 <button
                     v-clipboard="smartContract.sourceCode"
                     class="btn btn-sm mr-2 code-actions__copy"
-                    @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
+                    @success="copySourceCode"><i class="fa fa-copy mr-1"/>Copy</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror
                     ref="tomoCmSourceCode"
-                    :value="smartContract.sourceCode" />
+                    :value="smartContract.sourceCode"/>
             </no-ssr>
         </b-form-group>
 
@@ -54,13 +54,13 @@
                 <button
                     v-clipboard="smartContract.abiCode"
                     class="btn btn-sm mr-2 code-actions__copy"
-                    @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
+                    @success="copySourceCode"><i class="fa fa-copy mr-1"/>Copy</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror
                     ref="tomoCmAbiCode"
                     :value="smartContract.abiCode"
-                    :options="{mode:'application/ld+json',styleActiveLine:false}" />
+                    :options="{mode:'application/ld+json',styleActiveLine:false}"/>
             </no-ssr>
         </b-form-group>
 
@@ -72,24 +72,22 @@
                 <button
                     v-clipboard="address.code"
                     class="btn btn-sm mr-2 code-actions__copy"
-                    @success="copySourceCode"><i class="fa fa-copy mr-1" />Copy</button>
+                    @success="copySourceCode"><i class="fa fa-copy mr-1"/>Copy</button>
             </div>
             <no-ssr placeholder="Codemirror Loading...">
                 <codemirror
                     ref="tomoCmCode"
                     :value="address.code"
-                    :options="{mode:'application/ld+json',styleActiveLine:false}" />
+                    :options="{mode:'application/ld+json',styleActiveLine:false}"/>
             </no-ssr>
         </b-form-group>
     </section>
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        ReadMore
     },
     mixins: [mixin],
     props: {

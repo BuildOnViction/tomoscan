@@ -39,8 +39,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 <script>

@@ -54,8 +54,7 @@
             :per-page="perPage"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 <script>
