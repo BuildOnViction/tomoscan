@@ -49,7 +49,7 @@
                         hidden
                         disabled>Select side</option>
                     <option value="">No filter</option>
-                    <option value="INVEST">INVEST</option>
+                    <option value="INVEST">LEND</option>
                     <option value="BORROW">BORROW</option>
                 </select>
             </div>
@@ -160,6 +160,11 @@
                 slot="interest"
                 slot-scope="props">
                 {{ formatNumber(props.item.interest) }} %
+            </template>
+            <template
+                slot="side"
+                slot-scope="props">
+                {{ props.item.side === 'INVEST' ? 'LEND' : props.item.side }}
             </template>
             <template
                 slot="status"

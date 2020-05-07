@@ -90,7 +90,7 @@
                         </tr>
                         <tr>
                             <td>Side</td>
-                            <td>{{ lendingOrder.side }}</td>
+                            <td>{{ lendingOrder.side === 'INVEST' ? 'LEND' : lendingOrder.side }}</td>
                         </tr>
                         <tr>
                             <td>Lending token</td>
