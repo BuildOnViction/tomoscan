@@ -130,7 +130,7 @@
                             <td>{{ lendingTrade.interest }} %</td>
                         </tr>
                         <tr>
-                            <td>Collateral Lock Amount</td>
+                            <td>Collateral Locked</td>
                             <td>
                                 {{ formatNumber(lendingTrade.collateralLockedAmount) }}
                                 <nuxt-link
@@ -153,7 +153,7 @@
                             <td>{{ lendingTrade.autoTopUp }}</td>
                         </tr>
                         <tr>
-                            <td>Liquidation time
+                            <td>Maturity Date
                             </td>
                             <td>{{ new Date(lendingTrade.liquidationTime * 1000) }}</td>
                         </tr>
