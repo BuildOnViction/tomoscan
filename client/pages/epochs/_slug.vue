@@ -25,7 +25,7 @@
                         <nuxt-link
                             :class="epochNumber === epoch.lastEpoch ? 'disabled' : ''"
                             :to="epoch.lastEpoch === epochNumber ? '#' :
-                        {name: 'epochs-slug', params: {slug: epochNumber + 1}}">Next</nuxt-link>
+                                {name: 'epochs-slug', params: {slug: epochNumber + 1}}">Next</nuxt-link>
                         <i class="tm tm-chevrons-right"/>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                             <td>
                                 <nuxt-link :to="{name: 'blocks-slug', params: {slug: epoch.startBlock}}">
                                     {{ epoch.startBlock + ' ( At ' +
-                                    $moment(epoch.startTime).format('MMM Do YYYY, H:mm:ss') + ')' }}
+                                        $moment(epoch.startTime).format('MMM Do YYYY, H:mm:ss') + ')' }}
                                 </nuxt-link>
                             </td>
                         </tr>
@@ -55,7 +55,7 @@
                                     v-if="epoch.endTime !== null"
                                     :to="{name: 'blocks-slug', params: {slug: epoch.endBlock}}">
                                     {{ epoch.endBlock + ' ( At ' +
-                                    $moment(epoch.endTime).format('MMM Do YYYY, H:mm:ss') + ')' }}
+                                        $moment(epoch.endTime).format('MMM Do YYYY, H:mm:ss') + ')' }}
                                 </nuxt-link>
                                 <span v-else>
                                     {{ epoch.endBlock + ' (waiting...)' }}
@@ -153,19 +153,12 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import ReadMore from '~/components/ReadMore'
 import TableRewardByEpoch from '~/components/TableRewardByEpoch'
 export default {
     components: {
-        ReadMore,
         TableRewardByEpoch
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Epoch ' + this.$route.params.slug + ' Info'
-        }
-    },
     data () {
         return {
             epoch: null,
@@ -224,6 +217,11 @@ export default {
                     location.hash = allTabs.tabs[value].href
                 }
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Epoch ' + this.$route.params.slug + ' Info'
         }
     }
 }

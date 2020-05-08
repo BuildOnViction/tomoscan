@@ -62,16 +62,16 @@
                 slot-scope="props">
                 <i
                     v-if="props.item.from_model && props.item.from_model.isContract"
-                    class="tm tm-icon-contract mr-1 mr-lg-2" />
+                    class="tm tm-icon-contract mr-1 mr-lg-2"/>
                 <span
                     v-if="address == props.item.from"
                     class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
-                    props.item.from_model.accountName : props.item.from }}</span>
+                        props.item.from_model.accountName : props.item.from }}</span>
                 <nuxt-link
                     v-else
                     :to="{name: 'address-slug', params: {slug: props.item.from}}"
                     class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
-                    props.item.from_model.accountName : props.item.from }}</nuxt-link>
+                        props.item.from_model.accountName : props.item.from }}</nuxt-link>
             </template>
 
             <template
@@ -88,16 +88,16 @@
                 <div v-if="props.item.to">
                     <i
                         v-if="props.item.to_model && props.item.to_model.isContract"
-                        class="tm tm-icon-contract mr-1 mr-lg-2" />
+                        class="tm tm-icon-contract mr-1 mr-lg-2"/>
                     <span
                         v-if="address == props.item.to"
                         class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
-                        props.item.to_model.accountName : props.item.to }}</span>
+                            props.item.to_model.accountName : props.item.to }}</span>
                     <nuxt-link
                         v-else
                         :to="{name: 'address-slug', params:{slug: props.item.to}}"
                         class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
-                        props.item.to_model.accountName : props.item.to }}</nuxt-link>
+                            props.item.to_model.accountName : props.item.to }}</nuxt-link>
                 </div>
                 <div
                     v-else
@@ -127,8 +127,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 
@@ -259,6 +258,17 @@ export default {
         },
         isPending () {
             return this.type === 'pending'
+        }
+    },
+    head () {
+        if (this.block) {
+            return {
+                title: 'Block ' + this.$route.params.slug + ' Info'
+            }
+        } else {
+            return {
+                title: this.isPending() ? 'Transactions Pending' : 'Transactions'
+            }
         }
     }
 }

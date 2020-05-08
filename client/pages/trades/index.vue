@@ -12,16 +12,16 @@ export default {
         TableTradeHistory
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Trading history'
-        }
-    },
     async created () {
         this.$store.commit('breadcrumb/setItems', {
             name: 'trades',
             to: { name: 'trades' }
         })
+    },
+    head () {
+        return {
+            title: 'Trading history'
+        }
     }
 }
 </script>

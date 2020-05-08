@@ -11,14 +11,14 @@ export default {
     components: {
         TableTokenTx
     },
+    async mounted () {
+        // Init breadcrumbs data.
+        this.$store.commit('breadcrumb/setItems', { name: 'tokentxs', to: { name: 'tokentxs' } })
+    },
     head () {
         return {
             title: 'Token (TRC20) Transfers'
         }
-    },
-    async mounted () {
-        // Init breadcrumbs data.
-        this.$store.commit('breadcrumb/setItems', { name: 'tokentxs', to: { name: 'tokentxs' } })
     }
 }
 </script>

@@ -175,11 +175,6 @@ export default {
         TableTokenTx
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Token TRC20 Holder Info'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -235,6 +230,11 @@ export default {
             const { data } = await this.$axios.get('/api/accounts/' + self.hash)
             self.address = data
             self.smartContract = data.contract
+        }
+    },
+    head () {
+        return {
+            title: 'Token TRC20 Holder Info'
         }
     }
 }

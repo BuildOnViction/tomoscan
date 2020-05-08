@@ -7,7 +7,7 @@
             <span class="mr-2">Order Hash:</span>
             <read-more
                 :text="hash"
-                class="d-sm-none" />
+                class="d-sm-none"/>
             <read-more
                 :text="hash"
                 :max-chars="20"
@@ -104,11 +104,11 @@
                                                               params: {slug: order.baseToken}}">
                                                         {{ order.baseSymbol }}</nuxt-link>
                                                     <span v-else>
-                                                    {{ order.baseSymbol }}</span>/<nuxt-link
+                                                        {{ order.baseSymbol }}</span>/<nuxt-link
                                                         v-if="order.quoteToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
-                                                              params: {slug: order.quoteToken}}"
-                                                    >{{ order.quoteSymbol }}</nuxt-link>
+                                                              params: {slug: order.quoteToken}}">
+                                                        {{ order.quoteSymbol }}</nuxt-link>
                                                     <span v-else>{{ order.quoteSymbol }}</span>
                                                 </span>
                                             </td>
@@ -151,20 +151,13 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        TableEvent,
         ReadMore
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Order ' + this.$route.params.slug + ' detail'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -193,6 +186,11 @@ export default {
             this.loading = false
         } catch (error) {
             console.log(error)
+        }
+    },
+    head () {
+        return {
+            title: 'Order ' + this.$route.params.slug + ' detail'
         }
     }
 }

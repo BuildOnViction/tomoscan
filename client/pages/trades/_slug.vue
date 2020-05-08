@@ -7,7 +7,7 @@
             <span class="mr-2">Trade Hash:</span>
             <read-more
                 :text="hash"
-                class="d-sm-none" />
+                class="d-sm-none"/>
             <read-more
                 :text="hash"
                 :max-chars="20"
@@ -112,11 +112,11 @@
                                                               params: {slug: trade.baseToken}}">
                                                         {{ trade.baseSymbol }}</nuxt-link>
                                                     <span v-else>
-                                                    {{ trade.baseSymbol }}</span>/<nuxt-link
+                                                        {{ trade.baseSymbol }}</span>/<nuxt-link
                                                         v-if="trade.quoteToken !== tomoNativeToken"
                                                         :to="{name: 'tokens-slug',
-                                                              params: {slug: trade.quoteToken}}"
-                                                    >{{ trade.quoteSymbol }}</nuxt-link>
+                                                              params: {slug: trade.quoteToken}}">
+                                                        {{ trade.quoteSymbol }}</nuxt-link>
                                                     <span v-else>{{ trade.quoteSymbol }}</span>
                                                 </span>
                                             </td>
@@ -162,20 +162,13 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        TableEvent,
         ReadMore
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Trade ' + this.$route.params.slug + ' detail'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -204,6 +197,11 @@ export default {
             this.loading = false
         } catch (error) {
             console.log(error)
+        }
+    },
+    head () {
+        return {
+            title: 'Trade ' + this.$route.params.slug + ' detail'
         }
     }
 }

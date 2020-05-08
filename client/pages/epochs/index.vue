@@ -56,25 +56,19 @@
             :link-gen="linkGen"
             :limit="7"
             align="center"
-            class="tomo-pagination"
-        />
+            class="tomo-pagination"/>
     </section>
 </template>
 
 <script>
 import mixin from '~/plugins/mixin'
 import TableBase from '~/components/TableBase'
-import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        TableBase,
-        ReadMore
+        TableBase
     },
     mixins: [mixin],
-    head: () => ({
-        title: 'Epochs'
-    }),
     data: () => ({
         fields: {
             epoch: { label: 'Epoch' },
@@ -151,6 +145,9 @@ export default {
                 }
             }
         }
-    }
+    },
+    head: () => ({
+        title: 'Epochs'
+    })
 }
 </script>

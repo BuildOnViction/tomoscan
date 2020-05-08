@@ -9,15 +9,15 @@
                     Hash:
                     <read-more
                         :text="hash"
-                        class="d-sm-none" />
+                        class="d-sm-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="20"
-                        class="d-none d-sm-inline-block d-lg-none" />
+                        class="d-none d-sm-inline-block d-lg-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="30"
-                        class="d-none d-lg-inline-block d-xl-none" />
+                        class="d-none d-lg-inline-block d-xl-none"/>
                     <span class="d-none d-xl-inline-block">{{ hash }}</span>
                 </h3>
             </div>
@@ -31,7 +31,7 @@
                                     :to="{name: 'lending-trades-slug', params: {slug: lendingRepay.hash}}">
                                     <read-more
                                         :text="lendingRepay.hash"
-                                        class="d-sm-none" />
+                                        class="d-sm-none"/>
                                     <read-more
                                         :text="lendingRepay.hash"
                                         :max-chars="20"
@@ -117,7 +117,7 @@
                             <td>Filled Amount</td>
                             <td>
                                 {{ lendingRepay.filledAmount === null ? 0:
-                                formatNumber(lendingRepay.filledAmount) }}
+                                    formatNumber(lendingRepay.filledAmount) }}
                                 <nuxt-link
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingRepay.lendingToken.toLowerCase()}}">
@@ -145,20 +145,13 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 
 export default {
     components: {
-        TableEvent,
         ReadMore
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Lending Repay ' + this.$route.params.slug + ' detail'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -187,6 +180,11 @@ export default {
             this.loading = false
         } catch (error) {
             console.log(error)
+        }
+    },
+    head () {
+        return {
+            title: 'Lending Repay ' + this.$route.params.slug + ' detail'
         }
     }
 }

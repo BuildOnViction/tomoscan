@@ -27,7 +27,7 @@
                 <read-more
                     :text="props.item.transactionHash"
                     :max-chars="20"
-                    class="d-sm-none" />
+                    class="d-sm-none"/>
                 <read-more
                     :text="props.item.transactionHash"
                     :max-chars="40"
@@ -36,7 +36,7 @@
                 <read-more
                     :text="props.item.transactionHash"
                     :max-chars="30"
-                    class="d-none d-lg-block d-2xl-none" />
+                    class="d-none d-lg-block d-2xl-none"/>
                 <span class="d-block">
                     <nuxt-link :to="{name: 'blocks-slug', params: {slug: props.item.blockNumber}}">
                         #{{ props.item.blockNumber }}</nuxt-link>
@@ -91,7 +91,7 @@
                                 <span class="d-block"><i class="text-muted">address</i> to</span>
                                 <nuxt-link
                                     :to="{
-                                    name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">
+                                        name: 'address-slug', params: {slug: unformatAddress(props.item.transfer.to)}}">
                                     {{ unformatAddress(props.item.transfer.to) }}
                                 </nuxt-link>
                             </li>
@@ -111,16 +111,16 @@
                             [topic {{ i }}]
                             <read-more
                                 :text="topic"
-                                class="d-sm-none" />
+                                class="d-sm-none"/>
                             <read-more
                                 :text="topic"
                                 :max-chars="40"
-                                class="d-none d-sm-inline-block d-md-none d-2xl-inline-block" />
+                                class="d-none d-sm-inline-block d-md-none d-2xl-inline-block"/>
                             <span class="d-none d-md-inline-block d-lg-none">{{ topic }}</span>
                             <read-more
                                 :text="topic"
                                 :max-chars="30"
-                                class="d-none d-md-none d-lg-inline-block d-2xl-none" />
+                                class="d-none d-md-none d-lg-inline-block d-2xl-none"/>
                         </span>
                     </li>
                 </ul>
@@ -133,16 +133,16 @@
                         <read-more
                             :text="data"
                             :max-chars="18"
-                            class="event-logs__data d-sm-none" />
+                            class="event-logs__data d-sm-none"/>
                         <read-more
                             :text="data"
                             :max-chars="40"
-                            class="event-logs__data d-none d-sm-inline-block d-md-none d-2xl-inline-block" />
+                            class="event-logs__data d-none d-sm-inline-block d-md-none d-2xl-inline-block"/>
                         <span class="event-logs__data d-none d-md-inline-block d-lg-none">{{ data }}</span>
                         <read-more
                             :text="data"
                             :max-chars="30"
-                            class="event-logs__data d-none d-lg-inline-block d-2xl-none" />
+                            class="event-logs__data d-none d-lg-inline-block d-2xl-none"/>
                     </li>
                 </ul>
             </template>
@@ -157,8 +157,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 

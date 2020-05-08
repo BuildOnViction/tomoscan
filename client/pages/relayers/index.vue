@@ -68,8 +68,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 
@@ -82,9 +81,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head: () => ({
-        title: 'Relayers'
-    }),
     data: () => ({
         fields: {
             address: { label: 'Address' },
@@ -142,7 +138,10 @@ export default {
             this.currentPage = page
             this.getDataFromApi()
         }
-    }
+    },
+    head: () => ({
+        title: 'Relayers'
+    })
 }
 </script>
 

@@ -11,7 +11,7 @@
                     active-class="active">
                     <read-more
                         :text="item.title"
-                        class="d-xl-none" />
+                        class="d-xl-none"/>
                     <span class="d-none d-xl-inline-block">{{ item.title }}</span>
                 </nuxt-link>
                 <nuxt-link

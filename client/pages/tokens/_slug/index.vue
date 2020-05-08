@@ -226,11 +226,6 @@ export default {
         TableTokenTrc21Holder
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Token ' + this.$route.params.slug + ' Info'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -323,6 +318,11 @@ export default {
                     location.hash = allTabs.tabs[value].href
                 }
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Token ' + this.$route.params.slug + ' Info'
         }
     }
 }

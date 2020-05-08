@@ -47,7 +47,7 @@
                         class="form-control">
                 </div>
                 <p>You can monitor and receive an alert when an address
-                on your follow list receives an incoming TOMO Transaction.</p>
+                    on your follow list receives an incoming TOMO Transaction.</p>
                 <div class="form-group">
                     <div class="tomo-toggle">
                         <input
@@ -140,7 +140,7 @@
                 <div>
                     <i
                         v-if="props.item.isContract"
-                        class="tm tm-icon-contract mr-1 mr-md-2" />
+                        class="tm tm-icon-contract mr-1 mr-md-2"/>
                     <nuxt-link
                         :to="{name: 'address-slug', params: {slug: props.item.address}}"
                         class="text-truncate">{{ props.item.address }}</nuxt-link>
@@ -192,8 +192,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 

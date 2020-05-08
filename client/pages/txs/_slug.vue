@@ -7,7 +7,7 @@
             <span class="mr-2">TXID:</span>
             <read-more
                 :text="hash"
-                class="d-sm-none" />
+                class="d-sm-none"/>
             <read-more
                 :text="hash"
                 :max-chars="20"
@@ -45,7 +45,7 @@
                                             <td>
                                                 <read-more
                                                     :text="tx.hash"
-                                                    class="d-sm-none" />
+                                                    class="d-sm-none"/>
                                                 <read-more
                                                     :text="tx.hash"
                                                     :max-chars="20"
@@ -74,7 +74,7 @@
                                                     <span>
                                                         ({{ (tx.latestBlockNumber - tx.blockNumber > 0)
                                                             ? tx.latestBlockNumber - tx.blockNumber
-                                                        : 0 }} block confirmation)
+                                                            : 0 }} block confirmation)
                                                     </span>
                                                 </span>
 
@@ -86,7 +86,7 @@
                                         </tr>
                                         <tr>
                                             <td>Time Stamp</td>
-                                            <td v-html="tx.timestamp_moment"/>
+                                            <td>{{ tx.timestamp_moment }}</td>
                                         </tr>
                                         <tr>
                                             <td>From</td>
@@ -186,7 +186,7 @@
                                                             {{ tokenTx.to }}</nuxt-link>
                                                         <span class="text-secondary"> For </span>
                                                         <span class="internal-color">{{
-                                                        toTokenQuantity(tokenTx.value, tokenTx.decimals) }}</span>
+                                                            toTokenQuantity(tokenTx.value, tokenTx.decimals) }}</span>
                                                         <nuxt-link
                                                             :to="{
                                                                 name: 'tokens-slug',
@@ -342,7 +342,7 @@
                     <b-tab
                         v-if="
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
-                        .includes(tx.to)"
+                                .includes(tx.to)"
                         id="lendingOrders"
                         title="Lending Orders"
                         href="#lendingOrders">
@@ -351,7 +351,7 @@
                     <b-tab
                         v-if="
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
-                        .includes(tx.to)"
+                                .includes(tx.to)"
                         id="lendingTrades"
                         title="Lending Trades"
                         href="#lendingTrades">
@@ -360,7 +360,7 @@
                     <b-tab
                         v-if="
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
-                        .includes(tx.to)"
+                                .includes(tx.to)"
                         id="lendingRepay"
                         title="Lending Repay"
                         href="#lendingRepay">
@@ -369,7 +369,7 @@
                     <b-tab
                         v-if="
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
-                        .includes(tx.to)"
+                                .includes(tx.to)"
                         id="lendingTopup"
                         title="Lending Topup"
                         href="#lendingTopup">
@@ -378,7 +378,7 @@
                     <b-tab
                         v-if="
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
-                        .includes(tx.to)"
+                                .includes(tx.to)"
                         id="lendingRecall"
                         title="Lending Recalls"
                         href="#lendingRecall">
@@ -428,11 +428,6 @@ export default {
         ReadMore
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Transaction ' + this.$route.params.slug + ' Info'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -512,6 +507,11 @@ export default {
                     return true
                 })
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Transaction ' + this.$route.params.slug + ' Info'
         }
     }
 }

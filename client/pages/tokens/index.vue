@@ -59,8 +59,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 <script>
@@ -71,9 +70,6 @@ export default {
     components: {
         TableBase
     },
-    head: () => ({
-        title: 'Tokens'
-    }),
     mixins: [mixin],
     data: () => ({
         fields: {
@@ -127,6 +123,9 @@ export default {
             this.currentPage = page
             this.getDataFromApi()
         }
-    }
+    },
+    head: () => ({
+        title: 'Tokens'
+    })
 }
 </script>

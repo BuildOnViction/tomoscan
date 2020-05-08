@@ -42,7 +42,7 @@
                         </tr>
                         <tr v-if="timestamp_moment">
                             <td>TimeStamp</td>
-                            <td v-html="timestamp_moment"/>
+                            <td>{{ timestamp_moment }}</td>
                         </tr>
                         <tr>
                             <td>Transactions</td>
@@ -54,7 +54,7 @@
                             <td>
                                 <read-more
                                     :text="block.hash"
-                                    class="d-sm-none" />
+                                    class="d-sm-none"/>
                                 <read-more
                                     :text="block.hash"
                                     :max-chars="20"
@@ -72,7 +72,7 @@
                                 <nuxt-link :to="{name: 'blocks-slug', params: {slug: block.number - 1}}">
                                     <read-more
                                         :text="block.parentHash"
-                                        class="d-sm-none" />
+                                        class="d-sm-none"/>
                                     <read-more
                                         :text="block.parentHash"
                                         :max-chars="20"
@@ -93,10 +93,10 @@
                                     class="d-sm-none">
                                     <read-more
                                         v-if="block.signer"
-                                        :text="block.signer" />
+                                        :text="block.signer"/>
                                     <read-more
                                         v-else
-                                        :text="block.miner" />
+                                        :text="block.miner"/>
                                 </nuxt-link>
                                 <nuxt-link
                                     :to="{name: 'address-slug', params: {slug: block.signer}}"
@@ -104,11 +104,11 @@
                                     <read-more
                                         v-if="block.signer"
                                         :text="block.signer"
-                                        :max-chars="20" />
+                                        :max-chars="20"/>
                                     <read-more
                                         v-else
                                         :text="block.miner"
-                                        :max-chars="20" />
+                                        :max-chars="20"/>
                                 </nuxt-link>
                                 <nuxt-link
                                     :to="{name: 'address-slug', params: {slug: block.signer}}"
@@ -132,14 +132,14 @@
                                         :to="{name: 'address-slug', params: {slug: block.m2}}"
                                         class="d-sm-none">
                                         <read-more
-                                            :text="block.m2" />
+                                            :text="block.m2"/>
                                     </nuxt-link>
                                     <nuxt-link
                                         :to="{name: 'address-slug', params: {slug: block.m2}}"
                                         class="d-none d-sm-block d-md-none">
                                         <read-more
                                             :text="block.m2"
-                                            :max-chars="20" />
+                                            :max-chars="20"/>
                                     </nuxt-link>
                                     <nuxt-link
                                         :to="{name: 'address-slug', params: {slug: block.m2}}"
@@ -209,7 +209,7 @@
                 <table-tx-by-block
                     v-if="hashTab === '#transactions'"
                     :block="block.number"
-                    :block_timestamp="block.timestamp"
+                    :block-timestamp="block.timestamp"
                     :parent="'transactions'"
                     :page="this"/>
             </b-tab>
@@ -331,11 +331,6 @@ export default {
         BlockSigner
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Block ' + this.$route.params.slug + ' Info'
-        }
-    },
     data () {
         return {
             number: null,
@@ -406,6 +401,11 @@ export default {
                 const location = window.location
                 location.hash = allTabs.tabs[value].href
             }
+        }
+    },
+    head () {
+        return {
+            title: 'Block ' + this.$route.params.slug + ' Info'
         }
     }
 }

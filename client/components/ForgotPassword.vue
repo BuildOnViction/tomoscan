@@ -1,7 +1,7 @@
 <template>
     <b-modal
-        ref="modalForgotPw"
         :id="modalId"
+        ref="modalForgotPw"
         class="tomo-modal"
         title="Password Recovery"
         ok-only

@@ -67,23 +67,17 @@
             :limit="7"
             :value="currentPage"
             align="center"
-            class="tomo-pagination"
-        />
+            class="tomo-pagination"/>
     </section>
 </template>
 
 <script>
 import mixin from '~/plugins/mixin'
-import TableBase from '~/components/TableBase'
 
 export default {
     components: {
-        TableBase
     },
     mixins: [mixin],
-    head: () => ({
-        title: 'Masternodes'
-    }),
     data: () => ({
         fields: [
             {
@@ -185,6 +179,9 @@ export default {
             const self = this
             self.currentPage = page
         }
-    }
+    },
+    head: () => ({
+        title: 'Masternodes'
+    })
 }
 </script>

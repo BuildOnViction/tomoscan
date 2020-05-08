@@ -56,8 +56,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 <script>
@@ -69,9 +68,6 @@ export default {
         TableBase
     },
     mixins: [mixin],
-    head: () => ({
-        title: 'Trc21 Token'
-    }),
     data: () => ({
         fields: {
             hash: { label: 'Hash' },
@@ -123,6 +119,9 @@ export default {
             this.currentPage = page
             this.getDataFromApi()
         }
-    }
+    },
+    head: () => ({
+        title: 'Trc21 Token'
+    })
 }
 </script>

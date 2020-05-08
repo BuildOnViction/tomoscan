@@ -94,8 +94,8 @@
                         {{ props.item.baseSymbol }}</nuxt-link>
                     <span v-else>{{ props.item.baseSymbol }}</span>/<nuxt-link
                         v-if="props.item.quoteToken !== tomoNativeToken"
-                        :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}"
-                    >{{ props.item.quoteSymbol }}</nuxt-link>
+                        :to="{name: 'tokens-slug', params: {slug: props.item.quoteToken}}">
+                        {{ props.item.quoteSymbol }}</nuxt-link>
                     <span v-else>{{ props.item.quoteSymbol }}</span>
                 </span>
             </template>
@@ -128,8 +128,7 @@
             :limit="7"
             align="center"
             class="tomo-pagination"
-            @change="onChangePaginate"
-        />
+            @change="onChangePaginate"/>
     </section>
 </template>
 

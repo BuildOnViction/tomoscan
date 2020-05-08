@@ -12,16 +12,16 @@ export default {
         TableLendingTrade
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Lending Trades'
-        }
-    },
     async created () {
         this.$store.commit('breadcrumb/setItems', {
             name: 'lending-trades',
             to: { name: 'lending-trades' }
         })
+    },
+    head () {
+        return {
+            title: 'Lending Trades'
+        }
     }
 }
 </script>

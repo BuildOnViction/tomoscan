@@ -9,15 +9,15 @@
                     Hash:
                     <read-more
                         :text="hash"
-                        class="d-sm-none" />
+                        class="d-sm-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="20"
-                        class="d-none d-sm-inline-block d-lg-none" />
+                        class="d-none d-sm-inline-block d-lg-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="30"
-                        class="d-none d-lg-inline-block d-xl-none" />
+                        class="d-none d-lg-inline-block d-xl-none"/>
                     <span class="d-none d-xl-inline-block">{{ hash }}</span>
                 </h3>
             </div>
@@ -31,7 +31,7 @@
                                     :to="{name: 'txs-slug', params: {slug: lendingOrder.txHash}}">
                                     <read-more
                                         :text="lendingOrder.txHash"
-                                        class="d-sm-none" />
+                                        class="d-sm-none"/>
                                     <read-more
                                         :text="lendingOrder.txHash"
                                         :max-chars="20"
@@ -119,7 +119,7 @@
                             <td>
                                 {{ formatNumber(lendingOrder.quantity) }}
                                 {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
-                                lendingOrder.lendingSymbol : 'TOMO' }}
+                                    lendingOrder.lendingSymbol : 'TOMO' }}
                             </td>
                         </tr>
                         <tr>
@@ -131,7 +131,7 @@
                             <td>
                                 {{ formatNumber(lendingOrder.filledAmount) }}
                                 {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
-                                lendingOrder.lendingSymbol : 'TOMO' }}
+                                    lendingOrder.lendingSymbol : 'TOMO' }}
                             </td>
                         </tr>
                         <tr v-if="lendingOrder.status === 'CANCELLED'">
@@ -139,7 +139,7 @@
                             <td>
                                 {{ formatNumber(lendingOrder.cancelFee) }}
                                 {{ lendingOrder.status === 'BORROW' ?
-                                lendingOrder.collateralSymbol : lendingOrder.lendingSymbol }}
+                                    lendingOrder.collateralSymbol : lendingOrder.lendingSymbol }}
                             </td>
                         </tr>
                         <tr>
@@ -174,22 +174,15 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableEvent from '~/components/TableEvent'
 import ReadMore from '~/components/ReadMore'
 import TableLendingTrade from '~/components/TableLendingTrade'
 
 export default {
     components: {
-        TableEvent,
         ReadMore,
         TableLendingTrade
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Lending Order ' + this.$route.params.slug + ' detail'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -218,6 +211,11 @@ export default {
             this.loading = false
         } catch (error) {
             console.log(error)
+        }
+    },
+    head () {
+        return {
+            title: 'Lending Order ' + this.$route.params.slug + ' detail'
         }
     }
 }

@@ -21,8 +21,8 @@
                         <div class="form-group">
                             <label class="control-label">Email:</label>
                             <input
-                                v-validate="'required|email'"
                                 v-model="form.email"
+                                v-validate="'required|email'"
                                 data-vv-as="Email"
                                 name="email"
                                 type="email"
@@ -37,8 +37,8 @@
                         <div class="form-group">
                             <label class="control-label">Password:</label>
                             <input
-                                v-validate="'required|confirmed'"
                                 v-model="form.password"
+                                v-validate="'required|confirmed'"
                                 data-vv-as="Password"
                                 name="password"
                                 type="password"

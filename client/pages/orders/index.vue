@@ -11,16 +11,16 @@ export default {
         TableOrder
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Orders'
-        }
-    },
     async created () {
         this.$store.commit('breadcrumb/setItems', {
             name: 'orders',
             to: { name: 'orders' }
         })
+    },
+    head () {
+        return {
+            title: 'Orders'
+        }
     }
 }
 </script>

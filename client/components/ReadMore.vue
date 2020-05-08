@@ -1,8 +1,6 @@
 <template>
     <p :class="'tomo-readmore' + (isReadMore ? ' tomo-readmore--is-open' : '')">
-        <span
-            class="mr-1"
-            v-html="formattedString"/>
+        <span class="mr-1">{{ formattedString }}</span>
         <span
             v-show="text.length > maxChars"
             class="tomo-readmore__toggle">

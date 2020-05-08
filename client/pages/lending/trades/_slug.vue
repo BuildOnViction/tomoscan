@@ -9,15 +9,15 @@
                     Hash:
                     <read-more
                         :text="hash"
-                        class="d-sm-none" />
+                        class="d-sm-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="20"
-                        class="d-none d-sm-inline-block d-lg-none" />
+                        class="d-none d-sm-inline-block d-lg-none"/>
                     <read-more
                         :text="hash"
                         :max-chars="30"
-                        class="d-none d-lg-inline-block d-xl-none" />
+                        class="d-none d-lg-inline-block d-xl-none"/>
                     <span class="d-none d-xl-inline-block">{{ hash }}</span>
                 </h3>
             </div>
@@ -31,7 +31,7 @@
                                     :to="{name: 'txs-slug', params: {slug: lendingTrade.txHash}}">
                                     <read-more
                                         :text="lendingTrade.txHash"
-                                        class="d-sm-none" />
+                                        class="d-sm-none"/>
                                     <read-more
                                         :text="lendingTrade.txHash"
                                         :max-chars="20"
@@ -223,11 +223,6 @@ export default {
         ReadMore
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Lending Trade ' + this.$route.params.slug + ' detail'
-        }
-    },
     data () {
         return {
             hash: null,
@@ -256,6 +251,11 @@ export default {
             this.loading = false
         } catch (error) {
             console.log(error)
+        }
+    },
+    head () {
+        return {
+            title: 'Lending Trade ' + this.$route.params.slug + ' detail'
         }
     }
 }

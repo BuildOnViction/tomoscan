@@ -11,15 +11,15 @@
                     <span v-if="address && address.isContract">Contract: </span>
                     <read-more
                         :text="address.hash"
-                        class="d-sm-none" />
+                        class="d-sm-none"/>
                     <read-more
                         :text="address.hash"
                         :max-chars="20"
-                        class="d-none d-sm-inline-block d-lg-none" />
+                        class="d-none d-sm-inline-block d-lg-none"/>
                     <read-more
                         :text="address.hash"
                         :max-chars="30"
-                        class="d-none d-lg-inline-block d-xl-none" />
+                        class="d-none d-lg-inline-block d-xl-none"/>
                     <span class="d-none d-xl-inline-block">{{ address.hash }}</span>
                 </h3>
             </div>
@@ -58,15 +58,15 @@
                             <td>
                                 <read-more
                                     :text="address.code"
-                                    class="d-sm-none" />
+                                    class="d-sm-none"/>
                                 <read-more
                                     :text="address.code"
                                     :max-chars="20"
-                                    class="d-none d-sm-inline-block d-lg-none" />
+                                    class="d-none d-sm-inline-block d-lg-none"/>
                                 <read-more
                                     :text="address.code"
                                     :max-chars="30"
-                                    class="d-none d-lg-inline-block d-xl-none" />
+                                    class="d-none d-lg-inline-block d-xl-none"/>
                                 <span class="d-none d-xl-inline-block">{{ address.code }}</span>
                             </td>
                         </tr>
@@ -164,7 +164,7 @@
                 href="#trc20Holding">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token_type="'trc20'"
+                    :token-type="'trc20'"
                     :parent="'trc20Holding'"
                     :page="this"/>
             </b-tab>
@@ -175,7 +175,7 @@
                 href="#trc21Holding">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token_type="'trc21'"
+                    :token-type="'trc21'"
                     :parent="'trc21Holding'"
                     :page="this"/>
             </b-tab>
@@ -186,7 +186,7 @@
                 href="#trc721Inventory">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token_type="'trc721'"
+                    :token-type="'trc721'"
                     :parent="'trc721Inventory'"
                     :page="this"/>
             </b-tab>
@@ -260,10 +260,8 @@
 </template>
 <script>
 import mixin from '~/plugins/mixin'
-import TableTx from '~/components/TableTx'
 import TableTxByAccount from '~/components/TableTxByAccount'
 import TableInternalTx from '~/components/TableInternalTx'
-import TableTokenTx from '~/components/TableTokenTx'
 import TableTokensByAccount from '~/components/TableTokensByAccount'
 import TableTradeHistory from '~/components/TableTradeHistory'
 import TableLendingTrade from '~/components/TableLendingTrade'
@@ -280,10 +278,8 @@ export default {
     components: {
         TableLendingRecall,
         ReadSourceCode,
-        TableTx,
         TableTxByAccount,
         TableInternalTx,
-        TableTokenTx,
         TableTokensByAccount,
         ReadMore,
         VueQrcode,
@@ -295,11 +291,6 @@ export default {
         TableLendingRepay
     },
     mixins: [mixin],
-    head () {
-        return {
-            title: 'Address ' + this.hash
-        }
-    },
     data: () => ({
         hash: null,
         address: null,
@@ -362,6 +353,11 @@ export default {
         },
         copyAddress () {
             this.$toast.show('Copied')
+        }
+    },
+    head () {
+        return {
+            title: 'Address ' + this.hash
         }
     }
 }

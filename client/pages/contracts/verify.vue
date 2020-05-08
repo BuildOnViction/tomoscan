@@ -126,9 +126,6 @@ import { required } from 'vuelidate/lib/validators'
 
 export default {
     mixins: [validationMixin],
-    head: () => ({
-        title: 'Verifying Contract'
-    }),
     data () {
         return {
             compilers: [],
@@ -140,23 +137,6 @@ export default {
             errors: [],
             loadingForm: false,
             loading: true
-        }
-    },
-    validations: {
-        contractAddress: {
-            required
-        },
-        contractName: {
-            required
-        },
-        compiler: {
-            required
-        },
-        optimization: {
-            required
-        },
-        solidityCode: {
-            required
         }
     },
     mounted () {
@@ -222,6 +202,26 @@ export default {
                 return self.$router.push({ name: 'address-slug', params: { slug: data.hash } })
             }
             self.loadingForm = false
+        }
+    },
+    head: () => ({
+        title: 'Verifying Contract'
+    }),
+    validations: {
+        contractAddress: {
+            required
+        },
+        contractName: {
+            required
+        },
+        compiler: {
+            required
+        },
+        optimization: {
+            required
+        },
+        solidityCode: {
+            required
         }
     }
 }
