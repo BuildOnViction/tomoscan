@@ -98,7 +98,7 @@ export default {
     data: () => ({
         fields: {
             hash: { label: 'Token' },
-            quantity: { label: this.tokenType === 'trc721' ? 'Token ID' : 'Quantity' }
+            quantity: { label: 'Quantity' }
         },
         loading: true,
         total: 0,
@@ -108,40 +108,41 @@ export default {
         pages: 1,
         block: null
     }),
-    async mounted () {
-        this.getDataFromApi()
+    async created () {
+        console.log('token type', this.currentPage, this.perPage, this.total)
+        if (this.tokenType === 'trc721') {
+            this.fields.quantity.label = 'Token Id'
+        }
+        await this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
-            const self = this
-
             // Show loading.
-            self.loading = true
+            this.loading = true
 
             const params = {
-                page: self.currentPage,
-                limit: self.perPage
+                page: this.currentPage,
+                limit: this.perPage
             }
 
             const query = this.serializeQuery(params)
-            const url = `/api/tokens/holding/${self.tokenType}/${self.holder}` + '?' + query
+            const url = `/api/tokens/holding/${this.tokenType}/${this.holder}` + '?' + query
             const { data } = await this.$axios.get(url)
-            self.items = data.items
-            self.total = data.total
-            self.pages = data.pages
+            this.items = data.items
+            this.total = data.total
+            this.pages = data.pages
 
-            if (self.page) {
-                self.page.tokensCount = self.total
+            if (this.page) {
+                this.page.tokensCount = this.total
             }
 
             // Hide loading.
-            self.loading = false
-
+            this.loading = false
             return data
         },
-        onChangePaginate (page) {
+        async onChangePaginate (page) {
             this.currentPage = page
-            this.getDataFromApi()
+            await this.getDataFromApi()
         }
     }
 }
