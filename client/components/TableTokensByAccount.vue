@@ -109,7 +109,6 @@ export default {
         block: null
     }),
     async created () {
-        console.log('token type', this.currentPage, this.perPage, this.total)
         if (this.tokenType === 'trc721') {
             this.fields.quantity.label = 'Token Id'
         }
