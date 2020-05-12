@@ -85,7 +85,7 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Time Stamp</td>
+                                            <td>Timestamp</td>
                                             <td>{{ tx.timestamp_moment }}</td>
                                         </tr>
                                         <tr>
@@ -474,7 +474,7 @@ export default {
             self.tx = responses[0].data
             self.inputData = self.tx.inputData ? self.tx.inputData : self.tx.input
             const moment = self.$moment(responses[0].data.timestamp)
-            self.tx.timestamp_moment = `${moment.fromNow()} <small>(${moment.format('lll')} +UTC)</small>`
+            self.tx.timestamp_moment = `${moment.fromNow()} (${moment})`
 
             self.eventsCount = responses[1].data.events
 
