@@ -148,7 +148,7 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
                 { token: 1 })
             const exist = []
             for (let i = 0; i < holderExist.length; i++) {
-                exist.push(holderExist.token)
+                exist.push(holderExist[i].token)
             }
             const notExist = []
             for (let i = 0; i < tomoxToken.length; i++) {
