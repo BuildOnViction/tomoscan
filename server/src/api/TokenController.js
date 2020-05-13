@@ -135,11 +135,15 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
         if (tokenType === 'trc20') {
             data = await utils.paginate(req, 'TokenHolder', { query: { hash: holder } })
         } else if (tokenType === 'trc21') {
-            const tomoxToken = await dexDb.Token.find({}, { contractAddress: 1, decimals: 1 })
+            const dexToken = await dexDb.Token.distinct('contractAddress')
             const listToken = []
-            for (let i = 0; i < tomoxToken.length; i++) {
-                listToken.push(tomoxToken[i].contractAddress.toLowerCase())
+            for (let i = 0; i < dexToken.length; i++) {
+                const t = dexToken[i].toLowerCase()
+                if (t !== '0x0000000000000000000000000000000000000001') {
+                    listToken.push(t)
+                }
             }
+            const tomoxToken = await db.Token.find({ hash: { $in: listToken } })
             const holderExist = await db.TokenTrc21Holder.find({ hash: holder, token: { $in: listToken } },
                 { token: 1 })
             const exist = []
@@ -148,7 +152,7 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
             }
             const notExist = []
             for (let i = 0; i < tomoxToken.length; i++) {
-                if (exist.includes(tomoxToken[i].contractAddress.toLowerCase())) {
+                if (!exist.includes(tomoxToken[i].hash)) {
                     notExist.push({
                         hash: holder,
                         token: listToken[i],
