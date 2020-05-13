@@ -18,15 +18,15 @@ consumer.task = async function (job, done) {
         if (b) {
             // Begin from epoch 2
             if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
-                (blockNumber % config.get('BLOCK_PER_EPOCH') === 10)) {
+                (blockNumber % config.get('BLOCK_PER_EPOCH') === 50)) {
                 const epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
                 q.create('RewardProcess', { epoch: epoch })
                     .priority('normal').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
-            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) && (blockNumber % 200 === 0)) {
-                const currentEpoch = Math.floor(blockNumber / config.get('BLOCK_PER_EPOCH'))
-                const lastEpochReward = currentEpoch - 1
+            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
+                (blockNumber % config.get('BLOCK_PER_EPOCH') === 200)) {
+                const lastEpochReward = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
                 const checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
 
                 if (checkExistOnDb.length === 0) {
