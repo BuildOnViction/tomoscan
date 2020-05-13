@@ -169,7 +169,6 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                v-if="address && address.hasTrc21"
                 id="trc21Holding"
                 title="TRC21 Holding"
                 href="#trc21Holding">
