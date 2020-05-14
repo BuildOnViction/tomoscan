@@ -7,6 +7,7 @@ const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
 const redisHelper = require('../helpers/redis')
 const elastic = require('../helpers/elastic')
+const AccountHelper = require('../helpers/account')
 
 const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
@@ -376,7 +377,7 @@ TxController.get('/txs/listByAccount/:address', [
     let total = null
     let data = []
     if (!config.get('GetDataFromElasticSearch')) {
-        const account = await db.Account.findOne({ hash: address })
+        const account = await AccountHelper.getAccountDetail(address)
 
         if (page === 1 && account.hasManyTx) {
             const cache = await redisHelper.get(`txs-${txType}-${address}`)
