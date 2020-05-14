@@ -53,17 +53,11 @@
                         :selected="status === 'OPEN' ? 'selected' : ''"
                         value="OPEN">OPEN</option>
                     <option
-                        :selected="status === 'FILLED' ? 'selected' : ''"
-                        value="FILLED">FILLED</option>
+                        :selected="status === 'CLOSED' ? 'selected' : ''"
+                        value="CLOSED">CLOSED</option>
                     <option
-                        :selected="status === 'PARTIAL_FILLED' ? 'selected' : ''"
-                        value="PARTIAL_FILLED">PARTIAL_FILLED</option>
-                    <option
-                        :selected="status === 'CANCELLED' ? 'selected' : ''"
-                        value="CANCELLED">CANCELLED</option>
-                    <option
-                        :selected="status === 'REJECTED' ? 'selected' : ''"
-                        value="REJECTED">REJECTED</option>
+                        :selected="status === 'LIQUIDATED' ? 'selected' : ''"
+                        value="LIQUIDATED">LIQUIDATED</option>
                 </select>
             </div>
             <div class="form-group mr-2 mb-2">
