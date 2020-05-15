@@ -142,6 +142,7 @@
                     class="tomo-tabs">
                     <!--:title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"-->
                     <b-tab
+                        lazy
                         title="Token Transfers"
                         href="#tokenTransfers">
                         <table-token-tx
@@ -162,6 +163,7 @@
                     </b-tab>
                     <!--:title="'Token Holders (' + formatNumber(holdersCount) + ')'"-->
                     <b-tab
+                        lazy
                         title="Token Holders"
                         href="#tokenHolders">
                         <table-token-holder
@@ -182,6 +184,7 @@
                     </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
+                        lazy
                         title="Code"
                         href="#code"
                         @click="refreshCodeMirror">
@@ -193,6 +196,7 @@
                     </b-tab>
                     <b-tab
                         v-if="smartContract"
+                        lazy
                         title="Read Contract"
                         href="#readContract">
                         <read-contract

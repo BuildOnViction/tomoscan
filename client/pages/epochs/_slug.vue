@@ -96,6 +96,7 @@
             @input="onSwitchTab">
             <!--:title="'Reward Voter (' + formatNumber(voterCount) + ')'"-->
             <b-tab
+                lazy
                 title="Reward Voter"
                 href="#voters">
                 <table-reward-by-epoch
@@ -107,6 +108,7 @@
             </b-tab>
             <!--:title="'Reward Foundation (' + formatNumber(foundationCount) + ')'"-->
             <b-tab
+                lazy
                 title="Reward Foundation"
                 href="#foundations">
                 <table-reward-by-epoch
@@ -117,6 +119,7 @@
                     :page="this"/>
             </b-tab>
             <b-tab
+                lazy
                 title="Slashed Node"
                 href="#slashedNode">
 

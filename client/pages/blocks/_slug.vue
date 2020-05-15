@@ -204,6 +204,7 @@
             class="tomo-tabs"
             @input="onSwitchTab">
             <b-tab
+                lazy
                 title="Transactions"
                 href="#transactions">
                 <table-tx-by-block
@@ -215,6 +216,7 @@
             </b-tab>
             <!--:title="'BlockSigner (' + formatNumber(blockSignerCount) + ')'"-->
             <b-tab
+                lazy
                 title="BlockSigner"
                 href="#blockSigner">
                 <block-signer
@@ -225,6 +227,7 @@
             </b-tab>
             <b-tab
                 v-if="block.slashedNode"
+                lazy
                 title="SlashedNode"
                 href="#slashedNode">
                 <div
@@ -256,6 +259,7 @@
             </b-tab>
             <b-tab
                 v-if="block.validators"
+                lazy
                 title="List Validators"
                 href="#validators">
                 <div
@@ -288,6 +292,7 @@
             </b-tab>
             <b-tab
                 v-if="block.randoms"
+                lazy
                 title="List Randomize"
                 href="#randoms">
                 <div

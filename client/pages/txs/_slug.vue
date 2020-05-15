@@ -30,6 +30,7 @@
                     v-model="tabIndex"
                     class="tomo-tabs">
                     <b-tab
+                        lazy
                         title="Overview"
                         href="#overview">
                         <div
@@ -332,6 +333,7 @@
                     <!--:title="'Events (' + formatNumber(eventsCount) + ')'"-->
                     <b-tab
                         v-if="eventsCount > 0"
+                        lazy
                         title="Events"
                         href="#events">
                         <table-event
@@ -344,6 +346,7 @@
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
                                 .includes(tx.to)"
                         id="lendingOrders"
+                        lazy
                         title="Lending Orders"
                         href="#lendingOrders">
                         <table-lending-order :tx-hash="hash"/>
@@ -353,6 +356,7 @@
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
                                 .includes(tx.to)"
                         id="lendingTrades"
+                        lazy
                         title="Lending Trades"
                         href="#lendingTrades">
                         <table-lending-trade :tx-hash="hash"/>
@@ -362,6 +366,7 @@
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
                                 .includes(tx.to)"
                         id="lendingRepay"
+                        lazy
                         title="Lending Repay"
                         href="#lendingRepay">
                         <table-lending-repay :tx-hash="hash"/>
@@ -371,6 +376,7 @@
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
                                 .includes(tx.to)"
                         id="lendingTopup"
+                        lazy
                         title="Lending Topup"
                         href="#lendingTopup">
                         <table-lending-topup :tx-hash="hash"/>
@@ -380,6 +386,7 @@
                             ['0x0000000000000000000000000000000000000093', '0x0000000000000000000000000000000000000094']
                                 .includes(tx.to)"
                         id="lendingRecall"
+                        lazy
                         title="Lending Recalls"
                         href="#lendingRecall">
                         <table-lending-recall :tx-hash="hash"/>
@@ -387,6 +394,7 @@
                     <b-tab
                         v-if="tx.to === '0x0000000000000000000000000000000000000091'"
                         id="openOrders"
+                        lazy
                         title="Open Orders"
                         href="#openOrders">
                         <table-order :tx-hash="hash"/>
@@ -394,6 +402,7 @@
                     <b-tab
                         v-if="tx.to === '0x0000000000000000000000000000000000000091'"
                         id="tradeHistories"
+                        lazy
                         title="Trade Histories"
                         href="#tradeHistories">
                         <table-trade-history :tx-hash="hash"/>

@@ -29,6 +29,7 @@
                     ref="allTabs"
                     class="tomo-tabs">
                     <b-tab
+                        lazy
                         title="Overview"
                         href="#overview">
                         <div

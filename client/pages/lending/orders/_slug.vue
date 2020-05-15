@@ -165,6 +165,7 @@
             class="tomo-tabs">
             <b-tab
                 id="lendingTrades"
+                lazy
                 title="Lending Trades"
                 href="#lendingTrades">
                 <table-lending-trade :order-hash="hash"/>

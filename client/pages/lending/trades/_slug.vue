@@ -181,24 +181,28 @@
             class="tomo-tabs">
             <b-tab
                 id="lendingOrders"
+                lazy
                 title="Lending Orders"
                 href="#lendingOrders">
                 <table-lending-order :trade-hash="hash"/>
             </b-tab>
             <b-tab
                 id="lendingRepay"
+                lazy
                 title="Lending Repay"
                 href="#lendingRepay">
                 <table-lending-repay :trade-hash="hash"/>
             </b-tab>
             <b-tab
                 id="lendingTopup"
+                lazy
                 title="Lending Topup"
                 href="#lendingTopup">
                 <table-lending-topup :trade-hash="hash"/>
             </b-tab>
             <b-tab
                 id="lendingRecall"
+                lazy
                 title="Lending Recalls"
                 href="#lendingRecall">
                 <table-lending-recall :trade-hash="hash"/>

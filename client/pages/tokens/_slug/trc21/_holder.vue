@@ -135,7 +135,9 @@
             <b-col>
                 <b-tabs class="tomo-tabs">
                     <!--:title="'Token Transfers (' + formatNumber(tokenTxsCount) + ')'"-->
-                    <b-tab title="Token Transfers">
+                    <b-tab
+                        lazy
+                        title="Token Transfers">
                         <table-token-tx-trc21
                             :token="hash"
                             :holder="holder"
@@ -143,6 +145,7 @@
                     </b-tab>
                     <b-tab
                         v-if="address && address.isContract && smartContract"
+                        lazy
                         title="Code"
                         @click="refreshCodeMirror">
                         <read-source-code
@@ -153,6 +156,7 @@
                     </b-tab>
                     <b-tab
                         v-if="smartContract"
+                        lazy
                         title="Read Contract">
                         <read-contract
                             :contract="hash"/>

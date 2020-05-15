@@ -150,6 +150,7 @@
             </b-tab>
             <b-tab
                 id="internalTransactions"
+                lazy
                 title="Internal Transactions"
                 href="#internalTransactions">
                 <table-internal-tx
@@ -160,6 +161,7 @@
             <b-tab
                 v-if="address && address.hasTrc20"
                 id="trc20Holding"
+                lazy
                 title="TRC20 Holding"
                 href="#trc20Holding">
                 <table-tokens-by-account
@@ -170,6 +172,7 @@
             </b-tab>
             <b-tab
                 id="trc21Holding"
+                lazy
                 title="TRC21 Holding"
                 href="#trc21Holding">
                 <table-tokens-by-account
@@ -181,6 +184,7 @@
             <b-tab
                 v-if="address && address.hasTrc721"
                 id="trc721Inventory"
+                lazy
                 title="TRC721 Inventory"
                 href="#trc721Inventory">
                 <table-tokens-by-account
@@ -192,6 +196,7 @@
             <b-tab
                 v-if="address && address.isContract && smartContract"
                 id="code"
+                lazy
                 title="Code"
                 href="#code"
                 @click="refreshCodeMirror">
@@ -204,6 +209,7 @@
             <b-tab
                 v-if="address && address.isContract && smartContract"
                 id="readContract"
+                lazy
                 title="Read Contract"
                 href="#readContract">
                 <read-contract
@@ -212,6 +218,7 @@
             <b-tab
                 v-if="!address.isContract"
                 id="rewards"
+                lazy
                 title="Rewards"
                 href="#rewards">
                 <table-reward
@@ -221,34 +228,39 @@
             </b-tab>
             <b-tab
                 id="tradeHistories"
-                title="Trade History"
+                lazy
+                title="Trades History"
                 href="#tradeHistories">
                 <table-trade-history
                     :user-address="hash"/>
             </b-tab>
             <b-tab
                 id="lendingTrades"
-                title="Lending Trade"
+                lazy
+                title="Lending Trades"
                 href="#lendingTrades">
                 <table-lending-trade
                     :user-address="hash"/>
             </b-tab>
             <b-tab
                 id="lendingTopup"
-                title="Lending Topup"
+                lazy
+                title="Lending Topups"
                 href="#lendingTopup">
                 <table-lending-topup
                     :user-address="hash"/>
             </b-tab>
             <b-tab
                 id="lendingRepay"
-                title="Lending Repay"
+                lazy
+                title="Lending Repays"
                 href="#lendingRepay">
                 <table-lending-repay
                     :user-address="hash"/>
             </b-tab>
             <b-tab
                 id="lendingRecall"
+                lazy
                 title="Lending Recalls"
                 href="#lendingRecall">
                 <table-lending-recall
