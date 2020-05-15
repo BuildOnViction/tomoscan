@@ -103,7 +103,7 @@
                                 <span v-else>TOMO</span>
                             </td>
                         </tr>
-                        <tr>
+                        <tr v-if="lendingOrder.side === 'BORROW'">
                             <td>Collateral token</td>
                             <td>
                                 <nuxt-link
