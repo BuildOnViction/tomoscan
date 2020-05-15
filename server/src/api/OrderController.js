@@ -49,11 +49,12 @@ OrderController.get('/orders', [
             query.side = req.query.side.toUpperCase()
         }
         if (req.query.status) {
-            query.type = req.query.status.toUpperCase()
+            query.status = req.query.status.toUpperCase()
         }
         if (req.query.txHash) {
             query.txHash = req.query.txHash
         }
+        console.log('query', query)
         const total = await dexDb.Order.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
