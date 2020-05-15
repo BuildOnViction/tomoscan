@@ -49,6 +49,35 @@
                     <option value="SELL">SELL</option>
                 </select>
             </div>
+            <div class="form-group mr-sm-3">
+                <select
+                    id="inputStatus"
+                    v-model="status"
+                    name="status"
+                    class="form-control mx-sm-1">
+                    <option
+                        :selected="status === '' ? 'selected' : ''"
+                        value=""
+                        hidden
+                        disabled>Select status</option>
+                    <option value="">No filter</option>
+                    <option
+                        :selected="status === 'OPEN' ? 'selected' : ''"
+                        value="OPEN">OPEN</option>
+                    <option
+                        :selected="status === 'FILLED' ? 'selected' : ''"
+                        value="FILLED">FILLED</option>
+                    <option
+                        :selected="status === 'PARTIAL_FILLED' ? 'selected' : ''"
+                        value="PARTIAL_FILLED">PARTIAL_FILLED</option>
+                    <option
+                        :selected="status === 'CANCELLED' ? 'selected' : ''"
+                        value="CANCELLED">CANCELLED</option>
+                    <option
+                        :selected="status === 'REJECTED' ? 'selected' : ''"
+                        value="REJECTED">REJECTED</option>
+                </select>
+            </div>
             <button
                 type="submit"
                 class="btn btn-primary mr-sm-3">Filter</button>
@@ -189,6 +218,7 @@ export default {
         baseToken: '',
         quoteToken: '',
         side: '',
+        status: '',
         tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
@@ -204,7 +234,10 @@ export default {
         if (this.$route.query.side) {
             this.side = this.$route.query.side
         }
-        this.getDataFromApi()
+        if (this.$route.query.status) {
+            this.status = this.$route.query.status
+        }
+        await this.getDataFromApi()
     },
     methods: {
         async getDataFromApi () {
@@ -230,6 +263,9 @@ export default {
                 }
                 if (this.side !== '') {
                     params.side = this.side
+                }
+                if (this.status !== '') {
+                    params.status = this.status
                 }
             }
 
