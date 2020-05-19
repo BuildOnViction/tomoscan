@@ -10,8 +10,9 @@ const TradeController = Router()
 TradeController.get('/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
     check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('baseToken').optional().isLength({ min: 42, max: 42 }).withMessage('base token address is incorrect.'),
+    check('quoteToken').optional().isLength({ min: 42, max: 42 }).withMessage('quote token address is incorrect.'),
     check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
-    check('pairName').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     const errors = validationResult(req)
@@ -25,8 +26,19 @@ TradeController.get('/trades', [
             const user = web3.utils.toChecksumAddress(req.query.user)
             query.$or = [{ taker: user }, { maker: user }]
         }
-        if (req.query.pair) {
-            query.pairName = req.query.pair.toUpperCase()
+        if (req.query.baseToken) {
+            if (web3.utils.isAddress(req.query.baseToken)) {
+                query.baseToken = web3.utils.toChecksumAddress(req.query.baseToken)
+            } else {
+                query.baseToken = req.query.baseToken
+            }
+        }
+        if (req.query.quoteToken) {
+            if (web3.utils.isAddress(req.query.quoteToken)) {
+                query.quoteToken = web3.utils.toChecksumAddress(req.query.quoteToken)
+            } else {
+                query.quoteToken = req.query.quoteToken
+            }
         }
         if (req.query.type) {
             query.type = req.query.type.toLowerCase() === 'limit' ? 'LO' : 'MO'
