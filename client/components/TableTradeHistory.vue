@@ -111,6 +111,11 @@
                 {{ formatNumber(props.item.amount) + ' ' + props.item.baseSymbol }}
             </template>
             <template
+                slot="side"
+                slot-scope="props">
+                {{ props.item.takerOrderSide }}
+            </template>
+            <template
                 slot="createdAt"
                 slot-scope="props">
                 <span
@@ -163,6 +168,7 @@ export default {
             pairName: { label: 'Pair Name' },
             pricepoint: { label: 'Price' },
             amount: { label: 'Amount' },
+            side: { label: 'Side' },
             createdAt: { label: 'Age' }
         },
         loading: true,

@@ -19,11 +19,6 @@
             :fields="fields"
             :items="items"
             class="tomo-table--relayers">
-
-            <template
-                slot="domain"
-                slot-scope="props"><a :href="'//' + props.item.domain">{{ props.item.domain }}</a>
-            </template>
             <template
                 slot="address"
                 slot-scope="props">
@@ -44,6 +39,14 @@
                 slot-scope="props">
                 <span class="d-lg-none">{{ formatUnit(toTomo(props.item.deposit, 5)) }}</span>
                 <span class="d-none d-lg-block">{{ formatUnit(toTomo(props.item.deposit)) }}</span>
+            </template>
+            <template
+                slot="volume24h"
+                slot-scope="props">{{ props.item.volume24h }} USD
+            </template>
+            <template
+                slot="lending24h"
+                slot-scope="props">{{ props.item.lending24h }} USD
             </template>
             <template
                 slot="makeFee"
@@ -84,9 +87,10 @@ export default {
     data: () => ({
         fields: {
             address: { label: 'Address' },
-            domain: { label: 'Domain' },
             owner: { label: 'Owner' },
             deposit: { label: 'Available Amount' },
+            volume24h: { label: 'Volume 24h' },
+            lending24h: { label: 'Lending 24h' },
             makeFee: { label: 'Make Fee' },
             takeFee: { label: 'Take Fee' },
             lendingFee: { label: 'Lending Fee' }
