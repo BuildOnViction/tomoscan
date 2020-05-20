@@ -261,7 +261,7 @@ const DexHelper = {
             let makeFee = new BigNumber(trades[i].makeFee)
             makeFee = makeFee.dividedBy(10 ** decimals[qt].decimals).toNumber()
 
-            let takeFee = new BigNumber(trades[i].makeFee)
+            let takeFee = new BigNumber(trades[i].takeFee)
             takeFee = takeFee.dividedBy(10 ** decimals[qt].decimals).toNumber()
 
             trades[i].baseDecimals = decimals[bt].decimals
