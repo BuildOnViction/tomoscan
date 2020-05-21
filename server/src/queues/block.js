@@ -10,6 +10,7 @@ consumer.name = 'BlockProcess'
 consumer.processNumber = 1
 consumer.task = async function (job, done) {
     const blockNumber = parseInt(job.data.block)
+    const blockPerEpoch = parseInt(config.get('BLOCK_PER_EPOCH'))
     try {
         logger.info('Process block: %s attempts %s', blockNumber, job.toJSON().attempts.made)
         const b = await BlockHelper.crawlBlock(blockNumber)
@@ -17,20 +18,19 @@ consumer.task = async function (job, done) {
 
         if (b) {
             // Begin from epoch 2
-            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
-                (blockNumber % config.get('BLOCK_PER_EPOCH') === 50)) {
-                const epoch = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
+            const epoch = Math.floor(blockNumber / blockPerEpoch) - 1
+            if ((blockNumber >= blockPerEpoch * 2) &&
+                (blockNumber % blockPerEpoch === 50)) {
                 q.create('RewardProcess', { epoch: epoch })
                     .priority('normal').removeOnComplete(true)
                     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
-            if ((blockNumber >= config.get('BLOCK_PER_EPOCH') * 2) &&
-                (blockNumber % config.get('BLOCK_PER_EPOCH') === 200)) {
-                const lastEpochReward = (blockNumber / config.get('BLOCK_PER_EPOCH')) - 1
-                const checkExistOnDb = await db.Reward.find({ epoch: lastEpochReward }).limit(1)
+            if ((blockNumber >= blockPerEpoch * 2) &&
+                (blockNumber % blockPerEpoch === 200)) {
+                const checkExistOnDb = await db.Reward.find({ epoch: epoch }).limit(1)
 
                 if (checkExistOnDb.length === 0) {
-                    q.create('RewardProcess', { epoch: lastEpochReward })
+                    q.create('RewardProcess', { epoch: epoch })
                         .priority('normal').removeOnComplete(true)
                         .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
                 }

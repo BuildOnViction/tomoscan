@@ -404,6 +404,7 @@ const RewardHelper = {
             // const response = await axios.post('http://128.199.228.202:8545/', data)
             const response = await axios.post(config.get('WEB3_URI'), data)
             const result = response.data
+            let haveReward = false
             if (!result.error) {
                 const signNumber = result.result.signers
                 const rewards = result.result.rewards
@@ -418,11 +419,14 @@ const RewardHelper = {
                     }
                 }
 
-                const rdata = []
+                let rdata = []
                 let mnNumber = 0
                 for (const m in rewards) {
                     mnNumber += 1
                     for (const v in rewards[m]) {
+                        if (!haveReward) {
+                            haveReward = true
+                        }
                         let r = new BigNumber(rewards[m][v])
                         r = r.dividedBy(10 ** 18).toString()
                         const item = {
@@ -440,15 +444,27 @@ const RewardHelper = {
                         }
                         await elastic.indexWithoutId('rewards', item)
                         rdata.push(item)
+                        if (rdata.length === 100) {
+                            await db.Reward.insertMany(rdata)
+                            rdata = []
+                        }
                     }
                 }
-                const sdata = []
+                if (rdata.length > 0) {
+                    await db.Reward.insertMany(rdata)
+                }
+
+                let sdata = []
                 for (const m in signNumber) {
                     sdata.push({
                         epoch: epoch,
                         validator: m.toLowerCase(),
                         signNumber: signNumber[m].sign
                     })
+                    if (sdata.length === 100) {
+                        await db.EpochSign.insertMany(sdata)
+                        sdata = []
+                    }
                 }
                 if (sdata.length > 0) {
                     await db.EpochSign.insertMany(sdata)
@@ -457,10 +473,7 @@ const RewardHelper = {
                 const sBlock = await BlockHelper.getBlockDetail(startBlock)
                 const eBlock = await BlockHelper.getBlockDetail(endBlock)
 
-                if (rdata.length > 0) {
-                    logger.info('Insert %s rewards to db', rdata.length)
-                    await db.Reward.insertMany(rdata)
-                } else {
+                if (!haveReward) {
                     logger.info('There is no reward found. Wait 10 seconds and retry')
                     const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                     await sleep(10000)
