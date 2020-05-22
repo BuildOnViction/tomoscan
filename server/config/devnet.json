@@ -15,6 +15,7 @@
     "level": "debug"
   },
   "TOMODEX_API": "https://dex.devnet.tomochain.com/",
+  "RELAYER_API": "https://relayer.devnet.tomochain.com/",
 
   "WEB3_URI": "https://testnet.tomochain.com/",
   "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",

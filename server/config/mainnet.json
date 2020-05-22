@@ -15,6 +15,7 @@
     "prefix": "TomoScan"
   },
   "TOMODEX_API": "https://dex.tomochain.com/",
+  "RELAYER_API": "https://relayer.tomochain.com/",
 
   "WEB3_URI": "http://fullnode_tomoscan01:8545",
   "WEB3_WS_URI": "ws://fullnode_tomoscan01:8546",

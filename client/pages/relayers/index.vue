@@ -53,10 +53,6 @@
                 slot-scope="props">{{ props.item.makeFee / 100 }} %
             </template>
             <template
-                slot="takeFee"
-                slot-scope="props">{{ props.item.takeFee / 100 }} %
-            </template>
-            <template
                 slot="lendingFee"
                 slot-scope="props">{{ props.item.lendingFee / 100 }} %
             </template>
@@ -87,12 +83,12 @@ export default {
     data: () => ({
         fields: {
             address: { label: 'Address' },
+            relayerName: { label: 'Name' },
             owner: { label: 'Owner' },
             deposit: { label: 'Available Amount' },
             volume24h: { label: 'Volume 24h' },
             lending24h: { label: 'Lending 24h' },
-            makeFee: { label: 'Make Fee' },
-            takeFee: { label: 'Take Fee' },
+            makeFee: { label: 'Trading Fee' },
             lendingFee: { label: 'Lending Fee' }
         },
         loading: true,

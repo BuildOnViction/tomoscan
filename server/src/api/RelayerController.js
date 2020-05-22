@@ -30,6 +30,12 @@ RelayerController.get('/relayers', [
             pages: pages,
             items: relayers
         }
+        let rapi = await axios.get(config.get('RELAYER_API') + 'api/public')
+        rapi = rapi.data
+        const relayerName = {}
+        for (let i = 0; i < rapi.payload.Relayers.length; i++) {
+            relayerName[rapi.payload.Relayers[i].coinbase] = rapi.payload.Relayers[i].name
+        }
         try {
             for (let i = 0; i < response.items.length; i++) {
                 const dex = response.items[i].address
@@ -40,6 +46,7 @@ RelayerController.get('/relayers', [
                 let l24 = await axios.get(config.get('TOMODEX_API') + 'api/relayer/lending?relayerAddress=' + dex)
                 l24 = l24.data
                 response.items[i].lending24h = (new BigNumber(l24.data.totalLendingVolume)).div(10 ** 6).toNumber()
+                response.items[i].relayerName = relayerName[response.items[i].coinbase]
             }
         } catch (e) {
             console.warn(e)
