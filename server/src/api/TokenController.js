@@ -260,6 +260,8 @@ TokenController.get('/tokens/:token/holder/:holder', [
         tokenHolder.quantityNumber = balance.quantityNumber
         if (exist) {
             await tokenHolder.save()
+        } else {
+            await db.Token.insert(tokenHolder)
         }
 
         res.json(tokenHolder)
