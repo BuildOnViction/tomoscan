@@ -228,21 +228,24 @@ TokenController.get('/tokens/:token/holder/:holder', [
         const token = req.params.token.toLowerCase().trim()
         const holder = req.params.holder.toLowerCase().trim()
 
-        const t = await db.Token.findOne({ hash: token }).lean()
-        if (!t) {
-            return res.status(404).json({ errors: { message: 'Token was not found' } })
-        }
+        // const t = await db.Token.findOne({ hash: token }).lean()
+        // if (!t) {
+        //     return res.status(404).json({ errors: { message: 'Token was not found' } })
+        // }
 
         let tokenHolder = await db.TokenHolder.findOne({ hash: holder, token: token })
         let exist = true
         if (!tokenHolder) {
-            tokenHolder = {
-                hash: holder,
-                token: token,
-                quantity: '0',
-                quantityNumber: 0
+            tokenHolder = await db.TokenTrc21Holder.findOne({ hash: holder, token: token })
+            if (!tokenHolder) {
+                tokenHolder = {
+                    hash: holder,
+                    token: token,
+                    quantity: '0',
+                    quantityNumber: 0
+                }
+                exist = false
             }
-            exist = false
         }
 
         // Get token balance by read smart contract
@@ -261,9 +264,12 @@ TokenController.get('/tokens/:token/holder/:holder', [
         if (exist) {
             await tokenHolder.save()
         } else {
-            await db.Token.insert(tokenHolder)
+            if (tk && tk.type === 'trc20') {
+                await db.TokenHolder.insertMany([tokenHolder])
+            } else if (tk && tk.type === 'trc21') {
+                await db.TokenTrc21Holder.insertMany([tokenHolder])
+            }
         }
-
         res.json(tokenHolder)
     } catch (e) {
         logger.warn('Get token holder error %s', e)
