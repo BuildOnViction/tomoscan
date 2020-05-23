@@ -1,36 +1,55 @@
-'use strict'
-
-const kue = require('kue')
-const config = require('config')
 const logger = require('../helpers/logger')
-const Redis = require('ioredis')
+const amqp = require('amqplib')
 
 // fix warning max listener
 process.setMaxListeners(1000)
 
-const q = kue.createQueue({
-    prefix: config.get('redis.prefix'),
-    redis: {
-        createClientFactory: function () {
-            return new Redis({
-                port: config.get('redis.port'),
-                host: config.get('redis.host'),
-                password: config.get('redis.password')
-            })
+const publishToQueue = async (queueName, data) => {
+    amqp.connect('amqp://localhost').then(function (error0, conn) {
+        if (error0) {
+            logger.warn(error0)
         }
-    }
-    // redis: {
-    //     port: config.get('redis.port'),
-    //     host: config.get('redis.host'),
-    //     auth: config.get('redis.password'),
-    //     'socket_keepalive': true
-    // }
-})
-q.setMaxListeners(1000)
-q.watchStuckJobs()
+        return conn.createChannel().then(function (error1, ch) {
+            if (error1) {
+                logger.warn(error1)
+            }
+            ch.assertQueue(queueName, { durable: false })
+            ch.sendToQueue(queueName, Buffer.from(data), {
+                persistent: true
+            })
+            return ch.close()
+        }).finally(function () { conn.close() })
+    }).catch(e => {
+        logger.warn(e)
+    })
+}
 
-q.on('error', function (err) {
-    logger.error('REDIS-KUE ERROR %s', err)
-})
+module.exports = publishToQueue
 
-module.exports = q
+// const logger = require('../helpers/logger')
+// const amqp = require('amqplib')
+//
+// // fix warning max listener
+// process.setMaxListeners(1000)
+//
+// const publishToQueue = async (queueName, data) => {
+//     amqp.connect('amqp://localhost').then(function (error0, conn) {
+//         if (error0) {
+//             logger.warn(error0)
+//         }
+//         return conn.createChannel().then(function (error1, ch) {
+//             if (error1) {
+//                 logger.warn(error1)
+//             }
+//             ch.assertQueue(queueName, { durable: false })
+//             ch.sendToQueue(queueName, Buffer.from(data), {
+//                 persistent: true
+//             })
+//             return ch.close()
+//         }).finally(function () { conn.close() })
+//     }).catch(e => {
+//         logger.warn(e)
+//     })
+// }
+//
+// module.exports = publishToQueue

@@ -21,7 +21,7 @@ consumer.task = async function (job, done) {
             typeof log.topics[2] === 'undefined') {
             return done()
         }
-        const q = require('./index')
+        const publishToQueue = require('./index')
 
         if (log.topics[1]) {
             _log.from = await utils.unformatAddress(log.topics[1])
@@ -79,7 +79,7 @@ consumer.task = async function (job, done) {
 
             // Add token holder data.
             if (_log.from.toLowerCase() !== _log.to.toLowerCase()) {
-                q.create('TokenHolderProcess', {
+                await publishToQueue('TokenHolderProcess', {
                     token: JSON.stringify({
                         from: _log.from.toLowerCase(),
                         to: _log.to.toLowerCase(),
@@ -87,8 +87,6 @@ consumer.task = async function (job, done) {
                         value: _log.value
                     })
                 })
-                    .priority('normal').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
             }
         } else if (tokenType === 'trc721') {
             if (log.topics[3]) {

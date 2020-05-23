@@ -1,34 +1,13 @@
 'use strict'
 
-const kue = require('kue')
-const config = require('config')
+const logger = require('./helpers/logger')
 const path = require('path')
 const fs = require('fs')
-const Redis = require('ioredis')
 
 // fix warning max listener
 process.setMaxListeners(1000)
 
-const q = kue.createQueue({
-    prefix: config.get('redis.prefix'),
-    redis: {
-        createClientFactory: function () {
-            return new Redis({
-                port: config.get('redis.port'),
-                host: config.get('redis.host'),
-                password: config.get('redis.password')
-            })
-        }
-    }
-    // redis: {
-    //     port: config.get('redis.port'),
-    //     host: config.get('redis.host'),
-    //     auth: config.get('redis.password'),
-    //     'socket_keepalive': true
-    // }
-})
-q.setMaxListeners(1000)
-q.watchStuckJobs()
+const amqp = require('amqplib')
 
 fs.readdirSync(path.join(__dirname, 'queues'))
     .filter(function (file) {
@@ -37,7 +16,27 @@ fs.readdirSync(path.join(__dirname, 'queues'))
     .forEach(function (file) {
         const consumer = require(path.join(__dirname, 'queues', file))
 
-        q.process(consumer.name, consumer.processNumber, consumer.task)
+        amqp.connect('amqp://localhost', function (error0, connection) {
+            if (error0) {
+                logger.warn(error0)
+            }
+            connection.createChannel(function (error1, channel) {
+                if (error1) {
+                    logger.warn(error1)
+                }
+                channel.assertQueue(consumer.name, {
+                    durable: true
+                })
+                channel.prefetch(1)
+                console.log(' [*] Waiting for messages in %s. To exit press CTRL+C', consumer.name)
+                channel.consume(consumer.name, async function (msg) {
+                    await consumer.task(msg)
+                    console.log(' [x] Received %s', msg.content.toString())
+                    channel.ack(msg)
+                }, {
+                    noAck: false
+                })
+            })
+        })
+        // q.process(consumer.name, consumer.processNumber, consumer.task)
     })
-
-module.exports = q

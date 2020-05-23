@@ -25,18 +25,12 @@ const TransactionHelper = {
             const address = log.address.toLowerCase()
             // Add account and token if not exist in db.
             const token = await db.Token.findOne({ hash: address })
-            const q = require('../queues')
+            const publishToQueue = require('../queues')
             if (!token) {
-                q.create('AccountProcess', { listHash: JSON.stringify([address]) })
-                    .priority('low').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
-                q.create('TokenProcess', { address: address })
-                    .priority('low').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                await publishToQueue('AccountProcess', { listHash: JSON.stringify([address]) })
+                await publishToQueue('TokenProcess', { address: address })
             }
-            q.create('TokenTransactionProcess', { log: JSON.stringify(log) })
-                .priority('normal').removeOnComplete(true)
-                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+            await publishToQueue('TokenTransactionProcess', { log: JSON.stringify(log) })
         } else if (log.topics[0] === TopicExecuteTrade) {
             const data = log.data.replace('0x', '')
             const params = []
@@ -88,7 +82,7 @@ const TransactionHelper = {
                 delete tx._id
                 delete tx.id
             }
-            const q = require('../queues')
+            const publishToQueue = require('../queues')
 
             if (!tx) {
                 return false
@@ -166,9 +160,7 @@ const TransactionHelper = {
             }
 
             if (listHash.length > 0) {
-                q.create('AccountProcess', { listHash: JSON.stringify(listHash) })
-                    .priority('normal').removeOnComplete(true)
-                    .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                await publishToQueue('AccountProcess', { listHash: JSON.stringify(listHash) })
             }
 
             tx.cumulativeGasUsed = receipt.cumulativeGasUsed
@@ -177,15 +169,6 @@ const TransactionHelper = {
             if (receipt.blockNumber) {
                 tx.blockNumber = receipt.blockNumber
             }
-
-            // q.create('FollowProcess', {
-            //     transaction: hash,
-            //     blockNumber: tx.blockNumber,
-            //     fromAccount: tx.from,
-            //     toAccount: tx.to
-            // })
-            //     .priority('low').removeOnComplete(true)
-            //     .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
 
             // Parse log.
             const logs = receipt.logs
