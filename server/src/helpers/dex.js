@@ -354,6 +354,7 @@ const DexHelper = {
             trades[i].collateralLockedAmount = collateralLockedAmount
             if (trades[i].status === 'LIQUIDATED') {
                 const extraData = JSON.parse(trades[i].extraData)
+                trades[i].liquidated = {}
                 if (Object.prototype.hasOwnProperty.call(extraData, 'RecallAmount')) {
                     let recallAmount = new BigNumber(extraData.RecallAmount)
                     recallAmount = recallAmount.div(10 ** decimals[ct].decimals).toNumber()
@@ -366,7 +367,7 @@ const DexHelper = {
                 }
                 if (Object.prototype.hasOwnProperty.call(extraData, 'CollateralPrice')) {
                     let collateralPrice = new BigNumber(extraData.CollateralPrice)
-                    collateralPrice = collateralPrice.div(10 ** decimals[ct].decimals).toNumber()
+                    collateralPrice = collateralPrice.div(10 ** decimals[lt].decimals).toNumber()
                     trades[i].liquidated.collateralPrice = collateralPrice
                 }
             }

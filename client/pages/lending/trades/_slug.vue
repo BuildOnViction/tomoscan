@@ -65,12 +65,12 @@
                         <tr v-if="lendingTrade.status === 'LIQUIDATED'">
                             <td>Liquidation Info</td>
                             <td>
-                                Recall Amount: {{ lendingTrade.liquidated.recallAmount }}
-                                ({{ lendingTrade.collateralSymbol }}),
-                                Liquidation Amount: {{ lendingTrade.liquidated.liquidationAmount }}
-                                ({{ lendingTrade.collateralSymbol }}),
-                                Collateral Price: {{ lendingTrade.liquidated.collateralPrice }}
-                                ({{ lendingTrade.lendingSymbol }}),
+                                <div>Recall Amount: {{ lendingTrade.liquidated.recallAmount }}
+                                    ({{ lendingTrade.collateralSymbol }})</div>
+                                <div>Liquidation Amount: {{ lendingTrade.liquidated.liquidationAmount }}
+                                    ({{ lendingTrade.collateralSymbol }})</div>
+                                <div>Collateral Price: {{ lendingTrade.liquidated.collateralPrice }}
+                                    ({{ lendingTrade.lendingSymbol }})</div>
                             </td>
                         </tr>
                         <tr>
