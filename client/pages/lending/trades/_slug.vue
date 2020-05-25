@@ -49,20 +49,28 @@
                             <td>Lending Trade Status</td>
                             <td>
                                 <span
-                                    v-if="lendingTrade.status === 'FILLED'"
-                                    class="text-success">Filled</span>
+                                    v-if="lendingTrade.status === 'OPEN'"
+                                    class="text-success">OPEN</span>
                                 <span
-                                    v-else-if="lendingTrade.status === 'CANCELLED'"
-                                    class="text-danger">Cancelled</span>
+                                    v-else-if="lendingTrade.status === 'CLOSED'"
+                                    class="text-danger">CLOSED</span>
                                 <span
-                                    v-else-if="lendingTrade.status === 'OPEN'"
-                                    class="text-info">Open</span>
-                                <span
-                                    v-else-if="lendingTrade.status === 'REJECTED'"
-                                    class="text-danger">Rejected</span>
+                                    v-else-if="lendingTrade.status === 'LIQUIDATED'"
+                                    class="text-danger">LIQUIDATED</span>
                                 <span
                                     v-else
                                     class="text-purple">{{ lendingTrade.status }}</span>
+                            </td>
+                        </tr>
+                        <tr v-if="lendingTrade.status === 'LIQUIDATED'">
+                            <td>Liquidation Info</td>
+                            <td>
+                                Recall Amount: {{ lendingTrade.liquidated.recallAmount }}
+                                ({{ lendingTrade.collateralSymbol }}),
+                                Liquidation Amount: {{ lendingTrade.liquidated.liquidationAmount }}
+                                ({{ lendingTrade.collateralSymbol }}),
+                                Collateral Price: {{ lendingTrade.liquidated.collateralPrice }}
+                                ({{ lendingTrade.lendingSymbol }}),
                             </td>
                         </tr>
                         <tr>
@@ -138,7 +146,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
                                     {{ lendingTrade.collateralSymbol }}</nuxt-link>
-                                <span v-else>TOMO</span>)
+                                <span v-else>TOMO</span>
                                 (Price: {{ lendingTrade.collateralPrice }}
                                 <nuxt-link
                                     v-if="lendingTrade.lendingToken !== tomoNativeToken"
