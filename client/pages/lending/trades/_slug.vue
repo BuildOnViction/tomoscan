@@ -62,15 +62,39 @@
                                     class="text-purple">{{ lendingTrade.status }}</span>
                             </td>
                         </tr>
-                        <tr v-if="lendingTrade.status === 'LIQUIDATED'">
+                        <tr v-if="lendingTrade.status === 'LIQUIDATED' && lendingTrade.liquidated">
                             <td>Liquidation Info</td>
                             <td>
-                                <div>Recall Amount: {{ lendingTrade.liquidated.recallAmount }}
-                                    ({{ lendingTrade.collateralSymbol }})</div>
-                                <div>Liquidation Amount: {{ lendingTrade.liquidated.liquidationAmount }}
-                                    ({{ lendingTrade.collateralSymbol }})</div>
-                                <div>Collateral Price: {{ lendingTrade.liquidated.collateralPrice }}
-                                    ({{ lendingTrade.lendingSymbol }})</div>
+                                <p v-if="lendingTrade.liquidated.recallAmount">
+                                    Recall Amount: {{ lendingTrade.liquidated.recallAmount }}
+                                    <nuxt-link
+                                        v-if="lendingTrade.collateralToken !== tomoNativeToken"
+                                        :to="{
+                                            name: 'tokens-slug',
+                                            params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
+                                        {{ lendingTrade.collateralSymbol }}</nuxt-link>
+                                </p>
+                                <p v-if="lendingTrade.liquidated.liquidationAmount">
+                                    Liquidation Amount: {{ lendingTrade.liquidated.liquidationAmount }}
+                                    <nuxt-link
+                                        v-if="lendingTrade.collateralToken !== tomoNativeToken"
+                                        :to="{
+                                            name: 'tokens-slug',
+                                            params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
+                                        {{ lendingTrade.collateralSymbol }}</nuxt-link>
+                                </p>
+                                <p v-if="lendingTrade.liquidated.collateralPrice">
+                                    Collateral Price: {{ lendingTrade.liquidated.collateralPrice }}
+                                    <nuxt-link
+                                        v-if="lendingTrade.lendingToken !== tomoNativeToken"
+                                        :to="{
+                                            name: 'tokens-slug',
+                                            params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
+                                        {{ lendingTrade.lendingSymbol }}</nuxt-link>
+                                    <span v-else>TOMO</span>
+                                </p>
+                                <p v-if="lendingTrade.liquidated.reason">
+                                    Reason: {{ lendingTrade.liquidated.reason }}</p>
                             </td>
                         </tr>
                         <tr>

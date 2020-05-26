@@ -168,7 +168,7 @@ export default {
             pairName: { label: 'Pair Name' },
             pricepoint: { label: 'Price' },
             amount: { label: 'Amount' },
-            side: { label: 'Side' },
+            side: { label: 'Taker Side' },
             createdAt: { label: 'Age' }
         },
         loading: true,
