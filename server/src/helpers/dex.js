@@ -370,8 +370,8 @@ const DexHelper = {
                     collateralPrice = collateralPrice.div(10 ** decimals[lt].decimals).toNumber()
                     trades[i].liquidated.collateralPrice = collateralPrice
                 }
-                if (Object.prototype.hasOwnProperty.call(extraData, 'reason')) {
-                    trades[i].liquidated.reason = extraData.reason === 0 ? 'Overdue' : 'Violate liquidation price'
+                if (Object.prototype.hasOwnProperty.call(extraData, 'Reason')) {
+                    trades[i].liquidated.reason = extraData.Reason === 0 ? 'Overdue' : 'Violate liquidation price'
                 }
             }
         }
