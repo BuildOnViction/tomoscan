@@ -54,7 +54,6 @@ OrderController.get('/orders', [
         if (req.query.txHash) {
             query.txHash = req.query.txHash
         }
-        console.log('query', query)
         const total = await dexDb.Order.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1

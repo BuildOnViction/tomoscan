@@ -53,6 +53,7 @@ const TokenHelper = {
         decimals: '0x313ce567', // hex to decimal
         symbol: '0x95d89b41', // hex to ascii
         totalSupply: '0x18160ddd',
+        balanceOf: '0x70a08231',
         transfer: '0xa9059cbb',
         name: '0x06fdde03'
     }),
