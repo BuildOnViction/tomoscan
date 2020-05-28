@@ -9,7 +9,8 @@ const TradeController = Router()
 
 TradeController.get('/trades', [
     check('limit').optional().isInt({ max: 50 }).withMessage('Limit is less than 50 items per page'),
-    check('userAddress').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('user').optional().isLength({ min: 42, max: 42 }).withMessage('User address is incorrect.'),
+    check('relayerAddress').optional().isLength({ min: 42, max: 42 }).withMessage('relayer address is incorrect.'),
     check('baseToken').optional().isLength({ min: 42, max: 42 }).withMessage('base token address is incorrect.'),
     check('quoteToken').optional().isLength({ min: 42, max: 42 }).withMessage('quote token address is incorrect.'),
     check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
@@ -25,6 +26,10 @@ TradeController.get('/trades', [
         if (req.query.user) {
             const user = web3.utils.toChecksumAddress(req.query.user)
             query.$or = [{ taker: user }, { maker: user }]
+        }
+        if (req.query.relayerAddress) {
+            const relayerAddress = web3.utils.toChecksumAddress(req.query.relayerAddress)
+            query.$or = [{ makerExchange: relayerAddress }, { takerExchange: relayerAddress }]
         }
         if (req.query.baseToken) {
             if (web3.utils.isAddress(req.query.baseToken)) {

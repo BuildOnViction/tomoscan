@@ -10,6 +10,9 @@ consumer.task = async function (job, done) {
     try {
         const token = JSON.parse(job.data.token)
         logger.info(`Transfer ${token.value} token ${token.address} from ${token.from} to ${token.to}`)
+        if (token.address === '0x0000000000000000000000000000000000000001') {
+            return done()
+        }
         if (!token) {
             return done()
         }

@@ -36,9 +36,17 @@
                     placeholder="Quote Token">
             </div>
             <div class="form-group mr-2 mb-2">
+                <input
+                    v-model="relayerAddress"
+                    name="relayerAddress"
+                    type="text"
+                    class="form-control"
+                    placeholder="Relayer Address">
+            </div>
+            <div class="form-group mr-2 mb-2">
                 <button
                     type="submit"
-                    class="btn btn-primary mr-sm-3">Filter</button>
+                    class="btn btn-primary">Filter</button>
             </div>
             <div class="form-group mr-2 mb-2">
                 <button
@@ -181,6 +189,7 @@ export default {
         user: '',
         baseToken: '',
         quoteToken: '',
+        relayerAddress: '',
         tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
@@ -192,6 +201,9 @@ export default {
         }
         if (this.$route.query.quoteToken) {
             this.quoteToken = this.$route.query.quoteToken
+        }
+        if (this.$route.query.relayerAddress) {
+            this.relayerAddress = this.$route.query.relayerAddress
         }
         await this.getDataFromApi()
     },
@@ -220,6 +232,9 @@ export default {
                 }
                 if (this.quoteToken !== '') {
                     params.quoteToken = this.quoteToken.trim()
+                }
+                if (this.relayerAddress !== '') {
+                    params.relayerAddress = this.relayerAddress
                 }
             }
             const query = this.serializeQuery(params)
