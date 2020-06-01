@@ -66,16 +66,18 @@ async function run () {
             seller = maker.toLowerCase()
         }
 
-        q.create('TokenHolderProcess', {
-            token: JSON.stringify({
-                from: seller,
-                to: buyer,
-                address: baseToken.toLowerCase(),
-                value: amount
+        if (baseToken.toLowerCase() !== '0x0000000000000000000000000000000000000001') {
+            q.create('TokenHolderProcess', {
+                token: JSON.stringify({
+                    from: seller,
+                    to: buyer,
+                    address: baseToken.toLowerCase(),
+                    value: amount
+                })
             })
-        })
-            .priority('normal').removeOnComplete(true)
-            .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+                .priority('normal').removeOnComplete(true)
+                .attempts(5).backoff({ delay: 2000, type: 'fixed' }).save()
+        }
 
         let quoteDecimal
         if (quoteToken === TomoToken) {
