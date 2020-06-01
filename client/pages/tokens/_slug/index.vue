@@ -76,7 +76,7 @@
                                             class="text-truncate">{{ token.hash }}</nuxt-link>
                                     </td>
                                 </tr>
-                                <tr v-if="token.type === 'trc20'">
+                                <tr v-if="token.type !== 'trc721'">
                                     <td>Decimal</td>
                                     <td>{{ token.decimals }}</td>
                                 </tr>
