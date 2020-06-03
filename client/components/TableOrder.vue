@@ -197,6 +197,10 @@ export default {
         txHash: {
             type: String,
             default: ''
+        },
+        tradeHash: {
+            type: String,
+            default: ''
         }
     },
     data: () => ({
@@ -254,6 +258,8 @@ export default {
             // on tx detail tab
             if (this.txHash !== '') {
                 params.txHash = this.txHash
+            } else if (this.tradeHash !== '') {
+                params.tradeHash = this.tradeHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()

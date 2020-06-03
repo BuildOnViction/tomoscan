@@ -14,6 +14,7 @@ TradeController.get('/trades', [
     check('baseToken').optional().isLength({ min: 42, max: 42 }).withMessage('base token address is incorrect.'),
     check('quoteToken').optional().isLength({ min: 42, max: 42 }).withMessage('quote token address is incorrect.'),
     check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
+    check('orderHash').optional().isLength({ min: 66, max: 66 }).withMessage('Order hash is incorrect.'),
     check('page').optional().isInt().withMessage('Require page is number')
 ], async (req, res) => {
     const errors = validationResult(req)
