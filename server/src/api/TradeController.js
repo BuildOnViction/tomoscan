@@ -51,6 +51,9 @@ TradeController.get('/trades', [
         if (req.query.txHash) {
             query.txHash = req.query.txHash
         }
+        if (req.query.orderHash) {
+            query.$or = [{ makerOrderHash: req.query.orderHash }, { takerOrderHash: req.query.orderHash }]
+        }
         const total = await dexDb.Trade.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20
         const currentPage = !isNaN(req.query.page) ? parseInt(req.query.page) : 1

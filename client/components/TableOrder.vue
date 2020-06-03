@@ -143,7 +143,10 @@
             <template
                 slot="price"
                 slot-scope="props">
-                {{ formatNumber(props.item.price) + ' ' + props.item.quoteSymbol }}
+                <span v-if="props.item.type === 'MO'">MARKET</span>
+                <span v-else>
+                    {{ formatNumber(props.item.price) + ' ' + props.item.quoteSymbol }}
+                </span>
             </template>
             <template
                 slot="filledAmount"
