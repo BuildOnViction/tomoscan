@@ -1,6 +1,7 @@
 'use strict'
 
 const Web3Util = require('./helpers/web3')
+const QueueHelper = require('./helpers/queue')
 const publishToQueue = require('./queues')
 const db = require('./models')
 const events = require('events')
@@ -11,17 +12,6 @@ events.EventEmitter.defaultMaxListeners = 1000
 process.setMaxListeners(1000)
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
-
-// const countJobs = () => {
-//     return new Promise((resolve, reject) => {
-//         q.inactiveCount((err, l) => {
-//             if (err) {
-//                 return reject(err)
-//             }
-//             return resolve(l)
-//         })
-//     })
-// }
 
 const watch = async () => {
     try {
@@ -37,12 +27,12 @@ const watch = async () => {
 
         while (true) {
             const web3 = await Web3Util.getWeb3()
-            // const l = await countJobs()
-            // if (l > 500) {
-            //     logger.debug('%s jobs, sleep 2 seconds before adding more', l)
-            //     await sleep(2000)
-            //     continue
-            // }
+            const l = await QueueHelper.countJob()
+            if (l > 500) {
+                logger.debug('%s jobs, sleep 2 seconds before adding more', l)
+                await sleep(2000)
+                continue
+            }
 
             const maxBlockNum = await web3.eth.getBlockNumber()
             logger.debug('Min block crawl %s, Max block number %s', minBlockCrawl, maxBlockNum)

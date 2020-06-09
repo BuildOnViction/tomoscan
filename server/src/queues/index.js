@@ -1,4 +1,5 @@
 const logger = require('../helpers/logger')
+const QueueHelper = require('../helpers/queue')
 const amqp = require('amqplib')
 
 // fix warning max listener
@@ -17,7 +18,7 @@ const publishToQueue = async (queueName, data) => {
         if (error0) {
             console.warn('error0', error0)
         }
-        return conn.createChannel().then(function (error1, ch) {
+        return conn.createChannel().then(async function (error1, ch) {
             if (error1) {
                 console.warn('error1', error1)
             }
@@ -25,6 +26,7 @@ const publishToQueue = async (queueName, data) => {
             ch.sendToQueue(queueName, Buffer.from(data), {
                 persistent: true
             })
+            await QueueHelper.newJob()
             return ch.close()
         }).finally(function () { conn.close() })
     }).catch(e => {
