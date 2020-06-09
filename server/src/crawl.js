@@ -15,14 +15,21 @@ fs.readdirSync(path.join(__dirname, 'queues'))
     })
     .forEach(function (file) {
         const consumer = require(path.join(__dirname, 'queues', file))
-
-        amqp.connect('amqp://localhost', function (error0, connection) {
+        var rabitmqSettings = {
+            protocol: 'amqp',
+            hostname: 'localhost',
+            port: 5672,
+            // username: 'admin',
+            // password: 'admin@123',
+            authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
+        }
+        amqp.connect(rabitmqSettings, function (error0, connection) {
             if (error0) {
-                logger.warn(error0)
+                console.warn('error0', error0)
             }
             connection.createChannel(function (error1, channel) {
                 if (error1) {
-                    logger.warn(error1)
+                    console.warn('error1', error1)
                 }
                 channel.assertQueue(consumer.name, {
                     durable: true

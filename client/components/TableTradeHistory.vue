@@ -36,9 +36,17 @@
                     placeholder="Quote Token">
             </div>
             <div class="form-group mr-2 mb-2">
+                <input
+                    v-model="relayerAddress"
+                    name="relayerAddress"
+                    type="text"
+                    class="form-control"
+                    placeholder="Relayer Address">
+            </div>
+            <div class="form-group mr-2 mb-2">
                 <button
                     type="submit"
-                    class="btn btn-primary mr-sm-3">Filter</button>
+                    class="btn btn-primary">Filter</button>
             </div>
             <div class="form-group mr-2 mb-2">
                 <button
@@ -147,6 +155,12 @@ export default {
     },
     mixins: [mixin],
     props: {
+        page: {
+            type: Object,
+            default: () => {
+                return {}
+            }
+        },
         showFilter: {
             type: Boolean,
             default: false
@@ -156,6 +170,10 @@ export default {
             default: ''
         },
         txHash: {
+            type: String,
+            default: ''
+        },
+        orderHash: {
             type: String,
             default: ''
         }
@@ -168,7 +186,7 @@ export default {
             pairName: { label: 'Pair Name' },
             pricepoint: { label: 'Price' },
             amount: { label: 'Amount' },
-            side: { label: 'Side' },
+            side: { label: 'Taker Side' },
             createdAt: { label: 'Age' }
         },
         loading: true,
@@ -181,6 +199,7 @@ export default {
         user: '',
         baseToken: '',
         quoteToken: '',
+        relayerAddress: '',
         tomoNativeToken: process.env.TOMO_NATIVE_TOKEN
     }),
     async created () {
@@ -192,6 +211,9 @@ export default {
         }
         if (this.$route.query.quoteToken) {
             this.quoteToken = this.$route.query.quoteToken
+        }
+        if (this.$route.query.relayerAddress) {
+            this.relayerAddress = this.$route.query.relayerAddress
         }
         await this.getDataFromApi()
     },
@@ -211,6 +233,8 @@ export default {
             // show on tx detail tab
             } else if (this.txHash !== '') {
                 params.txHash = this.txHash
+            } else if (this.orderHash !== '') {
+                params.orderHash = this.orderHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()
@@ -220,6 +244,9 @@ export default {
                 }
                 if (this.quoteToken !== '') {
                     params.quoteToken = this.quoteToken.trim()
+                }
+                if (this.relayerAddress !== '') {
+                    params.relayerAddress = this.relayerAddress
                 }
             }
             const query = this.serializeQuery(params)
@@ -233,15 +260,22 @@ export default {
             if (self.page) {
                 self.page.txsCount = self.total
             }
-
+            let totalAmount = 0
+            let totalCost = 0
             data.items.forEach((item, index, array) => {
+                totalAmount += item.amount
+                totalCost += item.amount * item.pricepoint
                 if (index === array.length - 1) {
                     self.items = self.formatData(array)
                     // Hide loading.
                     self.loading = false
                 }
             })
-
+            console.log('total amount', totalAmount, 'total cost', totalCost)
+            const avgPrice = totalCost / totalAmount
+            if (this.orderHash !== '') {
+                this.page.avgPrice = avgPrice
+            }
             return data
         },
         async filter () {

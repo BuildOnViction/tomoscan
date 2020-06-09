@@ -5,13 +5,21 @@ const amqp = require('amqplib')
 process.setMaxListeners(1000)
 
 const publishToQueue = async (queueName, data) => {
-    amqp.connect('amqp://localhost').then(function (error0, conn) {
+    var rabitmqSettings = {
+        protocol: 'amqp',
+        hostname: 'localhost',
+        port: 5672
+        // username: 'admin',
+        // password: 'admin@123',
+        // authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
+    }
+    amqp.connect(rabitmqSettings).then(function (error0, conn) {
         if (error0) {
-            logger.warn(error0)
+            console.warn('error0', error0)
         }
         return conn.createChannel().then(function (error1, ch) {
             if (error1) {
-                logger.warn(error1)
+                console.warn('error1', error1)
             }
             ch.assertQueue(queueName, { durable: false })
             ch.sendToQueue(queueName, Buffer.from(data), {

@@ -352,6 +352,28 @@ const DexHelper = {
             trades[i].liquidationPrice = liquidationPrice
             trades[i].collateralPrice = collateralPrice
             trades[i].collateralLockedAmount = collateralLockedAmount
+            if (trades[i].status === 'LIQUIDATED' && trades[i].extraData !== '') {
+                const extraData = JSON.parse(trades[i].extraData)
+                trades[i].liquidated = {}
+                if (Object.prototype.hasOwnProperty.call(extraData, 'RecallAmount')) {
+                    let recallAmount = new BigNumber(extraData.RecallAmount)
+                    recallAmount = recallAmount.div(10 ** decimals[ct].decimals).toNumber()
+                    trades[i].liquidated.recallAmount = recallAmount
+                }
+                if (Object.prototype.hasOwnProperty.call(extraData, 'LiquidationAmount')) {
+                    let liquidationAmount = new BigNumber(extraData.LiquidationAmount)
+                    liquidationAmount = liquidationAmount.div(10 ** decimals[ct].decimals).toNumber()
+                    trades[i].liquidated.liquidationAmount = liquidationAmount
+                }
+                if (Object.prototype.hasOwnProperty.call(extraData, 'CollateralPrice')) {
+                    let collateralPrice = new BigNumber(extraData.CollateralPrice)
+                    collateralPrice = collateralPrice.div(10 ** decimals[lt].decimals).toNumber()
+                    trades[i].liquidated.collateralPrice = collateralPrice
+                }
+                if (Object.prototype.hasOwnProperty.call(extraData, 'Reason')) {
+                    trades[i].liquidated.reason = extraData.Reason === 0 ? 'Overdue' : 'Violate liquidation price'
+                }
+            }
         }
         return trades
     }

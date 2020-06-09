@@ -3,7 +3,8 @@ const config = require('config')
 const Schema = mongoose.Schema
 const db = {}
 
-const conn = mongoose.createConnection(config.get('MONGODB_DEX_URI'))
+const conn = mongoose.createConnection(config.get('MONGODB_DEX_URI'),
+    { useCreateIndex: true, useNewUrlParser: true, useUnifiedTopology: true })
 const Order = conn.model('Order', new Schema({
     hash: { type: String, index: true },
     txHash: { type: String, index: true },

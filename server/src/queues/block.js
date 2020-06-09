@@ -19,6 +19,7 @@ consumer.task = async function (job, done) {
             const epoch = Math.floor(blockNumber / blockPerEpoch) - 1
             if ((blockNumber >= blockPerEpoch * 2) &&
                 (blockNumber % blockPerEpoch === 50)) {
+                logger.info('get _rewards_ at epoch %s (block %s)', epoch, blockNumber)
                 await publishToQueue('RewardProcess', { epoch: epoch })
             }
             if ((blockNumber >= blockPerEpoch * 2) &&
@@ -26,6 +27,7 @@ consumer.task = async function (job, done) {
                 const checkExistOnDb = await db.Reward.find({ epoch: epoch }).limit(1)
 
                 if (checkExistOnDb.length === 0) {
+                    logger.info('re-get _rewards_ at epoch %s', epoch)
                     await publishToQueue('RewardProcess', { epoch: epoch })
                 }
             }

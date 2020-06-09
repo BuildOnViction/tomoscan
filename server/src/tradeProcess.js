@@ -66,14 +66,16 @@ async function run () {
             seller = maker.toLowerCase()
         }
 
-        await publishToQueue('TokenHolderProcess', {
-            token: JSON.stringify({
-                from: seller,
-                to: buyer,
-                address: baseToken.toLowerCase(),
-                value: amount
+        if (baseToken.toLowerCase() !== '0x0000000000000000000000000000000000000001') {
+            await publishToQueue('TokenHolderProcess', {
+                token: JSON.stringify({
+                    from: seller,
+                    to: buyer,
+                    address: baseToken.toLowerCase(),
+                    value: amount
+                })
             })
-        })
+        }
 
         let quoteDecimal
         if (quoteToken === TomoToken) {
