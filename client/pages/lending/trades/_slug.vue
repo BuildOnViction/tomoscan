@@ -192,7 +192,10 @@
                         <tr>
                             <td>Term
                             </td>
-                            <td>{{ lendingTrade.term }} seconds</td>
+                            <td>{{ lendingTrade.term / 86400 }}
+                                <span v-if="lendingTrade.term / 86400 <= 1">day</span>
+                                <span v-else>days</span>
+                                ({{ lendingTrade.term }} seconds)</td>
                         </tr>
                         <tr>
                             <td>Age</td>
