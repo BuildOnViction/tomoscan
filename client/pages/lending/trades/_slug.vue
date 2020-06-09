@@ -147,7 +147,7 @@
                                           params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
                                     {{ lendingTrade.lendingSymbol }}</nuxt-link>
                                 <span v-else>TOMO</span>
-                                (Fee:
+                                (Borrower Fee:
                                 {{ formatNumber(lendingTrade.borrowingFee) }}
                                 <nuxt-link
                                     v-if="lendingTrade.lendingToken !== tomoNativeToken"
