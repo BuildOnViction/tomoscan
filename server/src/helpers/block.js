@@ -24,6 +24,19 @@ const BlockHelper = {
         const _block = await web3.eth.getBlock(blockNumber)
         const end = new Date() - start
         logger.info(`Execution time : %dms web3.eth.getBlock(${blockNumber})`, end)
+        if (end > 4000) {
+            logger.info('Execution time too long, sleep 20 seconds before continue')
+            await sleep(20000)
+        } else if (end > 2000) {
+            logger.info('Execution time too long, sleep 15 seconds before continue')
+            await sleep(15000)
+        } else if (end > 1500) {
+            logger.info('Execution time too long, sleep 10 seconds before continue')
+            await sleep(10000)
+        } else if (end > 1000) {
+            logger.info('Execution time too long, sleep 5 seconds before continue')
+            await sleep(5000)
+        }
 
         if (!_block) {
             return null
@@ -45,7 +58,7 @@ const BlockHelper = {
                 params: [_block.hash],
                 id: 88
             }
-            const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
+            const response = await axios.post(config.get('WEB3_URI'), data)
             const result = response.data
 
             let finalityNumber = parseInt(result.result)
@@ -210,7 +223,7 @@ const BlockHelper = {
                     params: [_block.hash],
                     id: 88
                 }
-                const response = await axios.post(config.get('WEB3_URI'), data, { timeout: 300 })
+                const response = await axios.post(config.get('WEB3_URI'), data)
                 const result = response.data
 
                 let finalityNumber = parseInt(result.result)

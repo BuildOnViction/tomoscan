@@ -2,7 +2,7 @@ const db = require('./models')
 const events = require('events')
 const logger = require('./helpers/logger')
 const elastic = require('./helpers/elastic')
-const publishToQueue = require('./queues')
+const Queue = require('./queues')
 const config = require('config')
 const Web3Util = require('./helpers/web3')
 
@@ -39,7 +39,7 @@ const watch = async () => {
                     await db.TokenTrc21Tx.remove({ blockNumber: i })
                     await db.TokenNftTx.remove({ blockNumber: i })
                     await db.InternalTx.remove({ blockNumber: i })
-                    await publishToQueue('BlockProcess', { block: i })
+                    Queue.newQueue('BlockProcess', { block: i })
                 } else {
                     if (!block) {
                         block = await web3.eth.getBlock(i)

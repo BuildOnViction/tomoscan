@@ -63,7 +63,7 @@ const AccountHelper = {
 
             if (!Object.prototype.hasOwnProperty.call(_account, 'code')) {
                 const code = await web3.eth.getCode(hash)
-                const publishToQueue = require('../queues')
+                const Queue = require('../queues')
                 if (code !== '0x') {
                     _account.isContract = true
                 }
@@ -71,7 +71,7 @@ const AccountHelper = {
 
                 const isToken = await TokenHelper.checkIsToken(code)
                 if (isToken) {
-                    await publishToQueue('TokenProcess', { address: hash })
+                    Queue.newQueue('TokenProcess', { address: hash })
                 }
                 _account.isToken = isToken
             }

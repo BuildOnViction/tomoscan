@@ -25,12 +25,12 @@ const TransactionHelper = {
             const address = log.address.toLowerCase()
             // Add account and token if not exist in db.
             const token = await db.Token.findOne({ hash: address })
-            const publishToQueue = require('../queues')
+            const Queue = require('../queues')
             if (!token) {
-                await publishToQueue('AccountProcess', { listHash: JSON.stringify([address]) })
-                await publishToQueue('TokenProcess', { address: address })
+                Queue.newQueue('AccountProcess', { listHash: JSON.stringify([address]) })
+                Queue.newQueue('TokenProcess', { address: address })
             }
-            await publishToQueue('TokenTransactionProcess', { log: JSON.stringify(log) })
+            Queue.newQueue('TokenTransactionProcess', { log: JSON.stringify(log) })
         } else if (log.topics[0] === TopicExecuteTrade) {
             const data = log.data.replace('0x', '')
             const params = []
@@ -82,7 +82,7 @@ const TransactionHelper = {
                 delete tx._id
                 delete tx.id
             }
-            const publishToQueue = require('../queues')
+            const Queue = require('../queues')
 
             if (!tx) {
                 return false
@@ -156,11 +156,11 @@ const TransactionHelper = {
             let transferAmount = new BigNumber(tx.value)
             transferAmount = transferAmount.dividedBy(10 ** 18).toNumber()
             if (transferAmount >= 20000 && tx.status) {
-                await twitter.alertBigTransfer(tx.hash, tx.from, tx.to, tx.value)
+                twitter.alertBigTransfer(tx.hash, tx.from, tx.to, tx.value)
             }
 
             if (listHash.length > 0) {
-                await publishToQueue('AccountProcess', { listHash: JSON.stringify(listHash) })
+                Queue.newQueue('AccountProcess', { listHash: JSON.stringify(listHash) })
             }
 
             tx.cumulativeGasUsed = receipt.cumulativeGasUsed

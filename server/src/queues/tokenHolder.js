@@ -6,15 +6,15 @@ const logger = require('../helpers/logger')
 const consumer = {}
 consumer.name = 'TokenHolderProcess'
 consumer.processNumber = 2
-consumer.task = async function (job, done) {
+consumer.task = async function (job) {
     try {
-        const token = JSON.parse(job.data.token)
+        const token = job.token
         logger.info(`Transfer ${token.value} token ${token.address} from ${token.from} to ${token.to}`)
         if (token.address === '0x0000000000000000000000000000000000000001') {
-            return done()
+            return true
         }
         if (!token) {
-            return done()
+            return true
         }
         // Add holder from.
         if (token.from !== '0x0000000000000000000000000000000000000000') {
@@ -26,10 +26,10 @@ consumer.task = async function (job, done) {
         }
     } catch (e) {
         logger.warn('Error TokenHolderProcess %s', e)
-        return done(e)
+        return false
     }
 
-    return done()
+    return true
 }
 
 module.exports = consumer

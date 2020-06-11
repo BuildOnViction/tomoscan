@@ -1,8 +1,7 @@
 'use strict'
 
 const Web3Util = require('./helpers/web3')
-const QueueHelper = require('./helpers/queue')
-const publishToQueue = require('./queues')
+const Queue = require('./queues')
 const db = require('./models')
 const events = require('events')
 const logger = require('./helpers/logger')
@@ -27,8 +26,8 @@ const watch = async () => {
 
         while (true) {
             const web3 = await Web3Util.getWeb3()
-            const l = await QueueHelper.countJob()
-            if (l > 500) {
+            const l = await Queue.countJob()
+            if (l > 400) {
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 await sleep(2000)
                 continue
@@ -41,7 +40,7 @@ const watch = async () => {
                 nextCrawl = nextCrawl < maxBlockNum ? nextCrawl : maxBlockNum
                 for (let i = minBlockCrawl + 1; i <= nextCrawl; i++) {
                     logger.info('BlockProcess %s', i)
-                    await publishToQueue('BlockProcess', { block: i })
+                    Queue.newQueue('BlockProcess', { block: i })
                     minBlockCrawl = i
                 }
             } else {

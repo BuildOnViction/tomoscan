@@ -5,8 +5,8 @@ const AccountHelper = require('../helpers/account')
 const consumer = {}
 consumer.name = 'AccountProcess'
 consumer.processNumber = 4
-consumer.task = async function (job, done) {
-    const listHash = JSON.parse(job.data.listHash)
+consumer.task = async function (job) {
+    const listHash = JSON.parse(job.listHash)
     const map = listHash.map(async function (hash) {
         hash = hash.toLowerCase()
         logger.info('Process account: %s', hash)
@@ -15,12 +15,12 @@ consumer.task = async function (job, done) {
             await AccountHelper.processAccount(hash)
         } catch (e) {
             logger.warn('Cannot process account %s. Error %s', hash, e)
-            return done(e)
+            return false
         }
     })
     await Promise.all(map)
 
-    return done()
+    return true
 }
 
 module.exports = consumer

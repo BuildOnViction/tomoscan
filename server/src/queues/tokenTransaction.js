@@ -11,17 +11,17 @@ const elastic = require('../helpers/elastic')
 const consumer = {}
 consumer.name = 'TokenTransactionProcess'
 consumer.processNumber = 2
-consumer.task = async function (job, done) {
+consumer.task = async function (job) {
     const web3 = await Web3Utils.getWeb3()
     try {
-        const log = JSON.parse(job.data.log)
+        const log = job.log
         logger.info('Process token transaction: ')
         const _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
-            return done()
+            return true
         }
-        const publishToQueue = require('./index')
+        const Queue = require('./index')
 
         if (log.topics[1]) {
             _log.from = await utils.unformatAddress(log.topics[1])
@@ -41,7 +41,7 @@ consumer.task = async function (job, done) {
         } else {
             const code = await web3.eth.getCode(_log.address)
             if (code === '0x') {
-                return done()
+                return true
             }
             const tokenFuncs = await TokenHelper.getTokenFuncs()
             decimals = await web3.eth.call({ to: _log.address, data: tokenFuncs.decimals })
@@ -79,7 +79,7 @@ consumer.task = async function (job, done) {
 
             // Add token holder data.
             if (_log.from.toLowerCase() !== _log.to.toLowerCase()) {
-                await publishToQueue('TokenHolderProcess', {
+                Queue.newQueue('TokenHolderProcess', {
                     token: JSON.stringify({
                         from: _log.from.toLowerCase(),
                         to: _log.to.toLowerCase(),
@@ -104,10 +104,10 @@ consumer.task = async function (job, done) {
         }
     } catch (e) {
         logger.warn('cannot process token tx. Error %s', e)
-        return done(e)
+        return false
     }
 
-    return done()
+    return true
 }
 
 module.exports = consumer
