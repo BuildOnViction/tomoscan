@@ -216,9 +216,7 @@ const TransactionHelper = {
                         from: item.from,
                         to: item.to,
                         value: item.value,
-                        timestamp: new Date(item.timestamp).getTime(),
-                        createdAt: item.createdAt,
-                        updatedAt: item.updatedAt
+                        timestamp: new Date(item.timestamp).getTime()
                     }
                     await elastic.indexWithoutId('internal-tx', idx)
                 }
@@ -244,7 +242,26 @@ const TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
-            await elastic.index(tx.hash, 'transactions', tx)
+            await elastic.index(tx.hash, 'transactions', {
+                blockHash: tx.blockHash,
+                blockNumber: tx.blockNumber,
+                cumulativeGasUsed: tx.cumulativeGasUsed,
+                from: tx.from,
+                from_model: tx.from_model,
+                gas: tx.gas,
+                gasPrice: tx.gasPrice,
+                gasUsed: tx.gasUsed,
+                hash: tx.hash,
+                i_tx: tx.i_tx,
+                nonce: tx.nonce,
+                status: tx.status,
+                timestamp: (new Date(tx.timestamp)).toISOString()
+                    .replace(/T/, ' ').replace(/\..+/, ''),
+                to: tx.to,
+                to_model: tx.to_model,
+                transactionIndex: tx.transactionIndex,
+                value: tx.value
+            })
         } catch (e) {
             logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
             await sleep(2000)

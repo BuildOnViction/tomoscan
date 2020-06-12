@@ -59,7 +59,16 @@ consumer.task = async function (job) {
         delete t._id
         delete t.id
         t.totalSupplyNumber = String(t.totalSupplyNumber)
-        await elastic.index(t.hash, 'tokens', t)
+        await elastic.index(t.hash, 'tokens', {
+            decimals: token.decimals,
+            hash: token.hash,
+            isMintable: token.isMintable,
+            name: token.name,
+            symbol: token.symbol,
+            totalSupply: token.totalSupply,
+            totalSupplyNumber: token.totalSupplyNumber,
+            type: token.type
+        })
     } catch (e) {
         logger.warn('cannot process token %s. Error %s', address, e)
         return false

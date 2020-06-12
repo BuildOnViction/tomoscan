@@ -442,7 +442,16 @@ const RewardHelper = {
                             rewardTime: block.timestamp * 1000,
                             signNumber: signNumber[m].sign
                         }
-                        await elastic.indexWithoutId('rewards', item)
+                        await elastic.indexWithoutId('rewards', {
+                            epoch: epoch,
+                            address: v.toLowerCase(),
+                            validator: m.toLowerCase(),
+                            validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : 'Anonymous',
+                            reward: r,
+                            rewardTime: (new Date(block.timestamp * 1000)).toISOString()
+                                .replace(/T/, ' ').replace(/\..+/, ''),
+                            signNumber: signNumber[m].sign
+                        })
                         rdata.push(item)
                         if (rdata.length === 100) {
                             logger.info('insert %s _rewards_ item at epoch %s', rdata.length, epoch)

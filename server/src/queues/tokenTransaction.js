@@ -67,14 +67,38 @@ consumer.task = async function (job) {
                     _log,
                     { upsert: true, new: true })
                 _log.valueNumber = String(_log.valueNumber)
-                await elastic.indexWithoutId('trc20-tx', _log)
+                await elastic.indexWithoutId('trc20-tx', {
+                    address: _log.address,
+                    blockHash: _log.blockHash,
+                    blockNumber: _log.blockNumber,
+                    createdAt: (new Date(_log.createdAt)).toISOString()
+                        .replace(/T/, ' ').replace(/\..+/, ''),
+                    from: _log.from,
+                    to: _log.to,
+                    transactionHash: _log.transactionHash,
+                    transactionIndex: _log.transactionIndex,
+                    value: _log.value,
+                    valueNumber: _log.valueNumber
+                })
             } else {
                 await db.TokenTrc21Tx.updateOne(
                     { transactionHash: transactionHash, from: _log.from, to: _log.to },
                     _log,
                     { upsert: true, new: true })
                 _log.valueNumber = String(_log.valueNumber)
-                await elastic.indexWithoutId('trc21-tx', _log)
+                await elastic.indexWithoutId('trc21-tx', {
+                    address: _log.address,
+                    blockHash: _log.blockHash,
+                    blockNumber: _log.blockNumber,
+                    createdAt: (new Date(_log.createdAt)).toISOString()
+                        .replace(/T/, ' ').replace(/\..+/, ''),
+                    from: _log.from,
+                    to: _log.to,
+                    transactionHash: _log.transactionHash,
+                    transactionIndex: _log.transactionIndex,
+                    value: _log.value,
+                    valueNumber: _log.valueNumber
+                })
             }
 
             // Add token holder data.
@@ -99,7 +123,19 @@ consumer.task = async function (job) {
                 await db.TokenNftHolder.updateOne(
                     { token: _log.address, tokenId: _log.tokenId },
                     { holder: _log.to }, { upsert: true, new: true })
-                await elastic.indexWithoutId('nft-tx', _log)
+                await elastic.indexWithoutId('nft-tx', {
+                    address: _log.address,
+                    blockHash: _log.blockHash,
+                    blockNumber: _log.blockNumber,
+                    createdAt: (new Date(_log.createdAt)).toISOString()
+                        .replace(/T/, ' ').replace(/\..+/, ''),
+                    transactionHash: _log.transactionHash,
+                    transactionIndex: _log.transactionIndex,
+                    from: _log.from,
+                    to: _log.to,
+                    data: _log.data,
+                    tokenId: _log.tokenId
+                })
             }
         }
     } catch (e) {
