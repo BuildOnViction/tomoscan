@@ -14,16 +14,18 @@ fs.readdirSync(path.join(__dirname, 'queues'))
     })
     .forEach(async function (file) {
         const consumer = require(path.join(__dirname, 'queues', file))
-        const channel = await Queue.channel()
+        const { ch } = await Queue.channel()
 
-        await channel.prefetch(1)
+        await ch.prefetch(1)
         logger.info(' [*] Waiting for messages in %s. To exit press CTRL+C', consumer.name)
-        channel.consume(consumer.name, async function (msg) {
+        ch.consume(consumer.name, async function (msg) {
             const content = msg.content.toString()
             consumer.task(JSON.parse(content))
-            channel.ack(msg)
+            ch.ack(msg)
         }, {
             noAck: false
         })
+        // await ch.close()
+        // await conn.close()
         // q.process(consumer.name, consumer.processNumber, consumer.task)
     })

@@ -10,24 +10,28 @@ const rabitmqSettings = {
 }
 
 const Queue = {
-    connection: async () => {
-        return amqp.connect(rabitmqSettings)
-    },
     channel: async () => {
-        const conn = await Queue.connection()
-        return conn.createChannel()
+        const conn = await amqp.connect(rabitmqSettings)
+        const ch = await conn.createChannel()
+        return { conn, ch }
     },
     newQueue: async (queueName, data) => {
-        const channel = await Queue.channel()
-        channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), {
+        const { conn, ch } = await Queue.channel()
+        await ch.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), {
             persistent: true
         })
+        await ch.close()
+        await conn.close()
     },
 
     countJob: async () => {
-        const ch = await Queue.channel()
+        const { conn, ch } = await Queue.channel()
         const count = await ch.assertQueue('BlockProcess', { durable: false })
-        return count.messageCount
+        const num = count.messageCount
+
+        await ch.close()
+        await conn.close()
+        return num
     }
 }
 
