@@ -14,6 +14,12 @@
     "password": null,
     "prefix": "TomoScan"
   },
+  "rabbitmq": {
+    "hostname": "localhost",
+    "port": 5672,
+    "username": "",
+    "password": ""
+  },
   "TOMODEX_API": "https://dex.tomochain.com/",
   "RELAYER_API": "https://relayer.tomochain.com/",
 

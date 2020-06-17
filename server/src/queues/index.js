@@ -1,11 +1,12 @@
 const amqp = require('amqplib')
+const config = require('config')
 
 const rabitmqSettings = {
     protocol: 'amqp',
-    hostname: 'localhost',
-    port: 5672,
-    // username: 'admin',
-    // password: 'admin@123',
+    hostname: config.get('rabbitmq.hostname'),
+    port: config.get('rabbitmq.port'),
+    username: config.get('rabbitmq.username'),
+    password: config.get('rabbitmq.password'),
     authMechanism: ['PLAIN', 'AMQPLAIN', 'EXTERNAL']
 }
 

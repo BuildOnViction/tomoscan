@@ -8,6 +8,12 @@
     "password": null,
     "prefix": "TomoScan"
   },
+  "rabbitmq": {
+    "hostname": "localhost",
+    "port": 5672,
+    "username": "",
+    "password": ""
+  },
   "ELASTICSEARCH": "http://localhost:9200",
   "GetDataFromElasticSearch": false,
   "MaxBlockIndex": 15350000,

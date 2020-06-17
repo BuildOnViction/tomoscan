@@ -11,6 +11,12 @@
     "password": null,
     "prefix": "TomoScan"
   },
+  "rabbitmq": {
+    "hostname": "localhost",
+    "port": 5672,
+    "username": "",
+    "password": ""
+  },
   "logs": {
     "level": "debug"
   },
