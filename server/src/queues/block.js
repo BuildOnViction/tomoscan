@@ -41,19 +41,25 @@ consumer.task = async function (job) {
             }
 
             const { txs, timestamp } = b
+            const listTxHash = []
+            for (let i = 0; i < txs.length; i++) {
+                listTxHash.push(txs[i].hash)
+            }
+            await db.Tx.deleteMany({ hash: { $in: listTxHash } })
+            await db.Tx.insertMany(txs)
             if (txs.length <= 200) {
-                await newTransaction(txs, timestamp)
+                await newTransaction(listTxHash, timestamp)
             } else {
                 let listHash = []
-                for (let i = 0; i < txs.length; i++) {
-                    listHash.push(txs[i])
+                for (let i = 0; i < listTxHash.length; i++) {
+                    listHash.push(listTxHash[i])
                     if (listHash.length === 200) {
-                        await newTransaction(txs, timestamp)
+                        await newTransaction(listTxHash, timestamp)
                         listHash = []
                     }
                 }
                 if (listHash.length > 0) {
-                    await newTransaction(txs, timestamp)
+                    await newTransaction(listTxHash, timestamp)
                 }
             }
         }

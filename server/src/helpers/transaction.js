@@ -156,7 +156,7 @@ const TransactionHelper = {
             let transferAmount = new BigNumber(tx.value)
             transferAmount = transferAmount.dividedBy(10 ** 18).toNumber()
             if (transferAmount >= 20000 && tx.status) {
-                twitter.alertBigTransfer(tx.hash, tx.from, tx.to, tx.value)
+                await twitter.alertBigTransfer(tx.hash, tx.from, tx.to, tx.value)
             }
 
             if (listHash.length > 0) {
