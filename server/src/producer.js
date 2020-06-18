@@ -27,7 +27,7 @@ const watch = async () => {
         while (true) {
             const web3 = await Web3Util.getWeb3()
             const l = await Queue.countJob('BlockProcess')
-            if (l > 400) {
+            if (l > 200) {
                 logger.debug('%s jobs, sleep 2 seconds before adding more', l)
                 await sleep(2000)
                 continue

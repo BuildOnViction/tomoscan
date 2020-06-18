@@ -18,7 +18,7 @@ const Queue = {
     },
     newQueue: async (queueName, data) => {
         const { conn, ch } = await Queue.channel()
-        await ch.sendToQueue(queueName, Buffer.from(JSON.stringify(data)), {
+        await ch.sendToQueue(queueName, Buffer.from(JSON.stringify(data), { durable: false }), {
             persistent: true
         })
         await ch.close()
