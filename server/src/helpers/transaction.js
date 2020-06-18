@@ -202,7 +202,7 @@ const TransactionHelper = {
             try {
                 await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
             } catch (e) {
-                logger.warn('dont have internal tx for tx %s', hash)
+                // logger.warn('dont have internal tx for tx %s', hash)
             }
 
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
