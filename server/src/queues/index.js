@@ -25,9 +25,9 @@ const Queue = {
         await conn.close()
     },
 
-    countJob: async () => {
+    countJob: async (queueName) => {
         const { conn, ch } = await Queue.channel()
-        const count = await ch.assertQueue('BlockProcess', { durable: false })
+        const count = await ch.assertQueue(queueName, { durable: false })
         const num = count.messageCount
 
         await ch.close()

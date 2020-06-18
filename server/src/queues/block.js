@@ -2,17 +2,18 @@ const logger = require('../helpers/logger')
 const BlockHelper = require('../helpers/block')
 const config = require('config')
 const db = require('../models')
+const Queue = require('./index')
 
 const consumer = {}
 consumer.name = 'BlockProcess'
 
+const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 consumer.task = async function (job) {
     const blockNumber = parseInt(job.block)
     const blockPerEpoch = parseInt(config.get('BLOCK_PER_EPOCH'))
     try {
         logger.info('Process block: %s', blockNumber)
         const b = await BlockHelper.crawlBlock(blockNumber)
-        const Queue = require('./index')
 
         if (b) {
             // Begin from epoch 2
@@ -40,28 +41,19 @@ consumer.task = async function (job) {
             }
 
             const { txs, timestamp } = b
-            if (txs.length <= 100) {
-                Queue.newQueue('TransactionProcess', {
-                    txs: JSON.stringify(txs),
-                    timestamp: timestamp
-                })
+            if (txs.length <= 200) {
+                await newTransaction(txs, timestamp)
             } else {
                 let listHash = []
                 for (let i = 0; i < txs.length; i++) {
                     listHash.push(txs[i])
-                    if (listHash.length === 100) {
-                        Queue.newQueue('TransactionProcess', {
-                            txs: JSON.stringify(txs),
-                            timestamp: timestamp
-                        })
+                    if (listHash.length === 200) {
+                        await newTransaction(txs, timestamp)
                         listHash = []
                     }
                 }
                 if (listHash.length > 0) {
-                    Queue.newQueue('TransactionProcess', {
-                        txs: JSON.stringify(txs),
-                        timestamp: timestamp
-                    })
+                    await newTransaction(txs, timestamp)
                 }
             }
         }
@@ -70,6 +62,23 @@ consumer.task = async function (job) {
     } catch (e) {
         logger.warn('Cannot crawl block %s. Sleep 2 seconds and re-crawl. Error %s', blockNumber, e)
         return false
+    }
+}
+
+async function newTransaction (txs, timestamp) {
+    while (true) {
+        const l = await Queue.countJob('TransactionProcess')
+        if (l > 500) {
+            logger.debug('%s tx jobs, sleep 2 seconds before adding more', l)
+            await sleep(2000)
+            continue
+        }
+
+        Queue.newQueue('TransactionProcess', {
+            txs: JSON.stringify(txs),
+            timestamp: timestamp
+        })
+        break
     }
 }
 
