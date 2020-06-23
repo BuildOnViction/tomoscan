@@ -38,10 +38,12 @@ const AccountHelper = {
         if (chainBalance !== null) {
             _account.balance = chainBalance
             const bn = new BigNumber(chainBalance)
-            _account.balanceNumber = bn.dividedBy(10 ** 18)
+            _account.balanceNumber = bn.dividedBy(10 ** 18).toNumber()
         }
-        const acc = await db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
-        return acc
+        if (_account.balanceNumber > 0 || _account.code !== '0x') {
+            return db.Account.findOneAndUpdate({ hash: hash }, _account, { upsert: true, new: true })
+        }
+        return _account
     },
     processAccount:async (hash) => {
         hash = hash.toLowerCase()
@@ -84,10 +86,12 @@ const AccountHelper = {
             if (chainBalance !== null) {
                 _account.balance = chainBalance
                 const bn = new BigNumber(chainBalance)
-                _account.balanceNumber = bn.dividedBy(10 ** 18)
+                _account.balanceNumber = bn.dividedBy(10 ** 18).toNumber()
             }
-            await db.Account.updateOne({ hash: hash }, _account,
-                { upsert: true, new: true })
+            if (_account.balanceNumber > 0 || _account.code !== '0x') {
+                await db.Account.updateOne({ hash: hash }, _account,
+                    { upsert: true, new: true })
+            }
         } catch (e) {
             logger.warn('cannot process account %s. Error %s', hash, e)
         }
