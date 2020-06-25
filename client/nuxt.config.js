@@ -64,6 +64,7 @@ module.exports = {
         ]
     },
     plugins: [
+        { src : '~/plugins/apexchart', ssr : false },
         '~/plugins/axios',
         '~/plugins/vuelidate',
         '~/plugins/bootstrap-vue',
