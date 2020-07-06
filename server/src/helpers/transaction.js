@@ -16,7 +16,7 @@ const elastic = require('./elastic')
 
 const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
 const TransactionHelper = {
-    parseLog: async (log) => {
+    parseLog: async (log, timestamp) => {
         const TOPIC_TRANSFER = '0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef'
 
         // Topic of Constant-NetworkProxy contract
@@ -30,7 +30,7 @@ const TransactionHelper = {
                 Queue.newQueue('AccountProcess', { listHash: JSON.stringify([address]) })
                 Queue.newQueue('TokenProcess', { address: address })
             }
-            Queue.newQueue('TokenTransactionProcess', { log: JSON.stringify(log) })
+            Queue.newQueue('TokenTransactionProcess', { log: JSON.stringify(log), timestamp: timestamp })
         } else if (log.topics[0] === TopicExecuteTrade) {
             const data = log.data.replace('0x', '')
             const params = []
@@ -178,7 +178,7 @@ const TransactionHelper = {
                 await db.TokenNftTx.deleteMany({ transactionHash: tx.hash })
                 for (let i = 0; i < logs.length; i++) {
                     const log = logs[i]
-                    await TransactionHelper.parseLog(log)
+                    await TransactionHelper.parseLog(log, timestamp)
                 }
                 await db.Log.deleteMany({ transactionHash: receipt.hash })
                 await db.Log.insertMany(logs)

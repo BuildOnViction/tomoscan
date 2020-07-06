@@ -15,6 +15,7 @@ consumer.task = async function (job) {
     const web3 = await Web3Utils.getWeb3()
     try {
         const log = JSON.parse(job.log)
+        const timestamp = new Date(job.timestamp)
         logger.info('Process token tx for transaction: %s', log.transactionHash)
         const _log = log
         if (typeof log.topics[1] === 'undefined' ||
@@ -71,7 +72,7 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: (new Date(_log.createdAt)).toISOString()
+                    createdAt: timestamp.toISOString()
                         .replace(/T/, ' ').replace(/\..+/, ''),
                     from: _log.from,
                     to: _log.to,
@@ -90,7 +91,7 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: (new Date(_log.createdAt)).toISOString()
+                    createdAt: timestamp.toISOString()
                         .replace(/T/, ' ').replace(/\..+/, ''),
                     from: _log.from,
                     to: _log.to,
@@ -127,8 +128,7 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: (new Date(_log.createdAt)).toISOString()
-                        .replace(/T/, ' ').replace(/\..+/, ''),
+                    createdAt: timestamp.replace(/\..+/, ''),
                     transactionHash: _log.transactionHash,
                     transactionIndex: _log.transactionIndex,
                     from: _log.from,
