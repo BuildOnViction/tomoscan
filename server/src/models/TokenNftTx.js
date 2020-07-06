@@ -12,7 +12,8 @@ const TokenNftTx = new Schema({
     from: { type: String, index: true },
     to: { type: String, index: true },
     data: String,
-    tokenId: { type: Number, index: true }
+    tokenId: { type: Number, index: true },
+    timestamp: Date
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },

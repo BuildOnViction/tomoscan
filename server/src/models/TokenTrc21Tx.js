@@ -14,7 +14,8 @@ const TokenTrc21Tx = new Schema({
     data: String,
     value: String,
     valueNumber: Number,
-    input: String
+    input: String,
+    timestamp: Date
 }, {
     timestamps: true,
     toObject: { virtuals: true, getters: true },

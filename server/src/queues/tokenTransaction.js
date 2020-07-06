@@ -32,7 +32,7 @@ consumer.task = async function (job) {
         }
         _log.address = _log.address.toLowerCase()
         const transactionHash = _log.transactionHash.toLowerCase()
-        _log.createdAt = timestamp
+        _log.timestamp = timestamp
 
         const token = await db.Token.findOne({ hash: _log.address })
         let tokenType
@@ -73,7 +73,7 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: timestamp.toISOString()
+                    timestamp: timestamp.toISOString()
                         .replace(/T/, ' ').replace(/\..+/, ''),
                     from: _log.from,
                     to: _log.to,
@@ -92,7 +92,7 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: timestamp.toISOString()
+                    timestamp: timestamp.toISOString()
                         .replace(/T/, ' ').replace(/\..+/, ''),
                     from: _log.from,
                     to: _log.to,
@@ -129,7 +129,8 @@ consumer.task = async function (job) {
                     address: _log.address,
                     blockHash: _log.blockHash,
                     blockNumber: _log.blockNumber,
-                    createdAt: timestamp.replace(/\..+/, ''),
+                    timestamp: timestamp.toISOString()
+                        .replace(/T/, ' ').replace(/\..+/, ''),
                     transactionHash: _log.transactionHash,
                     transactionIndex: _log.transactionIndex,
                     from: _log.from,
