@@ -32,6 +32,7 @@ consumer.task = async function (job) {
         }
         _log.address = _log.address.toLowerCase()
         const transactionHash = _log.transactionHash.toLowerCase()
+        _log.createdAt = timestamp
 
         const token = await db.Token.findOne({ hash: _log.address })
         let tokenType
