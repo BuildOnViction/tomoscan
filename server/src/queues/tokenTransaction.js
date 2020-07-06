@@ -14,8 +14,8 @@ consumer.processNumber = 2
 consumer.task = async function (job) {
     const web3 = await Web3Utils.getWeb3()
     try {
-        const log = job.log
-        logger.info('Process token transaction: ')
+        const log = JSON.parse(job.log)
+        logger.info('Process token tx for transaction: %s', log.transactionHash)
         const _log = log
         if (typeof log.topics[1] === 'undefined' ||
             typeof log.topics[2] === 'undefined') {
