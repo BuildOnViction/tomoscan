@@ -49,8 +49,8 @@
                 slot-scope="props">{{ props.item.lending24h }} USD
             </template>
             <template
-                slot="makeFee"
-                slot-scope="props">{{ props.item.makeFee / 100 }} %
+                slot="spotFee"
+                slot-scope="props">{{ props.item.spotFee / 100 }} %
             </template>
             <template
                 slot="lendingFee"
@@ -58,16 +58,6 @@
             </template>
         </table-base>
 
-        <b-pagination
-            v-if="total > 0 && total > perPage"
-            v-model="currentPage"
-            :total-rows="pages * perPage"
-            :per-page="perPage"
-            :number-of-pages="pages"
-            :limit="7"
-            align="center"
-            class="tomo-pagination"
-            @change="onChangePaginate"/>
     </section>
 </template>
 
@@ -83,20 +73,17 @@ export default {
     data: () => ({
         fields: {
             address: { label: 'Address' },
-            relayerName: { label: 'Name' },
+            name: { label: 'Name' },
             owner: { label: 'Owner' },
             deposit: { label: 'Available Amount' },
             volume24h: { label: 'Volume 24h' },
             lending24h: { label: 'Lending 24h' },
-            makeFee: { label: 'Trading Fee' },
+            spotFee: { label: 'Trading Fee' },
             lendingFee: { label: 'Lending Fee' }
         },
         loading: true,
         total: 0,
-        items: [],
-        currentPage: 1,
-        perPage: 20,
-        pages: 1
+        items: []
     }),
     async mounted () {
         try {
@@ -112,31 +99,17 @@ export default {
     },
     methods: {
         async getDataFromApi () {
-            const self = this
-
             // Show loading.
-            self.loading = true
+            this.loading = true
 
-            const params = {
-                page: self.currentPage || 1,
-                limit: self.perPage
-            }
-
-            const query = this.serializeQuery(params)
-            const { data } = await this.$axios.get('/api/relayers' + '?' + query)
-            self.items = data.items
-            self.total = data.total
-            self.pages = data.pages
+            const { data } = await this.$axios.get('/api/relayers')
+            this.items = data
+            this.total = data.length
 
             // Hide loading.
-            self.loading = false
+            this.loading = false
 
             return data
-        },
-
-        onChangePaginate (page) {
-            this.currentPage = page
-            this.getDataFromApi()
         }
     },
     head: () => ({
