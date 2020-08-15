@@ -13,6 +13,7 @@ OrderController.get('/orders', [
     check('baseToken').optional().isLength({ min: 42, max: 42 }).withMessage('base token address is incorrect.'),
     check('quoteToken').optional().isLength({ min: 42, max: 42 }).withMessage('quote token address is incorrect.'),
     check('txHash').optional().isLength({ min: 66, max: 66 }).withMessage('Transaction hash is incorrect.'),
+    check('tradeHash').optional().isLength({ min: 66, max: 66 }).withMessage('Trade hash is incorrect.'),
     check('side').optional(),
     check('status').optional(),
     check('page').optional().isInt().withMessage('Require page is number')
@@ -53,6 +54,12 @@ OrderController.get('/orders', [
         }
         if (req.query.txHash) {
             query.txHash = req.query.txHash
+        }
+        if (req.query.tradeHash) {
+            const trade = await dexDb.Trade.findOne({ hash: req.query.tradeHash })
+            if (trade) {
+                query.$or = [{ hash: trade.makerOrderHash }, { hash: trade.takerOrderHash }]
+            }
         }
         const total = await dexDb.Order.countDocuments(query)
         const limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 20

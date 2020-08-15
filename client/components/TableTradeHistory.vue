@@ -155,6 +155,12 @@ export default {
     },
     mixins: [mixin],
     props: {
+        page: {
+            type: Object,
+            default: () => {
+                return {}
+            }
+        },
         showFilter: {
             type: Boolean,
             default: false
@@ -164,6 +170,10 @@ export default {
             default: ''
         },
         txHash: {
+            type: String,
+            default: ''
+        },
+        orderHash: {
             type: String,
             default: ''
         }
@@ -223,6 +233,8 @@ export default {
             // show on tx detail tab
             } else if (this.txHash !== '') {
                 params.txHash = this.txHash
+            } else if (this.orderHash !== '') {
+                params.orderHash = this.orderHash
             } else {
                 if (this.user !== '') {
                     params.user = this.user.trim()
@@ -248,15 +260,22 @@ export default {
             if (self.page) {
                 self.page.txsCount = self.total
             }
-
+            let totalAmount = 0
+            let totalCost = 0
             data.items.forEach((item, index, array) => {
+                totalAmount += item.amount
+                totalCost += item.amount * item.pricepoint
                 if (index === array.length - 1) {
                     self.items = self.formatData(array)
                     // Hide loading.
                     self.loading = false
                 }
             })
-
+            console.log('total amount', totalAmount, 'total cost', totalCost)
+            const avgPrice = totalCost / totalAmount
+            if (this.orderHash !== '') {
+                this.page.avgPrice = avgPrice
+            }
             return data
         },
         async filter () {

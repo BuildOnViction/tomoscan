@@ -445,12 +445,14 @@ const RewardHelper = {
                         await elastic.indexWithoutId('rewards', item)
                         rdata.push(item)
                         if (rdata.length === 100) {
+                            logger.info('insert %s _rewards_ item at epoch %s', rdata.length, epoch)
                             await db.Reward.insertMany(rdata)
                             rdata = []
                         }
                     }
                 }
                 if (rdata.length > 0) {
+                    logger.info('insert %s _rewards_ item at epoch %s', rdata.length, epoch)
                     await db.Reward.insertMany(rdata)
                 }
 
@@ -474,12 +476,12 @@ const RewardHelper = {
                 const eBlock = await BlockHelper.getBlockDetail(endBlock)
 
                 if (!haveReward) {
-                    logger.info('There is no reward found. Wait 10 seconds and retry')
+                    logger.info('There is no _rewards_ found. Wait 10 seconds and retry')
                     const sleep = (time) => new Promise((resolve) => setTimeout(resolve, time))
                     await sleep(10000)
                     calculateTime += 1
                     if (calculateTime === 5) {
-                        logger.error('Cannot find reward for epoch %s at block %s', epoch, block)
+                        logger.error('Cannot find _rewards_ for epoch %s at block %s', epoch, block)
                         return false
                     }
                     return RewardHelper.rewardOnChain(epoch, calculateTime)
@@ -500,7 +502,8 @@ const RewardHelper = {
 
                 return true
             } else {
-                logger.warn('There are some error of epoch %s. Error %s', epoch, JSON.stringify(result.error))
+                logger.warn('There are some error get _rewards_ of epoch %s. Error %s', epoch,
+                    JSON.stringify(result.error))
                 return false
             }
         } catch (e) {

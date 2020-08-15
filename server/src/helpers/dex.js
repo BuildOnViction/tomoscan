@@ -146,7 +146,7 @@ const DexHelper = {
             orders[i].interest = interest
             orders[i].filledAmount = fillAmount
             orders[i].quantity = quantity
-            if (orders[i].status === 'CANCELLED') {
+            if (orders[i].status === 'CANCELLED' && orders[i].extraData !== '') {
                 const extraData = JSON.parse(orders[i].extraData)
                 if (Object.prototype.hasOwnProperty.call(extraData, 'CancelFee')) {
                     let cancelFee = new BigNumber(extraData.CancelFee)
@@ -352,7 +352,7 @@ const DexHelper = {
             trades[i].liquidationPrice = liquidationPrice
             trades[i].collateralPrice = collateralPrice
             trades[i].collateralLockedAmount = collateralLockedAmount
-            if (trades[i].status === 'LIQUIDATED') {
+            if (trades[i].status === 'LIQUIDATED' && trades[i].extraData !== '') {
                 const extraData = JSON.parse(trades[i].extraData)
                 trades[i].liquidated = {}
                 if (Object.prototype.hasOwnProperty.call(extraData, 'RecallAmount')) {
