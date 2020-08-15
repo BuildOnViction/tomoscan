@@ -155,7 +155,7 @@ TokenController.get('/tokens/holding/:tokenType/:holder', [
                 if (!exist.includes(tomoxToken[i].hash)) {
                     notExist.push({
                         hash: holder,
-                        token: listToken[i],
+                        token: tomoxToken[i].hash,
                         tokenDecimals: tomoxToken[i].decimals,
                         quantity: '0',
                         quantityNumber: 0
