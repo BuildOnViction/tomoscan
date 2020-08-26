@@ -192,27 +192,7 @@ export default {
             // Hide loading.
             self.loading = false
 
-            // Format data.
-            self.items = self.formatData(self.items)
-
             return data
-        },
-        formatData (items = []) {
-            const _items = []
-            items.forEach((item) => {
-                const _item = item
-
-                // Format for timestamp.
-                if (!item.block) {
-                    _item.timestamp = item.createdAt
-                } else {
-                    _item.timestamp = item.block.timestamp
-                }
-
-                _items.push(_item)
-            })
-
-            return _items
         },
         onChangePaginate (page) {
             this.currentPage = page
