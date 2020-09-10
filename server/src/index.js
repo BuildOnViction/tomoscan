@@ -13,7 +13,6 @@ const config = require('config')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const swaggerUi = require('swagger-ui-express')
-const apiCacheWithRedis = require('./middlewares/apicache')
 
 const app = express()
 
@@ -31,13 +30,6 @@ app.use(morgan('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
-
-app.use(apiCacheWithRedis('4 seconds', (req, res) => {
-    if (res.statusCode === 200 && req.method === 'GET') {
-        return true
-    }
-    return false
-}))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))

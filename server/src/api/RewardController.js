@@ -6,6 +6,12 @@ const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const config = require('config')
 const Web3Util = require('../helpers/web3')
+const { apiCacheWithRedis } = require('../middlewares/apicache')
+
+const BlockHelper = require('../helpers/block')
+const axios = require('axios')
+const urlJoin = require('url-join')
+const contractAddress = require('../contracts/contractAddress')
 
 const RewardController = Router()
 
@@ -44,6 +50,97 @@ RewardController.get('/rewards/:slug', [
     }
 })
 
+RewardController.get('/rewards/special/epoch/:slug', [
+    check('slug').exists().isInt().withMessage('Require is number')
+], async (req, res) => {
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() })
+    }
+    const epoch = req.params.slug
+    const block = await BlockHelper.getBlock((parseInt(epoch) + 1) * config.get('BLOCK_PER_EPOCH'))
+    const endBlock = parseInt(epoch) * config.get('BLOCK_PER_EPOCH')
+    const startBlock = endBlock - config.get('BLOCK_PER_EPOCH')
+    const data = {
+        jsonrpc: '2.0',
+        method: 'eth_getRewardByHash',
+        params: [block.hash],
+        id: 88
+    }
+
+    try {
+        console.log('rewards_on_chain start', new Date())
+        const response = await axios.post(config.get('WEB3_URI'), data)
+        const result = response.data
+        let haveReward = false
+        if (!result.error) {
+            const signNumber = result.result.signers
+            const rewards = result.result.rewards
+
+            const url = urlJoin(config.get('TOMOMASTER_API_URL'), '/api/candidates')
+            const c = await axios.get(url)
+            const canR = c.data.items
+            const canName = {}
+            if (canR) {
+                for (let i = 0; i < canR.length; i++) {
+                    canName[canR[i].candidate] = canR[i].name
+                }
+            }
+
+            const rdata = []
+            for (const m in rewards) {
+                for (const v in rewards[m]) {
+                    if (!haveReward) {
+                        haveReward = true
+                    }
+                    let r = new BigNumber(rewards[m][v])
+                    r = r.dividedBy(10 ** 18).toString()
+                    const item = {
+                        epoch: epoch,
+                        startBlock: startBlock,
+                        endBlock: endBlock,
+                        address: v.toLowerCase(),
+                        validator: m.toLowerCase(),
+                        validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : 'Anonymous',
+                        reason: v.toLowerCase() === contractAddress.TomoFoundation ? 'Foundation' : 'Voter',
+                        lockBalance: 0,
+                        reward: r,
+                        rewardTime: block.timestamp * 1000,
+                        signNumber: signNumber[m].sign
+                    }
+                    rdata.push(item)
+                }
+            }
+            console.log('rewards_on_chain end', new Date())
+            return res.json({
+                total: rdata.length,
+                perPage: rdata.length,
+                currentPage: 1,
+                pages: 1,
+                items: rdata
+            })
+        } else {
+            console.log('rewards_on_chain errr', result.error)
+            return res.json({
+                total: 0,
+                perPage: 0,
+                currentPage: 1,
+                pages: 1,
+                items: []
+            })
+        }
+    } catch (e) {
+        console.log('rewards_on_chain errr', e)
+        return res.json({
+            total: 0,
+            perPage: 0,
+            currentPage: 1,
+            pages: 1,
+            items: []
+        })
+    }
+})
+
 RewardController.get('/rewards/alerts/status', [], async (req, res) => {
     const web3 = await Web3Util.getWeb3()
     const lastBlock = await web3.eth.getBlockNumber()
@@ -64,7 +161,7 @@ RewardController.get('/rewards/alerts/status', [], async (req, res) => {
     })
 })
 
-RewardController.get('/rewards/epoch/:epochNumber', [
+RewardController.get('/rewards/epoch/:epochNumber', apiCacheWithRedis('100 minutes'), [
     check('limit').optional().isInt({ max: 100 }).withMessage('Limit is less than 100 items per page'),
     check('page').optional().isInt({ max: 500 }).withMessage('Page is less than or equal 500'),
     check('epochNumber').isInt().exists().withMessage('Epoch number is require')
@@ -88,6 +185,9 @@ RewardController.get('/rewards/epoch/:epochNumber', [
         const data = await paginate(req, 'Reward', params)
         if (data.pages > 500) {
             data.pages = 500
+        }
+        if (data.total === 0) {
+            return res.status(406).json(data)
         }
 
         return res.json(data)
