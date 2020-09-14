@@ -2,7 +2,6 @@ const { Router } = require('express')
 const { BigNumber } = require('bignumber.js')
 const axios = require('axios')
 const config = require('config')
-const dexDb = require('../models/dex')
 const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 

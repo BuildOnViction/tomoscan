@@ -13,6 +13,7 @@ const config = require('config')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const swaggerUi = require('swagger-ui-express')
+const ipfilter = require('express-ipfilter').IpFilter
 
 const app = express()
 
@@ -30,6 +31,10 @@ app.use(morgan('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
+
+const whitelistIp = require('../config/whitelist-ip.json')
+// Create the server
+app.use(ipfilter(whitelistIp, { mode: 'allow' }))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
