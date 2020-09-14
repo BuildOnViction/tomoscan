@@ -361,39 +361,25 @@ export default {
     },
     async mounted () {
         try {
-            const self = this
-
-            self.loading = true
+            this.loading = true
 
             // Init breadcrumbs data.
             this.$store.commit('breadcrumb/setItems', {
                 name: 'blocks-slug',
-                to: { name: 'blocks-slug', params: { slug: self.number } }
+                to: { name: 'blocks-slug', params: { slug: this.number } }
             })
 
-            const params = {}
-
-            if (self.number) {
-                params.block = self.number
-            }
-            params.list = 'blocks'
-
-            const query = this.serializeQuery(params)
-
             const responses = await Promise.all([
-                this.$axios.get('/api/blocks/' + this.$route.params.slug),
-                this.$axios.get('/api/counting' + '?' + query)
+                this.$axios.get('/api/blocks/' + this.$route.params.slug)
             ])
 
             this.block = responses[0].data
-            const moment = self.$moment(responses[0].data.timestamp)
+            const moment = this.$moment(responses[0].data.timestamp)
             this.timestamp_moment = `${moment.fromNow()} (${moment})`
 
-            self.totalTxsCount = responses[1].data.totalTxes
+            this.totalTxsCount = this.block.e_tx
 
-            self.blockSignerCount = responses[1].data.blockSigners
-
-            self.loading = false
+            this.loading = false
         } catch (error) {
             console.log(error)
         }
