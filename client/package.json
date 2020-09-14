@@ -27,12 +27,12 @@
     "dotenv": "^8.2.0",
     "js-cookie": "^2.2.0",
     "js-file-download": "^0.4.11",
-    "lodash": "^4.17.14",
+    "lodash": "^4.17.20",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
-    "nuxt": "^2.12.2",
+    "nuxt": "^2.14.5",
     "store": "^2.0.12",
-    "vue": "^2.5.16",
+    "vue": "^2.6.11",
     "vue-clipboards": "^1.2.4",
     "vue-codemirror": "^4.0.5",
     "vue-recaptcha": "^1.1.1",
@@ -54,7 +54,7 @@
     "lodash.mergewith": "^4.6.2",
     "lodash.template": "^4.5.0",
     "mem": "^5.1.1",
-    "node-sass": "^4.8.3",
+    "node-sass": "^4.14.1",
     "sass-loader": "^7.0.1"
   }
 }

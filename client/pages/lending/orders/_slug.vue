@@ -134,8 +134,9 @@
                                     lendingOrder.lendingSymbol : 'TOMO' }}
                             </td>
                         </tr>
-                        <tr v-if="lendingOrder.status === 'CANCELLED' &&
-                            Object.prototype.hasOwnProperty.call(lendingOrder, 'cancelFee')">
+                        <tr
+                            v-if="lendingOrder.status === 'CANCELLED' &&
+                                Object.prototype.hasOwnProperty.call(lendingOrder, 'cancelFee')">
                             <td>Cancel fee</td>
                             <td>
                                 {{ formatNumber(lendingOrder.cancelFee) }}
