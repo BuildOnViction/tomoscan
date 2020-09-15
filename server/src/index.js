@@ -27,6 +27,10 @@ const io = require('socket.io')(server)
 
 app.set('port', config.get('PORT') || 3333)
 app.use(compression())
+morgan.token('remote-addr', function (req, res) {
+    const ffHeaderValue = req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
+    return ffHeaderValue || req.connection.remoteAddress
+})
 app.use(morgan('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
