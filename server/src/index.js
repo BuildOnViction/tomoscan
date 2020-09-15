@@ -35,10 +35,9 @@ app.use(bodyParser.json())
 const blacklistIp = require('../config/blacklist-ip.json')
 
 const customDetection = req => {
-    console.log('kaka', req.header('x-forwarded-for'))
     return req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
 }
-app.use(ipFilter(blacklistIp, { mode: 'deny', detectIp: customDetection }))
+app.use(ipFilter(blacklistIp, { mode: 'deny', detectIp: customDetection, log: false }))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
