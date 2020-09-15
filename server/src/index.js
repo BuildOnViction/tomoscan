@@ -13,7 +13,7 @@ const config = require('config')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const swaggerUi = require('swagger-ui-express')
-const ipFilter = require('express-ipfilter').IpFilter
+// const ipFilter = require('express-ipfilter').IpFilter
 
 const app = express()
 
@@ -32,13 +32,13 @@ app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-const whitelistIp = require('../config/whitelist-ip.json')
+// const whitelistIp = require('../config/whitelist-ip.json')
 
-const customDetection = req => {
-    console.log('kaka', req.header('x-forwarded-for'))
-    return req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
-}
-app.use(ipFilter(whitelistIp, { mode: 'allow', detectIp: customDetection }))
+// const customDetection = req => {
+//     console.log('kaka', req.header('x-forwarded-for'))
+//     return req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
+// }
+// app.use(ipFilter(whitelistIp, { mode: 'allow', detectIp: customDetection }))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
