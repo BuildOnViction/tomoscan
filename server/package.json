@@ -44,7 +44,6 @@
     "ethereumjs-units": "^0.2.0",
     "ethereumjs-util": "^5.1.5",
     "express": "^4.13.3",
-    "express-ipfilter": "^1.1.2",
     "express-validator": "^5.3.1",
     "ioredis": "^4.9.3",
     "json2csv": "^5.0.0",
