@@ -39,7 +39,7 @@ module.exports = function (options) {
                     }
                 })
                 cache1day = data.total_results
-                await redis.set(`total-request-1day-${ip}`, cache1day, 86400)
+                await redis.set(`total-request-1day-${ip}`, cache1day, 3600)
             }
             if (cache1day && parseInt(cache1day) > 100000) {
                 return res.status(403).json({ errors: 'Limit 100k requests/day, 1000 requests/5minutes' })
