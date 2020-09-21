@@ -2,6 +2,7 @@ const redis = require('../helpers/redis')
 const axios = require('axios')
 const config = require('config')
 const blacklistIp = require('../../config/blacklist-ip.json')
+const whitelistIp = require('../../config/whitelist-ip.json')
 module.exports = function (options) {
     return async function (req, res, next) {
         const ffHeaderValue = req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
@@ -9,6 +10,9 @@ module.exports = function (options) {
 
         if (blacklistIp.includes(ip)) {
             return res.status(403).json({ errors: 'Access denied' })
+        }
+        if (whitelistIp.includes(ip)) {
+            return next()
         }
         if (ip && ip !== '::1' && ip !== '127.0.0.1') {
             let cache5min = await redis.get(`total-request-5min-${ip}`)
