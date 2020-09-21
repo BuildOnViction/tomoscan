@@ -10,7 +10,7 @@ module.exports = function (options) {
         if (blacklistIp.includes(ip)) {
             return res.status(403).json({ errors: 'Access denied' })
         }
-        if (ip) {
+        if (ip && ip !== '::1' && ip !== '127.0.0.1') {
             let cache5min = await redis.get(`total-request-5min-${ip}`)
             let cache1day = await redis.get(`total-request-1day-${ip}`)
             if (!cache5min) {
