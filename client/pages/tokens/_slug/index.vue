@@ -76,6 +76,10 @@
                                             class="text-truncate">{{ token.hash }}</nuxt-link>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>Token type</td>
+                                    <td>{{ token.type.toUpperCase() }}</td>
+                                </tr>
                                 <tr v-if="token.type !== 'trc721'">
                                     <td>Decimal</td>
                                     <td>{{ token.decimals }}</td>

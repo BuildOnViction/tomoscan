@@ -7,7 +7,10 @@ const apiCacheWithRedis = apicache.options({
         port: config.get('redis.port'),
         host: config.get('redis.host'),
         auth: config.get('redis.password')
-    })
+    }),
+    statusCodes: {
+        include: [200]
+    }
 }).middleware
 
-module.exports = apiCacheWithRedis
+module.exports = { apicache, apiCacheWithRedis }

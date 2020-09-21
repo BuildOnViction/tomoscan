@@ -27,7 +27,7 @@ TokenTxController.get('/token-txs/:tokenType', [
     let limit = !isNaN(req.query.limit) ? parseInt(req.query.limit) : 25
     limit = Math.min(100, limit)
     const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
-    let total = 0
+    let total = null
     try {
         let data
         if (!config.get('GetDataFromElasticSearch')) {

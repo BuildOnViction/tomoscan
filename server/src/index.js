@@ -13,7 +13,7 @@ const config = require('config')
 const fs = require('fs')
 const yaml = require('js-yaml')
 const swaggerUi = require('swagger-ui-express')
-const apiCacheWithRedis = require('./middlewares/apicache')
+const blockIp = require('./middlewares/blockIp')
 
 const app = express()
 
@@ -27,17 +27,16 @@ const io = require('socket.io')(server)
 
 app.set('port', config.get('PORT') || 3333)
 app.use(compression())
+morgan.token('remote-addr', function (req, res) {
+    const ffHeaderValue = req.header('x-forwarded-for') ? req.header('x-forwarded-for').split(',')[0] : ''
+    return ffHeaderValue || req.connection.remoteAddress
+})
 app.use(morgan('short'))
 app.use(cors())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 
-app.use(apiCacheWithRedis('4 seconds', (req, res) => {
-    if (res.statusCode === 200 && req.method === 'GET') {
-        return true
-    }
-    return false
-}))
+app.use(blockIp({}))
 
 const docs = yaml.safeLoad(fs.readFileSync('./src/docs/swagger.yml', 'utf8'))
 app.use('/docs', swaggerUi.serve, swaggerUi.setup(docs))
@@ -53,7 +52,7 @@ mongoose.connect(config.get('MONGODB_URI'),
                 'MongoDB Connection Error. Please make sure that MongoDB is running.')
             process.exit(1)
         } else {
-        // Initialize public api
+            // Initialize public api
             app.use('/api', api)
         }
     })
