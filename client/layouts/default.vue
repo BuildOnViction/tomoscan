@@ -159,27 +159,22 @@
                         </div>
                     </b-col>
                 </div>
-                <b-row
-                    v-else
-                    class="justify-content-md-center">
+                <b-row v-else>
                     <b-col
                         lg="8"
-                        class="col-2xl-9">
+                        class="offset-lg-2 offset-2xl-3 col-2xl-6">
                         <div class="input-group search-form">
-                            <b-input-group class="mt-3">
-                                <b-form-input
-                                    v-model="search"
-                                    class="form-control search-form__input"
-                                    placeholder="Search Address / TX / Block..."
-                                    @keyup.enter="onGotoRoute"/>
-                                <b-input-group-append>
-                                    <b-button
-                                        variant="primary"
-                                        class="search-form__btn"
-                                        @click="onGotoRoute">
-                                        <i class="tm-search"/></b-button>
-                                </b-input-group-append>
-                            </b-input-group>
+                            <div class="input-group-prepend">
+                                <button
+                                    class="btn btn-primary search-form__btn"
+                                    @click="onGotoRoute"><i class="tm-search"/></button>
+                            </div>
+                            <input
+                                v-model="search"
+                                type="text"
+                                class="form-control search-form__input"
+                                placeholder="Search Address / TX / Block..."
+                                @keyup.enter="onGotoRoute">
                         </div>
                         <div class="tomo-stat d-flex">
                             <div class="tomo-stat__item">
@@ -215,36 +210,6 @@
                                 </nuxt-link>
                             </div>
                         </div>
-                    </b-col>
-                    <div class="w-100"/>
-                    <b-col cols="5">
-                        <apexchart
-                            type="line"
-                            height="350"
-                            :options="txChartOptions"
-                            :series="txSeries"/>
-                    </b-col>
-                    <b-col cols="5">
-                        <apexchart
-                            type="line"
-                            height="350"
-                            :options="accountChartOptions"
-                            :series="accountSeries"/>
-                    </b-col>
-                    <div class="w-100"/>
-                    <b-col cols="5">
-                        <apexchart
-                            type="line"
-                            height="350"
-                            :options="tradeChartOptions"
-                            :series="tradeSeries"/>
-                    </b-col>
-                    <b-col cols="5">
-                        <apexchart
-                            type="line"
-                            height="350"
-                            :options="lendingChartOptions"
-                            :series="lendingSeries"/>
                     </b-col>
                 </b-row>
                 <nuxt/>
@@ -339,154 +304,7 @@ export default {
             darkMode: false,
             search: null,
             stats: null,
-            version: pkg.version,
-
-            accountSeries: [{
-                name: 'Total Account',
-                data: [10, 41, 35, 51, 49, 62, 69, 91, 148]
-            }],
-            accountChartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                dataLabels: {
-                    enabled: false
-                },
-                stroke: {
-                    curve: 'straight'
-                },
-                title: {
-                    text: 'Account Growth',
-                    align: 'center'
-                },
-                grid: {
-                    row: {
-                        colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
-                        opacity: 0.5
-                    }
-                },
-                xaxis: {
-                    categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep']
-                }
-            },
-
-            txSeries: [
-                {
-                    name: 'Normal Transaction',
-                    data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35]
-                },
-                {
-                    name: 'Sign Transaction',
-                    data: [87, 57, 74, 99, 75, 38, 62, 47, 82, 56, 45, 47]
-                },
-                {
-                    name: 'Internal Transaction',
-                    data: [30, 47, 34, 79, 45, 68, 52, 27, 52, 36, 15, 77]
-                }
-            ],
-            txChartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: true
-                    }
-                },
-                stroke: {
-                    width: [5, 5, 5],
-                    curve: 'smooth',
-                    dashArray: [0, 8, 5]
-                },
-                title: {
-                    text: 'Transaction Statistics',
-                    align: 'center'
-                },
-                xaxis: {
-                    categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan',
-                        '06 Jan', '07 Jan', '08 Jan', '09 Jan',
-                        '10 Jan', '11 Jan', '12 Jan'
-                    ]
-                },
-                grid: {
-                    borderColor: '#f1f1f1'
-                }
-            },
-
-            tradeSeries: [
-                {
-                    name: 'Trade Number',
-                    data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10]
-                },
-                {
-                    name: 'Order Number',
-                    data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35]
-                }
-            ],
-            tradeChartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                title: {
-                    text: 'Trading Statistics',
-                    align: 'center'
-                },
-                xaxis: {
-                    categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan',
-                        '06 Jan', '07 Jan', '08 Jan', '09 Jan',
-                        '10 Jan', '11 Jan', '12 Jan'
-                    ]
-                },
-                grid: {
-                    borderColor: '#f1f1f1'
-                }
-            },
-
-            lendingSeries: [
-                {
-                    name: 'Lending Order',
-                    data: [45, 52, 38, 24, 33, 26, 21, 20, 6, 8, 15, 10]
-                },
-                {
-                    name: 'Lending Trade',
-                    data: [35, 41, 62, 42, 13, 18, 29, 37, 36, 51, 32, 35]
-                }
-            ],
-            lendingChartOptions: {
-                chart: {
-                    height: 350,
-                    type: 'line',
-                    zoom: {
-                        enabled: false
-                    }
-                },
-                stroke: {
-                    curve: 'smooth'
-                },
-                title: {
-                    text: 'Lending Statistics',
-                    align: 'center'
-                },
-                xaxis: {
-                    categories: ['01 Jan', '02 Jan', '03 Jan', '04 Jan', '05 Jan',
-                        '06 Jan', '07 Jan', '08 Jan', '09 Jan',
-                        '10 Jan', '11 Jan', '12 Jan'
-                    ]
-                },
-                grid: {
-                    borderColor: '#f1f1f1'
-                }
-            }
+            version: pkg.version
         }
     },
     computed: {
