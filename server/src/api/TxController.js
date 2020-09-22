@@ -323,7 +323,7 @@ TxController.get('/txs/listByType/:type', [
         } else {
             query = {}
         }
-        const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, limit, page)
         const count = await elastic.count('transactions', query)
         total = count.count
         if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {
@@ -446,7 +446,7 @@ TxController.get('/txs/listByAccount/:address', [
                 }
             }
         }
-        const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, 20, 1)
+        const eData = await elastic.search('transactions', query, { blockNumber: 'desc' }, limit, page)
         const count = await elastic.count('transactions', query)
         total = count.count
         if (Object.prototype.hasOwnProperty.call(eData, 'hits')) {

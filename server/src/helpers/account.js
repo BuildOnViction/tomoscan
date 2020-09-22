@@ -99,7 +99,11 @@ const AccountHelper = {
     async formatAccount (account) {
         // Find txn create from.
         let fromTxn = null
-        account = account.toJSON()
+        try {
+            account = account.toJSON()
+        } catch (e) {
+            logger.warn('account is not from db %s', e)
+        }
         if (account.isContract) {
             const tx = await db.Tx.findOne({
                 contractAddress: account.hash
