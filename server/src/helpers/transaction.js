@@ -165,7 +165,7 @@ const TransactionHelper = {
 
             tx.cumulativeGasUsed = receipt.cumulativeGasUsed
             tx.gasUsed = receipt.gasUsed
-            tx.timestamp = timestamp
+            tx.timestamp = new Date(timestamp)
             if (receipt.blockNumber) {
                 tx.blockNumber = receipt.blockNumber
             }
