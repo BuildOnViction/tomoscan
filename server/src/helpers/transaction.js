@@ -376,7 +376,7 @@ const TransactionHelper = {
     },
     getInternalTx: async (transaction) => {
         const itx = await db.InternalTx.find({ hash: transaction.hash })
-        if (transaction.i_tx === itx.length) {
+        if (itx.length > 0) {
             return itx
         }
 
