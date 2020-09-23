@@ -421,7 +421,7 @@ const TransactionHelper = {
         let internals = []
         for (let i = 0; i < resultCalls.length; i++) {
             const call = resultCalls[i]
-            if (call.value !== '0x0') {
+            if (Object.prototype.hasOwnProperty.call(call, 'value') && call.value !== '0x0') {
                 internals.push({
                     hash: txHash,
                     blockNumber: blockNumber,
