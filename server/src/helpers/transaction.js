@@ -216,7 +216,7 @@ const TransactionHelper = {
                         from: item.from,
                         to: item.to,
                         value: item.value,
-                        timestamp: new Date(item.timestamp).getTime()
+                        timestamp: (new Date(item.timestamp)).toISOString().replace(/T/, ' ').replace(/\..+/, '')
                     }
                     await elastic.indexWithoutId('internal-tx', idx)
                 }
