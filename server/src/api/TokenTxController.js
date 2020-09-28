@@ -71,17 +71,19 @@ TokenTxController.get('/token-txs/:tokenType', [
                 pages: 0,
                 items: []
             }
-            const query = {}
+            const query = { bool: { match: [] } }
             if (token) {
-                query.match = { address: token.toLowerCase() }
+                query.bool.match.push({ term: { address: token.toLowerCase() } })
             }
             if (holder) {
-                query.bool = {
-                    should: [
-                        { term: { from: holder.toLowerCase() } },
-                        { term: { to: holder.toLowerCase() } }
-                    ]
-                }
+                query.bool.match.push({
+                    bool: {
+                        should: [
+                            { term: { from: holder.toLowerCase() } },
+                            { term: { to: holder.toLowerCase() } }
+                        ]
+                    }
+                })
             }
             if (tokenType === 'trc20') {
                 eData = await elastic.search('trc20-tx', query, { blockNumber: 'desc' }, limit, page)
