@@ -71,12 +71,12 @@ TokenTxController.get('/token-txs/:tokenType', [
                 pages: 0,
                 items: []
             }
-            const query = { bool: { match: [] } }
+            const query = { bool: { must: [] } }
             if (token) {
-                query.bool.match.push({ term: { address: token.toLowerCase() } })
+                query.bool.must.push({ term: { address: token.toLowerCase() } })
             }
             if (holder) {
-                query.bool.match.push({
+                query.bool.must.push({
                     bool: {
                         should: [
                             { term: { from: holder.toLowerCase() } },
