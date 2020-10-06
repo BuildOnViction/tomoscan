@@ -56,7 +56,8 @@
                 <nuxt-link
                     v-else
                     :to="{name: 'address-slug', params: {slug: props.item.from}}"
-                    class="text-truncate">{{ props.item.from }}</nuxt-link>
+                    class="text-truncate">{{ (props.item.from_model && props.item.from_model.accountName) ?
+                        props.item.from_model.accountName : props.item.from }}</nuxt-link>
             </template>
 
             <template
@@ -68,7 +69,8 @@
                 <nuxt-link
                     v-else
                     :to="{name: 'address-slug', params:{slug: props.item.to}}"
-                    class="text-truncate">{{ props.item.to }}</nuxt-link>
+                    class="text-truncate">{{ (props.item.to_model && props.item.to_model.accountName) ?
+                        props.item.to_model.accountName : props.item.to }}</nuxt-link>
             </template>
 
             <template

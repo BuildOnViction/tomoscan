@@ -16,16 +16,25 @@
   "0x689c56aef474df92d44a1b70850f808488f9769c": "KuCoin_2",
   "0x097e0fbc3c0945495b0b29d32fe0ec7791310889": "TomoRain",
   "0x668ef5d8e81bc4a5755f425db5a368e03686d2cf": "TomoSwap",
+  "0xdee6238780f98c0ca2c2c28453149bea49a3abc9": "Binance",
+
   "0xca9377d127e8774340148975be346a44d0613871": "TomoPool",
   "0x7b966461a67e06400e591be740e6fb4253410efc": "SwimmingPool",
-  "0xdee6238780f98c0ca2c2c28453149bea49a3abc9": "Binance",
   "0xe56ee03024bd5454431d6d25b368d1d7276d60dd": "Coin98Pool",
-  "0xd7d6634109572e3bed7cece7d1c90f18b7b1c10d": "TomoStakePool",
   "0x4024fb87066079f3959d0734716f3dc3d7c0ea2c": "WalkingPool",
+  "0xd7d6634109572e3bed7cece7d1c90f18b7b1c10d": "TomoStakePool",
   "0x486184c3877a1e44fbdecd65d5246fb96a6c119d": "InfinitePool",
   "0x937f6afdf475f21343d6e83e9a8f5024fc04423a": "DeepPool",
   "0x1094d1cb06694cd75428e6482228d221be1ba952": "DeadPool",
   "0x6c8309789b6c5abc970cd122edad9ae250919ccc": "BigPool",
+  "0xc2f4e7dbb871911b2ce7defffd3a14d3d788fe31": "SummerPool",
   "0x58862427d5ea9a9c9b960b3b04b746c60f4659d3": "LongPool",
-  "0xc2f4e7dbb871911b2ce7defffd3a14d3d788fe31": "SummerPool"
+  "0x4e9b457abdaa4bcfe9a3535db3160bf81cd3eefd": "BigPool_v2",
+  "0x86e85b99dc82cd5e7aab82808f35914279ae4dbe": "WalkingPool_v2",
+  "0x827133d5d036ab97b195fc50668d02cac4d7ea58": "AussiePool",
+  "0xfaf300cd57e7477f5e960f7fae3d93d172971c7e": "SharePool",
+  "0xbe9a8ae02d619b5a391489701611c49f102bae06": "LiverPool",
+  "0x3ac587278bdcf647fe8dc9245fa127c910cad382": "HappyPool",
+  "0xa7d404805083cadffac0bcd0c74fa7dbdfd9055e": "LuaPool",
+  "0x794d9adc83c9280c03584e63b53bfed229e9a267": "FarmPool"
 }

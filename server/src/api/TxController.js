@@ -789,6 +789,18 @@ TxController.get('/txs/internal/:address', [
             } catch (err) {
                 logger.warn('cannot get list internal from elastic search. %s', err)
             }
+            for (let i = 0; i < data.items.length; i++) {
+                if (data.items[i].from_model) {
+                    data.items[i].from_model.accountName = accountName[data.items[i].from] || null
+                } else {
+                    data.items[i].from_model = { accountName: accountName[data.items[i].from] || null }
+                }
+                if (data.items[i].to_model) {
+                    data.items[i].to_model.accountName = accountName[data.items[i].to] || null
+                } else {
+                    data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
+                }
+            }
             return res.json(data)
         }
     } catch (e) {
