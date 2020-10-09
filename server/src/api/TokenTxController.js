@@ -94,8 +94,8 @@ TokenTxController.get('/token-txs/:tokenType', [
                 const count = await elastic.count('trc21-tx', query)
                 total = count.count
             } else if (tokenType === 'trc721') {
-                eData = await elastic.search('trc721-tx', query, { blockNumber: 'desc' }, limit, page)
-                const count = await elastic.count('trc721-tx', query)
+                eData = await elastic.search('nft-tx', query, { blockNumber: 'desc' }, limit, page)
+                const count = await elastic.count('nft-tx', query)
                 total = count.count
             } else {
                 eData = {}
