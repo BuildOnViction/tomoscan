@@ -333,7 +333,7 @@ TxController.get('/txs/listByType/:type', [
             const items = []
             for (let i = 0; i < hits.hits.length; i++) {
                 const item = hits.hits[i]._source
-                item.timestamp = item.timestamp + ' UTC'
+                item.timestamp = new Date(item.timestamp + ' UTC')
                 items.push(item)
             }
             data.items = items
@@ -456,7 +456,7 @@ TxController.get('/txs/listByAccount/:address', [
             const items = []
             for (let i = 0; i < hits.hits.length; i++) {
                 const item = hits.hits[i]._source
-                item.timestamp = item.timestamp + ' UTC'
+                item.timestamp = new Date(item.timestamp + ' UTC')
                 items.push(item)
             }
             data.items = items
@@ -781,7 +781,7 @@ TxController.get('/txs/internal/:address', [
                     const items = []
                     for (let i = 0; i < hits.hits.length; i++) {
                         const item = hits.hits[i]._source
-                        item.timestamp = item.timestamp + ' UTC'
+                        item.timestamp = new Date(item.timestamp + ' UTC')
                         items.push(item)
                     }
                     data.items = items
