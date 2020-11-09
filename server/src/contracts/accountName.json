@@ -36,5 +36,10 @@
   "0xbe9a8ae02d619b5a391489701611c49f102bae06": "LiverPool",
   "0x3ac587278bdcf647fe8dc9245fa127c910cad382": "HappyPool",
   "0xa7d404805083cadffac0bcd0c74fa7dbdfd9055e": "LuaPool",
-  "0x794d9adc83c9280c03584e63b53bfed229e9a267": "FarmPool"
+  "0x794d9adc83c9280c03584e63b53bfed229e9a267": "FarmPool",
+  "0x7378140261f2d5a21892b1a54492e52f69d9d0ff": "BasePool",
+  "0xbc0ccb2525b4d1bbade85c97d30108b0a89e686f": "DenizPool",
+  "0x5d2bd17f51b04b4c893de678d51199febb86f240": "KoiPool",
+  "0x60b927af18af8a817256161a34e7b182bc5adcb0": "NYSEPool",
+  "0x39a52c51dbc2953748482e05caa2fa3978e5f2c0": "YieldPool"
 }
