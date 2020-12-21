@@ -11,7 +11,7 @@ module.exports = function (options) {
         if (blacklistIp.includes(ip)) {
             return res.status(403).json({ errors: 'Access denied' })
         }
-        if (whitelistIp.includes(ip)) {
+        if (whitelistIp.includes(ip) || !config.get('graylog.authorization')) {
             return next()
         }
         if (ip && ip !== '::1' && ip !== '127.0.0.1') {

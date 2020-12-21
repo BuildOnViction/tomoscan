@@ -18,6 +18,7 @@ fs.readdirSync(path.join(__dirname, 'queues'))
 
         await ch.prefetch(1)
         logger.info(' [*] Waiting for messages in %s. To exit press CTRL+C', consumer.name)
+        ch.assertQueue(consumer.name, { durable: false })
         ch.consume(consumer.name, async function (msg) {
             const content = msg.content.toString()
             consumer.task(JSON.parse(content))
