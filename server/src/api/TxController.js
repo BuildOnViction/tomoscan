@@ -821,7 +821,7 @@ TxController.get('/txs/combine/:address', [
             timestamp: {
                 $lte: new Date(timestamp)
             }
-        }, { transactionIndex: 0, updatedAt: 0, input: 0 })
+        }, { transactionIndex: 0, updatedAt: 0 })
             .sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
 
         // get internal tx by account
