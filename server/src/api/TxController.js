@@ -7,7 +7,6 @@ const TokenTransactionHelper = require('../helpers/tokenTransaction')
 const utils = require('../helpers/utils')
 const redisHelper = require('../helpers/redis')
 const elastic = require('../helpers/elastic')
-const AccountHelper = require('../helpers/account')
 
 const contractAddress = require('../contracts/contractAddress')
 const accountName = require('../contracts/accountName')
@@ -97,18 +96,6 @@ TxController.get('/txs', [
             params.query = Object.assign({}, params.query, { isPending: false })
         }
 
-        if (total === null) {
-            const sa = await db.Account.findOne({ hash: address })
-            if (sa) {
-                if (txAccount === 'in') {
-                    total = sa.inTxCount || 0
-                } else if (txAccount === 'out') {
-                    total = sa.outTxCount || 0
-                } else {
-                    total = sa.totalTxCount || 0
-                }
-            }
-        }
         let end = new Date() - start
         logger.info('Txs preparation execution time: %dms', end)
         start = new Date()
@@ -379,9 +366,7 @@ TxController.get('/txs/listByAccount/:address', [
     let total = null
     let data = []
     if (!config.get('GetDataFromElasticSearch')) {
-        const account = await AccountHelper.getAccountDetail(address)
-
-        if (page === 1 && account.hasManyTx) {
+        if (page === 1) {
             const cache = await redisHelper.get(`txs-${txType}-${address}`)
             if (cache !== null) {
                 const r = JSON.parse(cache)
@@ -393,22 +378,10 @@ TxController.get('/txs/listByAccount/:address', [
         const params = { sort: { blockNumber: -1 } }
         if (txType === 'in') {
             params.query = { to: address }
-            if (account) {
-                total = account.inTxCount
-            }
         } else if (txType === 'out') {
             params.query = { from: address }
-            if (account) {
-                total = account.outTxCount
-            }
         } else {
             params.query = { $or: [{ from: address }, { to: address }] }
-            if (account) {
-                total = account.totalTxCount
-            }
-        }
-        if (!account.hasManyTx) {
-            total = null
         }
 
         if (req.query.filterAddress) {
@@ -474,9 +447,9 @@ TxController.get('/txs/listByAccount/:address', [
             data.items[i].to_model = { accountName: accountName[data.items[i].to] || null }
         }
     }
-    // if (page === 1 && account.hasManyTx && data.items.length > 0) {
-    //     redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
-    // }
+    if (page === 1 && data.items.length > 0) {
+        redisHelper.set(`txs-${txType}-${address}`, JSON.stringify(data))
+    }
     if (data.pages > 500) {
         data.pages = 500
     }
@@ -848,7 +821,8 @@ TxController.get('/txs/combine/:address', [
             timestamp: {
                 $lte: new Date(timestamp)
             }
-        }).sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
+        }, { transactionIndex: 0, updatedAt: 0, input: 0 })
+            .sort({ blockNumber: -1 }).limit(limit * page).lean().exec() || []
 
         // get internal tx by account
         const internalTx1 = db.InternalTx.find({
@@ -912,14 +886,14 @@ TxController.get('/txs/combine/:address', [
 
         const map = await Promise.all(sortedArray.map(async tx => {
             const promises = await Promise.all([
-                db.Account.findOne({ hash: tx.from }),
-                db.Account.findOne({ hash: tx.to })
+                db.Account.findOne({ hash: tx.from },
+                    { code: 0, createdAt: 0, updatedAt: 0, _id: 0 }),
+                db.Account.findOne({ hash: tx.to },
+                    { code: 0, createdAt: 0, updatedAt: 0, _id: 0 })
             ])
 
             const fromModel = promises[0]
             const toModel = promises[1]
-            fromModel.code = ''
-            toModel.code = ''
 
             tx.from_model = fromModel
             tx.to_model = toModel

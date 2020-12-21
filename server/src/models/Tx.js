@@ -23,7 +23,6 @@ const Tx = new Schema({
     from_model: { accountName: String, isContract: Boolean, contractCreation: String },
     to_model: { accountName: String, isContract: Boolean, contractCreation: String },
     status: { type: Boolean, default: false },
-    isPending: { type: Boolean, index: true, default: false },
     timestamp: Date,
     i_tx: { type: Number, default: 0 }
 }, {

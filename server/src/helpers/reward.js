@@ -85,7 +85,7 @@ const RewardHelper = {
                             signNumber: signNumber[m].sign
                         })
                         rdata.push(item)
-                        if (rdata.length === 100) {
+                        if (rdata.length === 500) {
                             logger.info('insert %s _rewards_ item at epoch %s', rdata.length, epoch)
                             await db.Reward.insertMany(rdata)
                             rdata = []
@@ -104,7 +104,7 @@ const RewardHelper = {
                         validator: m.toLowerCase(),
                         signNumber: signNumber[m].sign
                     })
-                    if (sdata.length === 100) {
+                    if (sdata.length === 500) {
                         await db.EpochSign.insertMany(sdata)
                         sdata = []
                     }
