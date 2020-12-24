@@ -73,27 +73,20 @@ TxController.get('/txs', [
             specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
             if (type === 'signTxs') {
                 total = specialAccount ? specialAccount.sign : 0
-                condition = { to: contractAddress.BlockSigner, isPending: false }
+                condition = { to: contractAddress.BlockSigner }
             } else if (type === 'otherTxs') {
                 total = specialAccount ? specialAccount.other : 0
                 condition = {
-                    to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
-                    isPending: false
+                    to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] }
                 }
-            } else if (type === 'pending') {
-                total = specialAccount ? specialAccount.pending : 0
-                condition = { isPending: true }
-                params.sort = { createdAt: -1 }
             } else if (type === 'all') {
                 total = specialAccount ? specialAccount.total : 0
-                params.query = Object.assign({}, params.query, { isPending: false })
             }
 
             params.query = Object.assign({}, params.query, condition || {})
         } else {
             specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
             total = specialAccount ? specialAccount.total : 0
-            params.query = Object.assign({}, params.query, { isPending: false })
         }
 
         let end = new Date() - start
@@ -268,16 +261,14 @@ TxController.get('/txs/listByType/:type', [
         const specialAccount = await db.SpecialAccount.findOne({ hash: 'transaction' })
         if (type === 'signTxs') {
             total = specialAccount ? specialAccount.sign : 0
-            params.query = { to: contractAddress.BlockSigner, isPending: false }
+            params.query = { to: contractAddress.BlockSigner }
         } else if (type === 'normalTxs') {
             total = specialAccount ? specialAccount.other : 0
             params.query = {
-                to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] },
-                isPending: false
+                to: { $nin: [contractAddress.BlockSigner, contractAddress.TomoRandomize] }
             }
         } else {
             total = specialAccount ? specialAccount.total : 0
-            params.query = Object.assign({}, params.query, { isPending: false })
         }
         data = await paginate(req, 'Tx', params, total)
     } else {

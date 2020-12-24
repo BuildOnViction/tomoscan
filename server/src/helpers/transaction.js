@@ -196,7 +196,6 @@ const TransactionHelper = {
                 status = false
             }
             tx.status = status
-            tx.isPending = false
 
             // Internal transaction
             try {
@@ -317,7 +316,6 @@ const TransactionHelper = {
             status = web3.utils.hexToNumber(receipt.status)
         }
         tx.status = status
-        tx.isPending = false
         tx.from = tx.from.toLowerCase()
         if (tx.to) {
             tx.to = tx.to.toLowerCase()

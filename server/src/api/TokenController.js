@@ -101,6 +101,16 @@ TokenController.get('/tokens/:slug', [
         } else {
             token.isVerified = false
         }
+        const coinList = ['0xae44807d8a9ce4b30146437474ed6faaafa1b809', '0x2eaa73bd0db20c64f53febea7b5f5e5bccc7fb8b']
+        if (coinList.includes(hash)) {
+            const bridgeUrl = 'https://raw.githubusercontent.com/tomochain/tokens/master/bridge.json'
+            const bridgeList = await axios.get(bridgeUrl)
+            if (bridgeList.data.includes(hash)) {
+                token.isWrappedToken = true
+            } else {
+                token.isWrappedToken = false
+            }
+        }
 
         try {
             const moreInfoUrl = `https://raw.githubusercontent.com/tomochain/tokens/master/tokens/${hash}.json`
