@@ -15,7 +15,12 @@
                     v-if="moreInfo"
                     class="fa fa-check-circle token-status"
                     aria-hidden="true"/>
-                <h6 class="mb-0">{{ symbol }}</h6>
+                <h6 class="mb-0">
+                    <span class="symbol">{{ symbol }}</span>
+                    <span
+                        v-if="token.isWrappedToken"
+                        class="wrapped-erc20">Wrapped ERC-20</span>
+                </h6>
             </div>
             <div class="tomo-card__body">
                 <b-row>
