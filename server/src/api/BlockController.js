@@ -205,8 +205,19 @@ BlockController.get('/blocks/countdown/:number', [
     const web3 = await Web3Util.getWeb3()
     const currentBlock = await web3.eth.getBlockNumber()
     const remainingBlock = number - currentBlock
+    const lastEpoch = await db.Epoch.find().sort({ epoch: -1 }).limit(1)
+    let blockDuration = 2
+    if (lastEpoch.length > 0) {
+        console.log('lll', lastEpoch)
+        blockDuration = lastEpoch[0].duration / 900
+    }
 
-    return res.json({ currentBlock: currentBlock, countdownBlock: number, remainingBlock: remainingBlock })
+    return res.json({
+        currentBlock: currentBlock,
+        countdownBlock: number,
+        remainingBlock: remainingBlock,
+        blockDuration: blockDuration
+    })
 })
 
 BlockController.get('/blocks/:slug/address/:address', [

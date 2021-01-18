@@ -13,13 +13,13 @@
                 <div class="col-lg-1"></div>
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <vue-countdown
-                        :time="remainingBlock * 2 * 1000"
+                        :time="remainingBlock * blockDuration * 1000"
                         class="countdown-time">
                         <template slot-scope="time">
                             <span class="font-weight-bold h2">
                                 {{ time.days > 0 ? time.days : '' }}</span> days
                             <span class="font-weight-bold h2">
-                                {{ String(time.hours).length > 1 ? time.hours : '0' + time.hours }}</span> hour
+                                {{ String(time.hours).length > 1 ? time.hours : '0' + time.hours }}</span> hours
                             <span class="font-weight-bold h2">
                                 {{ String(time.minutes).length > 1 ? time.minutes : '0' + time.minutes }}</span> minutes
                             <span class="font-weight-bold h2">
@@ -74,7 +74,7 @@ export default {
             loading: true,
             currentBlock: 0,
             remainingBlock: 0,
-            now: new Date(),
+            blockDuration: 2,
             targetTime: new Date()
         }
     },
@@ -100,6 +100,7 @@ export default {
 
             this.currentBlock = responses.data.currentBlock
             this.remainingBlock = responses.data.remainingBlock
+            this.blockDuration = responses.data.blockDuration
             this.targetTime = this.targetTime.setSeconds(this.targetTime.getSeconds() + this.remainingBlock * 2)
 
             this.loading = false
