@@ -171,7 +171,7 @@ const BlockHelper = {
             return block
         } catch (e) {
             logger.warn('cannot get block %s with error %s', hashOrNumber, e)
-            return {}
+            return null
         }
     },
     getBlockOnChain: async (number) => {
