@@ -369,12 +369,14 @@ export default {
                 to: { name: 'blocks-slug', params: { slug: this.number } }
             })
 
-            const responses = await Promise.all([
-                this.$axios.get('/api/blocks/' + this.$route.params.slug)
-            ])
+            const responses = await this.$axios.get('/api/blocks/' + this.$route.params.slug, { validateStatus: false })
 
-            this.block = responses[0].data
-            const moment = this.$moment(responses[0].data.timestamp)
+            if (responses.status === 307) {
+                return this.$router.push({ name: 'blocks-countdown-slug', params: { slug: this.$route.params.slug } })
+            }
+
+            this.block = responses.data
+            const moment = this.$moment(responses.data.timestamp)
             this.timestamp_moment = `${moment.fromNow()} (${moment})`
 
             this.totalTxsCount = this.block.e_tx

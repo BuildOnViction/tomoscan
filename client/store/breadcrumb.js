@@ -81,6 +81,10 @@ br.register('blocks-slug', (brs, location) => {
     brs.parent('blocks')
     brs.push('Block #' + location.params.slug, location)
 })
+br.register('blocks-countdown-slug', (brs, location) => {
+    brs.parent('blocks')
+    brs.push('Countdown For Block #' + location.params.slug, location)
+})
 br.register('accounts', (brs) => {
     brs.parent('index')
     brs.push('Accounts', { name: 'accounts' })
