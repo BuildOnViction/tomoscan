@@ -208,8 +208,10 @@ BlockController.get('/blocks/countdown/:number', [
     const lastEpoch = await db.Epoch.find().sort({ epoch: -1 }).limit(1)
     let blockDuration = 2
     if (lastEpoch.length > 0) {
-        console.log('lll', lastEpoch)
         blockDuration = lastEpoch[0].duration / 900
+    }
+    if (blockDuration == null) {
+        blockDuration = 2
     }
 
     return res.json({
