@@ -100,6 +100,9 @@ export default {
 
             this.currentBlock = responses.data.currentBlock
             this.remainingBlock = responses.data.remainingBlock
+            if (this.remainingBlock <= 0) {
+                return this.$router.push({ name: 'blocks-slug', params: { slug: this.number } })
+            }
             this.blockDuration = responses.data.blockDuration
             this.targetTime = this.targetTime.setSeconds(this.targetTime.getSeconds() + this.remainingBlock * 2)
 
