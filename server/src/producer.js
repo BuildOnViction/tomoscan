@@ -33,7 +33,9 @@ const watch = async () => {
                 continue
             }
 
-            const maxBlockNum = await web3.eth.getBlockNumber()
+            let maxBlockNum = await web3.eth.getBlockNumber()
+            // wait 6 blocks confirmation
+            maxBlockNum = maxBlockNum - 6
             logger.debug('Min block crawl %s, Max block number %s', minBlockCrawl, maxBlockNum)
             if (minBlockCrawl < maxBlockNum) {
                 let nextCrawl = minBlockCrawl + step
