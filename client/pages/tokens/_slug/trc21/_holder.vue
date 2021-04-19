@@ -12,7 +12,7 @@
                         width="35px">
                     {{ tokenName }}&nbsp;</h2>
                 <i
-                    v-if="moreInfo"
+                    v-if="isVerified"
                     class="fa fa-check-circle token-status"
                     aria-hidden="true"/>
                 <h6 class="mb-0">
@@ -198,6 +198,7 @@ export default {
             addressFilter: null,
             address: null,
             smartContract: null,
+            isVerified: false,
             holderBalance: 0,
             tokenBranch: process.env.TOKEN_BRANCH
         }
@@ -224,6 +225,7 @@ export default {
 
         self.loading = false
         self.moreInfo = data.moreInfo
+        self.isVerified = data.isVerified
 
         self.holderBalance = await self.getTokenHolder(self.hash, self.holder)
         self.getAccountFromApi()
