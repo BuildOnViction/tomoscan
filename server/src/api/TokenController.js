@@ -6,6 +6,7 @@ const TokenHelper = require('../helpers/token')
 const logger = require('../helpers/logger')
 const axios = require('axios')
 const Web3Util = require('../helpers/web3')
+const elastic = require('../helpers/elastic')
 const { check, validationResult, query } = require('express-validator/check')
 
 const TokenController = Router()
@@ -121,7 +122,21 @@ TokenController.get('/tokens/:slug', [
         } catch (e) {
             logger.warn('Token is not verify')
         }
+        let holderCount = 0
+        let transferCount = 0
+        if (token.type === 'trc21') {
+            holderCount = await db.TokenTrc21Holder.count({ token: hash })
+            transferCount = await db.TokenTrc21Tx.count({ address: hash })
+        } else if (token.type === 'trc20') {
+            holderCount = await db.TokenHolder.count({ token: hash })
+            transferCount = await db.TokenTx.count({ address: hash })
+        } else if (token.type === 'trc721') {
+            holderCount = await db.TokenNFTHolder.count({ token: hash })
+            transferCount = await db.TokenNFTTx.count({ address: hash })
+        }
 
+        token.holderCount = holderCount
+        token.transferCount = transferCount
         res.json(token)
     } catch (e) {
         logger.warn('Get token %s detail error %s', hash, e)

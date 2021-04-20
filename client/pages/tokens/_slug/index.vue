@@ -286,20 +286,18 @@ export default {
             }
 
             params.list = 'token'
-            const query = this.serializeQuery(params)
 
             const responses = await Promise.all([
-                self.$axios.get('/api/tokens/' + self.hash),
-                self.$axios.get('/api/counting' + '?' + query)
+                self.$axios.get('/api/tokens/' + self.hash)
             ])
 
             self.token = responses[0].data
             self.tokenName = responses[0].data.name
             self.symbol = responses[0].data.symbol
 
-            self.tokenTxsCount = responses[1].data.tokenTxs
+            self.tokenTxsCount = responses[0].data.transferCount
 
-            self.holdersCount = responses[1].data.tokenHolders
+            self.holdersCount = responses[0].data.holderCount
 
             self.loading = false
             self.isVerified = responses[0].data.isVerified
