@@ -82,7 +82,7 @@ TokenController.get('/tokens/:slug', [
     }
     const hash = req.params.slug.toLowerCase()
     try {
-        let token = await db.Token.findOne({ hash: hash }).lean()
+        let token = await TokenHelper.updateTokenInfo(hash)
         if (!token) {
             return res.status(404).json({ errors: { message: 'Token was not found' } })
         }

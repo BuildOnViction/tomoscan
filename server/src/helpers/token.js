@@ -1,8 +1,9 @@
-'use strict'
-
-const { formatAscIIJSON } = require('./utils')
 const Web3Util = require('./web3')
 const BigNumber = require('bignumber.js')
+const utils = require('./utils')
+const db = require('../models')
+const logger = require('./logger')
+const elastic = require('./elastic')
 const DEFAULT_ABI = [
     {
         constant: true,
@@ -168,8 +169,8 @@ const TokenHelper = {
     },
 
     formatToken: async (item) => {
-        item.name = await formatAscIIJSON(item.name)
-        item.symbol = await formatAscIIJSON(item.symbol)
+        item.name = await utils.formatAscIIJSON(item.name)
+        item.symbol = await utils.formatAscIIJSON(item.symbol)
 
         return item
     },
@@ -185,6 +186,69 @@ const TokenHelper = {
         const quantity = new BigNumber(await web3.utils.hexToNumberString(result.balance))
         const quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()
         return { quantity: quantity.toString(10), quantityNumber: quantityNumber }
+    },
+
+    updateTokenInfo: async (tokenAddress) => {
+        const token = await db.Token.findOneAndUpdate({ hash: tokenAddress },
+            { hash: tokenAddress }, { upsert: true, new: true })
+        const tokenFuncs = await TokenHelper.getTokenFuncs()
+
+        const web3 = await Web3Util.getWeb3()
+
+        if (!token.name) {
+            let name = await web3.eth.call({ to: token.hash, data: tokenFuncs.name })
+            name = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(name))
+            token.name = name
+        }
+
+        if (!token.symbol) {
+            let symbol = await web3.eth.call({ to: token.hash, data: tokenFuncs.symbol })
+            symbol = await utils.removeXMLInvalidChars(await web3.utils.toUtf8(symbol))
+            token.symbol = symbol
+        }
+
+        if (!token.decimals) {
+            let decimals = await web3.eth.call({ to: token.hash, data: tokenFuncs.decimals })
+            decimals = await web3.utils.hexToNumberString(decimals)
+            token.decimals = decimals
+        }
+
+        if (!token.txCount) {
+            token.txCount = 0
+        }
+
+        // Check token type
+        const code = await web3.eth.getCode(tokenAddress)
+        token.type = await TokenHelper.checkTokenType(code)
+        token.isMintable = await TokenHelper.checkMintable(code)
+
+        let totalSupply = await web3.eth.call({ to: token.hash, data: tokenFuncs.totalSupply })
+        totalSupply = await web3.utils.hexToNumberString(totalSupply).trim()
+        token.totalSupply = totalSupply
+        token.totalSupplyNumber = new BigNumber(totalSupply).div(10 ** parseInt(token.decimals))
+
+        token.status = true
+        await token.save()
+
+        const t = token.toJSON()
+        delete t._id
+        delete t.id
+        t.totalSupplyNumber = String(t.totalSupplyNumber)
+        try {
+            await elastic.deleteByQuery('tokens', { match: { hash: t.hash } })
+        } catch (e) {
+            logger.warn('no have index to delete')
+        }
+        await elastic.index(t.hash, 'tokens', {
+            decimals: token.decimals,
+            hash: token.hash,
+            isMintable: token.isMintable,
+            name: token.name,
+            symbol: token.symbol,
+            totalSupply: token.totalSupply,
+            totalSupplyNumber: token.totalSupplyNumber,
+            type: token.type
+        })
     }
 }
 
