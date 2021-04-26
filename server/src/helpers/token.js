@@ -239,16 +239,21 @@ const TokenHelper = {
         } catch (e) {
             logger.warn('no have index to delete')
         }
-        await elastic.index(t.hash, 'tokens', {
-            decimals: token.decimals,
-            hash: token.hash,
-            isMintable: token.isMintable,
-            name: token.name,
-            symbol: token.symbol,
-            totalSupply: token.totalSupply,
-            totalSupplyNumber: token.totalSupplyNumber,
-            type: token.type
-        })
+        try {
+            await elastic.index(t.hash, 'tokens', {
+                decimals: token.decimals,
+                hash: token.hash,
+                isMintable: token.isMintable,
+                name: token.name,
+                symbol: token.symbol,
+                totalSupply: token.totalSupply,
+                totalSupplyNumber: token.totalSupplyNumber,
+                type: token.type
+            })
+        } catch (e) {
+            logger.warn('error index token')
+        }
+        return t
     }
 }
 

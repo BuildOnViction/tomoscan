@@ -10,7 +10,7 @@
                         src="~/assets/img/countdown.png"
                         style="width: 100%">
                 </div>
-                <div class="col-lg-1"></div>
+                <div class="col-lg-1"/>
                 <div class="col-lg-6 mb-5 mb-lg-0">
                     <vue-countdown
                         :time="remainingBlock * blockDuration * 1000"
