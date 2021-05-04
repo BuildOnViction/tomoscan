@@ -97,6 +97,7 @@
 </template>
 <script>
 import { validationMixin } from 'vuelidate'
+const jwt = require('jsonwebtoken')
 const FileDownload = require('js-file-download')
 
 export default {
@@ -153,13 +154,16 @@ export default {
                 this.error = false
             }
             if (!this.error) {
-                const token = await this.$recaptcha.execute('download')
                 const body = {
-                    token: token,
                     fromBlock: this.fromBlock,
                     toBlock: this.toBlock,
-                    downloadType: this.downloadType
+                    downloadType: this.downloadType,
+                    timestamp: Math.floor(Date.now() / 1000)
                 }
+                const options = {
+                    expiresIn: '5m' // 2 hours for resetting password
+                }
+                body.token = jwt.sign(body, process.env.JWT_SECRET, options)
 
                 self.loadingForm = true
                 const { data } = await this.$axios.post(`/api/accounts/${this.accountAddress}/download`, body)

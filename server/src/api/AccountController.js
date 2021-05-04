@@ -6,9 +6,9 @@ const logger = require('../helpers/logger')
 const { check, validationResult, query } = require('express-validator/check')
 const accountName = require('../contracts/accountName')
 const Web3Utils = require('../helpers/web3')
-const request = require('request')
 const config = require('config')
 const { Parser } = require('json2csv')
+const jwt = require('jsonwebtoken')
 
 const AccountController = Router()
 
@@ -166,22 +166,20 @@ AccountController.post('/accounts/:slug/download', [
     const fromBlock = req.body.fromBlock
     const toBlock = req.body.toBlock
     const downloadType = req.body.downloadType
+    const timestamp = req.body.timestamp
 
-    const verifyToken = await new Promise((resolve, reject) => {
-        request.post('https://www.google.com/recaptcha/api/siteverify', {
-            formData: {
-                secret: config.get('RE_CAPTCHA_SECRET'),
-                response: token
-            }
-        }, (error, res, body) => {
-            if (error) {
-                return reject
-            }
-            return resolve(JSON.parse(body))
-        })
-    })
+    const body = {
+        fromBlock: fromBlock,
+        toBlock: toBlock,
+        downloadType: downloadType,
+        timestamp: timestamp
+    }
+    const options = {
+        expiresIn: '5m' // 2 hours for resetting password
+    }
+    const checkToken = jwt.sign(body, config.get('JWT_SECRET'), options)
 
-    if (verifyToken.success) {
+    if (checkToken === token) {
         let data = []
         let fields = []
         if (downloadType.toUpperCase() === 'IN' || downloadType.toUpperCase() === 'OUT') {
