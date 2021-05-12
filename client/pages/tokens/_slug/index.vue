@@ -20,6 +20,9 @@
                     <span
                         v-if="token.isWrappedToken"
                         class="wrapped-erc20">Wrapped ERC-20</span>
+                    <span
+                        v-if="token.type === 'trc20' || token.type === 'trc21'"
+                        class="wrapped-erc20">{{ token.type.toUpperCase() }}</span>
                 </h6>
             </div>
             <div class="tomo-card__body">
