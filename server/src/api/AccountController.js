@@ -168,18 +168,22 @@ AccountController.post('/accounts/:slug/download', [
     const downloadType = req.body.downloadType
     const timestamp = req.body.timestamp
 
-    const body = {
-        fromBlock: fromBlock,
-        toBlock: toBlock,
-        downloadType: downloadType,
-        timestamp: timestamp
-    }
-    const options = {
-        expiresIn: '5m' // 2 hours for resetting password
-    }
-    const checkToken = jwt.sign(body, config.get('JWT_SECRET'), options)
+//     const body = {
+//         fromBlock: fromBlock,
+//         toBlock: toBlock,
+//         downloadType: downloadType,
+//         timestamp: timestamp
+//     }
+//     const options = {
+//         expiresIn: '5m' // 2 hours for resetting password
+//     }
+//     const checkToken = jwt.sign(body, config.get('JWT_SECRET'), options)
+    const valid = jwt.verify(token, config.get('JWT_SECRET'), (err, decoded) => {
+        if (err) return false;
+        return decoded;
+    });
 
-    if (checkToken === token) {
+    if (valid) {
         let data = []
         let fields = []
         if (downloadType.toUpperCase() === 'IN' || downloadType.toUpperCase() === 'OUT') {
