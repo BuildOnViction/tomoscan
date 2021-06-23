@@ -675,6 +675,25 @@ TxController.get(['/txs/:slug', '/tx/:slug'], [
         const extraInfo = await db.TxExtraInfo.find({ transactionHash: hash })
         tx.extraInfo = extraInfo
 
+        if (!tx.status) {
+            web3.eth.handleRevert = true
+            const txOnChain = await web3.eth.getTransaction(hash)
+            let data = null
+            let error
+            try {
+                data = await web3.eth.call(txOnChain, tx.blockNumber)
+            } catch (e) {
+                error = e
+            }
+            console.log('eeeee', data, error)
+            if (data === null) {
+                let msg = String(error)
+                msg = msg.replace('Error: Returned error: ', '')
+                    .replace('Error: Your request got reverted with the following reason string: ', '')
+                tx.errorMessage = msg
+            }
+        }
+
         return res.json(tx)
     } catch (e) {
         logger.warn('cannot get list tx %s detail. Error %s', hash, e)

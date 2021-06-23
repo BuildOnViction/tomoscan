@@ -65,6 +65,12 @@
                                                     {{ tx.status ? 'Success' : 'Fail' }}</span>
                                             </td>
                                         </tr>
+                                        <tr v-if="!tx.status && tx.errorMessage">
+                                            <td/>
+                                            <td>
+                                                Reason: <span class="text-danger">{{ tx.errorMessage }}</span>
+                                            </td>
+                                        </tr>
                                         <tr>
                                             <td>Block</td>
                                             <td>
