@@ -58,5 +58,8 @@
   "0xbe4eeb8ffd9246e656caac2d0f2245fc2a12f20a": "GaneshPool",
   "0x8f957d7e66b1f921010542b6b742aa5f72a2fae8": "MilkersPool",
   "0x8d3593b553107fadf3ebe9f75ac379a1522434cf": "DarkPool",
-  "0x1dc32149509b768bd50788170d2fc3266e3e484a": "ZeroPool"
+  "0x1dc32149509b768bd50788170d2fc3266e3e484a": "ZeroPool",
+  "0x6fbe193c19c6541fabb7b08a350022dfa842ca5e": "SkyPool",
+  "0x9be5172f709a8c2b99ae34ddf4ddbf2ccc975ded": "RoyalPool",
+  "0xfcec4367d4c6a8a8c0e59c7e9492862c5c8547a0": "MoonPool"
 }

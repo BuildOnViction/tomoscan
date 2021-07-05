@@ -131,8 +131,8 @@ TokenController.get('/tokens/:slug', [
             holderCount = await db.TokenHolder.count({ token: hash })
             transferCount = await db.TokenTx.count({ address: hash })
         } else if (token.type === 'trc721') {
-            holderCount = await db.TokenNFTHolder.count({ token: hash })
-            transferCount = await db.TokenNFTTx.count({ address: hash })
+            holderCount = await db.TokenNftHolder.count({ token: hash })
+            transferCount = await db.TokenNftTx.count({ address: hash })
         }
 
         token.holderCount = holderCount
