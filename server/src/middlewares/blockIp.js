@@ -19,7 +19,7 @@ module.exports = function (options) {
             let cache1day = await redis.get(`total-request-1day-${ip}`)
             if (!cache5min) {
                 // eslint-disable-next-line
-                const url5min = `https://graylog.tomochain.com/api/search/universal/relative?query=message%3A${ip}&range=300&limit=1&fields=message&sort=desc&decorate=true&filter=streams%3A5bd804ebf13e3300018780df`
+                const url5min = `https://graylog.swapdex.net/api/search/universal/relative?query=message%3A${ip}&range=300&limit=1&fields=message&sort=desc&decorate=true&filter=streams%3A5bd804ebf13e3300018780df`
                 const { data } = await axios.get(url5min, {
                     headers: {
                         accept: 'application/json',
@@ -35,7 +35,7 @@ module.exports = function (options) {
 
             if (!cache1day) {
                 // eslint-disable-next-line
-                const url1day = `https://graylog.tomochain.com/api/search/universal/relative?query=message%3A${ip}&range=86400&limit=1&fields=message&sort=desc&decorate=true&filter=streams%3A5bd804ebf13e3300018780df`
+                const url1day = `https://graylog.swapdex.net/api/search/universal/relative?query=message%3A${ip}&range=86400&limit=1&fields=message&sort=desc&decorate=true&filter=streams%3A5bd804ebf13e3300018780df`
                 const { data } = await axios.get(url1day, {
                     headers: {
                         accept: 'application/json',

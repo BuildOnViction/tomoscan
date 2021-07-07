@@ -20,11 +20,11 @@
   "logs": {
     "level": "debug"
   },
-  "TOMODEX_API": "https://dex.testnet.tomochain.com/",
-  "RELAYER_API": "https://relayer.testnet.tomochain.com/",
+  "TOMODEX_API": "https://dex.testnet.swapdex.net/",
+  "RELAYER_API": "https://relayer.testnet.swapdex.net/",
 
-  "WEB3_URI": "https://testnet.tomochain.com/",
-  "WEB3_WS_URI": "wss://testnet.tomochain.com/ws",
+  "WEB3_URI": "https://testnet.swapdex.net/",
+  "WEB3_WS_URI": "wss://testnet.swapdex.net/ws",
   "DEBUG_QUERY": false,
 
   "BASE_UNIT": "TOMO",
@@ -35,11 +35,11 @@
   "APP_SECRET": "$2a$10$zMv2skn0DWEfsZGG91rC/O",
 
   "SENDGRID_API_KEY": "",
-  "SENDER_EMAIL": "contact@tomochain.com",
+  "SENDER_EMAIL": "contact@swapdex.net",
 
-  "BASE_URL": "https://scan.testnet.tomochain.com/",
+  "BASE_URL": "https://scan.testnet.swapdex.net/",
   "CLIENT_URL": "http://localhost:3000/",
-  "TOMOMASTER_API_URL": "https://master.testnet.tomochain.com",
+  "TOMOMASTER_API_URL": "https://master.testnet.swapdex.net",
 
   "BLOCK_PER_EPOCH": 900,
   "REWARD": 250,

@@ -4,7 +4,7 @@
 
 Tomoscan is a BlockExplorer for **TomoChain**, built with VueJS, Nuxt and MongoDB. Tomoscan allows you to explore and search the **TomoChain** for transactions, addresses, tokens, prices and other activities taking place on **TomoChain**.
 
-A demo instance connected to the **TomoChain testnet** is available at [scan.testnet.tomochain.com](https://scan.testnet.tomochain.com/).
+A demo instance connected to the **TomoChain testnet** is available at [scan.testnet.swapdex.net](https://scan.testnet.swapdex.net/).
 
 ## Current Features
 - Browse blocks, transactions, accounts and contracts

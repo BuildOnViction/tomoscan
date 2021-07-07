@@ -20,7 +20,7 @@ const TwitterHelper = {
               `${accountName[from] ? '(' + accountName[from] + ')' : ''} to ${utils.hiddenString(to, 5)} ` +
               `${accountName[to] ? '(' + accountName[to] + ')' : ''} 
             
-              tx: scan.tomochain.com/txs/${txHash}`
+              tx: scan.swapdex.net/txs/${txHash}`
 
             await twitter.post('statuses/update', { status: msg })
         } catch (e) {
