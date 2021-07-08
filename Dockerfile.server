@@ -13,7 +13,7 @@ RUN apk --no-cache --virtual deps add \
       bash \
       git \
     && npm install -g \
-       npm@latest \
+       npm@6 \
        dotenv \
        node-gyp
 
