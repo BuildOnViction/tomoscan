@@ -9,13 +9,13 @@
     "host": "redis",
     "port": 6379,
     "password": null,
-    "prefix": "TomoScan"
+    "prefix": "explorer"
   },
   "rabbitmq": {
     "hostname": "localhost",
     "port": 5672,
-    "username": "",
-    "password": ""
+    "username": "default",
+    "password": "default"
   },
   "logs": {
     "level": "debug"
@@ -27,7 +27,7 @@
   "WEB3_WS_URI": "wss://ws.swapdex.net",
   "DEBUG_QUERY": false,
 
-  "BASE_UNIT": "TOMO",
+  "BASE_UNIT": "SDX",
   "PORT": 3333,
   "DEBUG": "express:*",
 
