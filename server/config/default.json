@@ -1,7 +1,7 @@
 {
   "APP_ENV": "prod",
-  "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
-  "MONGODB_DEX_URI": "mongodb://mongo:27017/tomodex",
+  "MONGODB_URI": "mongodb://mongo:27017/explorer",
+  "MONGODB_DEX_URI": "mongodb://mongo:27017/swapdex",
   "ELASTICSEARCH": "http://localhost:9200",
   "GetDataFromElasticSearch": true,
   "MaxBlockIndex": 150000,
@@ -12,7 +12,7 @@
     "prefix": "explorer"
   },
   "rabbitmq": {
-    "hostname": "localhost",
+    "hostname": "scan_rabbitmq",
     "port": 5672,
     "username": "default",
     "password": "default"
