@@ -9,10 +9,10 @@
     "prefix": "TomoScan"
   },
   "rabbitmq": {
-    "hostname": "localhost",
+    "hostname": "rabbitmq ",
     "port": 5672,
-    "username": "",
-    "password": ""
+    "username": "default",
+    "password": "default"
   },
   "ELASTICSEARCH": "http://localhost:9200",
   "GetDataFromElasticSearch": false,

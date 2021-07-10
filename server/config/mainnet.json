@@ -1,43 +1,43 @@
 {
   "APP_ENV": "prod",
-  "MONGODB_URI": "mongodb://mongo:27017/tomoscan",
-  "MONGODB_DEX_URI": "mongodb://mongo:27017/tomodex",
+  "MONGODB_URI": "mongodb://mongo:27017/explorer",
+  "MONGODB_DEX_URI": "mongodb://mongo:27017/swapdex",
   "logs": {
     "level": "info"
   },
-  "ELASTICSEARCH": "http://localhost:9200",
+  "ELASTICSEARCH": "http://elasticsearch:9200",
   "GetDataFromElasticSearch": false,
   "MaxBlockIndex": 16500000,
   "redis": {
     "host": "redis",
     "port": 6379,
     "password": null,
-    "prefix": "TomoScan"
+    "prefix": "sdxEXP"
   },
   "rabbitmq": {
-    "hostname": "localhost",
+    "hostname": "rabbitmq",
     "port": 5672,
-    "username": "",
-    "password": ""
+    "username": "guest",
+    "password": "guest"
   },
   "TOMODEX_API": "https://dex.swapdex.net/",
   "RELAYER_API": "https://relayer.swapdex.net/",
 
-  "WEB3_URI": "http://fullnode_tomoscan01:8545",
-  "WEB3_WS_URI": "ws://fullnode_tomoscan01:8546",
+  "WEB3_URI": "http://rpc.swapdex.net",
+  "WEB3_WS_URI": "ws://ws.swapdex.net",
   "DEBUG_QUERY": false,
 
-  "BASE_UNIT": "TOMO",
+  "BASE_UNIT": "SDX",
   "PORT": 3333,
   "DEBUG": "express:*",
 
   "SENDER_EMAIL": "contact@swapdex.net",
 
-  "BASE_URL": "https://scan.swapdex.net/",
+  "BASE_URL": "https://dexscan.net/",
   "CLIENT_URL": "http://localhost:3000/",
   "TOMOMASTER_API_URL": "https://master.swapdex.net",
 
-  "BLOCK_PER_EPOCH": 900,
+  "BLOCK_PER_EPOCH": 6600,
   "REWARD": 250,
   "MASTER_NODE_REWARD_PERCENT": 40,
   "FOUNDATION_REWARD_PERCENT": 10,

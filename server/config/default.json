@@ -12,10 +12,10 @@
     "prefix": "explorer"
   },
   "rabbitmq": {
-    "hostname": "scan_rabbitmq",
+    "hostname": "rabbitmq",
     "port": 5672,
-    "username": "default",
-    "password": "default"
+    "username": "guest",
+    "password": "guest"
   },
   "logs": {
     "level": "debug"
@@ -37,7 +37,7 @@
   "SENDGRID_API_KEY": "",
   "SENDER_EMAIL": "contact@swapdex.net",
 
-  "BASE_URL": "https://scan.testnet.swapdex.net/",
+  "BASE_URL": "https://dexscan.net/",
   "CLIENT_URL": "http://localhost:3000/",
   "TOMOMASTER_API_URL": "https://master.swapdex.net",
 
