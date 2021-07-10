@@ -9,13 +9,13 @@
     "host": "redis",
     "port": 6379,
     "password": null,
-    "prefix": "TomoScan"
+    "prefix": "explorer"
   },
   "rabbitmq": {
     "hostname": "localhost",
     "port": 5672,
-    "username": "",
-    "password": ""
+    "username": "default",
+    "password": "default"
   },
   "logs": {
     "level": "debug"
@@ -27,7 +27,7 @@
   "WEB3_WS_URI": "wss://ws.swapdex.net",
   "DEBUG_QUERY": false,
 
-  "BASE_UNIT": "TOMO",
+  "BASE_UNIT": "SDX",
   "PORT": 3333,
   "DEBUG": "express:*",
 
@@ -39,7 +39,7 @@
 
   "BASE_URL": "https://scan.testnet.swapdex.net/",
   "CLIENT_URL": "http://localhost:3000/",
-  "TOMOMASTER_API_URL": "https://master.testnet.swapdex.net",
+  "TOMOMASTER_API_URL": "https://master.swapdex.net",
 
   "BLOCK_PER_EPOCH": 900,
   "REWARD": 6600,
