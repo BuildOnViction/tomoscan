@@ -39,7 +39,7 @@
 
   "BASE_URL": "https://scan.testnet.swapdex.net/",
   "CLIENT_URL": "http://localhost:3000/",
-  "TOMOMASTER_API_URL": "https://master.testnet.swapdex.net",
+  "TOMOMASTER_API_URL": "https://master.swapdex.net",
 
   "BLOCK_PER_EPOCH": 900,
   "REWARD": 6600,
