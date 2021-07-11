@@ -82,7 +82,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTopup.lendingToken.toLowerCase()}}">
                                     {{ lendingTopup.lendingToken.toLowerCase() }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                             </td>
                         </tr>
                         <tr>
@@ -93,7 +93,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTopup.collateralToken.toLowerCase()}}">
                                     {{ lendingTopup.collateralToken.toLowerCase() }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                             </td>
                         </tr>
                         <tr>
@@ -105,7 +105,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTopup.collateralToken}}">
                                     {{ lendingTopup.collateralSymbol.toUpperCase() }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                             </td>
                         </tr>
                         <tr>

@@ -100,7 +100,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingOrder.lendingToken.toLowerCase()}}">
                                     {{ lendingOrder.lendingToken.toLowerCase() }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                             </td>
                         </tr>
                         <tr v-if="lendingOrder.side === 'BORROW'">
@@ -111,7 +111,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingOrder.collateralToken.toLowerCase()}}">
                                     {{ lendingOrder.collateralToken.toLowerCase() }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                             </td>
                         </tr>
                         <tr>
@@ -119,7 +119,7 @@
                             <td>
                                 {{ formatNumber(lendingOrder.quantity) }}
                                 {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
-                                    lendingOrder.lendingSymbol : 'TOMO' }}
+                                    lendingOrder.lendingSymbol : 'SDX' }}
                             </td>
                         </tr>
                         <tr>
@@ -131,7 +131,7 @@
                             <td>
                                 {{ formatNumber(lendingOrder.filledAmount) }}
                                 {{ lendingOrder.lendingSymbol !== tomoNativeToken ?
-                                    lendingOrder.lendingSymbol : 'TOMO' }}
+                                    lendingOrder.lendingSymbol : 'SDX' }}
                             </td>
                         </tr>
                         <tr

@@ -91,7 +91,7 @@
                                             name: 'tokens-slug',
                                             params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
                                         {{ lendingTrade.lendingSymbol }}</nuxt-link>
-                                    <span v-else>TOMO</span>
+                                    <span v-else>SDX</span>
                                 </p>
                                 <p v-if="lendingTrade.liquidated.reason">
                                     Reason: {{ lendingTrade.liquidated.reason }}</p>
@@ -146,7 +146,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
                                     {{ lendingTrade.lendingSymbol }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                                 (Borrower Fee:
                                 {{ formatNumber(lendingTrade.borrowingFee) }}
                                 <nuxt-link
@@ -154,7 +154,7 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
                                     {{ lendingTrade.lendingSymbol }}</nuxt-link>
-                                <span v-else>TOMO</span>)
+                                <span v-else>SDX</span>)
                             </td>
                         </tr>
                         <tr>
@@ -170,14 +170,14 @@
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.collateralToken.toLowerCase()}}">
                                     {{ lendingTrade.collateralSymbol }}</nuxt-link>
-                                <span v-else>TOMO</span>
+                                <span v-else>SDX</span>
                                 (Price: {{ lendingTrade.collateralPrice }}
                                 <nuxt-link
                                     v-if="lendingTrade.lendingToken !== tomoNativeToken"
                                     :to="{name: 'tokens-slug',
                                           params: {slug: lendingTrade.lendingToken.toLowerCase()}}">
                                     {{ lendingTrade.lendingSymbol }}</nuxt-link>
-                                <span v-else>TOMO</span>))
+                                <span v-else>SDX</span>))
                             </td>
                         </tr>
                         <tr>

@@ -33,18 +33,18 @@
                             </td>
                         </tr>
                         <tr>
-                            <td>TOMO Balance</td>
+                            <td>SDX Balance</td>
                             <td>
                                 <span>{{ formatUnit(toTomo(address.balance, 18)) }}</span>
                             </td>
                         </tr>
                         <tr>
-                            <td>TOMO USD Value</td>
+                            <td>SDX USD Value</td>
                             <td>
                                 <span>{{ formatNumber(usdPrice * toTomoNumber(address.balance)) }} (price from
                                     <a
                                         target="_blank"
-                                        href="https://www.coingecko.com/en/coins/tomochain">CoinGecko</a>)</span>
+                                        href="https://www.coingecko.com/en/coins/swapdex">CoinGecko</a>)</span>
                             </td>
                         </tr>
                         <tr>

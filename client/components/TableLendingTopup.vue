@@ -110,7 +110,7 @@
                     v-if="props.item.lendingToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.lendingToken}}">
                     {{ hiddenString(props.item.lendingToken.toLowerCase(), 8) }}</nuxt-link>
-                <span v-else>TOMO</span>
+                <span v-else>SDX</span>
             </template>
             <template
                 slot="collateralToken"
@@ -119,7 +119,7 @@
                     v-if="props.item.collateralToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
                     {{ hiddenString(props.item.collateralToken.toLowerCase(), 8) }}</nuxt-link>
-                <span v-else>TOMO</span>
+                <span v-else>SDX</span>
             </template>
             <template
                 slot="quantity"
@@ -129,7 +129,7 @@
                     v-if="props.item.collateralToken !== tomoNativeToken"
                     :to="{name: 'tokens-slug', params: {slug: props.item.collateralToken}}">
                     {{ props.item.collateralSymbol.toUpperCase() }}</nuxt-link>
-                <span v-else>TOMO</span>
+                <span v-else>SDX</span>
             </template>
             <template
                 slot="status"

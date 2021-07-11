@@ -5,7 +5,7 @@ module.exports = {
   ** Headers of the page
   */
     head: {
-        title: 'TomoScan',
+        title: 'SdxScan',
         meta: [
             { charset: 'utf-8' },
             {
@@ -28,7 +28,7 @@ module.exports = {
             },
             {
                 property: 'og:title',
-                content: 'TomoScan - TomoChain block explorer'
+                content: 'SdxScan - SdxChain block explorer'
             },
             {
                 property: 'og:description',
