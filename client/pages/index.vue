@@ -11,7 +11,7 @@ export default {
     methods: {},
     head () {
         return {
-            title: 'TomoScan - TomoChain Block Explorer'
+            title: 'SdxScan - SdxChain Block Explorer'
         }
     }
 }
