@@ -101,7 +101,7 @@ export default {
             const params = {
                 page: self.currentPage,
                 limit: self.perPage,
-                type: 'trc721'
+                type: 'src721'
             }
 
             const query = this.serializeQuery(params)
@@ -121,7 +121,7 @@ export default {
         }
     },
     head: () => ({
-        title: 'TRC721 Tokens'
+        title: 'SRC721 Tokens'
     })
 }
 </script>

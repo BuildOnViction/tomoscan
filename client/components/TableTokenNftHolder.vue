@@ -24,7 +24,7 @@
                 slot="holder"
                 slot-scope="props">
                 <nuxt-link
-                    :to="{name: 'tokens-slug-trc721-holder', params: { slug: address, holder: props.item.holder}}"
+                    :to="{name: 'tokens-slug-src721-holder', params: { slug: address, holder: props.item.holder}}"
                     class="text-truncate">{{ props.item.holder }}</nuxt-link>
             </template>
 

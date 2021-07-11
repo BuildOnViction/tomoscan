@@ -89,8 +89,8 @@ export default {
     mounted () {
         // Init breadcrumbs data.
         this.$store.commit('breadcrumb/setItems', {
-            name: 'tokens-trc20',
-            to: { name: 'tokens-trc20' }
+            name: 'tokens-src20',
+            to: { name: 'tokens-src20' }
         })
 
         this.getDataFromApi()
@@ -105,7 +105,7 @@ export default {
             const params = {
                 page: self.currentPage,
                 limit: self.perPage,
-                type: 'trc20'
+                type: 'src20'
             }
 
             const query = this.serializeQuery(params)
@@ -125,7 +125,7 @@ export default {
         }
     },
     head: () => ({
-        title: 'Trc20 Tokens'
+        title: 'Src20 Tokens'
     })
 }
 </script>

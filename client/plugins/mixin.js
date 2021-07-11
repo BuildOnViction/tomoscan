@@ -196,12 +196,12 @@ const mixin = {
             if (filter) {
                 const search = filter.trim()
                 let to
-                if (tokenType === 'trc20') {
-                    to = { name: 'tokens-slug-trc20-holder', params: { slug: this.hash, holder: search } }
-                } else if (tokenType === 'trc721') {
-                    to = { name: 'tokens-slug-trc721-holder', params: { slug: this.hash, holder: search } }
-                } else if (tokenType === 'trc21') {
-                    to = { name: 'tokens-slug-trc21-holder', params: { slug: this.hash, holder: search } }
+                if (tokenType === 'src20') {
+                    to = { name: 'tokens-slug-src20-holder', params: { slug: this.hash, holder: search } }
+                } else if (tokenType === 'src721') {
+                    to = { name: 'tokens-slug-src721-holder', params: { slug: this.hash, holder: search } }
+                } else if (tokenType === 'src21') {
+                    to = { name: 'tokens-slug-src21-holder', params: { slug: this.hash, holder: search } }
                 }
                 return this.$router.push(to)
             }

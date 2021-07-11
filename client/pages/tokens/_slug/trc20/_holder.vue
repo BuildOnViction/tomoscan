@@ -245,7 +245,7 @@ export default {
     },
     head () {
         return {
-            title: 'Token TRC20 Holder Info'
+            title: 'Token SRC20 Holder Info'
         }
     }
 }

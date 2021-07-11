@@ -143,7 +143,7 @@
                     <b-tab
                         lazy
                         title="Token Transfers">
-                        <table-token-tx-trc21
+                        <table-token-tx-src21
                             :token="hash"
                             :holder="holder"
                             :page="this"/>
@@ -175,11 +175,11 @@
 import mixin from '~/plugins/mixin'
 import ReadSourceCode from '~/components/ReadSourceCode'
 import ReadContract from '~/components/ReadContract'
-import TableTokenTxTrc21 from '~/components/TableTokenTxTrc21'
+import TableTokenTxSrc21 from '~/components/TableTokenTxSrc21'
 
 export default {
     components: {
-        TableTokenTxTrc21,
+        TableTokenTxSrc21,
         ReadContract,
         ReadSourceCode
     },
@@ -245,7 +245,7 @@ export default {
     },
     head () {
         return {
-            title: 'Token TRC21 Holder Info'
+            title: 'Token SRC21 Holder Info'
         }
     }
 }

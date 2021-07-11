@@ -159,38 +159,38 @@
                     :page="this"/>
             </b-tab>
             <b-tab
-                v-if="address && address.hasTrc20"
-                id="trc20Holding"
+                v-if="address && address.hasSrc20"
+                id="src20Holding"
                 lazy
-                title="TRC20 Holding"
-                href="#trc20Holding">
+                title="SRC20 Holding"
+                href="#src20Holding">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token-type="'trc20'"
-                    :parent="'trc20Holding'"
+                    :token-type="'src20'"
+                    :parent="'src20Holding'"
                     :page="this"/>
             </b-tab>
             <b-tab
-                id="trc21Holding"
+                id="src21Holding"
                 lazy
-                title="TRC21 Holding"
-                href="#trc21Holding">
+                title="SRC21 Holding"
+                href="#src21Holding">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token-type="'trc21'"
-                    :parent="'trc21Holding'"
+                    :token-type="'src21'"
+                    :parent="'src21Holding'"
                     :page="this"/>
             </b-tab>
             <b-tab
-                v-if="address && address.hasTrc721"
-                id="trc721Inventory"
+                v-if="address && address.hasSrc721"
+                id="src721Inventory"
                 lazy
-                title="TRC721 Inventory"
-                href="#trc721Inventory">
+                title="SRC721 Inventory"
+                href="#src721Inventory">
                 <table-tokens-by-account
                     :holder="hash"
-                    :token-type="'trc721'"
-                    :parent="'trc721Inventory'"
+                    :token-type="'src721'"
+                    :parent="'src721Inventory'"
                     :page="this"/>
             </b-tab>
             <b-tab
