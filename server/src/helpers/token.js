@@ -183,7 +183,7 @@ const TokenHelper = {
         }
         const result = await web3Contract.methods.balanceOf(holder).call()
 
-        const quantity = new BigNumber(await web3.utils.hexToNumberString(result.balance))
+        const quantity = new BigNumber(result)
         const quantityNumber = quantity.dividedBy(10 ** token.decimals).toNumber()
         return { quantity: quantity.toString(10), quantityNumber: quantityNumber }
     },
