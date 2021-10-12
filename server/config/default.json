@@ -4,6 +4,7 @@
   "MONGODB_DEX_URI": "mongodb://mongo:27017/tomodex",
   "ELASTICSEARCH": "http://localhost:9200",
   "GetDataFromElasticSearch": true,
+  "InsertDataToElasticSearch": true,
   "MaxBlockIndex": 150000,
   "redis": {
     "host": "redis",

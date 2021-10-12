@@ -198,10 +198,12 @@ const TransactionHelper = {
             tx.status = status
 
             // Internal transaction
-            try {
-                await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
-            } catch (e) {
-                // logger.warn('dont have internal tx for tx %s', hash)
+            if (config.InsertDataToElasticSearch) {
+                try {
+                    await elastic.deleteByQuery('internal-tx', { match: { hash: hash } })
+                } catch (e) {
+                    // logger.warn('dont have internal tx for tx %s', hash)
+                }
             }
 
             if (tx.to !== contractAddress.BlockSigner && tx.to !== contractAddress.TomoRandomize) {
@@ -217,7 +219,9 @@ const TransactionHelper = {
                         value: item.value,
                         timestamp: (new Date(item.timestamp)).toISOString().replace(/T/, ' ').replace(/\..+/, '')
                     }
-                    await elastic.indexWithoutId('internal-tx', idx)
+                    if (config.InsertDataToElasticSearch) {
+                        await elastic.indexWithoutId('internal-tx', idx)
+                    }
                 }
             }
             if (!Number.isInteger(tx.cumulativeGasUsed)) {
@@ -241,26 +245,28 @@ const TransactionHelper = {
 
             await db.Tx.updateOne({ hash: hash }, tx,
                 { upsert: true, new: true })
-            await elastic.index(tx.hash, 'transactions', {
-                blockHash: tx.blockHash,
-                blockNumber: tx.blockNumber,
-                cumulativeGasUsed: tx.cumulativeGasUsed,
-                from: tx.from,
-                from_model: tx.from_model,
-                gas: tx.gas,
-                gasPrice: tx.gasPrice,
-                gasUsed: tx.gasUsed,
-                hash: tx.hash,
-                i_tx: tx.i_tx,
-                nonce: tx.nonce,
-                status: tx.status,
-                timestamp: (new Date(tx.timestamp)).toISOString()
-                    .replace(/T/, ' ').replace(/\..+/, ''),
-                to: tx.to,
-                to_model: tx.to_model,
-                transactionIndex: tx.transactionIndex,
-                value: tx.value
-            })
+            if (config.InsertDataToElasticSearch) {
+                await elastic.index(tx.hash, 'transactions', {
+                    blockHash: tx.blockHash,
+                    blockNumber: tx.blockNumber,
+                    cumulativeGasUsed: tx.cumulativeGasUsed,
+                    from: tx.from,
+                    from_model: tx.from_model,
+                    gas: tx.gas,
+                    gasPrice: tx.gasPrice,
+                    gasUsed: tx.gasUsed,
+                    hash: tx.hash,
+                    i_tx: tx.i_tx,
+                    nonce: tx.nonce,
+                    status: tx.status,
+                    timestamp: (new Date(tx.timestamp)).toISOString()
+                        .replace(/T/, ' ').replace(/\..+/, ''),
+                    to: tx.to,
+                    to_model: tx.to_model,
+                    transactionIndex: tx.transactionIndex,
+                    value: tx.value
+                })
+            }
         } catch (e) {
             logger.warn('cannot crawl transaction %s with error %s. Sleep 2 second and retry', hash, e)
             await sleep(2000)

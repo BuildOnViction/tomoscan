@@ -23,14 +23,16 @@ const RewardHelper = {
         try {
             await db.Reward.deleteMany({ epoch: epoch })
             await db.EpochSign.deleteMany({ epoch: epoch })
-            try {
-                await elastic.deleteByQuery('rewards', {
-                    query: {
-                        term: { epoch: epoch }
-                    }
-                })
-            } catch (e) {
-                logger.warn('there are no reward at epoch %s to delete', epoch)
+            if (config.InsertDataToElasticSearch) {
+                try {
+                    await elastic.deleteByQuery('rewards', {
+                        query: {
+                            term: { epoch: epoch }
+                        }
+                    })
+                } catch (e) {
+                    logger.warn('there are no reward at epoch %s to delete', epoch)
+                }
             }
 
             // const response = await axios.post('http://128.199.228.202:8545/', data)
@@ -74,16 +76,18 @@ const RewardHelper = {
                             rewardTime: block.timestamp * 1000,
                             signNumber: signNumber[m].sign
                         }
-                        await elastic.indexWithoutId('rewards', {
-                            epoch: epoch,
-                            address: v.toLowerCase(),
-                            validator: m.toLowerCase(),
-                            validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : 'Anonymous',
-                            reward: r,
-                            rewardTime: (new Date(block.timestamp * 1000)).toISOString()
-                                .replace(/T/, ' ').replace(/\..+/, ''),
-                            signNumber: signNumber[m].sign
-                        })
+                        if (config.InsertDataToElasticSearch) {
+                            await elastic.indexWithoutId('rewards', {
+                                epoch: epoch,
+                                address: v.toLowerCase(),
+                                validator: m.toLowerCase(),
+                                validatorName: canName[m.toLowerCase()] ? canName[m.toLowerCase()] : 'Anonymous',
+                                reward: r,
+                                rewardTime: (new Date(block.timestamp * 1000)).toISOString()
+                                    .replace(/T/, ' ').replace(/\..+/, ''),
+                                signNumber: signNumber[m].sign
+                            })
+                        }
                         rdata.push(item)
                         if (rdata.length === 500) {
                             logger.info('insert %s _rewards_ item at epoch %s', rdata.length, epoch)

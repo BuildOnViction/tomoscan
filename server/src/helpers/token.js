@@ -4,6 +4,7 @@ const utils = require('./utils')
 const db = require('../models')
 const logger = require('./logger')
 const elastic = require('./elastic')
+const config = require('config')
 const DEFAULT_ABI = [
     {
         constant: true,
@@ -234,24 +235,28 @@ const TokenHelper = {
         delete t._id
         delete t.id
         t.totalSupplyNumber = String(t.totalSupplyNumber)
-        try {
-            await elastic.deleteByQuery('tokens', { match: { hash: t.hash } })
-        } catch (e) {
-            logger.warn('no have index to delete')
+        if (config.InsertDataToElasticSearch) {
+            try {
+                await elastic.deleteByQuery('tokens', { match: { hash: t.hash } })
+            } catch (e) {
+                logger.warn('no have index to delete')
+            }
         }
-        try {
-            await elastic.index(t.hash, 'tokens', {
-                decimals: token.decimals,
-                hash: token.hash,
-                isMintable: token.isMintable,
-                name: token.name,
-                symbol: token.symbol,
-                totalSupply: token.totalSupply,
-                totalSupplyNumber: token.totalSupplyNumber,
-                type: token.type
-            })
-        } catch (e) {
-            logger.warn('error index token')
+        if (config.InsertDataToElasticSearch) {
+            try {
+                await elastic.index(t.hash, 'tokens', {
+                    decimals: token.decimals,
+                    hash: token.hash,
+                    isMintable: token.isMintable,
+                    name: token.name,
+                    symbol: token.symbol,
+                    totalSupply: token.totalSupply,
+                    totalSupplyNumber: token.totalSupplyNumber,
+                    type: token.type
+                })
+            } catch (e) {
+                logger.warn('error index token')
+            }
         }
         return t
     }

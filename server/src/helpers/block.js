@@ -48,23 +48,25 @@ const BlockHelper = {
 
         await db.Block.updateOne({ number: _block.number }, _block,
             { upsert: true, new: true })
-        await elastic.index(_block.hash, 'blocks', {
-            difficulty: _block.difficulty,
-            e_tx: _block.e_tx,
-            finality: _block.finality,
-            gasLimit: _block.gasLimit,
-            gasUsed: _block.gasUsed,
-            hash: _block.hash,
-            number: _block.number,
-            parentHash: _block.parentHash,
-            signer: _block.signer,
-            size: _block.size,
-            stateRoot: _block.stateRoot,
-            timestamp: (new Date(_block.timestamp)).toISOString().replace(/T/, ' ').replace(/\..+/, ''),
-            totalDifficulty: _block.totalDifficulty,
-            transactionsRoot: _block.transactionsRoot,
-            uncles: _block.uncles
-        })
+        if (config.InsertDataToElasticSearch) {
+            await elastic.index(_block.hash, 'blocks', {
+                difficulty: _block.difficulty,
+                e_tx: _block.e_tx,
+                finality: _block.finality,
+                gasLimit: _block.gasLimit,
+                gasUsed: _block.gasUsed,
+                hash: _block.hash,
+                number: _block.number,
+                parentHash: _block.parentHash,
+                signer: _block.signer,
+                size: _block.size,
+                stateRoot: _block.stateRoot,
+                timestamp: (new Date(_block.timestamp)).toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+                totalDifficulty: _block.totalDifficulty,
+                transactionsRoot: _block.transactionsRoot,
+                uncles: _block.uncles
+            })
+        }
 
         if (_block.number % config.get('BLOCK_PER_EPOCH') === 0) {
             const slashedNode = []
