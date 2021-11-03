@@ -132,7 +132,6 @@
                 </b-collapse>
             </div>
         </b-navbar>
-
         <main
             :class="isHomePage ? 'tomo-body-wrapper--home' : ''"
             class="tomo-body-wrapper">
@@ -140,10 +139,25 @@
                 <div
                     v-if="! isHomePage"
                     class="row align-items-center tomo-body-wrapper__heading">
-                    <b-col sm="5">
+                    <b-col sm="4">
                         <breadcrumb/>
                     </b-col>
-                    <b-col sm="7">
+                    <b-col sm="4">
+                        <a
+                            href="https://tomoscan.io/"
+                            class="tomoscan-banner"
+                            target="_blank">
+                            <img
+                                src="@/assets/img/newscan-dark.png"
+                                width="100%"
+                                class="banner-dark">
+                            <img
+                                src="@/assets/img/newscan-light.png"
+                                width="100%"
+                                class="banner-light">
+                        </a>
+                    </b-col>
+                    <b-col sm="4">
                         <div class="input-group search-form search-form--mini">
                             <div class="input-group-prepend">
                                 <button

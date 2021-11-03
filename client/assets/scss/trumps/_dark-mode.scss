@@ -599,3 +599,28 @@ body.dark-mode .token-transfer .internal-color {
 body.dark-mode .internal-tx .internal-color {
     color: $color-text-white-dark;
 }
+
+body {
+    .banner-dark {
+        display: none;
+    }
+    .banner-light {
+        display: block;
+    }
+    a.tomoscan-banner img{
+        margin-bottom: 30px;
+    }
+}
+body.dark-mode {
+    .banner-dark {
+        display: block;
+    }
+    .banner-light {
+        display: none;
+    }
+}
+@media (min-width: 576px) {
+    a.tomoscan-banner img {
+        margin-bottom: 0;
+    }
+}
