@@ -33,7 +33,7 @@
     "lodash": "^4.17.20",
     "moment": "^2.22.1",
     "morgan": "^1.9.0",
-    "nuxt": "^2.14.5",
+    "nuxt": "^2.15.8",
     "store": "^2.0.12",
     "vue-apexcharts": "^1.5.3",
     "vue-clipboards": "^1.2.4",
