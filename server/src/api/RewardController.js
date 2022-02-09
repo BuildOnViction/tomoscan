@@ -6,6 +6,7 @@ const logger = require('../helpers/logger')
 const { check, validationResult } = require('express-validator/check')
 const config = require('config')
 const Web3Util = require('../helpers/web3')
+const rewardHelper = require('../helpers/reward')
 const { apiCacheWithRedis } = require('../middlewares/apicache')
 
 const BlockHelper = require('../helpers/block')
@@ -173,6 +174,7 @@ RewardController.get('/rewards/epoch/:epochNumber', apiCacheWithRedis('100 minut
     const epochNumber = req.params.epochNumber || 0
     try {
         const params = {}
+        const page = !isNaN(req.query.page) ? parseInt(req.query.page) : 1
         params.query = { epoch: epochNumber }
         const reason = req.query.reason
         if (reason === 'voter') {
@@ -182,7 +184,11 @@ RewardController.get('/rewards/epoch/:epochNumber', apiCacheWithRedis('100 minut
             params.query = Object.assign({}, params.query,
                 { reason: 'Foundation' })
         }
-        const data = await paginate(req, 'Reward', params)
+        let data = await paginate(req, 'Reward', params)
+        if (page === 1 && data.items.length === 0) {
+            await rewardHelper.rewardOnChain(epochNumber)
+            data = await paginate(req, 'Reward', params)
+        }
         if (data.pages > 500) {
             data.pages = 500
         }
