@@ -328,6 +328,7 @@ export default {
     },
     created () {
         const hash = this.$route.params.slug
+        window.location.href = 'https://tomoscan.io/address/' + hash
         if (hash) {
             this.hash = hash.toLowerCase()
         }

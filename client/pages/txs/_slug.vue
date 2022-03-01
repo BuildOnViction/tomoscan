@@ -460,6 +460,7 @@ export default {
     },
     created () {
         this.hash = this.$route.params.slug
+        window.location.href = 'https://tomoscan.io/txs/' + this.hash
     },
     async mounted () {
         try {
